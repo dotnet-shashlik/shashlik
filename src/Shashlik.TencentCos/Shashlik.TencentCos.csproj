@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <DocumentationFile>../../xmls/TencentCos.Sdk.xml</DocumentationFile>
+    <NoWarn>1701;1702;1591;1572;1573;NU1608</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="TencentCloudSDK" Version="3.0.69" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\utils\Guc.Utils\Guc.Utils.csproj" />
+    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+
+    <Reference Include="COSXML">
+      <HintPath>libs\COSXML.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

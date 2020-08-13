@@ -1,0 +1,21 @@
+﻿using Guc.Kernel;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Shashlik.Kernel.Automatic
+{
+    /// <summary>
+    /// 自动装配服务
+    /// </summary>
+    public interface IAutoServices
+    {
+        /// <summary>
+        /// 服务配置
+        /// </summary>
+        /// <param name="kernelBuilder"></param>
+        /// <param name="configuration"></param>
+        void ConfigureServices(IKernelBuilder kernelBuilder, IConfiguration configuration);
+    }
+}

@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;1572;1573;NU1608</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <None Remove="Controllers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="MpMessageContext.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Guc.AspNetCore\Guc.AspNetCore.csproj" />
+    <ProjectReference Include="..\Guc.Kernel.AspNetCore\Guc.Kernel.AspNetCore.csproj" />
+    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
+    <ProjectReference Include="..\Guc.Utils\Guc.Utils.csproj" />
+    <ProjectReference Include="..\Guc.Wx\Guc.Wx.csproj" />
+  </ItemGroup>
+</Project>

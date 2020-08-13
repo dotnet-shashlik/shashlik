@@ -1,0 +1,39 @@
+version: 1.8.1.{build}
+branches:
+  only:
+  - master
+image: Visual Studio 2017
+configuration: Release
+platform: Any CPU
+
+install: 
+- cmd: nuget install redis-64 -excludeversion
+- cmd: redis-64\tools\redis-server.exe --service-install 
+- cmd: redis-64\tools\redis-server.exe --service-start
+before_build:
+- dotnet restore
+build:
+  project: Hangfire.Redis.StackExchange.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  verbosity: minimal
+artifacts:
+- path: .\**\Hangfire.Redis.StackExchange.nupkg
+assembly_info:
+  patch: true
+  file: '**\AssemblyInfo.*'
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}'
+nuget:
+  account_feed: false
+  project_feed: false
+test_script:
+- dotnet test ".\Hangfire.Redis.Tests\Hangfire.Redis.Tests.csproj"
+#before_package:
+#- ps: nuget pack .\Hangfire.Redis.StackExchange\HangFire.Redis.StackExchange.nuspec -Version $env:APPVEYOR_BUILD_VERSION
+#deploy:
+#  provider: NuGet
+#  api_key:
+#    secure: hiLTKk/ItMBgRI5HCemg6kARhcAGs6/V/eQpymZAdwQOtHgD8waLBtb3VMdgPRYG
+#  artifact: /.*\.nupkg/
