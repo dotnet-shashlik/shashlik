@@ -57,7 +57,7 @@ namespace Guc.Utils.Common
         }
 
         /// <summary>
-        /// 获取引用了<typeparamref name="TType"/>的程序集
+        /// 获取引用<paramref name="type"/>的程序集
         /// </summary>
         /// <param name="dependencyContext">依赖上下文,null则使用默认</param>
         /// <returns></returns>
@@ -72,7 +72,7 @@ namespace Guc.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetChildFinalTypes(Type baseType, Assembly assembly)
+        public static List<TypeInfo> GetFinalSubTypes(Type baseType, Assembly assembly)
         {
             return assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && (r.IsChildTypeOf(baseType) || r.IsChildTypeOfGenericType(baseType))).ToList();
         }
@@ -83,47 +83,76 @@ namespace Guc.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetChildFinalTypes(Type baseType, DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetFinalSubTypes(Type baseType, DependencyContext dependencyContext = null)
         {
             List<TypeInfo> types = new List<TypeInfo>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
             {
-                types.AddRange(GetChildFinalTypes(baseType, item));
+                types.AddRange(GetFinalSubTypes(baseType, item));
             }
 
             return types;
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取定义了<typeparamref name="TAttribute"/>的类型
         /// </summary>
-        /// <param name="baseType"></param>
+        /// <typeparam name="TAttribute"></typeparam>
         /// <param name="assembly"></param>
+        /// <param name="inherit"></param>
         /// <returns></returns>
-        public static List<TAttribute> GetTypes<TAttribute>(Assembly assembly)
+        public static List<TypeInfo> GetTypesByAttribute<TAttribute>(Assembly assembly, bool inherit = true)
             where TAttribute : Attribute
         {
             return assembly.DefinedTypes
-                .Select(r => r.GetCustomAttribute<TAttribute>())
-                .Where(r => r != null)
+                .Where(r => r.IsDefinedAttribute<TAttribute>(inherit))
                 .ToList();
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取定义了<typeparamref name="TAttribute"/>的类型
         /// </summary>
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TAttribute> GetChildFinalTypes<TAttribute>(DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetTypesByAttribute<TAttribute>(DependencyContext dependencyContext = null, bool inherit = true)
             where TAttribute : Attribute
         {
-            List<TAttribute> types = new List<TAttribute>();
+            List<TypeInfo> types = new List<TypeInfo>();
             foreach (var item in GetReferredAssemblies<TAttribute>(dependencyContext))
             {
-                types.AddRange(GetTypes<TAttribute>(item));
+                types.AddRange(GetTypesByAttribute<TAttribute>(item, inherit));
             }
+            return types;
+        }
 
+        /// <summary>
+        /// 获取定义了<paramref name="attributeType"/>的类型
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="assembly"></param>
+        /// <param name="inherit"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetTypesByAttribute(Assembly assembly, Type attributeType, bool inherit = true)
+        {
+            return assembly.DefinedTypes
+                .Where(r => r.IsDefinedAttribute(attributeType, inherit))
+                .ToList();
+        }
+
+        /// <summary>
+        /// 获取定义了<paramref name="attributeType"/>的类型
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetTypesByAttribute(Type attributeType, DependencyContext dependencyContext = null, bool inherit = true)
+        {
+            List<TypeInfo> types = new List<TypeInfo>();
+            foreach (var item in GetReferredAssemblies(attributeType, dependencyContext))
+            {
+                types.AddRange(GetTypesByAttribute(item, attributeType, inherit));
+            }
             return types;
         }
 
