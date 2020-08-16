@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Text;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using NLog;
 using NLog.LayoutRenderers;
 
-namespace Guc.NLogger.Renders
+namespace Shashlik.NLogger.Renders
 {
     [LayoutRenderer("aspnet-request-clientid")]
     public class ClientIdRender : NLog.Web.LayoutRenderers.AspNetLayoutRendererBase

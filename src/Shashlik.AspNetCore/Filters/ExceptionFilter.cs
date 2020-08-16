@@ -1,5 +1,5 @@
-﻿using Guc.Kernel.Exception;
-using Guc.Utils.Extensions;
+﻿using Shashlik.Kernel.Exception;
+using Shashlik.Utils.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// 异常处理
@@ -24,7 +24,7 @@ namespace Guc.AspNetCore
 
         public void OnException(ExceptionContext context)
         {
-            if (context.Filters.Any(r => r is NoGucAspNetCoreAttribute))
+            if (context.Filters.Any(r => r is NoShashlikAspNetCoreAttribute))
                 // 无需处理
                 return;
 
@@ -32,14 +32,14 @@ namespace Guc.AspNetCore
                 context.Exception = (context.Exception as AggregateException)?.InnerException;
             var logger = LoggerFactory.CreateLogger(context.Exception.Source);
 
-            if (context.Exception is GucException ex)
+            if (context.Exception is ShashlikException ex)
             {
-                if (ex.Code == Guc.Kernel.Exception.ExceptionCodes.Instance.NotFound)
+                if (ex.Code == Shashlik.Kernel.Exception.ExceptionCodes.Instance.NotFound)
                     context.Result = new NotFoundResult();
-                else if (ex.Code == Guc.Kernel.Exception.ExceptionCodes.Instance.Forbid)
-                    context.Result = new StatusCodeResult(Guc.Kernel.Exception.ExceptionCodes.Instance.Forbid);
-                else if (ex.Code == Guc.Kernel.Exception.ExceptionCodes.Instance.UnAuth)
-                    context.Result = new StatusCodeResult(Guc.Kernel.Exception.ExceptionCodes.Instance.UnAuth);
+                else if (ex.Code == Shashlik.Kernel.Exception.ExceptionCodes.Instance.Forbid)
+                    context.Result = new StatusCodeResult(Shashlik.Kernel.Exception.ExceptionCodes.Instance.Forbid);
+                else if (ex.Code == Shashlik.Kernel.Exception.ExceptionCodes.Instance.UnAuth)
+                    context.Result = new StatusCodeResult(Shashlik.Kernel.Exception.ExceptionCodes.Instance.UnAuth);
                 else if (!context.Filters.Any(r => r is NoWrapperAttribute))
                     context.Result = new JsonResult(new ResponseResult(context.Exception.Message, ex.Code) { Debug = ex.Debug });
 
@@ -53,7 +53,7 @@ namespace Guc.AspNetCore
             }
 
             var exList = context.HttpContext.RequestServices.GetServices<IOnException>();
-            exList?.Foreach(r => r.OnException(context.Exception));
+            exList?.ForEachItems(r => r.OnException(context.Exception));
         }
     }
 }

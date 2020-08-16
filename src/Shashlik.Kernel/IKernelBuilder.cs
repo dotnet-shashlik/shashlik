@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Kernel
+namespace Shashlik.Kernel
 {
     /// <summary>
-    /// guc 内核 服务配置
+    /// Shashlik 内核 服务配置
     /// </summary>
     public interface IKernelBuilder
     {

@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using NLog;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.LayoutRenderers;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.NLogger.Renders
+namespace Shashlik.NLogger.Renders
 {
     [LayoutRenderer("aspnet-request-body")]
     public class AspNetBodyRender : NLog.Web.LayoutRenderers.AspNetLayoutRendererBase
@@ -22,7 +22,7 @@ namespace Guc.NLogger.Renders
         }
     }
 
-    public class AspNetBody : Guc.Kernel.Dependency.IScoped
+    public class AspNetBody : Shashlik.Kernel.Dependency.IScoped
     {
         public AspNetBody(IHttpContextAccessor httpContextAccessor)
         {

@@ -1,8 +1,8 @@
-﻿using Guc.NLogger.Loggers;
-using Guc.NLogger.Mysql.EntityConfigs;
+﻿using Shashlik.NLogger.Loggers;
+using Shashlik.NLogger.Mysql.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 
-namespace Guc.NLogger
+namespace Shashlik.NLogger
 {
 
     public class LogDbContext : DbContext

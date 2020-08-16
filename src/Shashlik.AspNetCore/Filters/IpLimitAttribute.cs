@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// api接口调用限制,基于ip限制

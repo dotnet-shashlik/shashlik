@@ -6,10 +6,10 @@ using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using System.Linq;
 using Newtonsoft.Json;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 
-namespace Guc.Sms.DomainSms
+namespace Shashlik.Sms.DomainSms
 {
     /// <summary>
     /// 模板参数规则请使用 ${p1}/${p2},配置模板时按参数顺序来定义.

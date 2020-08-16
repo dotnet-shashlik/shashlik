@@ -1,12 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Guc.Sms.Event
+namespace Shashlik.Sms.Event
 {
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
-    public class SendSmsEventForExecuteHandler : Guc.EventBus.IEventHandler<SendSmsEvent>
+    public class SendSmsEventForExecuteHandler : Shashlik.EventBus.IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {

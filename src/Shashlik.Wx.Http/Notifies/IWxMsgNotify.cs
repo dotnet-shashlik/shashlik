@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Wx.Notifies
+namespace Shashlik.Wx.Notifies
 {
-    public interface IWxMsgNotify<TM> : Guc.Kernel.Dependency.ITransient
+    public interface IWxMsgNotify<TM> : Shashlik.Kernel.Dependency.ITransient
         where TM : class, IRequestMessageBase
     {
         /// <summary>

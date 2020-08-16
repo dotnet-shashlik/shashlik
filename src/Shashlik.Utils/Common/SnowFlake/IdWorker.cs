@@ -10,7 +10,7 @@
 
 using System;
 
-namespace Guc.Utils.Common.SnowFlake
+namespace Shashlik.Utils.Common.SnowFlake
 {
     public class IdWorker
     {

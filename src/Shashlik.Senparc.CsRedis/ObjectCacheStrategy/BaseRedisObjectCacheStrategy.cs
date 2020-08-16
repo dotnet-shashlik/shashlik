@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     /// <summary>
     /// 所有Redis基础缓存策略的基类

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel.Dependency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Threading;
 
-namespace Guc.EfCore
+namespace Shashlik.EfCore
 {
     /// <summary>
     /// 默认的ef core事务

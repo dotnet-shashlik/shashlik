@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DotNetCore.CAP;
 
-namespace Guc.EventBus
+namespace Shashlik.EventBus
 {
     class DefaultEventPublisher : IEventPublisher
     {

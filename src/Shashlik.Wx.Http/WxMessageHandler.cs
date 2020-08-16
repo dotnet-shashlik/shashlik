@@ -1,5 +1,5 @@
-﻿using Guc.Utils.Extensions;
-using Guc.Wx.Notifies;
+﻿using Shashlik.Utils.Extensions;
+using Shashlik.Wx.Notifies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Senparc.NeuChar;
@@ -19,7 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     //TODO: 使用条件属性进行筛选
 

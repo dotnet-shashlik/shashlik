@@ -4,12 +4,12 @@ using System.Text;
 using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Exceptions;
 using Aliyun.Acs.Core.Profile;
-using Guc.Kernel.Dependency;
-using Guc.Mail.Aliyun;
+using Shashlik.Kernel.Dependency;
+using Shashlik.Mail.Aliyun;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     public class AliyunMail : IMail
     {

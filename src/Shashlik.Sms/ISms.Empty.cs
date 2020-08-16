@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 手机短信

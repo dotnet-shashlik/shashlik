@@ -1,17 +1,17 @@
-﻿using Guc.AspNetCore.PatchUpdate;
-using Guc.Kernel;
+﻿using Shashlik.AspNetCore.PatchUpdate;
+using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using System;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     public static class Extensions
     {
         /// <summary>
-        /// 增加Guc.AspNetCore,PatchUpdateBinder
+        /// 增加Shashlik.AspNetCore,PatchUpdateBinder
         /// </summary>
-        /// <param name="gucUtilsBuilder"></param>
+        /// <param name="ShashlikUtilsBuilder"></param>
         public static IKernelBuilder AddAspNetCore(this IKernelBuilder kernelBuilder)
         {
             kernelBuilder.Services.AddControllers(options =>

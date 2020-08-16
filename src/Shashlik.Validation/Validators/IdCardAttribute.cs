@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 身份证号码验证

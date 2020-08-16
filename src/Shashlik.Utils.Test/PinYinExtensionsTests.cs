@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Shouldly;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Utils.Test
+namespace Shashlik.Utils.Test
 {
     public class PinYinExtensionsTests
     {

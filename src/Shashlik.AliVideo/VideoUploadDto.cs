@@ -1,4 +1,4 @@
-﻿namespace Guc.AliVideo
+﻿namespace Shashlik.AliVideo
 {
     public class VideoUploadDto
     {

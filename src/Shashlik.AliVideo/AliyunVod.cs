@@ -5,10 +5,10 @@ using System.Text;
 using Aliyun.Acs.Core;
 using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.vod.Model.V20170321;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel.Dependency;
 using Microsoft.Extensions.Options;
 
-namespace Guc.AliVideo
+namespace Shashlik.AliVideo
 {
     public class AliyunVod : ITransient
     {

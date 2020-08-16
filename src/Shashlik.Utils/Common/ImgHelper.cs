@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -12,7 +12,7 @@ using System.Numerics;
 using SixLabors.Shapes;
 using System.Text.RegularExpressions;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     /// <summary>
     /// 图片处理帮助类
@@ -103,7 +103,7 @@ namespace Guc.Utils.Common
             var size = 20;// 字体大小
 
             Font font = null;
-            using (var fontSm = typeof(ImgHelper).Assembly.GetManifestResourceStream("Guc.Utils.Common.ARLRDBD.TTF"))
+            using (var fontSm = typeof(ImgHelper).Assembly.GetManifestResourceStream("Shashlik.Utils.Common.ARLRDBD.TTF"))
             {
                 // 字体
                 var install_Family = new FontCollection().Install(fontSm);

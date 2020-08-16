@@ -1,12 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using Newtonsoft.Json;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Guc.Bank
+namespace Shashlik.Bank
 {
     /// <summary>
     /// 银行服务
@@ -31,7 +31,7 @@ namespace Guc.Bank
                     var configurationOption = configuration?.Get<BankOptions>();
 
                     r.Datas = new List<BankModel>();
-                    using (var stream = typeof(IBankService).Assembly.GetManifestResourceStream("Guc.Bank.data.txt"))
+                    using (var stream = typeof(IBankService).Assembly.GetManifestResourceStream("Shashlik.Bank.data.txt"))
                     {
                         var lines = stream.ReadToString().Split(new[] { '\n' });
                         foreach (var item in lines)

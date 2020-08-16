@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// 不要自动404

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class DateTimeExtensions
     {

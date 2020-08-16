@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     public class TimerHelper
     {

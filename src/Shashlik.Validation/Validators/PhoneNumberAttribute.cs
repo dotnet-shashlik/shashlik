@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using Guc.Utils;
-using Guc.Utils.Extensions;
+using Shashlik.Utils;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     public class PhoneNumberAttribute : ValidationAttribute
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     public class GeoCoderOptions
     {

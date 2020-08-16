@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Guc.Kernel;
+using Shashlik.Kernel;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     public static class AspNetCoreExtensions
     {
@@ -27,7 +27,7 @@ namespace Guc.Validation
         /// <returns></returns>
         public static IKernelAspNetCoreConfig UseValidationWithAspNetCore(this IKernelAspNetCoreConfig kernelConfig)
         {
-            ValidationExtensions.SetGucValidation(() => kernelConfig.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext.RequestServices);
+            ValidationExtensions.SetShashlikValidation(() => kernelConfig.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext.RequestServices);
             return kernelConfig;
         }
     }

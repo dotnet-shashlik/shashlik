@@ -1,9 +1,9 @@
-﻿using Guc.EventBus;
+﻿using Shashlik.EventBus;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     public class SendMailEvent : IEvent
     {

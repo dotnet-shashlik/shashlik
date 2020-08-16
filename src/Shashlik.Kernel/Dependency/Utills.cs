@@ -1,12 +1,14 @@
-﻿using System;
+﻿using Shashlik.Kernel.Dependency.Conditions;
+using Shashlik.Utils.Extensions;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Reflection;
 
-namespace Guc.Kernel.Dependency
+namespace Shashlik.Kernel.Dependency
 {
     static class Utils
     {
-
         /// <summary>
         /// 泛型参数是否匹配
         /// </summary>
@@ -45,6 +47,52 @@ namespace Guc.Kernel.Dependency
                 type == typeof(IScoped))
                 return true;
             return false;
+        }
+
+
+        /// <summary>
+        /// 验证接口继承
+        /// </summary>
+        /// <param name="type"></param>
+        public static void ValidInterfaces(TypeInfo type)
+        {
+            var convectionInterfaces = type.ImplementedInterfaces.Where(r => IsConvectionInterfaceType(r)).ToList();
+            if (convectionInterfaces.Count > 1)
+                throw new System.Exception($"convention type:{type} can't inherit from multiple interface:{Environment.NewLine}{convectionInterfaces.Select(r => r.FullName).Join(Environment.NewLine)}");
+        }
+
+        /// <summary>
+        /// 获取类所有的注册条件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static List<(IConditionBase condition, int order)> GetConditions(Type type)
+        {
+            return type.GetCustomAttributes()
+                 .Where(r => r is IConditionBase)
+                 .Select(r => (r as IConditionBase, r.GetType().GetCustomAttribute<ConditionOrderAttribute>().Order))
+                 .ToList();
+        }
+
+        private static void FillBaseType(HashSet<Type> results, Type type)
+        {
+            if (type.BaseType != typeof(object))
+            {
+                results.Add(type.BaseType);
+                FillBaseType(results, type.BaseType);
+            }
+        }
+
+        /// <summary>
+        /// 获取所有的父级类型,不包含接口和object
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static HashSet<Type> GetAllBaseTypes(this Type type)
+        {
+            HashSet<Type> types = new HashSet<Type>();
+            FillBaseType(types, type);
+            return types;
         }
     }
 }

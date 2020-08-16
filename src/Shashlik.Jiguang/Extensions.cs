@@ -1,4 +1,4 @@
-﻿using Guc.Kernel;
+﻿using Shashlik.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +6,7 @@ using Jiguang.JPush;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Guc.PushNotification
+namespace Shashlik.PushNotification
 {
     public static class Extensions
     {

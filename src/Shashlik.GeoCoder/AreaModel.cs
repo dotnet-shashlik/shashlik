@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     /// <summary>
     /// 区域模型

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Guc.Utils.Rsa
+namespace Shashlik.Utils.Rsa
 {
     public static class EncryptExtensions
     {

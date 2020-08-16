@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Page;
+﻿using Shashlik.Utils.Paging;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class IEnumerableExtensions
     {
@@ -17,7 +17,7 @@ namespace Guc.Utils.Extensions
         /// <param name="source"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static int IndexOf<T>(this IEnumerable<T> source, T value)
+        public static int GetIndex<T>(this IEnumerable<T> source, T value)
         {
             for (int i = 0; i < source.Count(); i++)
             {

@@ -6,7 +6,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.OpenSsl;
 
-namespace Guc.Utils.Rsa
+namespace Shashlik.Utils.Rsa
 {
     /// <summary>
     /// RSA export key extensions.Support XML format import and export and PEM format.

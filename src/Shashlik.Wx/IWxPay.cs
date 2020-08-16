@@ -1,11 +1,11 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Senparc.Weixin.TenPay.V3;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     public interface IWxPay
     {
@@ -168,7 +168,7 @@ namespace Guc.Wx
                             .Elements()
                             .Where(z => z.Name.ToString().StartsWith(nodeName));
 
-                        nodeList.Foreach(z =>
+                        nodeList.ForEachItems(z =>
                            {
                                try
                                {

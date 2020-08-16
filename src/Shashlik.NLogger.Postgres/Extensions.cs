@@ -1,6 +1,6 @@
-﻿using Guc.EfCore;
-using Guc.Kernel;
-using Guc.Utils.Extensions;
+﻿using Shashlik.EfCore;
+using Shashlik.Kernel;
+using Shashlik.Utils.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +8,7 @@ using NLog.Web;
 using System.IO;
 using System.Text;
 
-namespace Guc.NLogger
+namespace Shashlik.NLogger
 {
     public static class NLogExtensions
     {
@@ -51,7 +51,7 @@ namespace Guc.NLogger
             // 读取默认配置
             if (nLogXmlConfigContent.IsNullOrWhiteSpace())
             {
-                using var stream = typeof(LogDbContext).Assembly.GetManifestResourceStream($"Guc.NLogger.Postgres.nlog.postgresql.config");
+                using var stream = typeof(LogDbContext).Assembly.GetManifestResourceStream($"Shashlik.NLogger.Postgres.nlog.postgresql.config");
                 using var sm = new StreamReader(stream);
                 nLogXmlConfigContent = sm.ReadToEnd();
             }

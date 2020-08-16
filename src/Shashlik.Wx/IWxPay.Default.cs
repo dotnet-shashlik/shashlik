@@ -1,6 +1,6 @@
-﻿using Guc.Utils;
-using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+﻿using Shashlik.Utils;
+using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin.TenPay;
@@ -13,9 +13,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
-    public class DefaultWxPay : Guc.Kernel.Dependency.ISingleton, IWxPay
+    public class DefaultWxPay : Shashlik.Kernel.Dependency.ISingleton, IWxPay
     {
         ILogger<DefaultWxPay> logger { get; }
         public DefaultWxPay(
@@ -333,7 +333,7 @@ namespace Guc.Wx
             int orderAmount, int refundAmount, string refundDesc, string notifyUrl)
         {
             string nonceStr = TenPayV3Util.GetNoncestr();
-            var result = await TenPayV3.RefundAsync(Guc.Kernel.KernelServiceProvider.ServiceProvider, new TenPayV3RefundRequestData(
+            var result = await TenPayV3.RefundAsync(Shashlik.Kernel.KernelServiceProvider.ServiceProvider, new TenPayV3RefundRequestData(
                 appId, mchId, mchKey, null, nonceStr, null, localTranNo, localRefundNo,
                 (int)orderAmount, (int)refundAmount, null, null, refundDescription: refundDesc, notifyUrl: notifyUrl));
 

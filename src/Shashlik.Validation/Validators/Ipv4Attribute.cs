@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Guc.Utils;
-using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+using Shashlik.Utils;
+using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 枚举值验证

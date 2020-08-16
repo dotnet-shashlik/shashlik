@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Kernel
+namespace Shashlik.Kernel
 {
     /// <summary>
-    /// Guc服务提供类
+    /// Shashlik服务提供类,全局静态类
     /// </summary>
     public class KernelServiceProvider
     {
         /// <summary>
-        /// Guc服务提供类
+        /// Shashlik服务提供类,root
         /// </summary>
         public static IServiceProvider ServiceProvider { get; private set; }
 

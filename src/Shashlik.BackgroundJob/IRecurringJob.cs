@@ -1,9 +1,9 @@
-﻿using Guc.Kernel.Dependency;
+﻿using Shashlik.Kernel.Dependency;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.BackgroundJob
+namespace Shashlik.BackgroundJob
 {
     /// <summary>
     /// 循环任务,单例

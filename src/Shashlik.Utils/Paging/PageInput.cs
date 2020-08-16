@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Guc.Utils.Page
+namespace Shashlik.Utils.Paging
 {
-
     /// <summary>
     /// 分页输入
     /// </summary>

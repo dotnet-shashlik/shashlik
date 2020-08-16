@@ -1,4 +1,4 @@
-﻿using Guc.Kernel;
+﻿using Shashlik.Kernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -25,7 +25,7 @@ namespace TencentFaceId.Sdk
             {
                 builder.Services.AddSingleton<ITencentFaceId, DefaultTencentFaceId>();
             }
-            
+
             return builder;
         }
     }

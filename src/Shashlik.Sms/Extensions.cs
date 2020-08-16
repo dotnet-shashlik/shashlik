@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.Sms.DomainSms;
-using Guc.Kernel;
+using Shashlik.Sms.DomainSms;
+using Shashlik.Kernel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 using System;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信服务扩展类

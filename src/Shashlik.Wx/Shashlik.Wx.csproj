@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
-    <ProjectReference Include="..\Guc.Redis\Guc.Redis.csproj" />
-    <ProjectReference Include="..\Guc.Senparc.CsRedis\Guc.Senparc.CsRedis.csproj" />
-    <ProjectReference Include="..\Guc.Utils\Guc.Utils.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
+    <ProjectReference Include="..\Shashlik.Senparc.CsRedis\Shashlik.Senparc.CsRedis.csproj" />
+    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
 </Project>

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 小数精度验证

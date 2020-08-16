@@ -23,10 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.AspNetCore\Guc.AspNetCore.csproj" />
-    <ProjectReference Include="..\Guc.Kernel.AspNetCore\Guc.Kernel.AspNetCore.csproj" />
-    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
-    <ProjectReference Include="..\Guc.Utils\Guc.Utils.csproj" />
-    <ProjectReference Include="..\Guc.Wx\Guc.Wx.csproj" />
+    <ProjectReference Include="..\Shashlik.AspNetCore\Shashlik.AspNetCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel.AspNetCore\Shashlik.Kernel.AspNetCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+    <ProjectReference Include="..\Shashlik.Wx\Shashlik.Wx.csproj" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Shashlik.Kernel.Automatic
+namespace Shashlik.Kernel.Automatic.Attributes
 {
     /// <summary>
-    /// 自动装配配置,
+    /// 自动装配options
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class AutoOptionsAttribute : Attribute
@@ -13,6 +11,6 @@ namespace Shashlik.Kernel.Automatic
         /// <summary>
         /// 配置节点名称，例：Logger:Microsft
         /// </summary>
-        public string SectionName { get; set; }
+        public string Section { get; set; }
     }
 }

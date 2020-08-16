@@ -10,10 +10,10 @@ using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Senparc.Weixin.MP.AdvancedAPIs.TemplateMessage;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     /// <summary>
     /// 微信模板消息

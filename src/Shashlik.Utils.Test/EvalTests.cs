@@ -1,4 +1,4 @@
-﻿//using Guc.Utils.Extensions;
+﻿//using Shashlik.Utils.Extensions;
 //using NPOI.SS.Formula.Eval;
 //using Shouldly;
 //using System;
@@ -7,7 +7,7 @@
 //using System.Text;
 //using Xunit;
 
-//namespace Guc.Utils.Test
+//namespace Shashlik.Utils.Test
 //{
 //    public class EvalTests
 //    {

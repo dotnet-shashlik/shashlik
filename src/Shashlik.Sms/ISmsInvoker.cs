@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信发送执行接口

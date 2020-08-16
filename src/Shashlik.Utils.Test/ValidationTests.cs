@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Shouldly;
 using System.Collections.Concurrent;
 using System.Linq;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.ComponentModel.DataAnnotations;
-using Guc.Validation;
+using Shashlik.Validation;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using System.Reflection;
-using Guc.Utils.PatchUpdate;
+using Shashlik.Utils.PatchUpdate;
 using Newtonsoft.Json;
 
-namespace Guc.Utils.Test
+namespace Shashlik.Utils.Test
 {
     public class ValidationTests
     {
@@ -25,10 +25,10 @@ namespace Guc.Utils.Test
         void isValid_test()
         {
             IServiceCollection services = new ServiceCollection();
-            services.AddGucKernel()
+            services.AddShashlik()
                 .AddValidation();
             var serviceProvider = services.BuildServiceProvider();
-            serviceProvider.UseGucKernel()
+            serviceProvider.UseShashlik()
                 .UseValidation();
 
             {

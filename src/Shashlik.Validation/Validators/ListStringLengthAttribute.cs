@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 字符串集合中的字符串长度验证

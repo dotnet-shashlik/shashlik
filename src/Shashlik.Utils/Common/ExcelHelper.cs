@@ -6,9 +6,9 @@ using System.Text;
 using ExcelDataReader;
 using ExcelDataReader.Exceptions;
 using NPOI.XSSF.UserModel;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     /// <summary>
     /// excel帮助类

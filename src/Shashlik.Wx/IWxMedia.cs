@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     public interface IWxMedia
     {

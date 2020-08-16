@@ -1,9 +1,9 @@
-﻿using Guc.Utils.Common.SnowFlake;
+﻿using Shashlik.Utils.Common.SnowFlake;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Redis
+namespace Shashlik.Redis
 {
     public class RedisId
     {

@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 using Jiguang.JPush;
 using Jiguang.JPush.Model;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
-namespace Guc.PushNotification
+namespace Shashlik.PushNotification
 {
-    public class JiGuangNotificationPusher : INotificationPusher, Guc.Kernel.Dependency.ISingleton
+    public class JiGuangNotificationPusher : INotificationPusher, Shashlik.Kernel.Dependency.ISingleton
     {
         private JPushClient JPushClient { get; }
         private ILogger<JiGuangNotificationPusher> Logger { get; }

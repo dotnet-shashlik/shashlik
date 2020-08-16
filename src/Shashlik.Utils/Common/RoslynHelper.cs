@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     /// <summary>
     /// C# 动态脚本编译
@@ -40,7 +40,7 @@ namespace Guc.Utils.Common
             var compliedType = CompileToType(content, type);
             if (compliedType == null) return default;
             var obj = Activator.CreateInstance(compliedType);
-            if (typeof(T) == compliedType || typeof(T).IsAssignableFrom(compliedType)) return (T) obj;
+            if (typeof(T) == compliedType || typeof(T).IsAssignableFrom(compliedType)) return (T)obj;
             return default;
         }
 

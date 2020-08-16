@@ -1,10 +1,10 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Guc.Kernel;
-using Guc.Utils.Extensions;
+using Shashlik.Kernel;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.BackgroundJob
+namespace Shashlik.BackgroundJob
 {
     public static class PostgreHangfireExtensions
     {

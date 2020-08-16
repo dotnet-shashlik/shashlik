@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Guc.NLogger.Mysql.Migrations
+namespace Shashlik.NLogger.Mysql.Migrations
 {
     public partial class SbtLog0001 : Migration
     {

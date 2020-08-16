@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Guc.NLogger.Loggers
+namespace Shashlik.NLogger.Loggers
 {
     /// <summary>
     /// 登录日志

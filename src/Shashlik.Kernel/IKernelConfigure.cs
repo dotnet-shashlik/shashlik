@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Kernel
+namespace Shashlik.Kernel
 {
     /// <summary>
-    /// guc kernel 配置
+    /// Shashlik kernel 配置
     /// </summary>
-    public interface IKernelConfig
+    public interface IKernelConfigure
     {
         IServiceProvider ServiceProvider { get; }
     }
 
-    class KernelConfig : IKernelConfig
+    class KernelConfigure : IKernelConfigure
     {
-        public KernelConfig(IServiceProvider serviceProvider)
+        public KernelConfigure(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
         }

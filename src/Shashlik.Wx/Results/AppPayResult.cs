@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     /// <summary>
     /// APP支付

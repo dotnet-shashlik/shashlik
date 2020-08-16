@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Guc.NLogger.Postgres.Migrations.LogDbMigrations
+namespace Shashlik.NLogger.Postgres.Migrations.LogDbMigrations
 {
     public partial class log_0001 : Migration
     {

@@ -1,11 +1,11 @@
-﻿using Guc.NLogger.Loggers;
+﻿using Shashlik.NLogger.Loggers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.NLogger.Postgres.EntityConfigs
+namespace Shashlik.NLogger.Postgres.EntityConfigs
 {
     public class ErrorLogsConfig : IEntityTypeConfiguration<ErrorLogs>
     {

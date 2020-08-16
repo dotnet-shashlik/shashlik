@@ -45,7 +45,7 @@ using Senparc.Weixin.Cache;
 using Senparc.Weixin.Helpers;
 
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     /// <summary>
     /// Redis容器缓存策略

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.AliyunOss
+namespace Shashlik.AliyunOss
 {
     public class AliyunOssOptions
     {

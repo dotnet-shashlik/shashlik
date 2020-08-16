@@ -71,8 +71,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Wx", "Shashlik.Wx\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Wx.Http", "Shashlik.Wx.Http\Shashlik.Wx.Http.csproj", "{D3FB8960-431A-4CDF-8B85-4DBCB6E172CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.TencentCos", "Shashlik.TencentCos\Shashlik.TencentCos.csproj", "{99E6DB77-AD37-4916-BE00-117CF4428A8F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.TencentFaceId", "Shashlik.TencentFaceId\Shashlik.TencentFaceId.csproj", "{393674D8-2F35-40BE-ACCC-92125343670B}"
 EndProject
 Global
@@ -274,12 +272,6 @@ Global
 		{D3FB8960-431A-4CDF-8B85-4DBCB6E172CF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3FB8960-431A-4CDF-8B85-4DBCB6E172CF}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3FB8960-431A-4CDF-8B85-4DBCB6E172CF}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{99E6DB77-AD37-4916-BE00-117CF4428A8F}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Release|Any CPU.ActiveCfg = Release|Any CPU

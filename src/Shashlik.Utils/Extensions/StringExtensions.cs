@@ -12,8 +12,9 @@ using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Collections.Concurrent;
+using NPOI.OpenXml4Net.Exceptions;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     /// <summary>
     /// 字符串扩展类
@@ -173,96 +174,7 @@ namespace Guc.Utils.Extensions
         {
             return string.Format(value, ps);
         }
-
-        /// <summary>
-        /// razor模板格式化,参数格式:@{arg},参数名区分大小写,支持数据类型本身的格式化format,如@{Money|f2},Money为double类型,|f2表示格式化为2位小数显示,支持递归格式化
-        /// </summary>
-        /// <typeparam name="TModel"></typeparam>
-        /// <param name="value">值</param>
-        /// <param name="model">格式化模型</param>
-        /// <param name="prefix">格式符前缀,默认@</param>
-        /// <returns></returns>
-        public static string RazorFormat<TModel>(this string value, TModel model, char prefix = '@')
-            where TModel : class
-        {
-
-            if (value.IsNullOrWhiteSpace() || model == null)
-                return value;
-
-            var reg = new Regex(prefix + @"\{[^\{\}]{1,}\}");
-
-            var matches = reg.Matches(value);
-            if (matches.Count == 0)
-                return value;
-
-            var dic = model.MapToDictionary();
-            foreach (Match item in matches)
-            {
-                if (!item.Success)
-                    continue;
-                string exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
-
-                string proName = null;
-                string format = null;
-
-                if (exp.Contains('|'))
-                {
-                    var arr = exp.Split('|');
-                    if (arr.Length != 2)
-                        throw new Exception($"RazorFormat发生错误:表达式[{exp}]错误");
-
-                    proName = arr[0].Trim();
-                    format = arr[1].Trim();
-                }
-                else
-                    proName = exp.Trim();
-
-                var proValue = DicValue(dic, proName);
-                if (!proValue.existsPro)
-                    continue;
-                var v = proValue.value;
-                if (v == null)
-                    value = value.Replace(item.Value, "");
-                else if (v is string str)
-                    value = value.Replace(item.Value, str);
-                else if (format.IsNullOrWhiteSpace())
-                    value = value.Replace(item.Value, v.ToString());
-                else
-                {
-                    var method = v.GetType().GetMethod("ToString", new Type[] { typeof(string) });
-                    if (method == null)
-                        throw new Exception($"RazorFormat发生错误:类型[{v.GetType()}]没有格式化方法:[{exp}]");
-
-                    var s = method.Invoke(v, new object[] { format });
-                    value = value.Replace(item.Value, s.ToString());
-                }
-            }
-
-            return value;
-        }
-
-        static (object value, bool existsPro) DicValue(IDictionary<string, object> obj, string proName)
-        {
-            if (!proName.Contains('.'))
-            {
-                if (!obj.ContainsKey(proName))
-                    return (null, false);
-                return (obj[proName], true);
-            }
-            else
-            {
-                var proNameArr = proName.Split('.');
-                if (!obj.ContainsKey(proNameArr[0]))
-                    return (null, false);
-                char[] first = proNameArr[0].ToCharArray();
-                var childProName = proName.TrimStart(first).TrimStart('.');
-                if (!(obj[proNameArr[0]] is IDictionary<string, object> child))
-                    return (null, false);
-
-                return DicValue(child, childProName);
-            }
-        }
-
+     
         /// <summary>
         /// 字符串脱敏
         /// </summary>

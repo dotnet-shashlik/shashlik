@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     public static class Extensions
     {

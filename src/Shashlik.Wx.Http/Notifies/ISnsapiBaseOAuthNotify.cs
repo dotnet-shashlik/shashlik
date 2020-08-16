@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Wx.Notifies
+namespace Shashlik.Wx.Notifies
 {
     /// <summary>
     /// wx授权登录 回调处理
     /// </summary>
-    public interface ISnsapiBaseOAuthNotify : Guc.Kernel.Dependency.ITransient
+    public interface ISnsapiBaseOAuthNotify : Shashlik.Kernel.Dependency.ITransient
     {
         /// <summary>
         /// 优先级 从小大

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Guc.Bank
+namespace Shashlik.Bank
 {
     public class BankOptions
     {

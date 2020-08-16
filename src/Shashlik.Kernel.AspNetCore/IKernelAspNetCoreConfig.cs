@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
 
-namespace Guc.Kernel
+namespace Shashlik.Kernel
 {
     /// <summary>
-    /// guc kernel 配置
+    /// Shashlik kernel 配置
     /// </summary>
-    public interface IKernelAspNetCoreConfig : IKernelConfig
+    public interface IKernelAspNetCoreConfig : IKernelConfigure
     {
         IApplicationBuilder App { get; }
     }

@@ -10,9 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.BackgroundJob\Guc.BackgroundJob.csproj" />
-    <ProjectReference Include="..\Guc.Kernel.AspNetCore\Guc.Kernel.AspNetCore.csproj" />
-    <ProjectReference Include="..\Guc.Redis\Guc.Redis.csproj" />
+    <ProjectReference Include="..\Shashlik.BackgroundJob\Shashlik.BackgroundJob.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel.AspNetCore\Shashlik.Kernel.AspNetCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
     <ProjectReference Include="..\Hangfire.Redis.CSRedisCore\Hangfire.Redis.CSRedisCore\Hangfire.Redis.CSRedisCore.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel.Dependency;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Guc.EfCore
+namespace Shashlik.EfCore
 {
     /// <summary>
     /// ef本地环境事务,可以支持事务嵌套(虽然实际仍然是一个事务)

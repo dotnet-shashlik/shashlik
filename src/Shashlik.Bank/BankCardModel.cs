@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Bank
+namespace Shashlik.Bank
 {
     public class BankCardModel : BankModel
     {

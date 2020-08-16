@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Guc.Utils.Rsa
+namespace Shashlik.Utils.Rsa
 {
     /// <summary>
     /// doc https://tls.mbed.org/kb/cryptography/asn1-key-structures-in-der-and-pem

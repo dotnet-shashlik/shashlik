@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Shouldly;
 using System.Collections.Concurrent;
 using System.Linq;
-using Guc.Utils.Common.SnowFlake;
+using Shashlik.Utils.Common.SnowFlake;
 
-namespace Guc.Utils.Test
+namespace Shashlik.Utils.Test
 {
     public class RandomTests
     {

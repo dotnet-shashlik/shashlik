@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class XmlExtensions
     {

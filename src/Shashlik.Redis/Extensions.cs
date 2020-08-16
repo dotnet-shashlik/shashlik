@@ -1,4 +1,4 @@
-﻿using Guc.Kernel;
+﻿using Shashlik.Kernel;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Redis
+namespace Shashlik.Redis
 {
     public static class Extensions
     {

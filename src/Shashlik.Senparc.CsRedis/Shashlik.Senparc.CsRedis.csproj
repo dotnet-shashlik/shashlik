@@ -85,6 +85,6 @@
     <PackageReference Include="protobuf-net" Version="2.1.0" />
   </ItemGroup>-->
   <ItemGroup>
-    <ProjectReference Include="..\Guc.Redis\Guc.Redis.csproj" />
+    <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
   </ItemGroup>
 </Project>

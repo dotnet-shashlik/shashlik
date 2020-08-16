@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Guc.Bank
+namespace Shashlik.Bank
 {
     /// <summary>
     /// 银行编码验证

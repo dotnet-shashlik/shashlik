@@ -1,15 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using DotNetCore.CAP;
 using DotNetCore.CAP.Internal;
 
-namespace Guc.EventBus
+namespace Shashlik.EventBus
 {
     public static class Extensions
     {
         /// <summary>
-        /// 增加guc 事件总线
+        /// 增加Shashlik 事件总线
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
@@ -17,7 +17,7 @@ namespace Guc.EventBus
         {
             kernelBuilder.Services.AddCap(capAction);
             // 替换cap默认的消费者服务查找器
-            kernelBuilder.Services.AddSingleton<IConsumerServiceSelector, GucConsumerServiceSelector>();
+            kernelBuilder.Services.AddSingleton<IConsumerServiceSelector, ShashlikConsumerServiceSelector>();
             return kernelBuilder;
         }
     }

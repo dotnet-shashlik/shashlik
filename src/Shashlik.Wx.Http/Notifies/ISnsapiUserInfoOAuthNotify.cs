@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Wx.Notifies
+namespace Shashlik.Wx.Notifies
 {
     /// <summary>
     /// snsapi模式 微信授权登录回调
     /// </summary>
-    public interface ISnsapiUserInfoOAuthNotify : Guc.Kernel.Dependency.ITransient
+    public interface ISnsapiUserInfoOAuthNotify : Shashlik.Kernel.Dependency.ITransient
     {
         /// <summary>
         /// 优先级 从小大

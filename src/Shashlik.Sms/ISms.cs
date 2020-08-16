@@ -1,7 +1,7 @@
-﻿using Guc.Kernel.Dependency;
+﻿using Shashlik.Kernel.Dependency;
 using System.Collections.Generic;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信接口

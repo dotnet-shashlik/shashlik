@@ -35,7 +35,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     public class Lock
     {

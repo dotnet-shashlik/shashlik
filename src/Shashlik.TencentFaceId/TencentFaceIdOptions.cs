@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using TencentCloud.Ecm.V20190719.Models;
 
 namespace TencentFaceId.Sdk
@@ -28,6 +28,6 @@ namespace TencentFaceId.Sdk
         /// </summary>
         public string Region { get; set; }
 
-        public string RuleId { get;set; }
+        public string RuleId { get; set; }
     }
 }

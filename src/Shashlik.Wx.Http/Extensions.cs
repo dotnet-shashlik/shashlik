@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Guc.Kernel;
-using Guc.Utils;
-using Guc.Utils.Extensions;
+using Shashlik.Kernel;
+using Shashlik.Utils;
+using Shashlik.Utils.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Senparc.Weixin.MP.Helpers;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.AspNetCore;
+using Shashlik.AspNetCore;
 using Microsoft.Extensions.Logging;
 using Senparc.Weixin;
 using Microsoft.AspNetCore.Hosting;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.Entities.Request;
 using Senparc.NeuChar.Entities;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using System.Threading;
 using Senparc.CO2NET.AspNet.HttpUtility;
 using Senparc.CO2NET.RegisterServices;
@@ -23,12 +23,12 @@ using Senparc.CO2NET;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.MP.Containers;
 using Senparc.CO2NET.AspNet;
-using Guc.Senparc.CsRedis;
+using Shashlik.Senparc.CsRedis;
 using Senparc.Weixin.WxOpen;
 using Senparc.Weixin.TenPay;
 using Microsoft.Extensions.Hosting;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     public static class Extensions
     {
@@ -80,7 +80,7 @@ namespace Guc.Wx
                 {
                     globalRegister.ChangeDefaultCacheNamespace("HEALTH_WX_CACHE");
                     // 注册CRedisCore缓存
-                    Guc.Senparc.CsRedis.Register.UseKeyValueRedisNow(csRedisClient);
+                    Shashlik.Senparc.CsRedis.Register.UseKeyValueRedisNow(csRedisClient);
                 })
                  // 加载微信配置
                  .UseSenparcWeixin(senparcWeixinSetting.Value, senparcSetting.Value)

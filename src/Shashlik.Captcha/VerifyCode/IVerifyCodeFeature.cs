@@ -1,15 +1,15 @@
-﻿using Guc.Features.VerifyCode;
+﻿using Shashlik.Features.VerifyCode;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Features.VerifyCode
+namespace Shashlik.Features.VerifyCode
 {
     /// <summary>
     /// 通用验证码功能,生成/验证(target可以是邮件/手机等 都可以,不区分大小写)
     /// </summary>
-    public interface IVerifyCodeFeature : Guc.Kernel.Dependency.ITransient
+    public interface IVerifyCodeFeature : Shashlik.Kernel.Dependency.ITransient
     {
         /// <summary>
         /// 生成验证码

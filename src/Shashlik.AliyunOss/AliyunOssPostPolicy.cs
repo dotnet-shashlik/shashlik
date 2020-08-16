@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.AliyunOss
+namespace Shashlik.AliyunOss
 {
     public class AliyunOssPostPolicy
     {
@@ -43,6 +43,6 @@ namespace Guc.AliyunOss
         /// <summary>
         /// 图片url
         /// </summary>
-        public string Url { get; set; }        
+        public string Url { get; set; }
     }
 }

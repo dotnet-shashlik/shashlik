@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 内部服务

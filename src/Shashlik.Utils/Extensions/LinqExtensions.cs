@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class LinqExtensions
     {

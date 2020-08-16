@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.EfCore\Guc.EfCore.csproj" />
-    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
-    <ProjectReference Include="..\Guc.Utils\Guc.Utils.csproj" />
+    <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
 </Project>

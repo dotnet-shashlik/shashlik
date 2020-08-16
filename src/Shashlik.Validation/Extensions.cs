@@ -1,7 +1,7 @@
 ﻿using System;
-using Guc.Kernel;
+using Shashlik.Kernel;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     public static class Extensions
     {
@@ -29,7 +29,7 @@ namespace Guc.Validation
                 throw new ArgumentNullException(nameof(validationContextServiceProvider));
             }
 
-            ValidationExtensions.SetGucValidation(validationContextServiceProvider);
+            ValidationExtensions.SetShashlikValidation(validationContextServiceProvider);
 
             return kernelConfig;
         }
@@ -41,7 +41,7 @@ namespace Guc.Validation
         /// <returns></returns>
         public static IKernelConfig UseValidation(this IKernelConfig kernelConfig)
         {
-            ValidationExtensions.SetGucValidation(kernelConfig.ServiceProvider);
+            ValidationExtensions.SetShashlikValidation(kernelConfig.ServiceProvider);
 
             return kernelConfig;
         }

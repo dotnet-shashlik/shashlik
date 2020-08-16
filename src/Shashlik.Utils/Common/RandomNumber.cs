@@ -1,11 +1,11 @@
-using Guc.Utils.Common.SnowFlake;
+using Shashlik.Utils.Common.SnowFlake;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     /// <summary>
     /// 随机函数

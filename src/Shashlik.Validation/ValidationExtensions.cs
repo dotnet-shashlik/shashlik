@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     public static class ValidationExtensions
     {
@@ -21,7 +21,7 @@ namespace Guc.Validation
         /// </summary>
         /// <param name="app"></param>
         /// <param name="validationContextServiceProvider"></param>
-        public static void SetGucValidation(Func<IServiceProvider> validationContextServiceProvider)
+        public static void SetShashlikValidation(Func<IServiceProvider> validationContextServiceProvider)
         {
             if (ValidationExtensions.validationContextServiceProvider != null)
                 throw new Exception("Validation can't repeat initialization.");
@@ -33,7 +33,7 @@ namespace Guc.Validation
         /// </summary>
         /// <param name="app"></param>
         /// <param name="validationServiceContext"></param>
-        public static void SetGucValidation(IServiceProvider serviceProvider)
+        public static void SetShashlikValidation(IServiceProvider serviceProvider)
         {
             if (validationContextServiceProvider != null)
                 throw new Exception("Validation can't repeat initialization.");

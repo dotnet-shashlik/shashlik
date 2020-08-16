@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Threading.Tasks;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 手机短信

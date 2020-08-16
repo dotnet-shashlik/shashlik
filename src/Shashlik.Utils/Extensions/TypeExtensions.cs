@@ -1,17 +1,22 @@
-﻿using Guc.Utils.Common;
+﻿using Shashlik.Utils.Common;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 using System.Xml.Serialization;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class TypeExtensions
     {
@@ -146,27 +151,43 @@ namespace Guc.Utils.Extensions
         }
 
         /// <summary>
-        /// 将对象属性转换为字典存储,复杂类型会递归转换
+        /// 将对象属性转换为字典,复杂类型会递归转换,支持JsonElement/IDictionary/JsonObject等
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
         public static IDictionary<string, object> MapToDictionary<TModel>(this TModel obj)
-            where TModel : class
         {
+            if (obj == null)
+                return null;
             var dic = new Dictionary<string, object>();
-
-            if (obj.GetType().IsChildTypeOf<IDictionary>() || obj.GetType().IsChildTypeOfGenericType(typeof(IDictionary<,>)))
+            var objType = obj.GetType();
+            if (obj is JToken jToken)
+            {
+                if (jToken.Type != JTokenType.Object)
+                    return null;
+                return JToken2Object(jToken) as IDictionary<string, object>;
+            }
+            else if (objType.IsChildTypeOf<IDictionary>() || objType.IsChildTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 return (obj as IEnumerable)
                     .OfType<dynamic>()
-                    .ToDictionary<dynamic, string, object>(r => r.Key.ToString(), r => r.Value);
+                    .ToDictionary<dynamic, string, object>(
+                    r => r.Key.ToString(),
+                    r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
+
+            }
+            else if (obj is JsonElement json)
+            {
+                if (json.ValueKind != JsonValueKind.Object)
+                    return null;
+
+                return JsonElement2Object(json) as IDictionary<string, object>;
             }
             else
             {
-                var type = obj.GetType();
-                List<PropertyInfo> props = type
+                var props = objType
                     .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
-                    .ToList();
+                    .Where(r => !r.GetIndexParameters().Any());
 
                 props.Foreach(r =>
                 {
@@ -189,6 +210,284 @@ namespace Guc.Utils.Extensions
                 });
 
                 return dic;
+            }
+        }
+
+        static object JToken2Object(JToken token)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.Object:
+                    {
+                        var dic = new Dictionary<string, object>();
+                        foreach (var item in token.Value<JObject>())
+                        {
+                            dic[item.Key] = JToken2Object(item.Value);
+                        }
+                        return dic;
+                    }
+
+                case JTokenType.Array:
+                    {
+                        List<object> children = new List<object>();
+                        foreach (var item in token.Value<JArray>())
+                            children.Add(JToken2Object(item));
+                        return children;
+                    }
+
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.String:
+                case JTokenType.Boolean:
+                case JTokenType.Bytes:
+                case JTokenType.Raw:
+                case JTokenType.Null:
+                    return token.ToObject<object>();
+                default:
+                    throw new FormatException("json format error!");
+            }
+        }
+
+        static object JTokenValue(JToken token)
+        {
+            switch (token.Type)
+            {
+                case JTokenType.Object:
+                    return token.Value<JObject>();
+                case JTokenType.Array:
+                    return token.Value<JArray>();
+
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.String:
+                case JTokenType.Boolean:
+                case JTokenType.Bytes:
+                case JTokenType.Raw:
+                case JTokenType.Null:
+                case JTokenType.Date:
+                case JTokenType.Uri:
+                case JTokenType.TimeSpan:
+                case JTokenType.Guid:
+                case JTokenType.Undefined:
+                case JTokenType.None:
+                    return token.ToObject<object>();
+                default:
+                    throw new FormatException("json format error!");
+            }
+        }
+
+        static object JsonElement2Object(JsonElement obj)
+        {
+            switch (obj.ValueKind)
+            {
+                case JsonValueKind.Null:
+                case JsonValueKind.Undefined:
+                    return null;
+                case JsonValueKind.String:
+                    {
+                        if (obj.TryGetDateTime(out var datetime))
+                            return datetime;
+                        else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                            return datetimeOffset;
+                        return obj.GetString();
+                    }
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    return obj.GetBoolean();
+                case JsonValueKind.Number:
+                    {
+                        if (obj.TryGetInt64(out var value2))
+                        {
+                            return value2;
+                        }
+                        else if (obj.TryGetDecimal(out var value3))
+                        {
+                            return value3;
+                        }
+                        return null;
+                    }
+                case JsonValueKind.Object:
+                    {
+                        var dic = new Dictionary<string, object>();
+                        foreach (var item in obj.EnumerateObject())
+                        {
+                            dic[item.Name] = JsonElement2Object(item.Value);
+                        }
+                        return dic;
+                    }
+                case JsonValueKind.Array:
+                    {
+                        List<object> children = new List<object>();
+                        foreach (var item in obj.EnumerateArray())
+                            children.Add(JsonElement2Object(item));
+                        return children;
+                    }
+                default:
+                    throw new FormatException("json format error!");
+            }
+        }
+
+        static object JsonElementValue(JsonElement obj)
+        {
+            switch (obj.ValueKind)
+            {
+                case JsonValueKind.Null:
+                case JsonValueKind.Undefined:
+                    return null;
+                case JsonValueKind.String:
+                    {
+                        if (obj.TryGetDateTime(out var datetime))
+                            return datetime;
+                        else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                            return datetimeOffset;
+                        return obj.GetString();
+                    }
+                case JsonValueKind.True:
+                case JsonValueKind.False:
+                    return obj.GetBoolean();
+                case JsonValueKind.Number:
+                    {
+                        if (obj.TryGetInt64(out var value2))
+                        {
+                            return value2;
+                        }
+                        else if (obj.TryGetDecimal(out var value3))
+                        {
+                            return value3;
+                        }
+                        return null;
+                    }
+                case JsonValueKind.Object:
+                case JsonValueKind.Array:
+                    return obj;
+                default:
+                    throw new FormatException("json format error!");
+            }
+        }
+
+        static (bool exists, object value) getObjectValue(object obj, string proName)
+        {
+            var objType = obj.GetType();
+            if (obj is JToken jToken)
+            {
+                JToken json = null;
+                if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
+                {
+                    var jsonArr = jToken.Value<JArray>();
+                    if (jsonArr.Count() > index)
+                        return (false, null);
+                    json = jsonArr.ElementAt(index);
+                }
+                else if (jToken.Type == JTokenType.Object)
+                {
+                    try
+                    {
+                        json = jToken[proName];
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return (false, null);
+                    }
+                }
+                else
+                    return (false, null);
+
+                if (json != null)
+                    return (true, JTokenValue(json));
+                return (false, null);
+            }
+            else if (objType.IsChildTypeOfGenericType(typeof(IDictionary<,>)))
+            {
+                var list = (obj as IEnumerable).OfType<dynamic>();
+                try
+                {
+                    var el = list.First(r => r.Key?.ToString() == proName);
+                    return (true, el.Value);
+                }
+                catch (InvalidOperationException)
+                {
+                    return (false, null);
+                }
+            }
+            else if (obj is IDictionary dic)
+            {
+                if (dic.Contains(proName))
+                    return (true, dic[proName]);
+                return (false, null);
+            }
+            else if (obj is JsonElement jsonObj)
+            {
+                JsonElement? json = null;
+                if (jsonObj.ValueKind == JsonValueKind.Array && int.TryParse(proName, out var index))
+                {
+                    var jsonArr = jsonObj.EnumerateArray();
+                    if (jsonArr.Count() > index)
+                        return (false, null);
+                    json = jsonObj.EnumerateArray().ElementAt(index);
+                }
+                else if (jsonObj.ValueKind == JsonValueKind.Object)
+                {
+                    try
+                    {
+                        json = jsonObj.GetProperty(proName);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        return (false, null);
+                    }
+                }
+                else
+                    return (false, null);
+
+                if (json.HasValue)
+                    return (true, JsonElementValue(json.Value));
+                return (false, null);
+            }
+            else if (objType is IEnumerable list && int.TryParse(proName, out var index))
+            {
+                var i = 0;
+                foreach (var item in list)
+                {
+                    if (i == index)
+                        return (true, item);
+                    i++;
+                }
+                return (true, null);
+            }
+            else
+            {
+                var pro = objType.GetProperty(proName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+                if (pro == null) return (false, null);
+                return (true, pro.GetValue(obj));
+            }
+        }
+
+        /// <summary>
+        /// 获取属性值，支持JsonElement/IDictionary/JsonObject
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
+        {
+            if (string.IsNullOrWhiteSpace(prop))
+                throw new ArgumentException($"“{nameof(prop)}”不能为 Null 或空白", nameof(prop));
+
+            var propArr = prop.Split('.');
+
+            if (propArr.Length == 1)
+            {
+                var value = getObjectValue(obj, prop);
+                return value;
+            }
+            else
+            {
+                var childPro = prop.TrimStart(propArr[0].ToCharArray()).TrimStart('.');
+                var value = getObjectValue(obj, propArr[0]);
+                if (!value.exists)
+                    return (false, null);
+                return GetPropertyValue(value.value, childPro);
             }
         }
 

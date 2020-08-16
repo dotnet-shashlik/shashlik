@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// 无需处理 异常/结果等等
     /// </summary>    
-    public class NoGucAspNetCoreAttribute : ActionFilterAttribute
+    public class NoShashlikAspNetCoreAttribute : ActionFilterAttribute
     {
     }
 }

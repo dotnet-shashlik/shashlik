@@ -4,12 +4,12 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Threading.Tasks;
-using Guc.Utils.PatchUpdate;
+using Shashlik.Utils.PatchUpdate;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 
-namespace Guc.AspNetCore.PatchUpdate
+namespace Shashlik.AspNetCore.PatchUpdate
 {
     public class PatchUpdateBinderProvider : IModelBinderProvider
     {

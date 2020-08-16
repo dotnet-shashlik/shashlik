@@ -1,10 +1,10 @@
-﻿using Guc.Kernel;
-using Guc.Utils.Extensions;
+﻿using Shashlik.Kernel;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     /// <summary>
     /// 地理编码
@@ -28,7 +28,7 @@ namespace Guc.GeoCoder
                 {
                     var configurationOption = configuration?.Get<GeoCoderOptions>();
 
-                    using (var stream = typeof(IAreaService).Assembly.GetManifestResourceStream("Guc.GeoCoder.data.json"))
+                    using (var stream = typeof(IAreaService).Assembly.GetManifestResourceStream("Shashlik.GeoCoder.data.json"))
                     {
                         var str = stream.ReadToString();
                         var options = JsonConvert.DeserializeObject<GeoCoderOptions>(str);

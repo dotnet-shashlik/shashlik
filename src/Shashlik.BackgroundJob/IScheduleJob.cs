@@ -1,10 +1,10 @@
-﻿using Guc.Kernel.Dependency;
+﻿using Shashlik.Kernel.Dependency;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Guc.BackgroundJob
+namespace Shashlik.BackgroundJob
 {
     /// <summary>
     /// 延迟任务

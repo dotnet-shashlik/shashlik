@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Common;
+﻿using Shashlik.Utils.Common;
 using Senparc.Weixin;
 using Senparc.Weixin.MP.Containers;
 using System;
@@ -8,11 +8,11 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
-    class DefaultWxMedia : IWxMedia, Guc.Kernel.Dependency.ITransient
+    class DefaultWxMedia : IWxMedia, Shashlik.Kernel.Dependency.ITransient
     {
         public DefaultWxMedia(IWxSettings wxSettings)
         {

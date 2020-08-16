@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     public class AliyunDmOptions
     {
@@ -23,6 +23,6 @@ namespace Guc.Mail
         /// <summary>
         /// 发信人昵称
         /// </summary>
-        public string FromAlias { get;set; }
+        public string FromAlias { get; set; }
     }
 }

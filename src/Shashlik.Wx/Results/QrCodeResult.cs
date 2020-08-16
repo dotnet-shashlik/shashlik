@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     /// <summary>
     /// 二维码支付微信预付单结果

@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.EfCore\Guc.EfCore.csproj" />
-    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
-    <ProjectReference Include="..\Guc.NLogger\Guc.NLogger.csproj" />
+    <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.NLogger\Shashlik.NLogger.csproj" />
   </ItemGroup>
 </Project>

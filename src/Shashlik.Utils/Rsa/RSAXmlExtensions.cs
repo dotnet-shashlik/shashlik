@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Xml.Linq;
 
-namespace Guc.Utils.Rsa
+namespace Shashlik.Utils.Rsa
 {
     public static class RSAXmlExtensions
     {

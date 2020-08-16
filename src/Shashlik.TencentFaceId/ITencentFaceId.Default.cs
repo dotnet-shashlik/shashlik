@@ -1,5 +1,5 @@
-﻿using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using TencentCloud.Common;
 using TencentCloud.Common.Profile;

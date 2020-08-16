@@ -1,4 +1,4 @@
-﻿using Guc.Kernel;
+﻿using Shashlik.Kernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;

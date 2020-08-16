@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.DependencyModel;
 using NPOI.SS.Formula.Functions;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     public class AssemblyHelper
     {
@@ -31,19 +31,19 @@ namespace Guc.Utils.Common
                 loadAllDependency(allLib, item.Name, new HashSet<string>(), item, allDependencies);
             }
 
-            return allDependencies.Where(r => r.Value.Contains(name)).Select(r =>
-                   {
-                       try
-                       {
-                           return Assembly.Load(r.Key);
-                       }
-                       catch
-                       {
-                           return null;
-                       }
-                   })
-                .Where(r => r != null)
-                .ToList();
+            var list = allDependencies.Where(r => r.Value.Contains(name)).Select(r =>
+                    {
+                        try
+                        {
+                            return Assembly.Load(r.Key);
+                        }
+                        catch
+                        {
+                            return null;
+                        }
+                    })
+                .Where(r => r != null);
+            return list.ToList();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Guc.Utils.Common
         }
 
         /// <summary>
-        /// 获取引用<paramref name="type"/>的程序集
+        /// 获取引用了<typeparamref name="TType"/>的程序集
         /// </summary>
         /// <param name="dependencyContext">依赖上下文,null则使用默认</param>
         /// <returns></returns>
@@ -91,69 +91,194 @@ namespace Guc.Utils.Common
                 types.AddRange(GetFinalSubTypes(baseType, item));
             }
 
+            types.AddRange(GetFinalSubTypes(baseType, baseType.Assembly));
             return types;
         }
 
         /// <summary>
-        /// 获取定义了<typeparamref name="TAttribute"/>的类型
+        /// 获取所有的子类,不包括接口和抽象类
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="baseType"></param>
         /// <param name="assembly"></param>
-        /// <param name="inherit"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetTypesByAttribute<TAttribute>(Assembly assembly, bool inherit = true)
-            where TAttribute : Attribute
+        public static List<TypeInfo> GetFinalSubTypes<TBaseType>(Assembly assembly)
         {
-            return assembly.DefinedTypes
-                .Where(r => r.IsDefinedAttribute<TAttribute>(inherit))
-                .ToList();
+            return GetFinalSubTypes(typeof(TBaseType), assembly);
         }
 
         /// <summary>
-        /// 获取定义了<typeparamref name="TAttribute"/>的类型
+        /// 获取所有的子类,不包括接口和抽象类
+        /// </summary>
+        /// <typeparam name="TBaseType"></typeparam>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetFinalSubTypes<TBaseType>(DependencyContext dependencyContext = null)
+        {
+            return GetFinalSubTypes(typeof(TBaseType), dependencyContext);
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, Assembly assembly)
+        {
+            Dictionary<TypeInfo, Attribute> dic = new Dictionary<TypeInfo, Attribute>();
+
+            foreach (var item in assembly.DefinedTypes)
+            {
+                var attr = item.GetCustomAttribute(baseType);
+                if (attr == null)
+                    continue;
+
+                dic.Add(item, attr);
+            }
+            return dic;
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
         /// </summary>
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetTypesByAttribute<TAttribute>(DependencyContext dependencyContext = null, bool inherit = true)
+        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, DependencyContext dependencyContext = null)
+        {
+            Dictionary<TypeInfo, Attribute> dic = new Dictionary<TypeInfo, Attribute>();
+            foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
+            {
+                dic.Merge(GetTypesAndAttribute(baseType, item));
+            }
+
+            dic.Merge(GetTypesAndAttribute(baseType, baseType.Assembly));
+
+            return dic;
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(Assembly assembly)
             where TAttribute : Attribute
         {
-            List<TypeInfo> types = new List<TypeInfo>();
+            Dictionary<TypeInfo, TAttribute> dic = new Dictionary<TypeInfo, TAttribute>();
+
+            foreach (var item in assembly.DefinedTypes)
+            {
+                var attr = item.GetCustomAttribute<TAttribute>();
+                if (attr == null)
+                    continue;
+
+                dic.Add(item, attr);
+            }
+            return dic;
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(DependencyContext dependencyContext = null)
+            where TAttribute : Attribute
+        {
+            Dictionary<TypeInfo, TAttribute> dic = new Dictionary<TypeInfo, TAttribute>();
             foreach (var item in GetReferredAssemblies<TAttribute>(dependencyContext))
             {
-                types.AddRange(GetTypesByAttribute<TAttribute>(item, inherit));
+                dic.Merge(GetTypesAndAttribute<TAttribute>(item));
             }
-            return types;
+
+            dic.Merge(GetTypesAndAttribute<TAttribute>(typeof(TAttribute).Assembly));
+
+            return dic;
         }
 
         /// <summary>
-        /// 获取定义了<paramref name="attributeType"/>的类型
+        /// 根据特性获取类和特性值,不支持多特性Multiple
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="baseType"></param>
         /// <param name="assembly"></param>
-        /// <param name="inherit"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetTypesByAttribute(Assembly assembly, Type attributeType, bool inherit = true)
+        public static IDictionary<TypeInfo, IEnumerable<Attribute>> GetTypesByAttributes(Type baseType, Assembly assembly)
         {
-            return assembly.DefinedTypes
-                .Where(r => r.IsDefinedAttribute(attributeType, inherit))
-                .ToList();
+            Dictionary<TypeInfo, IEnumerable<Attribute>> dic = new Dictionary<TypeInfo, IEnumerable<Attribute>>();
+
+            foreach (var item in assembly.DefinedTypes)
+            {
+                var attrs = item.GetCustomAttributes(baseType);
+                if (attrs == null)
+                    continue;
+
+                dic.Add(item, attrs);
+            }
+            return dic;
         }
 
         /// <summary>
-        /// 获取定义了<paramref name="attributeType"/>的类型
+        /// 根据特性获取类和特性值,不支持多特性Multiple
         /// </summary>
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetTypesByAttribute(Type attributeType, DependencyContext dependencyContext = null, bool inherit = true)
+        public static IDictionary<TypeInfo, IEnumerable<Attribute>> GetTypesByAttributes(Type baseType, DependencyContext dependencyContext = null)
         {
-            List<TypeInfo> types = new List<TypeInfo>();
-            foreach (var item in GetReferredAssemblies(attributeType, dependencyContext))
+            Dictionary<TypeInfo, IEnumerable<Attribute>> dic = new Dictionary<TypeInfo, IEnumerable<Attribute>>();
+            foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
             {
-                types.AddRange(GetTypesByAttribute(item, attributeType, inherit));
+                dic.Merge(GetTypesByAttributes(baseType, item));
             }
-            return types;
+
+            dic.Merge(GetTypesByAttributes(baseType, baseType.Assembly));
+
+            return dic;
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
+        /// </summary>
+        /// <param name="baseType"></param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(Assembly assembly)
+            where TAttribute : Attribute
+        {
+            Dictionary<TypeInfo, IEnumerable<TAttribute>> dic = new Dictionary<TypeInfo, IEnumerable<TAttribute>>();
+
+            foreach (var item in assembly.DefinedTypes)
+            {
+                var attrs = item.GetCustomAttributes<TAttribute>();
+                if (attrs == null)
+                    continue;
+
+                dic.Add(item, attrs);
+            }
+            return dic;
+        }
+
+        /// <summary>
+        /// 根据特性获取类和特性值,不支持多特性Multiple
+        /// </summary>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(DependencyContext dependencyContext = null)
+            where TAttribute : Attribute
+        {
+            Dictionary<TypeInfo, IEnumerable<TAttribute>> dic = new Dictionary<TypeInfo, IEnumerable<TAttribute>>();
+            foreach (var item in GetReferredAssemblies<TAttribute>(dependencyContext))
+            {
+                dic.Merge(GetTypesByAttributes<TAttribute>(item));
+            }
+
+            dic.Merge(GetTypesByAttributes<TAttribute>(typeof(TAttribute).Assembly));
+
+            return dic;
         }
 
         /// <summary>
@@ -164,8 +289,7 @@ namespace Guc.Utils.Common
         /// <param name="handled">当前计算的程序集,已经处理过的依赖程序集名称</param>
         /// <param name="current">递归正在处理的程序集名称</param>
         /// <param name="allDependencies">所有的依赖数据</param>
-        static void loadAllDependency(IEnumerable<RuntimeLibrary> allLibs, string key, HashSet<string> handled,
-            RuntimeLibrary current, Dictionary<string, HashSet<string>> allDependencies)
+        static void loadAllDependency(IEnumerable<RuntimeLibrary> allLibs, string key, HashSet<string> handled, RuntimeLibrary current, Dictionary<string, HashSet<string>> allDependencies)
         {
             if (current.Dependencies.IsNullOrEmpty())
                 return;

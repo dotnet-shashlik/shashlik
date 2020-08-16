@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using Shouldly;
-using Guc.Utils.Extensions;
-using Guc.Utils.Common;
+using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Common;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
-namespace Guc.Utils.Test
+namespace Shashlik.Utils.Test
 {
     public class StringExtensionsTests
     {

@@ -1,8 +1,8 @@
-﻿using Guc.NLogger.Loggers;
-using Guc.NLogger.Postgres.EntityConfigs;
+﻿using Shashlik.NLogger.Loggers;
+using Shashlik.NLogger.Postgres.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 
-namespace Guc.NLogger
+namespace Shashlik.NLogger
 {
 
     public class LogDbContext : DbContext

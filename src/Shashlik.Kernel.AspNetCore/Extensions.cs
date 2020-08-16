@@ -1,10 +1,10 @@
-﻿using Guc.Kernel.Dependency;
+﻿using Shashlik.Kernel.Dependency;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Guc.Kernel
+namespace Shashlik.Kernel
 {
     /// <summary>
     /// 内核扩展类
@@ -12,15 +12,15 @@ namespace Guc.Kernel
     public static class Extensions
     {
         /// <summary>
-        /// guc kernel 配置
+        /// Shashlik kernel 配置
         /// </summary>
         /// <param name="app"></param>
         /// <param name="enableRewind">启用request body重复读</param>
         /// <returns></returns>
-        public static IKernelAspNetCoreConfig UseGucKernelWithAspNetCore(this IApplicationBuilder app, bool enableRewind = true)
+        public static IKernelAspNetCoreConfig UseShashlikKernelWithAspNetCore(this IApplicationBuilder app, bool enableRewind = true)
         {
             app.UseEnableRequestRewind();
-            app.ApplicationServices.UseGucKernel();
+            app.ApplicationServices.UseShashlik();
             return new KernelAspNetCoreConfig(app);
         }
 

@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 
-namespace Guc.Utils.Rsa
+namespace Shashlik.Utils.Rsa
 {
     public static class RSAImportExtensions
     {

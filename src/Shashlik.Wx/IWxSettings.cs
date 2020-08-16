@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Common;
+﻿using Shashlik.Utils.Common;
 using Senparc.Weixin;
 using Senparc.Weixin.Entities;
 using Senparc.Weixin.Helpers;
@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     /// <summary>
     /// 微信数据获取接口
@@ -30,7 +30,7 @@ namespace Guc.Wx
         string Token { get; }
     }
 
-    class DefaultWxSettings : IWxSettings, Guc.Kernel.Dependency.ISingleton
+    class DefaultWxSettings : IWxSettings, Shashlik.Kernel.Dependency.ISingleton
     {
         public SenparcWeixinSetting Setting => Config.SenparcWeixinSetting;
 

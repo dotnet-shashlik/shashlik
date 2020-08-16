@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Utils
+namespace Shashlik.Utils
 {
     /// <summary>
     /// 常量

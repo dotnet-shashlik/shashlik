@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Security.Policy;
 
-namespace Guc.NLogger
+namespace Shashlik.NLogger
 {
     public class LoggingOptions
     {

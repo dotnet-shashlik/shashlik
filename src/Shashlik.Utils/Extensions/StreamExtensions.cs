@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     public static class StreamExtensions
     {
@@ -37,11 +37,11 @@ namespace Guc.Utils.Extensions
 
         public static string ReadToString(this Stream stream)
         {
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
             using (var ms = new MemoryStream())
             {
-                if (stream.CanSeek && stream.Position != 0)
-                    stream.Seek(0, SeekOrigin.Begin);
-                stream.CopyTo(ms);
+                stream.CopyToAsync(ms).Wait();
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
                 var data = ms.ToArray();
@@ -51,11 +51,39 @@ namespace Guc.Utils.Extensions
 
         public static string ReadToString(this Stream stream, Encoding encoding)
         {
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
             using (var ms = new MemoryStream())
             {
-                if (stream.CanSeek && stream.Position != 0)
+                stream.CopyToAsync(ms).Wait();
+                if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
-                stream.CopyTo(ms);
+                var data = ms.ToArray();
+                return encoding.GetString(data, 0, data.Length);
+            }
+        }
+
+        public static async Task<string> ReadToStringAsync(this Stream stream)
+        {
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+            using (var ms = new MemoryStream())
+            {
+                await stream.CopyToAsync(ms);
+                if (stream.CanSeek)
+                    stream.Seek(0, SeekOrigin.Begin);
+                var data = ms.ToArray();
+                return Encoding.UTF8.GetString(data, 0, data.Length);
+            }
+        }
+
+        public static async Task<string> ReadToStringAsync(this Stream stream, Encoding encoding)
+        {
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+            using (var ms = new MemoryStream())
+            {
+                await stream.CopyToAsync(ms);
                 if (stream.CanSeek)
                     stream.Seek(0, SeekOrigin.Begin);
                 var data = ms.ToArray();
@@ -65,11 +93,20 @@ namespace Guc.Utils.Extensions
 
         public static byte[] ReadAll(this Stream stream)
         {
-            using (var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);
-                return ms.ToArray();
-            }
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+            byte[] data = new byte[stream.Length];
+            stream.Read(data, 0, data.Length);
+            return data;
+        }
+
+        public static async Task<byte[]> ReadAllAsync(this Stream stream)
+        {
+            if (stream.CanSeek && stream.Position != 0)
+                stream.Seek(0, SeekOrigin.Begin);
+            byte[] data = new byte[stream.Length];
+            await stream.ReadAsync(data, 0, data.Length);
+            return data;
         }
     }
 }

@@ -24,7 +24,7 @@ using Senparc.CO2NET.Cache;
 using Senparc.CO2NET.RegisterServices;
 using System;
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     /// <summary>
     /// Redis 注册

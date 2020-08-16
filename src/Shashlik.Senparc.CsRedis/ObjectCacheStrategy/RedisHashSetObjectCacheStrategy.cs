@@ -51,7 +51,7 @@ using Senparc.CO2NET.Cache;
 using System.Threading.Tasks;
 using CSRedis;
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     /// <summary>
     /// Redis的Object类型容器缓存（Key为String类型）

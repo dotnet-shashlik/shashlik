@@ -1,4 +1,4 @@
-﻿namespace Guc.Utils.Rsa
+﻿namespace Shashlik.Utils.Rsa
 {
     public enum RSAKeyType
     {

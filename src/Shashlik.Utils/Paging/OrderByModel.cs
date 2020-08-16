@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guc.Utils.Page
+namespace Shashlik.Utils.Paging
 {
     /// <summary>
     /// 排序模型

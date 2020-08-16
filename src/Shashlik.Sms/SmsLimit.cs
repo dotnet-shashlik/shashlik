@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     public class SmsLimit
     {

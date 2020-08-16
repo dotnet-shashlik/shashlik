@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.PushNotification
+namespace Shashlik.PushNotification
 {
     /// <summary>
     /// 极光推送配置信息

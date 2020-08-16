@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Guc.BackgroundJob
+namespace Shashlik.BackgroundJob
 {
-    public class DefaultScheduleJob : IScheduleJob, Guc.Kernel.Dependency.ISingleton
+    public class DefaultScheduleJob : IScheduleJob, Shashlik.Kernel.Dependency.ISingleton
     {
         public void Execute(Expression<Action> action, TimeSpan delay)
         {

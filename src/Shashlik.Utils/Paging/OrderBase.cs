@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Utils.Page
+namespace Shashlik.Utils.Paging
 {
     /// <summary>
     /// 排序基类,定义某个实体允许的排序方式,第一条为默认排序

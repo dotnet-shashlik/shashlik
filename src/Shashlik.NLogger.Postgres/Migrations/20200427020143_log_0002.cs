@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Guc.NLogger.Postgres.Migrations.LogDbMigrations
+namespace Shashlik.NLogger.Postgres.Migrations.LogDbMigrations
 {
     public partial class log_0002 : Migration
     {

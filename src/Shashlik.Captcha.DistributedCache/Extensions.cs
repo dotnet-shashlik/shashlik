@@ -1,5 +1,5 @@
-﻿using Guc.Features.VerifyCode;
-using Guc.Kernel.Dependency;
+﻿using Shashlik.Features.VerifyCode;
+using Shashlik.Kernel.Dependency;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,13 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Threading.Tasks;
-using Guc.Utils.Common;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Common;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Features
+namespace Shashlik.Features
 {
     public static class Extensions
     {

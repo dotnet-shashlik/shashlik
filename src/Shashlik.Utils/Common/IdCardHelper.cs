@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     /// <summary>
     /// 国内身份证相关

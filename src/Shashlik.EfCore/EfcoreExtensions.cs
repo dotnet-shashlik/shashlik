@@ -5,15 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Linq.Expressions;
-using Guc.Kernel;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 using Microsoft.Extensions.DependencyModel;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Guc.EfCore
+namespace Shashlik.EfCore
 {
     public static class EfcoreExtensions
     {
@@ -37,7 +37,7 @@ namespace Guc.EfCore
         /// <returns></returns>
         public static IKernelBuilder AddEfEntityMappings(this IKernelBuilder kernelBuilder, IEnumerable<Assembly> assemblies)
         {
-            assemblies.Foreach(ass =>
+            assemblies.ForEachItems(ass =>
             {
                 kernelBuilder.Services.AddServiceByBasedOn(typeof(IEntityTypeConfiguration<>).GetTypeInfo(), ass, Microsoft.Extensions.DependencyInjection.ServiceLifetime.Transient);
             });

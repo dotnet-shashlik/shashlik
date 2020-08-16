@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Guc.Sms
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信发送,参数错误

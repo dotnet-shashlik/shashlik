@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Collections;
-using Guc.Utils.Common;
-using static Guc.Utils.Consts;
+using Shashlik.Utils.Common;
+using static Shashlik.Utils.Consts;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 是否为图片地址验证,需要注册IHttpContextAccessor

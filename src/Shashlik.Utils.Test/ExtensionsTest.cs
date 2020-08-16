@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using Shouldly;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Utils.Test
+namespace Shashlik.Utils.Test
 {
     public class ExtensionsTest
     {

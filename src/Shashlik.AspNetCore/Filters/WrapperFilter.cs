@@ -10,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 using Microsoft.AspNetCore.Hosting;
-using Guc.Utils;
-using Guc.Kernel;
+using Shashlik.Utils;
+using Shashlik.Kernel;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// 结果处理
@@ -22,7 +22,7 @@ namespace Guc.AspNetCore
     {
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            if (context.Filters.Any(r => r is NoGucAspNetCoreAttribute))
+            if (context.Filters.Any(r => r is NoShashlikAspNetCoreAttribute))
                 // 无需处理
                 return;
 
@@ -51,7 +51,7 @@ namespace Guc.AspNetCore
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (context.Filters.Any(r => r is NoGucAspNetCoreAttribute))
+            if (context.Filters.Any(r => r is NoShashlikAspNetCoreAttribute))
                 // 无需处理
                 return;
 
@@ -59,7 +59,7 @@ namespace Guc.AspNetCore
             {
                 // 模型验证不通过的 统一返回参数错误
                 context.HttpContext.Response.StatusCode = 200;
-                context.Result = new ObjectResult(new ResponseResult("参数错误", Guc.Kernel.Exception.ExceptionCodes.Instance.ArgError));
+                context.Result = new ObjectResult(new ResponseResult("参数错误", Shashlik.Kernel.Exception.ExceptionCodes.Instance.ArgError));
             }
         }
     }

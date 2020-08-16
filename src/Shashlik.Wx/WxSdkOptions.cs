@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     public class WxSdkOptions
     {

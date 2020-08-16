@@ -1,5 +1,5 @@
-﻿using Guc.Utils.Extensions;
-using Guc.Utils.Common;
+﻿using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Common;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Guc.Bank
+namespace Shashlik.Bank
 {
-    class DefaultBankService : IBankService, Guc.Kernel.Dependency.ISingleton
+    class DefaultBankService : IBankService, Shashlik.Kernel.Dependency.ISingleton
     {
         public DefaultBankService(IOptions<BankOptions> options)
         {

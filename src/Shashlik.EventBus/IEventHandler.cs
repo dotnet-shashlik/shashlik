@@ -4,12 +4,12 @@ using System.Text;
 using System.Threading.Tasks;
 using DotNetCore.CAP;
 
-namespace Guc.EventBus
+namespace Shashlik.EventBus
 {
     /// <summary>
     /// 事件订阅处理
     /// </summary>
-    public interface IEventHandler<TEvent> : ICapSubscribe, Guc.Kernel.Dependency.ITransient
+    public interface IEventHandler<TEvent> : ICapSubscribe, Shashlik.Kernel.Dependency.ITransient
         where TEvent : class, IEvent
     {
         /// <summary>

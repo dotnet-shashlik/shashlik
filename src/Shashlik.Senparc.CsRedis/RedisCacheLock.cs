@@ -39,7 +39,7 @@ using System;
 using System.Threading.Tasks;
 using Senparc.CO2NET.Cache;
 
-namespace Guc.Senparc.CsRedis
+namespace Shashlik.Senparc.CsRedis
 {
     //TODO: 优化此模块
 

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     /// <summary>
     /// 加解密

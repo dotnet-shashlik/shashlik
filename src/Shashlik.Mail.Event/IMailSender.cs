@@ -1,10 +1,10 @@
-﻿using Guc.EventBus;
+﻿using Shashlik.EventBus;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel.Dependency;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     /// <summary>
     /// 邮件发送
@@ -20,7 +20,7 @@ namespace Guc.Mail
         void Send(string address, string subject, string content);
     }
 
-    public class DefaultMailSender : IMailSender, Guc.Kernel.Dependency.ISingleton
+    public class DefaultMailSender : IMailSender, Shashlik.Kernel.Dependency.ISingleton
     {
         private IEventPublisher EventPublisher { get; }
         public DefaultMailSender(IEventPublisher eventPublisher)

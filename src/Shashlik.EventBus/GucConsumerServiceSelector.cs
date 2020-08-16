@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using DotNetCore.CAP;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
 
-namespace Guc.EventBus
+namespace Shashlik.EventBus
 {
-    class GucConsumerServiceSelector : IConsumerServiceSelector
+    class ShashlikConsumerServiceSelector : IConsumerServiceSelector
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
@@ -26,7 +26,7 @@ namespace Guc.EventBus
         /// <summary>
         /// Creates a new <see cref="DefaultConsumerServiceSelector" />.
         /// </summary>
-        public GucConsumerServiceSelector(IServiceProvider serviceProvider)
+        public ShashlikConsumerServiceSelector(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _capOptions = serviceProvider.GetService<IOptions<CapOptions>>().Value;
@@ -81,7 +81,7 @@ namespace Guc.EventBus
                         continue;
 
                     // 继承自IEventHandler<>
-                    if (!typeInfo.IsChildTypeOfGenericType(typeof(IEventHandler<>)))
+                    if (!typeInfo.IsSubTypeOfGenericType(typeof(IEventHandler<>)))
                         continue;
 
                     executorDescriptorList.AddRange(GetTopicAttributesDescription(typeInfo));

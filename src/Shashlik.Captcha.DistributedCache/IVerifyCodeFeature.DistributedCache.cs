@@ -1,12 +1,12 @@
-﻿using Guc.Utils.Extensions;
-using Guc.Utils.Common;
+﻿using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Common;
 using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Guc.Features.VerifyCode;
+using Shashlik.Features.VerifyCode;
 
-namespace Guc.Features
+namespace Shashlik.Features
 {
     /// <summary>
     /// 验证码

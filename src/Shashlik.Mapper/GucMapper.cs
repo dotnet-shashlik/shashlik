@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Mapper
+namespace Shashlik.Mapper
 {
-    public class GucMapper
+    public class ShashlikMapper
     {
         public static AutoMapper.IMapper Instance { get; internal set; }
     }

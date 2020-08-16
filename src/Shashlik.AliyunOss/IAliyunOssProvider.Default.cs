@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.IO;
-using Guc.Kernel.Dependency;
+using Shashlik.Kernel.Dependency;
 
-namespace Guc.AliyunOss
+namespace Shashlik.AliyunOss
 {
     public class AliyunOssDefaultProvider : IAliyunOssProvider, ISingleton
     {

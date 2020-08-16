@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Kernel.Dependency
+namespace Shashlik.Kernel.Dependency
 {
     /// <summary>
     /// 单例注入

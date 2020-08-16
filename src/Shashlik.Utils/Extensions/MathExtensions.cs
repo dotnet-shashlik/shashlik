@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Guc.Utils.Extensions
+namespace Shashlik.Utils.Extensions
 {
     /// <summary>
     /// 数学相关扩展类

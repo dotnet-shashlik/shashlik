@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http;
 using NLog;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.LayoutRenderers;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
-namespace Guc.NLogger.Renders
+namespace Shashlik.NLogger.Renders
 {
     [LayoutRenderer("aspnet-request-form-custom")]
     public class AspNetFormRender : NLog.Web.LayoutRenderers.AspNetLayoutRendererBase
@@ -22,7 +22,7 @@ namespace Guc.NLogger.Renders
         }
     }
 
-    public class AspNetForm : Guc.Kernel.Dependency.IScoped
+    public class AspNetForm : Shashlik.Kernel.Dependency.IScoped
     {
         public AspNetForm(IHttpContextAccessor httpContextAccessor)
         {

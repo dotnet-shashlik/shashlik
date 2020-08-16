@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Web;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 
 namespace TencentCos.Sdk
 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     /// <summary>
     /// 区域验证

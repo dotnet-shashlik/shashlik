@@ -1,4 +1,4 @@
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.Utils.Common
+namespace Shashlik.Utils.Common
 {
     public static class HttpHelper
     {

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Collections;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
-using static Guc.Utils.Consts;
+using static Shashlik.Utils.Consts;
 
-namespace Guc.Validation
+namespace Shashlik.Validation
 {
     /// <summary>
     /// 验证是否为合法的文件,需要注册IHttpContextAccessor

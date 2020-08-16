@@ -3,18 +3,18 @@ using System.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using RestSharp;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using Newtonsoft.Json.Linq;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
-    class DefaultAreaService : IAreaService, Guc.Kernel.Dependency.ISingleton
+    class DefaultAreaService : IAreaService, Shashlik.Kernel.Dependency.ISingleton
     {
         private static decimal _latitudeDistanceInKilometersDivisor = 111.045M;
 
@@ -219,7 +219,7 @@ namespace Guc.GeoCoder
 
         static IReadOnlyDictionary<string, AreaItems> LoadAreas()
         {
-            GeoCoderOptions geoCoderOptions = Guc.Kernel.KernelServiceProvider.ServiceProvider.GetService<IOptions<GeoCoderOptions>>().Value;
+            GeoCoderOptions geoCoderOptions = Shashlik.Kernel.KernelServiceProvider.ServiceProvider.GetService<IOptions<GeoCoderOptions>>().Value;
             var all = geoCoderOptions.Areas;
             Dictionary<string, AreaItems> result = new Dictionary<string, AreaItems>();
             var provinceList = all[RootCode];

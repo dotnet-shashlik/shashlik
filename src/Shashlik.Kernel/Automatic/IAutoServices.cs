@@ -1,8 +1,4 @@
-﻿using Guc.Kernel;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace Shashlik.Kernel.Automatic
 {

@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Guc.EventBus\Guc.EventBus.csproj" />
-    <ProjectReference Include="..\Guc.Kernel\Guc.Kernel.csproj" />
-    <ProjectReference Include="..\Guc.Sms\Guc.Sms.csproj" />
+    <ProjectReference Include="..\Shashlik.EventBus\Shashlik.EventBus.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
   </ItemGroup>
 
 </Project>

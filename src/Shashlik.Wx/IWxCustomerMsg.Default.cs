@@ -6,18 +6,18 @@ using Senparc.Weixin;
 using Senparc.Weixin.MP.Containers;
 using System.Threading.Tasks;
 using System.Linq;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using Senparc.Weixin.MP.AdvancedAPIs.CustomService;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     /// <summary>
     /// 微信模板消息
     /// </summary>
-    class DefaultWxCustomerMsg : IWxCustomerMsg, Guc.Kernel.Dependency.ITransient
+    class DefaultWxCustomerMsg : IWxCustomerMsg, Shashlik.Kernel.Dependency.ITransient
     {
         //CustomApi
         public DefaultWxCustomerMsg(

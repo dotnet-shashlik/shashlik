@@ -1,4 +1,4 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Senparc.CO2NET.HttpUtility;
@@ -6,9 +6,9 @@ using Senparc.CO2NET.RegisterServices;
 using Senparc.Weixin.RegisterServices;
 using System;
 using System.Net;
-using Guc.Kernel;
+using Shashlik.Kernel;
 
-namespace Guc.Wx
+namespace Shashlik.Wx
 {
     public static class Extensions
     {
@@ -18,7 +18,7 @@ namespace Guc.Wx
          * **/
 
         /// <summary>
-        /// 增加guc微信sdk服务,默认配置内存缓存策略
+        /// 增加Shashlik微信sdk服务,默认配置内存缓存策略
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="wxSdkConfiguration">盛派sdk/SdkOptions配置节点</param>
@@ -45,7 +45,7 @@ namespace Guc.Wx
             var sdkOptions = wxSdkConfiguration.GetSection("SdkOptions").Get<WxSdkOptions>();
             if (sdkOptions == null)
                 throw new Exception("SdkOptions can't be null.");
-            if (!sdkOptions.ThisHost.IsMatch(Guc.Utils.Consts.Regexs.Url))
+            if (!sdkOptions.ThisHost.IsMatch(Shashlik.Utils.Consts.Regexs.Url))
                 throw new Exception("SdkOptions.ThisHost must be url.");
 
             if (!sdkOptions.ProxyHost.IsNullOrWhiteSpace() && sdkOptions.ProxyPort.HasValue)

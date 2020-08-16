@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Guc.PushNotification
+namespace Shashlik.PushNotification
 {
     /// <summary>
     /// app消息推送接口

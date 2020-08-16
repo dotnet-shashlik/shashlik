@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     /// <summary>
     /// 地理位置区域

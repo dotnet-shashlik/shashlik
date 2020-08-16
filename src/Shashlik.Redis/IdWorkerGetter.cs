@@ -1,10 +1,10 @@
 ﻿using CSRedis;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Redis
+namespace Shashlik.Redis
 {
     class IdWorkerGetter
     {

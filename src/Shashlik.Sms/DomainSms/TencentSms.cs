@@ -1,11 +1,11 @@
-﻿using Guc.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
 using qcloudsms_csharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Guc.Sms.DomainSms
+namespace Shashlik.Sms.DomainSms
 {
     /// <summary>
     /// 手机短信

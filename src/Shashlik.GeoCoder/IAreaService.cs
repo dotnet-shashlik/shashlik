@@ -3,10 +3,10 @@ using System.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Threading.Tasks;
 
-namespace Guc.GeoCoder
+namespace Shashlik.GeoCoder
 {
     public interface IAreaService
     {

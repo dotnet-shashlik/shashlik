@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
-    public class SendMailEventForExecuteHandler : Guc.EventBus.IEventHandler<SendMailEvent>
+    public class SendMailEventForExecuteHandler : Shashlik.EventBus.IEventHandler<SendMailEvent>
     {
         private IMail Mail { get; }
         public SendMailEventForExecuteHandler(IMail mail)

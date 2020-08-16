@@ -3,15 +3,15 @@ using System.Reflection;
 using AutoMapper;
 using System;
 using AutoMapper.QueryableExtensions;
-using Guc.Kernel;
+using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System.Linq.Expressions;
-using Guc.Utils.Extensions;
+using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
-using Guc.Utils.Common;
+using Shashlik.Utils.Common;
 
-namespace Guc.Mapper
+namespace Shashlik.Mapper
 {
     public static class Extensions
     {
@@ -60,10 +60,10 @@ namespace Guc.Mapper
 
                 foreach (var assembly in assemblies)
                 {
-                    var iMapFrom1Types = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsChildTypeOfGenericType(typeof(IMapFrom<>))).ToList();
-                    var iMapFromTypes = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsChildTypeOfGenericType(typeof(IMapFrom<,>))).ToList();
-                    var iMapTo1Types = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsChildTypeOfGenericType(typeof(IMapTo<>))).ToList();
-                    var iMapToTypes = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsChildTypeOfGenericType(typeof(IMapTo<,>))).ToList();
+                    var iMapFrom1Types = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapFrom<>))).ToList();
+                    var iMapFromTypes = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapFrom<,>))).ToList();
+                    var iMapTo1Types = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<>))).ToList();
+                    var iMapToTypes = assembly.DefinedTypes.Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<,>))).ToList();
 
                     // IMapFrom<TFrom>
                     foreach (var item in iMapFrom1Types)
@@ -189,7 +189,7 @@ namespace Guc.Mapper
 
             configuration.AssertConfigurationIsValid();
             var mapper = new AutoMapper.Mapper(configuration);
-            GucMapper.Instance = mapper;
+            ShashlikMapper.Instance = mapper;
 
             kernelBuilder.Services.AddSingleton<IMapper>(mapper);
             return kernelBuilder;
@@ -260,7 +260,7 @@ namespace Guc.Mapper
                         .Where(m => m.Name == "MapFrom")
                         .Where(m => m.IsGenericMethodDefinition)
                         .Where(m => m.GetGenericArguments().Length == 1)
-                        .Where(m => m.GetParameters().Length == 1 && m.GetParameters().First().ParameterType.IsChildTypeOfGenericType(typeof(Expression<>)))
+                        .Where(m => m.GetParameters().Length == 1 && m.GetParameters().First().ParameterType.IsSubTypeOfGenericType(typeof(Expression<>)))
                         .SingleOrDefault();
 
                     if (mapFromMethod == null)
@@ -299,7 +299,7 @@ namespace Guc.Mapper
         /// <returns></returns>
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
-            return source.ProjectTo<TDest>(GucMapper.Instance.ConfigurationProvider);
+            return source.ProjectTo<TDest>(ShashlikMapper.Instance.ConfigurationProvider);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace Guc.Mapper
         /// <returns></returns>
         public static TDest MapTo<TDest>(this object obj)
         {
-            return GucMapper.Instance.Map<TDest>(obj);
+            return ShashlikMapper.Instance.Map<TDest>(obj);
         }
 
         /// <summary>
@@ -321,7 +321,7 @@ namespace Guc.Mapper
         /// <returns></returns>
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
-            GucMapper.Instance.Map(obj, destObj);
+            ShashlikMapper.Instance.Map(obj, destObj);
         }
     }
 }

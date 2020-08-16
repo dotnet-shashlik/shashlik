@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Mail
+namespace Shashlik.Mail
 {
     public interface IMail
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Guc.Features.VerifyCode
+namespace Shashlik.Features.VerifyCode
 {
     /// <summary>
     /// 验证码

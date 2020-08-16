@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Guc.Kernel;
+using Shashlik.Kernel;
 
-namespace Guc.AliyunOss
+namespace Shashlik.AliyunOss
 {
     public static class Extensions
     {

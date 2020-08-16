@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Guc.Utils.Extensions;
-using static Guc.Utils.Consts;
+using Shashlik.Utils.Extensions;
+using static Shashlik.Utils.Consts;
 using Microsoft.Extensions.Logging;
-using Guc.Utils;
-using Guc.Kernel.Exception;
-using Guc.EventBus;
+using Shashlik.Utils;
+using Shashlik.Kernel.Exception;
+using Shashlik.EventBus;
 
-namespace Guc.Sms.Event
+namespace Shashlik.Sms.Event
 {
     /// <summary>
     /// 短信发送器
@@ -31,7 +31,7 @@ namespace Guc.Sms.Event
         void Send(string phone, string subject, params string[] args);
     }
 
-    public class DefaultSmsSender : ISmsSender, Guc.Kernel.Dependency.ITransient
+    public class DefaultSmsSender : ISmsSender, Shashlik.Kernel.Dependency.ITransient
     {
         public DefaultSmsSender(IEventPublisher eventPublisher, ILogger<DefaultSmsSender> logger, ISms sms)
         {
@@ -58,7 +58,7 @@ namespace Guc.Sms.Event
                 return;
             }
             if (phones.Count() == 1 && !Sms.LimitCheck(phones.First(), subject))
-                throw GucException.LogicalError("操作过于频繁");
+                throw ShashlikException.LogicalError("操作过于频繁");
 
             EventPublisher.Publish(new SendSmsEvent
             {
@@ -77,7 +77,7 @@ namespace Guc.Sms.Event
             }
 
             if (!Sms.LimitCheck(phone, subject))
-                throw GucException.LogicalError("操作过于频繁");
+                throw ShashlikException.LogicalError("操作过于频繁");
 
             EventPublisher.Publish(new SendSmsEvent
             {

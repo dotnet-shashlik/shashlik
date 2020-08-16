@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Guc.AliyunOss
+namespace Shashlik.AliyunOss
 {
     public interface IAliyunOssProvider
     {

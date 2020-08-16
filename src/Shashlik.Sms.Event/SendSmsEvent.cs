@@ -1,7 +1,7 @@
-﻿using Guc.EventBus;
+﻿using Shashlik.EventBus;
 using System.Collections.Generic;
 
-namespace Guc.Sms.Event
+namespace Shashlik.Sms.Event
 {
     public class SendSmsEvent : IEvent
     {

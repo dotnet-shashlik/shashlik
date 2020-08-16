@@ -1,11 +1,11 @@
-﻿using Guc.Kernel;
-using Guc.Utils;
+﻿using Shashlik.Kernel;
+using Shashlik.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Guc.AspNetCore
+namespace Shashlik.AspNetCore
 {
     /// <summary>
     /// 响应结果
@@ -15,7 +15,7 @@ namespace Guc.AspNetCore
         /// <summary>
         /// 错误代码,1:正常,其他的为业务错误代码
         /// </summary>
-        public int Code { get; set; } = Guc.Kernel.Exception.ExceptionCodes.Instance.Success;
+        public int Code { get; set; } = Shashlik.Kernel.Exception.ExceptionCodes.Instance.Success;
 
         /// <summary>
         /// 错误消息

@@ -2,12 +2,12 @@
 using System.Threading.Tasks;
 using DotNetCore.CAP;
 
-namespace Guc.EventBus
+namespace Shashlik.EventBus
 {
     /// <summary>
     /// 事件发布,事件类型的FullName将作为事件名称Name
     /// </summary>
-    public interface IEventPublisher : Guc.Kernel.Dependency.ISingleton
+    public interface IEventPublisher : Shashlik.Kernel.Dependency.ISingleton
     {
         /// <summary>
         /// cap事件发布对象
