@@ -73,8 +73,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Wx.Http", "Shashli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.TencentFaceId", "Shashlik.TencentFaceId\Shashlik.TencentFaceId.csproj", "{393674D8-2F35-40BE-ACCC-92125343670B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageSharp", "..\..\ImageSharp\src\ImageSharp\ImageSharp.csproj", "{15613658-59CA-4FD0-9B57-4D1B3B9FD964}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -280,12 +278,6 @@ Global
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{15613658-59CA-4FD0-9B57-4D1B3B9FD964}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
