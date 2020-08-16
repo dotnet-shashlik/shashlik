@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Shashlik.Kernel.Automatic.Attributes
+namespace Shashlik.Kernel.Autowire.Attributes
 {
     /// <summary>
     /// 在指定服务完成之后执行

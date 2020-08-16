@@ -13,7 +13,7 @@ namespace Shashlik.BackgroundJob
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration"></param>
-        public static IKernelBuilder AddBackgroudJobWithRedis(this IKernelBuilder kernelBuilder, CSRedis.CSRedisClient redisClient = null)
+        public static IKernelService AddBackgroudJobWithRedis(this IKernelService kernelBuilder, CSRedis.CSRedisClient redisClient = null)
         {
             kernelBuilder.Services.AddHangfire(r =>
             {
@@ -33,8 +33,8 @@ namespace Shashlik.BackgroundJob
         /// <param name="application"></param>
         /// <param name="enableDashboard">是否启用仪表盘</param>
         /// <param name="zone">时区设置,默认为中国北京+8时区</param>
-        public static IKernelAspNetCoreConfig UseBackgroudJobServer(
-            this IKernelAspNetCoreConfig kernelAspNetCoreConfig,
+        public static IAutoAspNetConfigure UseBackgroudJobServer(
+            this IAutoAspNetConfigure kernelAspNetCoreConfig,
             bool enableDashboard = false,
             TimeZoneInfo zone = null)
         {

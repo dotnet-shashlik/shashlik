@@ -8,12 +8,12 @@ namespace Shashlik.Kernel
     /// <summary>
     /// Shashlik 内核 服务配置
     /// </summary>
-    public interface IKernelBuilder
+    public interface IKernelService
     {
         IServiceCollection Services { get; }
     }
 
-    class KernelBuilder : IKernelBuilder
+    class KernelBuilder : IKernelService
     {
         public KernelBuilder(IServiceCollection services)
         {

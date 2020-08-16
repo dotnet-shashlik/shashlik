@@ -14,7 +14,7 @@ namespace TencentFaceId.Sdk
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static IKernelBuilder AddTencentFaceId(this IKernelBuilder builder, IConfigurationSection configuration, bool useEmpty = false)
+        public static IKernelService AddTencentFaceId(this IKernelService builder, IConfigurationSection configuration, bool useEmpty = false)
         {
             builder.Services.Configure<TencentFaceIdOptions>(configuration);
             if (useEmpty)

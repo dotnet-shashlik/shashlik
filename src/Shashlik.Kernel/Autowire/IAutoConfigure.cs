@@ -1,4 +1,4 @@
-﻿namespace Shashlik.Kernel.Automatic
+﻿namespace Shashlik.Kernel.Autowire
 {
     /// <summary>
     /// 自动装配服务

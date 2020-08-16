@@ -12,7 +12,7 @@ namespace Shashlik.AliyunOss
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddAliyunOss(this IKernelBuilder kernelBuilder, IConfigurationSection configuration)
+        public static IKernelService AddAliyunOss(this IKernelService kernelBuilder, IConfigurationSection configuration)
         {
             if (configuration == null)
                 throw new System.ArgumentNullException(nameof(configuration));

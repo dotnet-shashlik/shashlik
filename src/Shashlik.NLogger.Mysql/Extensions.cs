@@ -21,8 +21,8 @@ namespace Shashlik.NLogger
         /// <param name="loggingConfigs">日志推送配置</param>
         /// <param name="autoMigration">是否启用自动迁移</param>
         /// <returns></returns>
-        public static IKernelBuilder AddNLogWithMysql(
-            this IKernelBuilder kernelBuilder,
+        public static IKernelService AddNLogWithMysql(
+            this IKernelService kernelBuilder,
             IConfigurationSection loggingConfigs,
             string nLogXmlConfigContent = null,
             bool autoMigration = false)

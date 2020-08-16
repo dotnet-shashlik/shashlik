@@ -19,7 +19,7 @@ namespace Shashlik.Bank
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddBank(this IKernelBuilder kernelBuilder, IConfigurationSection configuration = null)
+        public static IKernelService AddBank(this IKernelService kernelBuilder, IConfigurationSection configuration = null)
         {
             var services = kernelBuilder.Services;
             if (configuration != null)

@@ -23,7 +23,7 @@ namespace Shashlik.EfCore
         /// <param name="kernelBuilder"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddEfEntityMappings(this IKernelBuilder kernelBuilder, DependencyContext dependencyContext = null)
+        public static IKernelService AddEfEntityMappings(this IKernelService kernelBuilder, DependencyContext dependencyContext = null)
         {
             var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IEntityTypeConfiguration<>).Assembly, dependencyContext);
             return AddEfEntityMappings(kernelBuilder, assemblies);
@@ -35,7 +35,7 @@ namespace Shashlik.EfCore
         /// <param name="kernelBuilder"></param>
         /// <param name="assemblies">指定程序集</param>
         /// <returns></returns>
-        public static IKernelBuilder AddEfEntityMappings(this IKernelBuilder kernelBuilder, IEnumerable<Assembly> assemblies)
+        public static IKernelService AddEfEntityMappings(this IKernelService kernelBuilder, IEnumerable<Assembly> assemblies)
         {
             assemblies.ForEachItems(ass =>
             {

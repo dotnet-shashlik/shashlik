@@ -39,7 +39,7 @@ namespace Shashlik.Wx
         /// </summary>
         /// <param name="config"></param>
         /// <returns></returns>
-        public static IKernelAspNetCoreConfig UseWxApi(this IKernelAspNetCoreConfig config, Action<WxApiOptions> optionsAction = null)
+        public static IAutoAspNetConfigure UseWxApi(this IAutoAspNetConfigure config, Action<WxApiOptions> optionsAction = null)
         {
             WxApiOptions options = new WxApiOptions();
             optionsAction?.Invoke(options);
@@ -64,7 +64,7 @@ namespace Shashlik.Wx
         /// <param name="isDebug">是否调式模式(debug模式可以输出日志)</param>
         /// <param name="customRegister">自定义的其他微信配置,参考盛派sdk文档</param>
         /// <returns></returns>
-        public static IKernelAspNetCoreConfig UseWx(this IKernelAspNetCoreConfig kernelConfig, string appName, Action<IRegisterService> customRegister = null)
+        public static IAutoAspNetConfigure UseWx(this IAutoAspNetConfigure kernelConfig, string appName, Action<IRegisterService> customRegister = null)
         {
             if (string.IsNullOrWhiteSpace(appName))
                 throw new ArgumentException("appName can't be null.", nameof(appName));

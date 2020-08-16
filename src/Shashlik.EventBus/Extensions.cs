@@ -13,7 +13,7 @@ namespace Shashlik.EventBus
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddEventBus(this IKernelBuilder kernelBuilder, Action<CapOptions> capAction)
+        public static IKernelService AddEventBus(this IKernelService kernelBuilder, Action<CapOptions> capAction)
         {
             kernelBuilder.Services.AddCap(capAction);
             // 替换cap默认的消费者服务查找器

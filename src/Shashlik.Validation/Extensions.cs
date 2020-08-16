@@ -11,7 +11,7 @@ namespace Shashlik.Validation
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddValidation(this IKernelBuilder kernelBuilder)
+        public static IKernelService AddValidation(this IKernelService kernelBuilder)
         {
             return kernelBuilder;
         }

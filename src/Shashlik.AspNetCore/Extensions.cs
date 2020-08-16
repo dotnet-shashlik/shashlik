@@ -12,7 +12,7 @@ namespace Shashlik.AspNetCore
         /// 增加Shashlik.AspNetCore,PatchUpdateBinder
         /// </summary>
         /// <param name="ShashlikUtilsBuilder"></param>
-        public static IKernelBuilder AddAspNetCore(this IKernelBuilder kernelBuilder)
+        public static IKernelService AddAspNetCore(this IKernelService kernelBuilder)
         {
             kernelBuilder.Services.AddControllers(options =>
             {

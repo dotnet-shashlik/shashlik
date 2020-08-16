@@ -11,7 +11,6 @@ using SixLabors.Fonts;
 using System.Numerics;
 using SixLabors.Shapes;
 using System.Text.RegularExpressions;
-using SixLabors.ImageSharp.Formats.Tga;
 
 namespace Shashlik.Utils.Common
 {
@@ -129,7 +128,7 @@ namespace Shashlik.Utils.Common
                 image.Mutate(imgProc =>
                 {
                     // 画点 
-                    var draw = imgProc.BackgroundColor(Color.WhiteSmoke);
+                    var draw = imgProc.BackgroundColor(Rgba32.WhiteSmoke);
 
                     // 噪点
                     foreach (var item in listPath)

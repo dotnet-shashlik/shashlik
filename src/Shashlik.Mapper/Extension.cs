@@ -20,7 +20,7 @@ namespace Shashlik.Mapper
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddAutoMapperByConvention(this IKernelBuilder kernelBuilder)
+        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder)
         {
             var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly);
             return kernelBuilder.AddAutoMapperByConvention(assemblies);
@@ -31,7 +31,7 @@ namespace Shashlik.Mapper
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddAutoMapperByConvention(this IKernelBuilder kernelBuilder, DependencyContext dependencyContext)
+        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder, DependencyContext dependencyContext)
         {
             if (dependencyContext == null)
             {
@@ -48,7 +48,7 @@ namespace Shashlik.Mapper
         /// <param name="kernelBuilder"></param>
         /// <param name="assemblies">需要注册的程序集</param>
         /// <returns></returns>
-        public static IKernelBuilder AddAutoMapperByConvention(this IKernelBuilder kernelBuilder, IEnumerable<Assembly> assemblies)
+        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder, IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
             {

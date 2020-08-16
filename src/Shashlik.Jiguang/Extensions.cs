@@ -15,7 +15,7 @@ namespace Shashlik.PushNotification
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration">APP消息推送模板配置节点</param>
-        public static IKernelBuilder AddPushNotificationTemplate(this IKernelBuilder kernelBuilder, IConfiguration configuration)
+        public static IKernelService AddPushNotificationTemplate(this IKernelService kernelBuilder, IConfiguration configuration)
         {
             var services = kernelBuilder.Services;
             services.Configure<PushNotificationTemplateOptions>(configuration);
@@ -28,7 +28,7 @@ namespace Shashlik.PushNotification
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration">极光推送配置节点</param>
-        public static IKernelBuilder AddJiGuangPush(this IKernelBuilder kernelBuilder, IConfiguration configuration)
+        public static IKernelService AddJiGuangPush(this IKernelService kernelBuilder, IConfiguration configuration)
         {
             var services = kernelBuilder.Services;
             //services.Configure<JiGuangPushOptions>(configuration);

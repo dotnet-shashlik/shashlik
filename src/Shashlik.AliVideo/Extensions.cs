@@ -12,7 +12,7 @@ namespace Shashlik.AliVideo
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddAliVideo(this IKernelBuilder kernelBuilder, IConfigurationSection configuration)
+        public static IKernelService AddAliVideo(this IKernelService kernelBuilder, IConfigurationSection configuration)
         {
             if (configuration == null)
                 throw new System.ArgumentNullException(nameof(configuration));

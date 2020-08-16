@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.Kernel.Automatic.Attributes
+namespace Shashlik.Kernel.Autowire.Attributes
 {
     /// <summary>
     /// 自动装配options

@@ -15,7 +15,7 @@ namespace Shashlik.Redis
         /// </summary>
         /// <param name="services"></param>
         /// <param name="configuration"></param>
-        public static IKernelBuilder AddRedis(this IKernelBuilder kernelBuilder, IConfigurationSection configuration)
+        public static IKernelService AddRedis(this IKernelService kernelBuilder, IConfigurationSection configuration)
         {
             var options = configuration.Get<RedisOptions>();
             kernelBuilder.Services.Configure<RedisOptions>(configuration);

@@ -22,7 +22,7 @@ namespace Shashlik.Sms
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration">短信配置节点</param>
         /// <param name="useEmpty">是否使用空短信</param>
-        public static IKernelBuilder AddSms(this IKernelBuilder kernelBuilder, IConfiguration configuration, bool useEmpty = false)
+        public static IKernelService AddSms(this IKernelService kernelBuilder, IConfiguration configuration, bool useEmpty = false)
         {
             if (useEmpty)
                 return kernelBuilder.AddEmptySms(configuration);
@@ -41,7 +41,7 @@ namespace Shashlik.Sms
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration">短信配置节点</param>
-        public static IKernelBuilder AddEmptySms(this IKernelBuilder kernelBuilder, IConfiguration configuration)
+        public static IKernelService AddEmptySms(this IKernelService kernelBuilder, IConfiguration configuration)
         {
             var services = kernelBuilder.Services;
             services.Configure<SmsOptions>(configuration);

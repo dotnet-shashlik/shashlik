@@ -22,8 +22,8 @@ namespace Shashlik.Features
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddFeatureByDistributedCache(
-            this IKernelBuilder kernelBuilder,
+        public static IKernelService AddFeatureByDistributedCache(
+            this IKernelService kernelBuilder,
             Action<VerifyCodeOptions> action)
         {
             kernelBuilder.Services.Configure(action);

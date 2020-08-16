@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace Shashlik.Kernel.Automatic
+namespace Shashlik.Kernel.Autowire
 {
     /// <summary>
     /// 自动装配服务
@@ -12,6 +12,6 @@ namespace Shashlik.Kernel.Automatic
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration"></param>
-        void ConfigureServices(IKernelBuilder kernelBuilder, IConfiguration configuration);
+        void ConfigureServices(IKernelService kernelBuilder, IConfiguration configuration);
     }
 }

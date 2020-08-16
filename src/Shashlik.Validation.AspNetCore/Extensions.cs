@@ -13,7 +13,7 @@ namespace Shashlik.Validation
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
-        public static IKernelBuilder AddValidationWithAspNetCore(this IKernelBuilder kernelBuilder)
+        public static IKernelService AddValidationWithAspNetCore(this IKernelService kernelBuilder)
         {
             kernelBuilder.AddValidation();
             kernelBuilder.Services.AddHttpContextAccessor();
@@ -25,7 +25,7 @@ namespace Shashlik.Validation
         /// </summary>
         /// <param name="kernelConfig"></param>
         /// <returns></returns>
-        public static IKernelAspNetCoreConfig UseValidationWithAspNetCore(this IKernelAspNetCoreConfig kernelConfig)
+        public static IAutoAspNetConfigure UseValidationWithAspNetCore(this IAutoAspNetConfigure kernelConfig)
         {
             ValidationExtensions.SetShashlikValidation(() => kernelConfig.ServiceProvider.GetService<IHttpContextAccessor>()?.HttpContext.RequestServices);
             return kernelConfig;

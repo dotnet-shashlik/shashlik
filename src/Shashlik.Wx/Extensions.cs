@@ -25,8 +25,8 @@ namespace Shashlik.Wx
         /// <param name="wxTemplateMsgConfigurations">格式化微信模板消息配置</param>
         /// <param name="useEmptyTemplateMsg">使用空的微信模板消息,就是不会真正的发送</param>
         /// <returns></returns>
-        public static IKernelBuilder AddWx(
-            this IKernelBuilder kernelBuilder,
+        public static IKernelService AddWx(
+            this IKernelService kernelBuilder,
             IConfigurationSection wxSdkConfiguration,
             IConfigurationSection wxTemplateMsgConfigurations = null,
             bool useEmptyTemplateMsg = false)

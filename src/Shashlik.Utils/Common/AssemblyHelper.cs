@@ -123,13 +123,13 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, Assembly assembly)
+        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, Assembly assembly, bool inherit = true)
         {
             Dictionary<TypeInfo, Attribute> dic = new Dictionary<TypeInfo, Attribute>();
 
             foreach (var item in assembly.DefinedTypes)
             {
-                var attr = item.GetCustomAttribute(baseType);
+                var attr = item.GetCustomAttribute(baseType, inherit);
                 if (attr == null)
                     continue;
 
@@ -144,15 +144,15 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, DependencyContext dependencyContext = null)
+        public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, DependencyContext dependencyContext = null, bool inherit = true)
         {
             Dictionary<TypeInfo, Attribute> dic = new Dictionary<TypeInfo, Attribute>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
             {
-                dic.Merge(GetTypesAndAttribute(baseType, item));
+                dic.Merge(GetTypesAndAttribute(baseType, item, inherit));
             }
 
-            dic.Merge(GetTypesAndAttribute(baseType, baseType.Assembly));
+            dic.Merge(GetTypesAndAttribute(baseType, baseType.Assembly, inherit));
 
             return dic;
         }
@@ -163,14 +163,14 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(Assembly assembly)
+        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(Assembly assembly, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, TAttribute> dic = new Dictionary<TypeInfo, TAttribute>();
 
             foreach (var item in assembly.DefinedTypes)
             {
-                var attr = item.GetCustomAttribute<TAttribute>();
+                var attr = item.GetCustomAttribute<TAttribute>(inherit);
                 if (attr == null)
                     continue;
 
@@ -185,16 +185,16 @@ namespace Shashlik.Utils.Common
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(DependencyContext dependencyContext = null)
+        public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(DependencyContext dependencyContext = null, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, TAttribute> dic = new Dictionary<TypeInfo, TAttribute>();
             foreach (var item in GetReferredAssemblies<TAttribute>(dependencyContext))
             {
-                dic.Merge(GetTypesAndAttribute<TAttribute>(item));
+                dic.Merge(GetTypesAndAttribute<TAttribute>(item, inherit));
             }
 
-            dic.Merge(GetTypesAndAttribute<TAttribute>(typeof(TAttribute).Assembly));
+            dic.Merge(GetTypesAndAttribute<TAttribute>(typeof(TAttribute).Assembly, inherit));
 
             return dic;
         }
@@ -205,13 +205,13 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, IEnumerable<Attribute>> GetTypesByAttributes(Type baseType, Assembly assembly)
+        public static IDictionary<TypeInfo, IEnumerable<object>> GetTypesByAttributes(Type baseType, Assembly assembly, bool inherit = true)
         {
-            Dictionary<TypeInfo, IEnumerable<Attribute>> dic = new Dictionary<TypeInfo, IEnumerable<Attribute>>();
+            Dictionary<TypeInfo, IEnumerable<object>> dic = new Dictionary<TypeInfo, IEnumerable<object>>();
 
             foreach (var item in assembly.DefinedTypes)
             {
-                var attrs = item.GetCustomAttributes(baseType);
+                var attrs = item.GetCustomAttributes(baseType, inherit);
                 if (attrs == null)
                     continue;
 
@@ -226,15 +226,15 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, IEnumerable<Attribute>> GetTypesByAttributes(Type baseType, DependencyContext dependencyContext = null)
+        public static IDictionary<TypeInfo, IEnumerable<object>> GetTypesByAttributes(Type baseType, DependencyContext dependencyContext = null, bool inherit = true)
         {
-            Dictionary<TypeInfo, IEnumerable<Attribute>> dic = new Dictionary<TypeInfo, IEnumerable<Attribute>>();
+            Dictionary<TypeInfo, IEnumerable<object>> dic = new Dictionary<TypeInfo, IEnumerable<object>>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
             {
-                dic.Merge(GetTypesByAttributes(baseType, item));
+                dic.Merge(GetTypesByAttributes(baseType, item, inherit));
             }
 
-            dic.Merge(GetTypesByAttributes(baseType, baseType.Assembly));
+            dic.Merge(GetTypesByAttributes(baseType, baseType.Assembly, inherit));
 
             return dic;
         }
@@ -245,14 +245,14 @@ namespace Shashlik.Utils.Common
         /// <param name="baseType"></param>
         /// <param name="assembly"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(Assembly assembly)
+        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(Assembly assembly, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, IEnumerable<TAttribute>> dic = new Dictionary<TypeInfo, IEnumerable<TAttribute>>();
 
             foreach (var item in assembly.DefinedTypes)
             {
-                var attrs = item.GetCustomAttributes<TAttribute>();
+                var attrs = item.GetCustomAttributes<TAttribute>(inherit);
                 if (attrs == null)
                     continue;
 
@@ -267,16 +267,16 @@ namespace Shashlik.Utils.Common
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(DependencyContext dependencyContext = null)
+        public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(DependencyContext dependencyContext = null, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, IEnumerable<TAttribute>> dic = new Dictionary<TypeInfo, IEnumerable<TAttribute>>();
             foreach (var item in GetReferredAssemblies<TAttribute>(dependencyContext))
             {
-                dic.Merge(GetTypesByAttributes<TAttribute>(item));
+                dic.Merge(GetTypesByAttributes<TAttribute>(item, inherit));
             }
 
-            dic.Merge(GetTypesByAttributes<TAttribute>(typeof(TAttribute).Assembly));
+            dic.Merge(GetTypesByAttributes<TAttribute>(typeof(TAttribute).Assembly, inherit));
 
             return dic;
         }

@@ -9,7 +9,7 @@ namespace Shashlik.Mail
 {
     public static class Extensions
     {
-        public static IKernelBuilder AddAliyunMail(this IKernelBuilder kernelBuilder, IConfiguration configuration)
+        public static IKernelService AddAliyunMail(this IKernelService kernelBuilder, IConfiguration configuration)
         {
             var services = kernelBuilder.Services;
             services.Configure<AliyunDmOptions>(configuration);

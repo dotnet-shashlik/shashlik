@@ -17,7 +17,7 @@ namespace Shashlik.GeoCoder
         /// <param name="kernelBuilder"></param>
         /// <param name="configuration">GeocoderOptions配置节点,null则使用默认参数,里面的key和areas也一样优先使用传入的配置,否则使用默认配置</param>
         /// <returns></returns>
-        public static IKernelBuilder AddGeoCoder(this IKernelBuilder kernelBuilder, IConfiguration configuration = null)
+        public static IKernelService AddGeoCoder(this IKernelService kernelBuilder, IConfiguration configuration = null)
         {
             var services = kernelBuilder.Services;
             if (configuration != null)

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Shashlik.Kernel.Automatic
+namespace Shashlik.Kernel.Autowire
 {
     /// <summary>
     /// 自动装配初始化器
@@ -24,8 +24,10 @@ namespace Shashlik.Kernel.Automatic
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutoDescriptor> Scan<TBaseType>(
+        IDictionary<TypeInfo, AutoDescriptor> LoadFrom(
+            TypeInfo baseType,
             IDictionary<TypeInfo, TypeInfo> replaces = null,
+            IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
 
         /// <summary>
@@ -36,9 +38,11 @@ namespace Shashlik.Kernel.Automatic
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutoDescriptor> Scan<TBaseType>(
+        IDictionary<TypeInfo, AutoDescriptor> LoadFrom(
+            TypeInfo baseType,
             IServiceProvider serviceProvider,
             IDictionary<TypeInfo, TypeInfo> replaces = null,
+            IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
 
         /// <summary>
@@ -47,7 +51,6 @@ namespace Shashlik.Kernel.Automatic
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, TAttribute> ScanAttribute<TAttribute>(DependencyContext dependencyContext = null, bool inherit = true)
-            where TAttribute : Attribute;
+        IDictionary<TypeInfo, AutoDescriptor> LoadFromAttribute(TypeInfo attiributeType, DependencyContext dependencyContext = null, bool inherit = true);
     }
 }
