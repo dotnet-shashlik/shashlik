@@ -7,6 +7,8 @@ using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Common;
 using System.Threading;
 using Newtonsoft.Json.Linq;
+using Shashlik.Utils.RazorFormat;
+using Newtonsoft.Json;
 
 namespace Shashlik.Utils.Test
 {
@@ -86,17 +88,10 @@ namespace Shashlik.Utils.Test
                 }
             };
 
-            var n1 = DateTime.Now;
 
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}"
                 .RazorFormat(model)
                 .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
-
-            var s = (DateTime.Now - n1).TotalMilliseconds;
-            return;
-            var n2 = DateTime.Now;
-            var str = JsonHelper.Deserialize<JObject>(JsonHelper.Serialize(model));
-            var s2 = (DateTime.Now - n2).TotalMilliseconds;
 
             string value = null;
             value.RazorFormat(model).ShouldBeNull();

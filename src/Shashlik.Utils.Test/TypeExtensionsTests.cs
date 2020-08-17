@@ -34,7 +34,7 @@ namespace Shashlik.Utils.Test
                 B = new TestB()
             };
 
-            for (int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var cloneA = a.Clone();
                 ReferenceEquals(a, cloneA).ShouldBeFalse();

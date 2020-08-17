@@ -24,7 +24,7 @@ namespace Shashlik.Kernel.Dependency
             var types = AssemblyHelper.GetFinalSubTypes(baseType, assembly);
 
             List<ShashlikServiceDescriptor> result = new List<ShashlikServiceDescriptor>();
-            types.ForEachItems(type =>
+            types.ForEachItem(type =>
             {
                 var arg1 = type.GetGenericArguments();
 

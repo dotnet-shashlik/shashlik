@@ -52,7 +52,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="action"></param>
-        public static void Foreach<T>(this IEnumerable<T> list, Action<T> action)
+        public static void ForEachItem<T>(this IEnumerable<T> list, Action<T> action)
         {
             if (action == null)
             {

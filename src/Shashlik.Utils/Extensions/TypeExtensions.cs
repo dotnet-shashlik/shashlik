@@ -1,20 +1,14 @@
 ﻿using Shashlik.Utils.Common;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using System.Xml.Serialization;
 
 namespace Shashlik.Utils.Extensions
 {
@@ -29,7 +23,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="childType">子类型</param>
         /// <param name="genericType">泛型父级,例:typeof(IParent&lt;&gt;)</param>
         /// <returns></returns>
-        public static bool IsChildTypeOfGenericType(this Type childType, Type genericType)
+        public static bool IsSubTypeOfGenericType(this Type childType, Type genericType)
         {
             var interfaceTypes = childType.GetTypeInfo().ImplementedInterfaces;
 
@@ -45,7 +39,7 @@ namespace Shashlik.Utils.Extensions
             Type baseType = childType.BaseType;
             if (baseType == null) return false;
 
-            return IsChildTypeOfGenericType(baseType, genericType);
+            return IsSubTypeOfGenericType(baseType, genericType);
         }
 
         /// <summary>
@@ -167,7 +161,7 @@ namespace Shashlik.Utils.Extensions
                     return null;
                 return JToken2Object(jToken) as IDictionary<string, object>;
             }
-            else if (objType.IsChildTypeOf<IDictionary>() || objType.IsChildTypeOfGenericType(typeof(IDictionary<,>)))
+            else if (objType.IsSubTypeOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 return (obj as IEnumerable)
                     .OfType<dynamic>()
@@ -189,14 +183,14 @@ namespace Shashlik.Utils.Extensions
                     .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
                     .Where(r => !r.GetIndexParameters().Any());
 
-                props.Foreach(r =>
+                props.ForEachItem(r =>
                 {
                     if (!r.GetIndexParameters().IsNullOrEmpty()) return;
 
                     var value = r.GetValue(obj);
                     if (value == null || r.PropertyType.IsSimpleType())
                         dic[r.Name] = value;
-                    else if (value is IDictionary || r.PropertyType.IsChildTypeOfGenericType(typeof(IDictionary<,>)))
+                    else if (value is IDictionary || r.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
                         dic[r.Name] = MapToDictionary(value);
                     else if (value is IEnumerable list)
                     {
@@ -212,6 +206,234 @@ namespace Shashlik.Utils.Extensions
                 return dic;
             }
         }
+
+        /// <summary>
+        /// 获取属性值，支持JsonElement/IDictionary/JsonObject
+        /// </summary>
+        /// <typeparam name="TModel"></typeparam>
+        /// <param name="obj"></param>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
+        {
+            if (string.IsNullOrWhiteSpace(prop))
+                throw new ArgumentException($"“{nameof(prop)}”不能为 Null 或空白", nameof(prop));
+
+            var propArr = prop.Split('.');
+
+            if (propArr.Length == 1)
+            {
+                var value = getObjectValue(obj, prop);
+                return value;
+            }
+            else
+            {
+                var childPro = prop.TrimStart(propArr[0].ToCharArray()).TrimStart('.');
+                var value = getObjectValue(obj, propArr[0]);
+                if (!value.exists)
+                    return (false, null);
+                return GetPropertyValue(value.value, childPro);
+            }
+        }
+
+        /// <summary>
+        /// 是否为<paramref name="parentType"/>的子类
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="parentType"></param>
+        /// <returns></returns>
+        public static bool IsSubTypeOf(this Type type, Type parentType)
+        {
+            return parentType.IsAssignableFrom(type);
+        }
+
+        /// <summary>
+        /// 是否为<typeparamref name="T"/>的子类
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsSubTypeOf<T>(this Type type)
+        {
+            return type.IsSubTypeOf(typeof(T));
+        }
+
+        /// <summary>
+        /// 对象克隆
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T Clone<T>(this T obj)
+        {
+            if (obj != null)
+            {
+                return System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(obj));
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// 是否定义了特性
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsDefinedAttribute<T>(this MemberInfo member, bool inherit)
+            where T : Attribute
+        {
+            return Attribute.IsDefined(member, typeof(T), inherit);
+        }
+
+        /// <summary>
+        /// 是否定义了特性
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsDefinedAttribute(this MemberInfo member, Type type, bool inherit)
+        {
+            return Attribute.IsDefined(member, type, inherit);
+        }
+
+        /// <summary>
+        /// 类型是否为简单类型(自定义的结构体非简单类型)
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsSimpleType(this Type type)
+        {
+            /*
+             * copy from System.Data.Linq.SqlClient.TypeSystem
+             * **/
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                type = type.GetGenericArguments()[0];
+
+            if (type.IsEnum)
+                return true;
+
+            if (type == typeof(Guid))
+                return true;
+
+            TypeCode tc = Type.GetTypeCode(type);
+            switch (tc)
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                case TypeCode.Char:
+                case TypeCode.String:
+                case TypeCode.Boolean:
+                case TypeCode.DateTime:
+                    return true;
+                case TypeCode.Object:
+                    return (typeof(TimeSpan) == type) || (typeof(DateTimeOffset) == type);
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// 类型是否为集合类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsCollectionType(this Type type)
+        {
+            return type.IsSubTypeOf<IEnumerable>();
+
+        }
+
+        /// <summary>
+        /// 类型是否为委托类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsDelegate(this Type type)
+        {
+            return typeof(Delegate).IsAssignableFrom(type);
+        }
+
+        /// <summary>
+        /// 获取所有的父级类型,不包含object
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static HashSet<Type> GetAllBaseTypes(this Type type)
+        {
+            HashSet<Type> types = new HashSet<Type>();
+            fillBaseType(types, type);
+            return types;
+        }
+
+        /// <summary>
+        /// 获取实现的接口
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="includeInherited">是否包含继承父类的接口</param>
+        /// <returns></returns>
+        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeInherited)
+        {
+            if (includeInherited || type.BaseType == null)
+                return type.GetInterfaces();
+            else
+                return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
+        }
+
+        /// <summary>
+        /// json序列化
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="jsonSerializerSettings"></param>
+        /// <returns></returns>
+        public static string ToJson<T>(this T obj, JsonSerializerSettings jsonSerializerSettings = null)
+            where T : class
+        {
+            if (obj == null)
+                return null;
+            return JsonConvert.SerializeObject(obj, jsonSerializerSettings);
+        }
+
+        /// <summary>
+        /// json序列化,小驼峰命名
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="jsonSerializerSettings"></param>
+        /// <returns></returns>
+        public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
+            where T : class
+        {
+            if (obj == null)
+                return null;
+            return JsonConvert.SerializeObject(obj,
+                new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    Formatting = Formatting.Indented,
+                    // 默认小驼峰用法
+                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                });
+        }
+
+        /// <summary>
+        /// 时间戳转换位DateTime,本地时间
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
+        public static DateTime ToDateTime(this long time)
+        {
+            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().AddSeconds(time);
+        }
+
+        #region private
 
         static object JToken2Object(JToken token)
         {
@@ -396,7 +618,7 @@ namespace Shashlik.Utils.Extensions
                     return (true, JTokenValue(json));
                 return (false, null);
             }
-            else if (objType.IsChildTypeOfGenericType(typeof(IDictionary<,>)))
+            else if (objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 var list = (obj as IEnumerable).OfType<dynamic>();
                 try
@@ -462,163 +684,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        /// <summary>
-        /// 获取属性值，支持JsonElement/IDictionary/JsonObject
-        /// </summary>
-        /// <typeparam name="TModel"></typeparam>
-        /// <param name="obj"></param>
-        /// <param name="prop"></param>
-        /// <returns></returns>
-        public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
-        {
-            if (string.IsNullOrWhiteSpace(prop))
-                throw new ArgumentException($"“{nameof(prop)}”不能为 Null 或空白", nameof(prop));
-
-            var propArr = prop.Split('.');
-
-            if (propArr.Length == 1)
-            {
-                var value = getObjectValue(obj, prop);
-                return value;
-            }
-            else
-            {
-                var childPro = prop.TrimStart(propArr[0].ToCharArray()).TrimStart('.');
-                var value = getObjectValue(obj, propArr[0]);
-                if (!value.exists)
-                    return (false, null);
-                return GetPropertyValue(value.value, childPro);
-            }
-        }
-
-        /// <summary>
-        /// 是否为<paramref name="parentType"/>的子类
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="parentType"></param>
-        /// <returns></returns>
-        public static bool IsChildTypeOf(this Type type, Type parentType)
-        {
-            return parentType.IsAssignableFrom(type);
-        }
-
-        /// <summary>
-        /// 是否为<typeparamref name="T"/>的子类
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsChildTypeOf<T>(this Type type)
-        {
-            return type.IsChildTypeOf(typeof(T));
-        }
-
-        /// <summary>
-        /// 对象克隆
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static T Clone<T>(this T obj)
-        {
-            T ret = default(T);
-            if (obj != null)
-            {
-                ret = JsonConvert.DeserializeObject<T>(JsonHelper.Serialize(obj));
-            }
-            return ret;
-        }
-
-        /// <summary>
-        /// 是否定义了特性
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsDefinedAttribute<T>(this MemberInfo member, bool inherit)
-            where T : Attribute
-        {
-            return Attribute.IsDefined(member, typeof(T), inherit);
-        }
-
-        /// <summary>
-        /// 是否定义了特性
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static bool IsDefinedAttribute(this MemberInfo member, Type type, bool inherit)
-        {
-            return Attribute.IsDefined(member, type, inherit);
-        }
-
-        /// <summary>
-        /// 类型是否为简单类型(自定义的结构体非简单类型)
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        public static bool IsSimpleType(this Type type)
-        {
-            /*
-             * copy from System.Data.Linq.SqlClient.TypeSystem
-             * **/
-
-            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                type = type.GetGenericArguments()[0];
-
-            if (type.IsEnum)
-                return true;
-
-            if (type == typeof(Guid))
-                return true;
-
-            TypeCode tc = Type.GetTypeCode(type);
-            switch (tc)
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Single:
-                case TypeCode.Double:
-                case TypeCode.Decimal:
-                case TypeCode.Char:
-                case TypeCode.String:
-                case TypeCode.Boolean:
-                case TypeCode.DateTime:
-                    return true;
-                case TypeCode.Object:
-                    return (typeof(TimeSpan) == type) || (typeof(DateTimeOffset) == type);
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// 类型是否为集合类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        public static bool IsCollectionType(this Type type)
-        {
-            return type.IsChildTypeOf<IEnumerable>();
-
-        }
-
-        /// <summary>
-        /// 类型是否为委托类型
-        /// </summary>
-        /// <param name="type">类型</param>
-        /// <returns></returns>
-        public static bool IsDelegate(this Type type)
-        {
-            return typeof(Delegate).IsAssignableFrom(type);
-        }
-
-        private static void fillBaseType(HashSet<Type> results, Type type)
+        static void fillBaseType(HashSet<Type> results, Type type)
         {
             if (type.BaseType != typeof(object))
             {
@@ -627,148 +693,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        /// <summary>
-        /// 获取所有的父级类型,不包含接口和object
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static HashSet<Type> GetAllBaseTypes(this Type type)
-        {
-            HashSet<Type> types = new HashSet<Type>();
-            fillBaseType(types, type);
-            return types;
-        }
-
-        #region 配置转换 jObject
-
-        /// <summary>
-        /// 将配置对象转换为jobject格式,但是转换出来的数据只能是string类型
-        /// </summary>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static JObject GetJObject(this IConfigurationSection configuration)
-        {
-            JObject obj = new JObject();
-            jObject(obj, configuration);
-            return obj;
-        }
-
-        private static void jObject(JObject obj, IConfigurationSection configurationSection)
-        {
-            var children = configurationSection.GetChildren();
-
-            foreach (var child in children)
-            {
-                var child_child = child.GetChildren();
-                if (child_child.IsNullOrEmpty())
-                {
-                    // 值
-                    obj.Add(child.Key, new JValue(configurationSection.GetValue<string>(child.Key)));
-                }
-                else if (child_child.FirstOrDefault()?.Key == "0")
-                {
-                    // 数组
-                    var array = new JArray();
-                    jArray(array, child);
-                    obj.Add(child.Key, array);
-                }
-
-                else
-                {
-                    var childrenObj = new JObject();
-                    // 对象
-                    jObject(childrenObj, child);
-                    obj.Add(child.Key, childrenObj);
-                }
-            }
-        }
-        private static void jArray(JArray jArray, IConfigurationSection configurationSection)
-        {
-            foreach (var item in configurationSection.GetChildren())
-            {
-                var children = item.GetChildren();
-
-                if (children.IsNullOrEmpty())
-                {
-                    // 值
-                    jArray.Add(new JValue(item.Value));
-                }
-                else if (children.OrderBy(r => r.Key).First().Key == "0")
-                {
-                    var childrenArray = new JArray();
-                    TypeExtensions.jArray(childrenArray, item);
-                    jArray.Add(childrenArray);
-                }
-
-                else
-                {
-                    var childrenObj = new JObject();
-                    // 对象
-                    jObject(childrenObj, item);
-                    jArray.Add(childrenObj);
-                }
-            }
-        }
-
         #endregion
 
-        /// <summary>
-        /// 获取实现的接口
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="includeInherited">是否包含继承父类的接口</param>
-        /// <returns></returns>
-        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeInherited)
-        {
-            if (includeInherited || type.BaseType == null)
-                return type.GetInterfaces();
-            else
-                return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
-        }
-
-        /// <summary>
-        /// json序列化,默认设置ReferenceLoopHandling.Ignore,Formatting.Indented
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="jsonSerializerSettings"></param>
-        /// <returns></returns>
-        public static string ToJson<T>(this T obj, JsonSerializerSettings jsonSerializerSettings = null)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return JsonHelper.Serialize(obj, jsonSerializerSettings);
-        }
-
-        /// <summary>
-        /// json序列化,默认设置ReferenceLoopHandling.Ignore,Formatting.Indented
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="jsonSerializerSettings"></param>
-        /// <returns></returns>
-        public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return JsonConvert.SerializeObject(obj,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    Formatting = Formatting.Indented,
-                    // 默认小驼峰用法
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                });
-        }
-
-        /// <summary>
-        /// 时间戳转换位DateTime,本地时间
-        /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        public static DateTime ToDateTime(this long time)
-        {
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().AddSeconds(time);
-        }
     }
 }

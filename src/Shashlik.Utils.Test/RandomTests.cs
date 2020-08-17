@@ -1,23 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Xunit;
 using Shashlik.Utils.Common;
 using Shouldly;
-using System.Collections.Concurrent;
-using System.Linq;
-using Shashlik.Utils.Common.SnowFlake;
 
 namespace Shashlik.Utils.Test
 {
-    public class RandomTests
+    public class SnowflakeIdTests
     {
         [Fact]
         void getId_test()
         {
-            var i = new IdWorker(1, 1).NextId();
-            var s = i.ToString("D19");
+            var worker = new SnowflakeId(1, 1);
+
+            HashSet<long> ids = new HashSet<long>();
+
+            for (int i = 0; i < 1000000; i++)
+            {
+                ids.Add(worker.NextId());
+            }
+
+            ids.Count.ShouldBe(1000000);
         }
     }
 }

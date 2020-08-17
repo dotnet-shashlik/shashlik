@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shashlik.Utils.Extensions
 {
-    public static class LinqExtensions
+    public static class ExpressionExtensions
     {
         private static string GetPropertyInner(Expression expression)
         {

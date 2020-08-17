@@ -31,8 +31,8 @@ namespace Shashlik.Kernel.Autowire
                 if (descriptors.ContainsKey(serviceType))
                     continue;
 
-                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsChildTypeOf(baseType))?.ToArray();
-                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsChildTypeOf(baseType))?.ToArray();
+                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
                 descriptors.Add(serviceType, new InnerAutoDescriptor
                 {
                     After = afters,
@@ -80,8 +80,8 @@ namespace Shashlik.Kernel.Autowire
                 if (descriptors.ContainsKey(serviceType))
                     continue;
 
-                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsChildTypeOf(baseType))?.ToArray();
-                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsChildTypeOf(baseType))?.ToArray();
+                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
                 descriptors.Add(serviceType, new InnerAutoDescriptor
                 {
                     After = afters,

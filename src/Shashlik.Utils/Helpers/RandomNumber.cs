@@ -1,9 +1,4 @@
-using Shashlik.Utils.Common.SnowFlake;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shashlik.Utils.Common
 {
@@ -54,10 +49,9 @@ namespace Shashlik.Utils.Common
         {
             Random ra = new Random(unchecked((int)DateTime.Now.Ticks));//保证产生的数字的随机性
             int[] arrNum = new int[num];
-            int tmp = 0;
             for (int i = 0; i <= num - 1; i++)
             {
-                tmp = ra.Next(minValue, maxValue); //随机取数 
+                int tmp = ra.Next(minValue, maxValue);
                 arrNum[i] = GetNum(arrNum, tmp, minValue, maxValue, ra); //取出值赋到数组中 
             }
             return arrNum;

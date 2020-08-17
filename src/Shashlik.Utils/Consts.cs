@@ -25,7 +25,7 @@ namespace Shashlik.Utils
             /// <summary>
             /// 国内身份证18位
             /// </summary>
-            public const string IdCard = @"(^\d{18}$)|(^\d{17}(\d|X)$)";
+            public const string IdCard = @"(^\d{18}$)|(^\d{17}(\d|X|x)$)";
             /// <summary>
             /// 数字
             /// </summary>
@@ -37,7 +37,7 @@ namespace Shashlik.Utils
             /// <summary>
             /// 英文和数字 下划线
             /// </summary>
-            public const string LetterOrNumberOrUnderline = @"^[0-9a-zA-Z_]{1,}$";
+            public const string LetterOrNumberOrUnderline = @"^[0-9a-zA-Z_]+$";
             /// <summary>
             /// 全部汉字
             /// </summary>

@@ -12,7 +12,7 @@ namespace Shashlik.Kernel.Autowire
         public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutoInitializer autoInitializer)
         {
             AutowireBaseType = autowireBaseType;
-            AutowireBaseTypeIsAttribute = autowireBaseType.IsChildTypeOf<Attribute>();
+            AutowireBaseTypeIsAttribute = autowireBaseType.IsSubTypeOf<Attribute>();
             AutoInitializer = autoInitializer;
         }
 

@@ -26,17 +26,17 @@ namespace Shashlik.Kernel.Dependency
                             .Where(r => !r.ImplementedInterfaces.IsNullOrEmpty());
 
             List<ShashlikServiceDescriptor> result = new List<ShashlikServiceDescriptor>();
-            types.ForEachItems(type =>
+            types.ForEachItem(type =>
             {
                 Utils.ValidInterfaces(type);
 
                 ServiceLifetime serviceLifetime;
 
-                if (type.IsChildTypeOf<ITransient>())
+                if (type.IsSubTypeOf<ITransient>())
                     serviceLifetime = ServiceLifetime.Transient;
-                else if (type.IsChildTypeOf<ISingleton>())
+                else if (type.IsSubTypeOf<ISingleton>())
                     serviceLifetime = ServiceLifetime.Singleton;
-                else if (type.IsChildTypeOf<IScoped>())
+                else if (type.IsSubTypeOf<IScoped>())
                     serviceLifetime = ServiceLifetime.Scoped;
                 else
                     return;
