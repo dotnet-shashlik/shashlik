@@ -10,10 +10,11 @@ using System.Linq.Expressions;
 using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using Shashlik.Utils.Common;
+using Shashlik.Kernel.Autowire;
 
 namespace Shashlik.Mapper
 {
-    public static class Extensions
+    public static class MapperExtensions
     {
         /// <summary>
         /// 增加auto mapper自动化映射,注册了全局单例IMapper
@@ -193,102 +194,6 @@ namespace Shashlik.Mapper
 
             kernelBuilder.Services.AddSingleton<IMapper>(mapper);
             return kernelBuilder;
-        }
-
-        /*
-         * AllFromPath说明:
-         * 
-         * 所有的成员从源对象的一个属性映射,例：                                                                                    
-         * 目标类,用户dto,class:UserDto                                                                                                        
-         * 　　　　　　　Name                                                                                                           
-         *         Age                                                                                                            
-         * 源类,用户角色表,包含用户属性    ,clas:UserRole                                                                                       
-         *         User                                                                                                           
-         * 用户表,class:User                                                                                                                 
-         *         Id                                                                                                             
-         *         Name                                                                                                           
-         *         Age                                                                                                            
-         *                                                                                                                        
-         * 建立UserRole->UserDto的映射时,Name和Age当然无法自动映射,可以手动配置Name MapFrom(User.Name),但是属性太多时就很繁琐     
-         * 此方法可以直接配置所有属性来源                                                                                         
-         *                                                                                                                        
-         * 如下配置:                                                                                                              
-         *     mapper.AllFromPath(r=>r.User)                                                                                      
-         * 即配置所有的属性来源User属性       
-         * 
-         * **/
-
-        /// <summary>
-        /// 所有的成员从源对象的一个属性映射
-        /// </summary>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDestination"></typeparam>
-        /// <typeparam name="TPathProperty"></typeparam>
-        /// <param name="pathAction"></param>
-        /// <param name="propertySelector"></param>
-        public static void AllFromPath<TSource, TDestination, TPathProperty>(this IMappingExpression<TSource, TDestination> pathAction, Expression<Func<TSource, TPathProperty>> propertySelector)
-        {
-            var proName = GetPropertyName(propertySelector);
-
-            var ps = typeof(TDestination)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
-                .Where(r => !r.GetIndexParameters().Any())
-                .ToList();
-
-            foreach (var item in ps)
-            {
-                var target = typeof(TPathProperty).GetTypeInfo();
-                // 属性不存在,跳过
-                if (!target.DeclaredProperties.Any(r => r.Name == item.Name && r.CanWrite))
-                    continue;
-                // 类型不一致 跳过
-                if (target.GetProperty(item.Name).PropertyType != item.PropertyType)
-                    continue;
-
-                var exp = Expression.Lambda(Expression.Property(propertySelector.Body, item.Name), propertySelector.Parameters.First());
-                var expType = exp.GetType();
-
-                pathAction.ForMember(item.Name, r =>
-                {
-                    var eee2 = typeof(Expression<>)
-                    .MakeGenericType(typeof(Func<,>)
-                                        .MakeGenericType(typeof(TSource), item.PropertyType)
-                    );
-
-                    var mapFromMethod = r.GetType()
-                        .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                        .Where(m => m.Name == "MapFrom")
-                        .Where(m => m.IsGenericMethodDefinition)
-                        .Where(m => m.GetGenericArguments().Length == 1)
-                        .Where(m => m.GetParameters().Length == 1 && m.GetParameters().First().ParameterType.IsSubTypeOfGenericType(typeof(Expression<>)))
-                        .SingleOrDefault();
-
-                    if (mapFromMethod == null)
-                        throw new Exception($"IMemberConfigurationExpression<TSource, TDestination, object>> [void MapFrom<TSourceMember>(Expression<Func<TSource, TSourceMember>> mapExpression)] method not found.");
-
-                    mapFromMethod.MakeGenericMethod(item.PropertyType).Invoke(r, new[] { exp });
-                });
-            }
-        }
-
-        /// <summary>
-        /// 得到一个字段（Field）或属性（Property）名
-        /// </summary>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <param name="express"></param>
-        /// <returns></returns>
-        static string GetPropertyName<T, TProperty>(Expression<Func<T, TProperty>> express)
-        {
-            if (express == null)
-            {
-                throw new ArgumentNullException("express");
-            }
-            MemberExpression memberExpression = express.Body as MemberExpression;
-            if (memberExpression == null)
-            {
-                throw new ArgumentException("请为类型 \"" + typeof(T).FullName + "\" 的指定一个字段（Field）或属性（Property）作为 Lambda 的主体（Body）。");
-            }
-            return memberExpression.Member.Name;
         }
 
         /// <summary>
