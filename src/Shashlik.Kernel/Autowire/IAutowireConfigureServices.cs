@@ -10,8 +10,8 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 服务配置
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
-        void ConfigureServices(IKernelService kernelBuilder, IConfiguration rootConfiguration);
+        void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration);
     }
 }

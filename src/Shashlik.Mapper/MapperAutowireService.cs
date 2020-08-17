@@ -17,9 +17,9 @@ namespace Shashlik.Mapper
 {
     public class MapperAutowireService : IAutowireConfigureServices
     {
-        public void ConfigureServices(IKernelService kernelBuilder, IConfiguration rootConfiguration)
+        public void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration)
         {
-            kernelBuilder.AddAutoMapperByConvention();
+            kernelService.AddAutoMapperByConvention();
         }
     }
 }

@@ -23,7 +23,6 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
-
         /// <returns></returns>
         public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, DependencyContext dependencyContext = null)
         {
@@ -41,7 +40,6 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
-
         /// <returns></returns>
         public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies)
         {
@@ -65,7 +63,7 @@ namespace Shashlik.Kernel
                 conditionFilterAddProvider.FilterAdd(serviceDescriptors, services, rootConfiguration, hostEnvironment);
             }
 
-            return new KernelBuilder(services);
+            return new KernelService(services);
         }
 
         /// <summary>
@@ -73,10 +71,10 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
-        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelBuilder,
+        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
             ServiceLifetime serviceLifetime, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies = null)
         {
-            using var serviceProvider = kernelBuilder.Services.BuildServiceProvider();
+            using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
@@ -84,10 +82,10 @@ namespace Shashlik.Kernel
             foreach (var item in assemblies)
             {
                 var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
-                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelBuilder.Services, rootConfiguration, hostEnvironment);
+                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, rootConfiguration, hostEnvironment);
             }
 
-            return kernelBuilder;
+            return kernelService;
         }
 
         /// <summary>
@@ -95,10 +93,10 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
-        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelBuilder,
+        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
             ServiceLifetime serviceLifetime, IConfiguration rootConfiguration, DependencyContext dependencyContext = null)
         {
-            using var serviceProvider = kernelBuilder.Services.BuildServiceProvider();
+            using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
@@ -109,10 +107,10 @@ namespace Shashlik.Kernel
             foreach (var item in assemblies)
             {
                 var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
-                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelBuilder.Services, rootConfiguration, hostEnvironment);
+                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, rootConfiguration, hostEnvironment);
             }
 
-            return kernelBuilder;
+            return kernelService;
         }
 
         /// <summary>
@@ -124,28 +122,6 @@ namespace Shashlik.Kernel
         {
             KernelServiceProvider.InitServiceProvider(serviceProvider);
             return new KernelConfigure(serviceProvider);
-        }
-
-        /// <summary>
-        /// 服务集合是否已经存在<typeparamref name="TType"/>服务类型
-        /// </summary>
-        /// <typeparam name="TType"></typeparam>
-        /// <param name="services"></param>
-        /// <returns></returns>
-        public static bool AnyService<TType>(this IServiceCollection services)
-        {
-            return services.AnyService(typeof(TType));
-        }
-
-        /// <summary>
-        /// 服务集合是否已经存在<paramref name="serviceType"/>服务类型
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="serviceType"></param>
-        /// <returns></returns>
-        public static bool AnyService(this IServiceCollection services, Type serviceType)
-        {
-            return services.Any(r => r.ServiceType == serviceType);
         }
     }
 }

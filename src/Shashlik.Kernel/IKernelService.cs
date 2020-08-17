@@ -13,9 +13,9 @@ namespace Shashlik.Kernel
         IServiceCollection Services { get; }
     }
 
-    class KernelBuilder : IKernelService
+    class KernelService : IKernelService
     {
-        public KernelBuilder(IServiceCollection services)
+        public KernelService(IServiceCollection services)
         {
             Services = services;
         }

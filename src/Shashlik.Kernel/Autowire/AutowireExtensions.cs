@@ -15,18 +15,18 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 自动装配options
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <returns></returns>
         public static IKernelService AutoOptions(
-            this IKernelService kernelBuilder,
+            this IKernelService kernelService,
             IConfiguration rootConfiguration,
             DependencyContext dependencyContext = null)
         {
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
               .GetMethod("Configure", new Type[] { typeof(IServiceCollection), typeof(IConfiguration) });
 
-            kernelBuilder.BeginAutowireService<AutoOptionsAttribute>()
+            kernelService.BeginAutowireService<AutoOptionsAttribute>()
                 .UseDependencyContext(dependencyContext)
                 .Build(
                     r =>
@@ -37,26 +37,26 @@ namespace Shashlik.Kernel.Autowire
                         var instance = r.ServiceInstance as AutoOptionsAttribute;
 
                         // Configure<TOptions>(this IServiceCollection services, IConfiguration config)
-                        method.MakeGenericMethod(r.ServiceType).Invoke(null, new object[] { kernelBuilder.Services, rootConfiguration.GetSection(instance.Section) });
+                        method.MakeGenericMethod(r.ServiceType).Invoke(null, new object[] { kernelService.Services, rootConfiguration.GetSection(instance.Section) });
                     },
                     r => { });
 
-            return kernelBuilder;
+            return kernelService;
         }
 
         /// <summary>
         /// 自动装配AutoService
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelService AutoService(
-            this IKernelService kernelBuilder,
+            this IKernelService kernelService,
             IConfiguration rootConfiguration,
             DependencyContext dependencyContext = null)
         {
-            return kernelBuilder.BeginAutoService()
+            return kernelService.BeginAutoService()
                     .UseDependencyContext(dependencyContext)
                     .BuildAutoService(rootConfiguration);
         }

@@ -16,12 +16,12 @@ namespace Shashlik.Redis
 
         RedisOptions Options { get; }
 
-        public void ConfigureServices(IKernelService kernelBuilder, IConfiguration configuration)
+        public void ConfigureServices(IKernelService kernelService, IConfiguration configuration)
         {
             var csRedis = new CSRedis.CSRedisClient(Options.ConnectionString, Options.Sentinels, Options.Readonly);
             RedisHelper.Initialization(csRedis);
-            kernelBuilder.Services.AddSingleton(csRedis);
-            kernelBuilder.Services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
+            kernelService.Services.AddSingleton(csRedis);
+            kernelService.Services.AddSingleton<IDistributedCache>(new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
         }
     }
 }

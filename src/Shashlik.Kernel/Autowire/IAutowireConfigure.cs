@@ -8,7 +8,7 @@
         /// <summary>
         /// 服务配置
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelConfigure"></param>
         /// <param name="configuration"></param>
         void Configure(IKernelConfigure kernelConfigure);
     }

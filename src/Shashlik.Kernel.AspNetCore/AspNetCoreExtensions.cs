@@ -19,7 +19,7 @@ namespace Shashlik.Kernel
         /// <summary>
         /// 自动配置IAutoAspNetConfigure
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelConfigure"></param>
         /// <param name="rootConfiguration"></param>
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>

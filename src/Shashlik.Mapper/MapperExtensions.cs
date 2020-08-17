@@ -16,40 +16,25 @@ namespace Shashlik.Mapper
 {
     public static class MapperExtensions
     {
-        /// <summary>
-        /// 增加auto mapper自动化映射,注册了全局单例IMapper
-        /// </summary>
-        /// <param name="kernelBuilder"></param>
-        /// <returns></returns>
-        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder)
-        {
-            var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly);
-            return kernelBuilder.AddAutoMapperByConvention(assemblies);
-        }
 
         /// <summary>
         /// 增加auto mapper自动化映射,注册了全局单例IMapper
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelService"></param>
         /// <returns></returns>
-        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder, DependencyContext dependencyContext)
+        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelService, DependencyContext dependencyContext = null)
         {
-            if (dependencyContext == null)
-            {
-                throw new ArgumentNullException(nameof(dependencyContext));
-            }
-
             var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
-            return kernelBuilder.AddAutoMapperByConvention(assemblies);
+            return kernelService.AddAutoMapperByConvention(assemblies);
         }
 
         /// <summary>
         /// 增加auto mapper自动化映射,注册了全局单例IMapper
         /// </summary>
-        /// <param name="kernelBuilder"></param>
+        /// <param name="kernelService"></param>
         /// <param name="assemblies">需要注册的程序集</param>
         /// <returns></returns>
-        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelBuilder, IEnumerable<Assembly> assemblies)
+        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelService, IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
             {
@@ -57,7 +42,8 @@ namespace Shashlik.Mapper
             }
             var configuration = new MapperConfiguration(config =>
             {
-                var method = config.GetType().GetTypeInfo().GetMethods().Single(r => r.Name == "CreateMap" && r.IsGenericMethodDefinition && r.GetParameters().Length == 1);
+                var method = config.GetType().GetTypeInfo().GetMethod("CreateMap", new Type[] { typeof(MemberList) });
+                //.Single(r => r.Name == "CreateMap" && r.IsGenericMethodDefinition && r.GetParameters().Length == 1);
 
                 foreach (var assembly in assemblies)
                 {
@@ -112,16 +98,11 @@ namespace Shashlik.Mapper
                             try
                             {
                                 configMethod.Invoke(obj, new object[] { expression });
+                                using (obj as IDisposable) { }
                             }
                             catch
                             {
                                 throw new Exception($"auto mapper 初始化失败:初始化类型[{item}]配置失败");
-                            }
-                            finally
-                            {
-                                var disposeObj = obj as IDisposable;
-                                if (disposeObj != null)
-                                    disposeObj.Dispose();
                             }
                         }
                     }
@@ -169,19 +150,11 @@ namespace Shashlik.Mapper
                             try
                             {
                                 configMethod.Invoke(obj, new object[] { expression });
-                                var disposeObj = obj as IDisposable;
-                                if (disposeObj != null)
-                                    disposeObj.Dispose();
+                                using (obj as IDisposable) { }
                             }
                             catch
                             {
                                 throw new Exception($"auto mapper 初始化失败:初始化类型[{item}]配置失败");
-                            }
-                            finally
-                            {
-                                var disposeObj = obj as IDisposable;
-                                if (disposeObj != null)
-                                    disposeObj.Dispose();
                             }
                         }
                     }
@@ -192,8 +165,8 @@ namespace Shashlik.Mapper
             var mapper = new AutoMapper.Mapper(configuration);
             ShashlikMapper.Instance = mapper;
 
-            kernelBuilder.Services.AddSingleton<IMapper>(mapper);
-            return kernelBuilder;
+            kernelService.Services.AddSingleton<IMapper>(mapper);
+            return kernelService;
         }
 
         /// <summary>
