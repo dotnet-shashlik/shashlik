@@ -1,9 +1,11 @@
-﻿using System;
+﻿.using Shashlik.Kernel.Autowire.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Shashlik.Redis
 {
+    [AutoOptions("Shashlik:Redis")]
     public class RedisOptions
     {
         /*
@@ -11,7 +13,6 @@ namespace Shashlik.Redis
          * ConnectionString: mymaster,password=123,prefix=my_
          * Sentinels: new [] { "192.169.1.10:26379", "192.169.1.11:26379", "192.169.1.12:26379" })
          * **/
-
 
         /// <summary>
         /// 连接字符串

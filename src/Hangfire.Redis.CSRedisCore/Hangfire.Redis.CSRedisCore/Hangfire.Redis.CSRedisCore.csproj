@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HangFire.Core" Version="1.7.11" />
+    <PackageReference Include="HangFire.Core" Version="1.7.12" />
     <PackageReference Include="CSRedisCore" Version="3.6.5" />
   </ItemGroup>
 
