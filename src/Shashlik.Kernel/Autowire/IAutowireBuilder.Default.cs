@@ -9,7 +9,7 @@ namespace Shashlik.Kernel.Autowire
 {
     class DefaultAutowireBuilder : IAutowireBuilder
     {
-        public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutoInitializer autoInitializer)
+        public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer)
         {
             AutowireBaseType = autowireBaseType;
             AutowireBaseTypeIsAttribute = autowireBaseType.IsSubTypeOf<Attribute>();
@@ -32,13 +32,13 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 自动装配初始化器
         /// </summary>
-        public IAutoInitializer AutoInitializer { get; }
+        public IAutowireInitializer AutoInitializer { get; }
     }
 
 
     class DefaultAutowireServiceBuilder : DefaultAutowireBuilder, IAutowireServiceBuilder
     {
-        public DefaultAutowireServiceBuilder(TypeInfo autowireBaseType, IAutoInitializer autoInitializer, IKernelService kernelService)
+        public DefaultAutowireServiceBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer, IKernelService kernelService)
             : base(autowireBaseType, autoInitializer)
         {
             KernelService = kernelService;
@@ -50,7 +50,7 @@ namespace Shashlik.Kernel.Autowire
     class DefaultAutowireConfigureBuilder : DefaultAutowireBuilder, IAutowireConfigureBuilder
     {
 
-        public DefaultAutowireConfigureBuilder(TypeInfo autowireBaseType, IAutoInitializer autoInitializer, IKernelConfigure kernelConfigure)
+        public DefaultAutowireConfigureBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer, IKernelConfigure kernelConfigure)
             : base(autowireBaseType, autoInitializer)
         {
             KernelConfigure = kernelConfigure;

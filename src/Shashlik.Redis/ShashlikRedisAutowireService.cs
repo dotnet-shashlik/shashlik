@@ -7,9 +7,9 @@ using Microsoft.Extensions.Options;
 
 namespace Shashlik.Redis
 {
-    public class ShashlikRedisAutoService : IAutoServices
+    public class ShashlikRedisAutowireService : IAutowireConfigureServices
     {
-        public ShashlikRedisAutoService(IOptions<RedisOptions> options)
+        public ShashlikRedisAutowireService(IOptions<RedisOptions> options)
         {
             Options = options.Value;
         }

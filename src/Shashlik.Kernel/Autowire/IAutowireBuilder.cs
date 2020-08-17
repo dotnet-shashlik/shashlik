@@ -42,7 +42,7 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 自动装配初始化器
         /// </summary>
-        IAutoInitializer AutoInitializer { get; }
+        IAutowireInitializer AutoInitializer { get; }
     }
 
     public interface IAutowireServiceBuilder : IAutowireBuilder

@@ -51,7 +51,7 @@ namespace Shashlik.Kernel
             services.TryAddSingleton<IConventionServiceDescriptorProvider, DefaultConventionServiceDescriptorProvider>();
             services.TryAddSingleton<IBasedOnServiceDescriptorProvider, DefaultBasedOnServiceDescriptorProvider>();
             services.TryAddSingleton<IConditionFilterAddProvider, DefaultConditionFilterAddProvider>();
-            services.TryAddSingleton<IAutoInitializer>(new DefaultAutoInitializer());
+            services.TryAddSingleton<IAutowireInitializer>(new DefaultAutowireInitializer());
 
 
             using var serviceProvider = services.BuildServiceProvider();

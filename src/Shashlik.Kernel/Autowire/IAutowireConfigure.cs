@@ -3,7 +3,7 @@
     /// <summary>
     /// 自动装配服务
     /// </summary>
-    public interface IAutoConfigure : Shashlik.Kernel.Dependency.ISingleton
+    public interface IAutowireConfigure : Shashlik.Kernel.Dependency.ISingleton
     {
         /// <summary>
         /// 服务配置

@@ -24,7 +24,7 @@ namespace Shashlik.Kernel.Autowire
             where TBaseType : class
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
-            var autoInitializer = serviceProvider.GetRequiredService<IAutoInitializer>();
+            var autoInitializer = serviceProvider.GetRequiredService<IAutowireInitializer>();
 
             return new DefaultAutowireServiceBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelService);
         }
@@ -39,7 +39,7 @@ namespace Shashlik.Kernel.Autowire
         public static IAutowireConfigureBuilder BeginAutowireConfigure<TBaseType>(this IKernelConfigure kernelConfigure)
             where TBaseType : class
         {
-            var autoInitializer = kernelConfigure.ServiceProvider.GetRequiredService<IAutoInitializer>();
+            var autoInitializer = kernelConfigure.ServiceProvider.GetRequiredService<IAutowireInitializer>();
             return new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelConfigure);
         }
 
@@ -50,9 +50,9 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="initBeforeAction"></param>
         /// <param name="initAction"></param>
         /// <returns></returns>
-        public static IKernelService Build(this IAutowireServiceBuilder builder, Action<AutoDescriptor> initBeforeAction, Action<AutoDescriptor> initAction)
+        public static IKernelService Build(this IAutowireServiceBuilder builder, Action<AutowireDescriptor> initBeforeAction, Action<AutowireDescriptor> initAction)
         {
-            IDictionary<TypeInfo, AutoDescriptor> descriptors;
+            IDictionary<TypeInfo, AutowireDescriptor> descriptors;
             if (!builder.AutowireBaseTypeIsAttribute)
                 descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.Replaces, builder.Removes, builder.DependencyContext);
             else
@@ -73,9 +73,9 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="builder"></param>
         /// <param name="initAction"></param>
         /// <returns></returns>
-        public static IKernelConfigure Build(this IAutowireConfigureBuilder builder, Action<AutoDescriptor> initBeforeAction, Action<AutoDescriptor> initAction)
+        public static IKernelConfigure Build(this IAutowireConfigureBuilder builder, Action<AutowireDescriptor> initBeforeAction, Action<AutowireDescriptor> initAction)
         {
-            IDictionary<TypeInfo, AutoDescriptor> descriptors;
+            IDictionary<TypeInfo, AutowireDescriptor> descriptors;
             if (!builder.AutowireBaseTypeIsAttribute)
                 descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.Replaces, builder.Removes, builder.DependencyContext);
             else

@@ -7,7 +7,7 @@ using System;
 namespace Shashlik.Kernel.Dependency.Conditions
 {
     /// <summary>
-    /// 环境变了判断
+    /// 环境变量判断
     /// </summary>
     [ConditionOrder(0)]
     public class HostEnvironmentAttribute : Attribute, IConditionBase

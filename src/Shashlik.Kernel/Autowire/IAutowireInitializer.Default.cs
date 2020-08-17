@@ -10,20 +10,20 @@ using System.Reflection;
 
 namespace Shashlik.Kernel.Autowire
 {
-    public class DefaultAutoInitializer : IAutoInitializer
+    public class DefaultAutowireInitializer : IAutowireInitializer
     {
-        public void Init(IDictionary<TypeInfo, AutoDescriptor> autoServices, Action<AutoDescriptor> initAction)
+        public void Init(IDictionary<TypeInfo, AutowireDescriptor> autoServices, Action<AutowireDescriptor> initAction)
         {
             foreach (var item in autoServices)
-                Invoke(item.Value as InnerAutoDescriptor, autoServices, initAction);
+                Invoke(item.Value as InnerAutowireDescriptor, autoServices, initAction);
         }
 
-        public IDictionary<TypeInfo, AutoDescriptor> LoadFrom(TypeInfo baseType, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
+        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(TypeInfo baseType, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
         {
             var types = AssemblyHelper.GetFinalSubTypes(baseType, dependencyContext);
             if (removes.IsNullOrEmpty())
                 types = types.Except(removes).ToList();
-            Dictionary<TypeInfo, AutoDescriptor> descriptors = new Dictionary<TypeInfo, AutoDescriptor>();
+            Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
 
             foreach (var item in types)
             {
@@ -33,7 +33,7 @@ namespace Shashlik.Kernel.Autowire
 
                 var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
                 var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
-                descriptors.Add(serviceType, new InnerAutoDescriptor
+                descriptors.Add(serviceType, new InnerAutowireDescriptor
                 {
                     After = afters,
                     Before = befores,
@@ -66,10 +66,10 @@ namespace Shashlik.Kernel.Autowire
             return descriptors;
         }
 
-        public IDictionary<TypeInfo, AutoDescriptor> LoadFrom(TypeInfo baseType, IServiceProvider serviceProvider, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
+        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(TypeInfo baseType, IServiceProvider serviceProvider, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
         {
             var instances = serviceProvider.GetServices(baseType);
-            Dictionary<TypeInfo, AutoDescriptor> descriptors = new Dictionary<TypeInfo, AutoDescriptor>();
+            Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
 
             foreach (var item in instances)
             {
@@ -82,7 +82,7 @@ namespace Shashlik.Kernel.Autowire
 
                 var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
                 var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
-                descriptors.Add(serviceType, new InnerAutoDescriptor
+                descriptors.Add(serviceType, new InnerAutowireDescriptor
                 {
                     After = afters,
                     Before = befores,
@@ -116,18 +116,18 @@ namespace Shashlik.Kernel.Autowire
             return descriptors;
         }
 
-        public IDictionary<TypeInfo, AutoDescriptor> LoadFromAttribute(TypeInfo attributeType, DependencyContext dependencyContext = null, bool inherit = true)
+        public IDictionary<TypeInfo, AutowireDescriptor> LoadFromAttribute(TypeInfo attributeType, DependencyContext dependencyContext = null, bool inherit = true)
         {
             return AssemblyHelper.GetTypesAndAttribute(attributeType, dependencyContext, inherit)
-                .ToDictionary(r => r.Key, r => new InnerAutoDescriptor
+                .ToDictionary(r => r.Key, r => new InnerAutowireDescriptor
                 {
                     ServiceInstance = r.Value,
                     Status = InitStatus.Waiting,
                     ServiceType = r.Key,
-                } as AutoDescriptor);
+                } as AutowireDescriptor);
         }
 
-        void Invoke(InnerAutoDescriptor descriptor, IDictionary<TypeInfo, AutoDescriptor> autoServices, Action<AutoDescriptor> initAction)
+        void Invoke(InnerAutowireDescriptor descriptor, IDictionary<TypeInfo, AutowireDescriptor> autoServices, Action<AutowireDescriptor> initAction)
         {
             if (descriptor.Status == InitStatus.Done)
                 return;
@@ -146,7 +146,7 @@ namespace Shashlik.Kernel.Autowire
                 descriptor.Status = InitStatus.Hangup;
                 foreach (var item in descriptor.DependsBefore)
                 {
-                    Invoke(autoServices[item] as InnerAutoDescriptor, autoServices, initAction);
+                    Invoke(autoServices[item] as InnerAutowireDescriptor, autoServices, initAction);
                 }
                 descriptor.Status = InitStatus.Done;
             }

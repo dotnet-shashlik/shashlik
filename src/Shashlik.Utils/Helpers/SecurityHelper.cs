@@ -93,7 +93,6 @@ namespace Shashlik.Utils.Extensions
             return HashAlgorithmBase(sha512, value, encoding);
         }
 
-
         #region private
 
         /// <summary>

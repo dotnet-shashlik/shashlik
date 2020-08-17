@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Shashlik.Kernel.Autowire
 {
-    public class AutoDescriptor
+    public class AutowireDescriptor
     {
         /// <summary>
         /// 在我之后有哪些依赖

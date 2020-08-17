@@ -8,14 +8,14 @@ namespace Shashlik.Kernel.Autowire
     /// <summary>
     /// 自动装配初始化器
     /// </summary>
-    public interface IAutoInitializer
+    public interface IAutowireInitializer
     {
         /// <summary>
         /// 执行初始化
         /// </summary>
         /// <param name="autoServices"></param>
         /// <param name="initAction"></param>
-        void Init(IDictionary<TypeInfo, AutoDescriptor> autoServices, Action<AutoDescriptor> initAction);
+        void Init(IDictionary<TypeInfo, AutowireDescriptor> autoServices, Action<AutowireDescriptor> initAction);
 
         /// <summary>
         /// 扫描类型
@@ -24,7 +24,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutoDescriptor> LoadFrom(
+        IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
@@ -38,7 +38,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutoDescriptor> LoadFrom(
+        IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceProvider serviceProvider,
             IDictionary<TypeInfo, TypeInfo> replaces = null,
@@ -51,6 +51,6 @@ namespace Shashlik.Kernel.Autowire
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutoDescriptor> LoadFromAttribute(TypeInfo attiributeType, DependencyContext dependencyContext = null, bool inherit = true);
+        IDictionary<TypeInfo, AutowireDescriptor> LoadFromAttribute(TypeInfo attiributeType, DependencyContext dependencyContext = null, bool inherit = true);
     }
 }
