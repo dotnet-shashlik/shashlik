@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
+using Shashlik.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,7 +112,9 @@ namespace Shashlik.Kernel.Autowire
         public static T Replace<TMatchType, TReplceType, T>(this T automaticBuilder)
             where T : IAutowireBuilder
         {
-
+            var newType = typeof(TReplceType).GetTypeInfo();
+            if (!newType.IsSubTypeOf(automaticBuilder.AutowireBaseType))
+                throw new ArgumentException($"replace type is not sub type from: {automaticBuilder.AutowireBaseType}");
             automaticBuilder.Replaces[typeof(TMatchType).GetTypeInfo()] = typeof(TReplceType).GetTypeInfo();
             return automaticBuilder;
         }

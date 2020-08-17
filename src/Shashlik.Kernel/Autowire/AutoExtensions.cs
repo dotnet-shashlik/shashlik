@@ -93,24 +93,8 @@ namespace Shashlik.Kernel.Autowire
                     using var serviceProvider = builder.KernelService.Services.BuildServiceProvider();
                     var serviceInstance = serviceProvider.GetService(r.ServiceType);
                     var instance = serviceInstance as IAutoServices;
-                    if (instance != null)
-                        // IAutoServices类型
-                        instance.ConfigureServices(builder.KernelService, rootConfiguration);
-                    else
-                    {
-                        // 非IAutoServices类型,约定方法签名是ConfigureServices(IKernelBuilder kernelBuilder, IConfiguration configuration)
-                        var method = r.ServiceType.GetMethods(BindingFlags.Instance)
-                                      .FirstOrDefault(r =>
-                                            r.Name == nameof(instance.ConfigureServices)
-                                            && !r.IsGenericMethod
-                                            && r.GetParameters().Length == 2
-                                            && r.GetParameters()[0].ParameterType == typeof(IKernelService)
-                                            && r.GetParameters()[1].ParameterType == typeof(IConfiguration));
-                        if (method == null)
-                            throw new System.Exception($"replace auto service\"{r}\" error: can't find method definetion \"{nameof(instance.ConfigureServices)}(IKernelBuilder kernelBuilder, IConfiguration rootConfiguration)\".");
-
-                        method.Invoke(serviceInstance, new object[] { builder.KernelService.Services, rootConfiguration });
-                    }
+                    // IAutoServices类型
+                    instance.ConfigureServices(builder.KernelService, rootConfiguration);
                 });
             return builder.KernelService;
         }
