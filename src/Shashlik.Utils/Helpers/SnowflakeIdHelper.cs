@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shashlik.Utils.Common
 {
-    public class SnowflakeId
+    public class SnowflakeIdHelper
     {
         public const long Twepoch = 1288834974657L;
 
@@ -23,7 +23,7 @@ namespace Shashlik.Utils.Common
         private readonly object _lock = new object();
         private long _lastTimestamp = -1L;
 
-        public SnowflakeId(long workerId, long datacenterId, long sequence = 0L)
+        public SnowflakeIdHelper(long workerId, long datacenterId, long sequence = 0L)
         {
             WorkerId = workerId;
             DatacenterId = datacenterId;

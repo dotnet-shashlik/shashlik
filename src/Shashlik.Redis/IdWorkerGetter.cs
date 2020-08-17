@@ -6,48 +6,56 @@ using System.Text;
 
 namespace Shashlik.Redis
 {
-    class IdWorkerGetter
+    class IdGetter
     {
 
-        private IdWorkerGetter()
+        private IdGetter()
         {
 
         }
-        static IdWorkerGetter()
+        static IdGetter()
         {
-            Instance = new IdWorkerGetter();
+            Instance = new IdGetter();
         }
 
-        public static IdWorkerGetter Instance { get; }
+        public static IdGetter Instance { get; }
 
-        const string Prefix = "IDWORKER_GETTER:";
+        const string WorkerIdPrefix = "SNOWFLAKE_WORKERID_GETTER:";
+        const string DcIdPrefix = "SNOWFLAKEID_DCID_GETTER:";
         const int expire = 60 * 60 + 5 * 60;
 
-        private static int? id = null;
+        private static int? workId = null;
 
-        public int GetWorkerId()
+        private static int? DcId = null;
+
+        /// <summary>
+        /// 得到一个有效的id
+        /// </summary>
+        /// <returns></returns>
+        public int GetEffectiveId()
         {
-            lock (this)
+            lock (Instance)
             {
-                if (id.HasValue)
-                    return id.Value;
-
-                for (int i = 0; i < 32; i++)
+                if (workId.HasValue)
+                    return workId.Value;
+                else
                 {
-                    var key = Prefix + i;
-                    if (RedisHelper.Set(key, i, expire, RedisExistence.Nx))
+                    for (int i = 0; i < 32; i++)
                     {
-                        TimerHelper.SetTimeout(() =>
+                        var key = WorkerIdPrefix + i;
+                        if (RedisHelper.Set(key, i, expire, RedisExistence.Nx))
                         {
-                            RedisHelper.Set(key, i, expire);
-
-                        }, TimeSpan.FromHours(1));
-                        id = i;
-                        return i;
+                            TimerHelper.SetTimeout(() =>
+                            {
+                                RedisHelper.Set(key, i, expire);
+                            }, TimeSpan.FromHours(1));
+                            workId = i;
+                            return i;
+                        }
                     }
-                }
 
-                throw new Exception("未能从redis从计算得到workerId");
+                    throw new Exception("未能从redis从计算得到workerId");
+                }
             }
         }
     }
