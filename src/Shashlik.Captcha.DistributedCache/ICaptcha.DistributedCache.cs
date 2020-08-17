@@ -4,24 +4,26 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Shashlik.Features.VerifyCode;
+using Shashlik.Kernel.Dependency.Conditions;
+using System.Text.Json;
 
-namespace Shashlik.Features
+namespace Shashlik.Captcha
 {
     /// <summary>
     /// 验证码
     /// </summary>
-    class DistributedCacheVerifyCodeFeature : IVerifyCodeFeature
+    [DependsOn(typeof(IDistributedCache))]
+    class DistributedCacheCatpcha : ICaptcha, Shashlik.Kernel.Dependency.ISingleton
     {
-        public DistributedCacheVerifyCodeFeature(IDistributedCache cache, IOptions<VerifyCodeOptions> options)
+        public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)
         {
             this.cache = cache;
             this.options = options;
         }
 
         IDistributedCache cache { get; }
-        IOptions<VerifyCodeOptions> options { get; }
-        const string cachePrefix = "VERIFY_CODE:";
+        IOptionsMonitor<CaptchaOptions> options { get; }
+        const string cachePrefix = "CAPTCHA:";
 
         /// <summary>
         /// 验证code是否正确
@@ -35,7 +37,7 @@ namespace Shashlik.Features
         {
             string key = cachePrefix + subject + "_" + target;
 
-            var codeModel = await cache.GetObjectAsync<Codes>(key);
+            var codeModel = await cache.GetObjectAsync<CodeModel>(key);
             if (codeModel == null)
                 return false;
 
@@ -47,7 +49,7 @@ namespace Shashlik.Features
             }
 
             codeModel.ErrorCount += 1;
-            if (codeModel.ErrorCount >= options.Value.MaxErrorCount)
+            if (codeModel.ErrorCount >= options.CurrentValue.MaxErrorCount)
             {
                 await cache.RemoveAsync(key);
                 return false;
@@ -68,7 +70,7 @@ namespace Shashlik.Features
         /// <param name="target">验证目标</param>
         /// <param name="code">验证码</param>
         /// <returns></returns>
-        public async Task<Codes> Build(string subject, string target, int codeLength = 6)
+        public async Task<CodeModel> Build(string subject, string target, int codeLength = 6)
         {
             if (string.IsNullOrWhiteSpace(subject))
             {
@@ -90,18 +92,38 @@ namespace Shashlik.Features
             string key = cachePrefix + subject + "_" + target;
             var now = DateTime.Now.GetLongDate();
 
-            Codes verifyCode = new Codes
+            CodeModel verifyCode = new CodeModel
             {
                 Code = RandomHelper.GetRandomCode(codeLength),
                 Subject = subject,
                 Target = target,
-                ExpiresAt = now + options.Value.ExpireSecond,
+                ExpiresAt = now + options.CurrentValue.ExpireSecond,
                 SendTime = now,
                 ErrorCount = 0
             };
 
-            await cache.SetObjectAsync(key, verifyCode, options.Value.ExpireSecond);
+            await cache.SetObjectAsync(key, verifyCode, options.CurrentValue.ExpireSecond);
             return verifyCode;
+        }
+    }
+
+    static class Extensions
+    {
+        internal static async Task<T> GetObjectAsync<T>(this IDistributedCache cache, string key)
+            where T : class
+        {
+            var content = await cache.GetStringAsync(key);
+            if (content.IsNullOrWhiteSpace())
+                return null;
+            return JsonSerializer.Deserialize<T>(content);
+        }
+
+        internal static async Task SetObjectAsync(this IDistributedCache cache, string key, object obj, int expireSeconds)
+        {
+            await cache.SetStringAsync(key, JsonSerializer.Serialize(obj), new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(expireSeconds)
+            });
         }
     }
 }

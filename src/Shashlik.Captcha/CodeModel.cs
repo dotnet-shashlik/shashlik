@@ -1,15 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shashlik.Features.VerifyCode
+﻿namespace Shashlik.Captcha
 {
     /// <summary>
     /// 验证码
     /// </summary>
-    public class Codes
+    public class CodeModel
     {
         public long Id { get; set; }
 

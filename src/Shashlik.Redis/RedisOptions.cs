@@ -1,7 +1,4 @@
-﻿.using Shashlik.Kernel.Autowire.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Shashlik.Kernel.Autowire.Attributes;
 
 namespace Shashlik.Redis
 {
