@@ -18,6 +18,8 @@ namespace Shashlik.Utils.Common
         /// <return>返回timer对象</return>
         public static void SetTimeout(Action action, TimeSpan expire, CancellationToken? cancellationToken = null)
         {
+            if (expire <= TimeSpan.Zero)
+                throw new ArgumentException("invalid expire.", nameof(expire));
             Task.Run(() =>
             {
                 Task.Delay((int)expire.TotalMilliseconds)
@@ -35,6 +37,8 @@ namespace Shashlik.Utils.Common
         /// <return>返回timer对象</return>
         public static void SetInterval(Action action, TimeSpan interval, CancellationToken? cancellationToken = null)
         {
+            if (interval <= TimeSpan.Zero)
+                throw new ArgumentException("invalid interval.", nameof(interval));
             Task.Run(() =>
             {
                 Task.Delay((int)interval.TotalMilliseconds)
