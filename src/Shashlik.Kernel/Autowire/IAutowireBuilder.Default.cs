@@ -9,12 +9,12 @@ namespace Shashlik.Kernel.Autowire
 {
     class DefaultAutowireBuilder : IAutowireBuilder
     {
-        public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer,
+        public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutowireProvider autoInitializer,
             DependencyContext dependencyContext, IConfiguration rootConfiguration)
         {
             AutowireBaseType = autowireBaseType;
             AutowireBaseTypeIsAttribute = autowireBaseType.IsSubTypeOf<Attribute>();
-            AutoInitializer = autoInitializer;
+            AutowireProvider = autoInitializer;
             DependencyContext = dependencyContext;
             RootConfiguration = rootConfiguration;
         }
@@ -26,8 +26,6 @@ namespace Shashlik.Kernel.Autowire
 
         public bool AutowireBaseTypeIsAttribute { get; }
 
-        public IDictionary<TypeInfo, TypeInfo> Replaces { get; } = new Dictionary<TypeInfo, TypeInfo>();
-
         public HashSet<TypeInfo> Removes { get; } = new HashSet<TypeInfo>();
 
         public DependencyContext DependencyContext { get; set; }
@@ -35,14 +33,15 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 自动装配初始化器
         /// </summary>
-        public IAutowireInitializer AutoInitializer { get; }
+        public IAutowireProvider AutowireProvider { get; }
+
         public IConfiguration RootConfiguration { get; set; }
     }
 
 
     class DefaultAutowireServiceBuilder : DefaultAutowireBuilder, IAutowireServiceBuilder
     {
-        public DefaultAutowireServiceBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer,
+        public DefaultAutowireServiceBuilder(TypeInfo autowireBaseType, IAutowireProvider autoInitializer,
             DependencyContext dependencyContext, IConfiguration rootConfiguration, IKernelService kernelService)
             : base(autowireBaseType, autoInitializer, dependencyContext, rootConfiguration)
         {
@@ -55,7 +54,7 @@ namespace Shashlik.Kernel.Autowire
     class DefaultAutowireConfigureBuilder : DefaultAutowireBuilder, IAutowireConfigureBuilder
     {
 
-        public DefaultAutowireConfigureBuilder(TypeInfo autowireBaseType, IAutowireInitializer autoInitializer,
+        public DefaultAutowireConfigureBuilder(TypeInfo autowireBaseType, IAutowireProvider autoInitializer,
             DependencyContext dependencyContext, IConfiguration rootConfiguration, IKernelConfigure kernelConfigure)
            : base(autowireBaseType, autoInitializer, dependencyContext, rootConfiguration)
         {

@@ -5,12 +5,12 @@ using System.Reflection;
 namespace Shashlik.Kernel.Autowire.Attributes
 {
     /// <summary>
-    /// 自动装配配置
+    /// 在指定类型之前进行装配
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class BeforeAttribute : Attribute
+    public class BeforeOnAttribute : Attribute
     {
-        public BeforeAttribute(params Type[] types)
+        public BeforeOnAttribute(params Type[] types)
         {
             Types = types.Select(r => r.GetTypeInfo()).ToArray();
         }

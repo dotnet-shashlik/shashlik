@@ -25,11 +25,6 @@ namespace Shashlik.Kernel.Autowire
         bool AutowireBaseTypeIsAttribute { get; }
 
         /// <summary>
-        /// 需要替换的装配类型
-        /// </summary>
-        IDictionary<TypeInfo, TypeInfo> Replaces { get; }
-
-        /// <summary>
         /// 需要移除的装配类型
         /// </summary>
         HashSet<TypeInfo> Removes { get; }
@@ -45,9 +40,9 @@ namespace Shashlik.Kernel.Autowire
         IConfiguration RootConfiguration { get; set; }
 
         /// <summary>
-        /// 自动装配初始化器
+        /// 自动装配提供类
         /// </summary>
-        IAutowireInitializer AutoInitializer { get; }
+        IAutowireProvider AutowireProvider { get; }
     }
 
     public interface IAutowireServiceBuilder : IAutowireBuilder

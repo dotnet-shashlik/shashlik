@@ -7,7 +7,6 @@ using System.Text;
 
 namespace Shashlik.Kernel.Dependency.Conditions
 {
-
     /// <summary>
     /// 条件特性基础接口,可以任意扩展
     /// </summary>

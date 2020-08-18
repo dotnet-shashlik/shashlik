@@ -9,41 +9,42 @@ namespace Shashlik.Kernel.Autowire
     /// <summary>
     /// 自动装配初始化器
     /// </summary>
-    public interface IAutowireInitializer
+    public interface IAutowireProvider
     {
         /// <summary>
-        /// 执行初始化
+        /// 执行装配
         /// </summary>
-        /// <param name="autoServices"></param>
-        /// <param name="initAction"></param>
-        void Init(IDictionary<TypeInfo, AutowireDescriptor> autoServices, Action<AutowireDescriptor> initAction);
+        /// <param name="pipelineService"></param>
+        /// <param name="autowireAction"></param>
+        void Autowire(IDictionary<TypeInfo, AutowireDescriptor> pipelineService, Action<AutowireDescriptor> autowireAction);
 
         /// <summary>
-        /// 扫描类型
+        /// 
         /// </summary>
-        /// <typeparam name="TBaseType"></typeparam>
+        /// <param name="baseType"></param>
+        /// <param name="services"></param>
         /// <param name="replaces"></param>
+        /// <param name="removes"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceCollection services,
-            IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
 
         /// <summary>
-        /// 扫描类型,从依赖上下文中扫描
+        /// 
         /// </summary>
-        /// <typeparam name="TBaseType"></typeparam>
+        /// <param name="baseType"></param>
         /// <param name="serviceProvider"></param>
         /// <param name="replaces"></param>
+        /// <param name="removes"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceProvider serviceProvider,
-            IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
 

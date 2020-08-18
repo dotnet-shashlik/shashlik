@@ -10,18 +10,17 @@ using System.Reflection;
 
 namespace Shashlik.Kernel.Autowire
 {
-    public class DefaultAutowireInitializer : IAutowireInitializer
+    public class DefaultAutowireProvider : IAutowireProvider
     {
-        public void Init(IDictionary<TypeInfo, AutowireDescriptor> autoServices, Action<AutowireDescriptor> initAction)
+        public void Autowire(IDictionary<TypeInfo, AutowireDescriptor> pipelineService, Action<AutowireDescriptor> autowireAction)
         {
-            foreach (var item in autoServices)
-                Invoke(item.Value as InnerAutowireDescriptor, autoServices, initAction);
+            foreach (var item in pipelineService)
+                Invoke(item.Value as InnerAutowireDescriptor, pipelineService, autowireAction);
         }
 
         public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceCollection services,
-            IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null)
         {
@@ -29,28 +28,54 @@ namespace Shashlik.Kernel.Autowire
             if (removes.IsNullOrEmpty()) types = types.Except(removes).ToList();
             Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
 
-            foreach (var item in types)
+            foreach (var serviceType in types)
             {
-                var serviceType = replaces?.GetOrDefault(item) ?? item;
                 if (descriptors.ContainsKey(serviceType))
                     continue;
 
-                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
-                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var afterOnAttribute = serviceType.GetCustomAttribute<AfterOnAttribute>();
+                var afters = afterOnAttribute?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeOnAttribute>();
+                var befores = beforeOnAttribute?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+
                 services.AddSingleton(serviceType);
                 descriptors.Add(serviceType, new InnerAutowireDescriptor
                 {
                     After = afters,
                     Before = befores,
                     ServiceType = serviceType,
-                    Status = InitStatus.Waiting
+                    Status = InitStatus.Waiting,
+                    AfterCancelOn = afterOnAttribute?.CancelOn
                 });
             }
 
-            using var serviceProvider = services.BuildServiceProvider();
-
+            // 根据AfterOn依赖规则,去掉不需要装载的类型
+            List<TypeInfo> nomatchs = new List<TypeInfo>();
             foreach (var item in descriptors)
             {
+                if (!item.Value.After.IsNullOrEmpty())
+                {
+                    if (item.Value.AfterCancelOn == CancelOn.AllNotExists
+                        && !item.Value.After.All(r => descriptors.ContainsKey(r)))
+                    {
+                        nomatchs.Add(item.Key);
+                    }
+                    else if (item.Value.AfterCancelOn == CancelOn.AnyNotExists
+                        && item.Value.After.Any(r => !descriptors.ContainsKey(r)))
+                    {
+                        nomatchs.Add(item.Key);
+                    }
+                }
+            }
+            foreach (var item in nomatchs)
+                descriptors.Remove(item);
+
+            using var serviceProvider = services.BuildServiceProvider();
+            foreach (var item in descriptors)
+            {
+                // 注入实例
+                item.Value.ServiceInstance = serviceProvider.GetService(item.Key);
+
                 if (!item.Value.After.IsNullOrEmpty())
                 {
                     foreach (var after in item.Value.After)
@@ -68,8 +93,6 @@ namespace Shashlik.Kernel.Autowire
                         item.Value.DependsAfter.Add(before);
                     }
                 }
-                // 注入实例
-                item.Value.ServiceInstance = serviceProvider.GetService(item.Key);
             }
 
             return descriptors;
@@ -78,34 +101,58 @@ namespace Shashlik.Kernel.Autowire
         public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceProvider serviceProvider,
-            IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null)
         {
             var instances = serviceProvider.GetServices(baseType);
             Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
-
+            var kernelService = serviceProvider.GetService<IKernelService>();
             foreach (var item in instances)
             {
-                var type = item.GetType().GetTypeInfo();
-                if (!removes.IsNullOrEmpty() && removes.Contains(type))
+                var serviceType = item.GetType().GetTypeInfo();
+                if (!removes.IsNullOrEmpty() && removes.Contains(serviceType))
                     continue;
-                var serviceType = replaces?.GetOrDefault(type) ?? type;
                 if (descriptors.ContainsKey(serviceType))
                     continue;
 
-                var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
-                var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var afterOnAttribute = serviceType.GetCustomAttribute<AfterOnAttribute>();
+                var afters = afterOnAttribute?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeOnAttribute>();
+                var befores = beforeOnAttribute?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+
                 descriptors.Add(serviceType, new InnerAutowireDescriptor
                 {
                     After = afters,
                     Before = befores,
                     ServiceType = serviceType,
                     Status = InitStatus.Waiting,
-                    ServiceInstance = item
+                    ServiceInstance = item,
+                    AfterCancelOn = afterOnAttribute?.CancelOn
                 });
             }
 
+            // 根据AfterOn依赖规则,去掉不需要装载的类型
+            List<TypeInfo> nomatchs = new List<TypeInfo>();
+            foreach (var item in descriptors)
+            {
+                if (!item.Value.After.IsNullOrEmpty())
+                {
+                    if (item.Value.AfterCancelOn == CancelOn.AllNotExists
+                        && !item.Value.After.All(r => descriptors.ContainsKey(r)))
+                    {
+                        nomatchs.Add(item.Key);
+                    }
+                    else if (item.Value.AfterCancelOn == CancelOn.AnyNotExists
+                        && item.Value.After.Any(r => !descriptors.ContainsKey(r)))
+                    {
+                        nomatchs.Add(item.Key);
+                    }
+                }
+            }
+            foreach (var item in nomatchs)
+                descriptors.Remove(item);
+
+            // 计算DependsBefore/DependsAfter字段
             foreach (var item in descriptors)
             {
                 if (!item.Value.After.IsNullOrEmpty())

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Shashlik.Kernel.Autowire.Attributes;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Shashlik.Kernel.Autowire
@@ -18,6 +19,11 @@ namespace Shashlik.Kernel.Autowire
         /// 在哪些依赖之后
         /// </summary>
         public TypeInfo[] After { get; set; }
+
+        /// <summary>
+        /// 装配取消的条件
+        /// </summary>
+        public CancelOn? AfterCancelOn { get; set; }
 
         /// <summary>
         /// 在哪些依赖之前
