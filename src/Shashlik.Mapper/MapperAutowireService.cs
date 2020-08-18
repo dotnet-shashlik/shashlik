@@ -15,9 +15,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Shashlik.Mapper
 {
-    public class MapperAutowireService : IAutowireConfigureServices
+    public class MapperAutowireService : IAutowireConfigureService
     {
-        public void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration)
+        public void ConfigureServices(IKernelService kernelService)
         {
             kernelService.AddAutoMapperByConvention();
         }

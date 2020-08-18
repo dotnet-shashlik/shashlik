@@ -20,18 +20,11 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 自动注册嵌套事务, 自动注册ef实体类
     /// </summary>
-    public class EfCoreAutowireService : IAutowireConfigureServices
+    public class EfCoreAutowireService : IAutowireConfigureService
     {
-        public EfCoreAutowireService(ILogger<EfCoreAutowireService> logger)
+        public void ConfigureServices(IKernelService kernelService)
         {
-            Logger = logger;
-        }
-
-        ILogger<EfCoreAutowireService> Logger { get; }
-
-        public void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration)
-        {
-            kernelService.AddEfEntityMappings(rootConfiguration);
+            kernelService.AddEfEntityMappings();
             var dbContextTypes = AssemblyHelper.GetFinalSubTypes<ShashlikDbContext>(kernelService.ScanFromDependencyContext);
             if (dbContextTypes.IsNullOrEmpty())
                 return;

@@ -5,7 +5,7 @@ namespace Shashlik.Kernel.Autowire
     /// <summary>
     /// 自动装配服务
     /// </summary>
-    public interface IAutowireConfigureServices
+    public interface IAutowireConfigureService
     {
         /// <summary>
         /// 服务配置

@@ -105,7 +105,7 @@ namespace Shashlik.EventBus
                     continue;
 
                 var eventType = @interface.GenericTypeArguments[0].GetTypeInfo();
-                if (!eventType.IsChildTypeOf<IEvent>())
+                if (!eventType.IsSubTypeOf<IEvent>())
                     continue;
 
                 names.Add(eventType.Name);
@@ -126,7 +126,7 @@ namespace Shashlik.EventBus
                 var method = methods.FirstOrDefault(r => r.Name == "Execute"
                                                         && r.GetParameters().Length == 1
                                                         && r.GetParameters()[0].ParameterType.Name == eventName
-                                                        && r.GetParameters()[0].ParameterType.IsChildTypeOf<IEvent>());
+                                                        && r.GetParameters()[0].ParameterType.IsSubTypeOf<IEvent>());
                 if (method == null)
                     throw new Exception($"{typeInfo} event handler definetion error!");
 

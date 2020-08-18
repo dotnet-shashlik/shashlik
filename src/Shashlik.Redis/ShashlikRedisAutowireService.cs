@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace Shashlik.Redis
 {
-    public class ShashlikRedisAutowireService : IAutowireConfigureServices
+    public class ShashlikRedisAutowireService : IAutowireConfigureService
     {
         public ShashlikRedisAutowireService(IOptions<RedisOptions> options)
         {
@@ -16,7 +16,7 @@ namespace Shashlik.Redis
 
         RedisOptions Options { get; }
 
-        public void ConfigureServices(IKernelService kernelService, IConfiguration configuration)
+        public void ConfigureServices(IKernelService kernelService)
         {
             var csRedis = new CSRedis.CSRedisClient(Options.ConnectionString, Options.Sentinels, Options.Readonly);
             RedisHelper.Initialization(csRedis);

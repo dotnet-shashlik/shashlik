@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Shashlik.EventBus
 {
-    public class EventBusAutowireService : IAutowireConfigureServices
+    public class EventBusAutowireService : IAutowireConfigureService
     {
         public EventBusAutowireService(IOptions<EventBusOptions> eventBusOptions)
         {
