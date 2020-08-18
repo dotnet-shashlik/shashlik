@@ -26,8 +26,7 @@ namespace Shashlik.Kernel.Autowire
             DependencyContext dependencyContext = null)
         {
             var types = AssemblyHelper.GetFinalSubTypes(baseType, dependencyContext);
-            if (removes.IsNullOrEmpty())
-                types = types.Except(removes).ToList();
+            if (removes.IsNullOrEmpty()) types = types.Except(removes).ToList();
             Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
 
             foreach (var item in types)
@@ -38,6 +37,7 @@ namespace Shashlik.Kernel.Autowire
 
                 var afters = serviceType.GetCustomAttribute<AfterAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
                 var befores = serviceType.GetCustomAttribute<BeforeAttribute>()?.Types?.Where(r => r.IsSubTypeOf(baseType))?.ToArray();
+                services.AddSingleton(serviceType);
                 descriptors.Add(serviceType, new InnerAutowireDescriptor
                 {
                     After = afters,
@@ -46,6 +46,8 @@ namespace Shashlik.Kernel.Autowire
                     Status = InitStatus.Waiting
                 });
             }
+
+            using var serviceProvider = services.BuildServiceProvider();
 
             foreach (var item in descriptors)
             {
@@ -66,12 +68,19 @@ namespace Shashlik.Kernel.Autowire
                         item.Value.DependsAfter.Add(before);
                     }
                 }
+                // 注入实例
+                item.Value.ServiceInstance = serviceProvider.GetService(item.Key);
             }
 
             return descriptors;
         }
 
-        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(TypeInfo baseType, IServiceProvider serviceProvider, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
+        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
+            TypeInfo baseType,
+            IServiceProvider serviceProvider,
+            IDictionary<TypeInfo, TypeInfo> replaces = null,
+            IEnumerable<TypeInfo> removes = null,
+            DependencyContext dependencyContext = null)
         {
             var instances = serviceProvider.GetServices(baseType);
             Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();

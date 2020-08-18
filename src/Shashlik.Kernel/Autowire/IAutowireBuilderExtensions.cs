@@ -56,17 +56,14 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="initBeforeAction"></param>
         /// <param name="initAction"></param>
         /// <returns></returns>
-        public static IKernelService Build(this IAutowireServiceBuilder builder, Action<AutowireDescriptor> initBeforeAction, Action<AutowireDescriptor> initAction)
+        public static IKernelService Build(this IAutowireServiceBuilder builder, Action<AutowireDescriptor> initAction)
         {
             IDictionary<TypeInfo, AutowireDescriptor> descriptors;
             if (!builder.AutowireBaseTypeIsAttribute)
-                descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.Replaces, builder.Removes, builder.DependencyContext);
+                descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.KernelService.Services,
+                    builder.Replaces, builder.Removes, builder.DependencyContext);
             else
                 descriptors = builder.AutoInitializer.LoadFromAttribute(builder.AutowireBaseType, builder.DependencyContext);
-
-            if (initBeforeAction != null)
-                foreach (var item in descriptors)
-                    initBeforeAction(item.Value);
 
             if (initAction != null)
                 builder.AutoInitializer.Init(descriptors, initAction);
@@ -79,17 +76,14 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="builder"></param>
         /// <param name="initAction"></param>
         /// <returns></returns>
-        public static IKernelConfigure Build(this IAutowireConfigureBuilder builder, Action<AutowireDescriptor> initBeforeAction, Action<AutowireDescriptor> initAction)
+        public static IKernelConfigure Build(this IAutowireConfigureBuilder builder, Action<AutowireDescriptor> initAction)
         {
             IDictionary<TypeInfo, AutowireDescriptor> descriptors;
             if (!builder.AutowireBaseTypeIsAttribute)
-                descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.Replaces, builder.Removes, builder.DependencyContext);
+                descriptors = builder.AutoInitializer.LoadFrom(builder.AutowireBaseType, builder.KernelConfigure.ServiceProvider,
+                    builder.Replaces, builder.Removes, builder.DependencyContext);
             else
                 descriptors = builder.AutoInitializer.LoadFromAttribute(builder.AutowireBaseType, builder.DependencyContext);
-
-            if (initBeforeAction != null)
-                foreach (var item in descriptors)
-                    initBeforeAction(item.Value);
 
             if (initAction != null)
                 builder.AutoInitializer.Init(descriptors, initAction);

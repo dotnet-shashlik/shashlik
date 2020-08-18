@@ -30,7 +30,7 @@ namespace Shashlik.Kernel.Autowire
         public TypeInfo ServiceType { get; set; }
 
         /// <summary>
-        /// service实例
+        /// ServiceType 实例
         /// </summary>
         public object ServiceInstance { get; set; }
     }

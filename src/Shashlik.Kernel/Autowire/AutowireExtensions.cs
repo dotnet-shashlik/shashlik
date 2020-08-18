@@ -32,10 +32,10 @@ namespace Shashlik.Kernel.Autowire
                             return;
                         var instance = r.ServiceInstance as AutoOptionsAttribute;
 
-                        // Configure<TOptions>(this IServiceCollection services, IConfiguration config)
-                        method.MakeGenericMethod(r.ServiceType).Invoke(null, new object[] { kernelService.Services, rootConfiguration.GetSection(instance.Section) });
-                    },
-                    r => { });
+                        // invoke: Configure<TOptions>(this IServiceCollection services, IConfiguration config)
+                        method.MakeGenericMethod(r.ServiceType)
+                        .Invoke(null, new object[] { kernelService.Services, kernelService.RootConfiguration.GetSection(instance.Section) });
+                    });
 
             return kernelService;
         }
@@ -74,19 +74,7 @@ namespace Shashlik.Kernel.Autowire
             if (builder.AutowireBaseType != typeof(IAutowireConfigureServices))
                 throw new Exception($"error auto service type, must be {typeof(IAutowireConfigureServices)}.");
 
-            builder.Build(
-            r =>
-                {
-                    builder.KernelService.Services.TryAddSingleton(r.ServiceType, r.ServiceType);
-                },
-            r =>
-                {
-                    using var serviceProvider = builder.KernelService.Services.BuildServiceProvider();
-                    var serviceInstance = serviceProvider.GetService(r.ServiceType);
-                    var instance = serviceInstance as IAutowireConfigureServices;
-                    // IAutoServices类型
-                    instance.ConfigureServices(builder.KernelService, builder.RootConfiguration);
-                });
+            builder.Build(r => ((IAutowireConfigureServices)r.ServiceInstance).ConfigureServices(builder.KernelService));
             return builder.KernelService;
         }
 
@@ -123,10 +111,7 @@ namespace Shashlik.Kernel.Autowire
         {
             if (builder.AutowireBaseType != typeof(IAutowireConfigure))
                 throw new Exception($"error auto configure type, must be {typeof(IAutowireConfigure)}.");
-            return builder.Build(null, r =>
-             {
-                 (r.ServiceInstance as IAutowireConfigure).Configure(builder.KernelConfigure);
-             });
+            return builder.Build(r => ((IAutowireConfigure)r.ServiceInstance).Configure(builder.KernelConfigure));
         }
     }
 }
