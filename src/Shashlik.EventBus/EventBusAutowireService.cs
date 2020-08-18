@@ -18,7 +18,7 @@ namespace Shashlik.EventBus
 
         EventBusOptions EventBusOptions { get; }
 
-        public void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration)
+        public void ConfigureServices(IKernelService kernelService)
         {
             kernelService.Services.AddCap(r =>
             {
@@ -29,12 +29,13 @@ namespace Shashlik.EventBus
                 r.FailedRetryInterval = EventBusOptions.FailedRetryInterval;
                 r.SucceedMessageExpiredAfter = EventBusOptions.SucceedMessageExpiredAfter;
 
-                kernelService.BeginAutowireService<IEventBusConfigureService>()
-                        .Build(null, descriptor =>
-                        {
-                            (descriptor.ServiceInstance as IEventBusConfigureService)
-                                .Configure(r);
-                        });
+                kernelService
+                    .BeginAutowireService<IEventBusConfigureService>()
+                    .Build(descriptor =>
+                       {
+                           (descriptor.ServiceInstance as IEventBusConfigureService)
+                               .Configure(r);
+                       });
             });
         }
     }
