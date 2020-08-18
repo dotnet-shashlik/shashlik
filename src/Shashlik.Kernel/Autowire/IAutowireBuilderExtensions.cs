@@ -25,8 +25,9 @@ namespace Shashlik.Kernel.Autowire
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var autoInitializer = serviceProvider.GetRequiredService<IAutowireInitializer>();
-
-            return new DefaultAutowireServiceBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelService);
+            var builder = new DefaultAutowireServiceBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelService);
+            builder.DependencyContext = kernelService.ScanFromDependencyContext;
+            return builder;
         }
 
         /// <summary>
@@ -40,7 +41,9 @@ namespace Shashlik.Kernel.Autowire
             where TBaseType : class
         {
             var autoInitializer = kernelConfigure.ServiceProvider.GetRequiredService<IAutowireInitializer>();
-            return new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelConfigure);
+            var builder = new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelConfigure);
+            builder.DependencyContext = kernelConfigure.ServiceProvider.GetService<IKernelService>().ScanFromDependencyContext;
+            return builder;
         }
 
         /// <summary>
@@ -88,18 +91,6 @@ namespace Shashlik.Kernel.Autowire
             if (initAction != null)
                 builder.AutoInitializer.Init(descriptors, initAction);
             return builder.KernelConfigure;
-        }
-
-        /// <summary>
-        /// 使用依赖上下文
-        /// </summary>
-        /// <param name="automaticBuilder"></param>
-        /// <returns></returns>
-        public static T UseDependencyContext<T>(this T automaticBuilder, DependencyContext dependencyContext)
-            where T : IAutowireBuilder
-        {
-            automaticBuilder.DependencyContext = dependencyContext;
-            return automaticBuilder;
         }
 
         /// <summary>

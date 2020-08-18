@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Shashlik.Kernel
@@ -10,16 +12,27 @@ namespace Shashlik.Kernel
     /// </summary>
     public interface IKernelService
     {
+        /// <summary>
+        /// 服务集
+        /// </summary>
         IServiceCollection Services { get; }
+
+        /// <summary>
+        /// 扫码上下文
+        /// </summary>
+        DependencyContext ScanFromDependencyContext { get; }
     }
 
     class KernelService : IKernelService
     {
-        public KernelService(IServiceCollection services)
+        public KernelService(IServiceCollection services, DependencyContext scanFromDependencyContext)
         {
             Services = services;
+            ScanFromDependencyContext = scanFromDependencyContext;
         }
 
         public IServiceCollection Services { get; }
+
+        public DependencyContext ScanFromDependencyContext { get; }
     }
 }

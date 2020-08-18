@@ -13,98 +13,7 @@ using System.Threading;
 
 namespace Shashlik.EfCore
 {
-    /// <summary>
-    /// 默认的ef core事务
-    /// </summary>
-    class DefaultEfTransaction : IEfTransaction
-    {
-        /// <summary>
-        /// 事务模型
-        /// </summary>
-        class TranModel
-        {
-            public DbContext DbContext { get; set; }
-
-            public IDbContextTransaction TopEfTransaction { get; set; }
-
-            public EfDbContextTransaction ScopedTransaction { get; set; }
-        }
-
-        IServiceProvider serviceProvider { get; }
-
-        /// <summary>
-        /// 所有的事务数据
-        /// </summary>
-        List<TranModel> Trans { get; } = new List<TranModel>();
-
-        public DefaultEfTransaction(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider;
-        }
-
-        public IDbContextTransaction GetCurrent(DbContext dbContext)
-        {
-            return Trans.LastOrDefault(r => r.DbContext == dbContext && r.ScopedTransaction.IsTopTransaction)?.ScopedTransaction;
-        }
-
-        /// <summary>
-        /// 开启事务
-        /// </summary>
-        /// <param name="capPublisher"></param>
-        /// <returns></returns>
-        public IDbContextTransaction Begin(DbContext dbContext, Func<DbContext, IDbContextTransaction> beginTransactionFunc)
-        {
-            if (Trans.Any(r => r.DbContext == dbContext && r.ScopedTransaction.IsTopTransaction && !r.ScopedTransaction.IsCompleted))
-            {
-                var last = Trans.Where(r => r.DbContext == dbContext).LastOrDefault();
-                // 存在该类型的事务
-                var tranModel = new TranModel
-                {
-                    DbContext = dbContext,
-                    TopEfTransaction = last.TopEfTransaction,
-                    ScopedTransaction = new EfDbContextTransaction(last.TopEfTransaction, false)
-                };
-                Trans.Add(tranModel);
-                return tranModel.ScopedTransaction;
-            }
-            else
-            {
-                IDbContextTransaction tran;
-                if (beginTransactionFunc == null)
-                    tran = dbContext.Database.BeginTransaction();
-                else
-                    tran = beginTransactionFunc(dbContext);
-
-                var top = new EfDbContextTransaction(tran, true);
-                // 不存在该类型的事务
-                var tranModel = new TranModel
-                {
-                    DbContext = dbContext,
-                    TopEfTransaction = top,
-                    ScopedTransaction = top
-                };
-
-                Trans.Add(tranModel);
-                return tranModel.ScopedTransaction;
-            }
-        }
-
-        /// <summary>
-        /// scoped销毁时 dispose所有的事务
-        /// </summary>
-        public void Dispose()
-        {
-            foreach (var item in Trans)
-                item?.ScopedTransaction?.Dispose();
-        }
-
-        public IDbContextTransaction Begin(DbContext dbContext)
-        {
-            return Begin(dbContext, null);
-        }
-    }
-
-    class EfDbContextTransaction : IDbContextTransaction
+    class InnerEfDbContextTransaction : IDbContextTransaction
     {
         /// <summary>
         /// 
@@ -112,7 +21,7 @@ namespace Shashlik.EfCore
         /// <param name="topDbContextTransaction">顶层事务</param>
         /// <param name="isTopTransaction">是否为顶层事务</param>
         /// <param name="onTopTransactionComplete">顶层事务完成时</param>
-        public EfDbContextTransaction(
+        public InnerEfDbContextTransaction(
             IDbContextTransaction topDbContextTransaction,
             bool isTopTransaction)
         {
@@ -186,7 +95,7 @@ namespace Shashlik.EfCore
             {
                 TopDbContextTransaction.Rollback();
                 IsTopRollback = true;
-                var tran = (TopDbContextTransaction as EfDbContextTransaction);
+                var tran = (TopDbContextTransaction as InnerEfDbContextTransaction);
                 if (tran != null)
                     tran.IsCompleted = true;
             }
@@ -208,7 +117,7 @@ namespace Shashlik.EfCore
             {
                 await TopDbContextTransaction.RollbackAsync();
                 IsTopRollback = true;
-                var tran = (TopDbContextTransaction as EfDbContextTransaction);
+                var tran = (TopDbContextTransaction as InnerEfDbContextTransaction);
                 if (tran != null)
                     tran.IsCompleted = true;
             }

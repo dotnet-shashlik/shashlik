@@ -24,7 +24,7 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, DependencyContext dependencyContext = null)
+        public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, DependencyContext dependencyContext)
         {
             if (dependencyContext == null)
                 throw new ArgumentNullException(nameof(dependencyContext));
@@ -32,7 +32,7 @@ namespace Shashlik.Kernel
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
             var conventionAssemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(dependencyContext);
             conventionAssemblies.Add(typeof(IKernelService).Assembly);
-            return services.AddShashlik(rootConfiguration, conventionAssemblies);
+            return services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
         }
 
         /// <summary>
@@ -41,10 +41,11 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies)
+        static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies, DependencyContext dependencyContext)
         {
             if (assemblies == null)
                 throw new ArgumentNullException(nameof(assemblies));
+
 
             services.TryAddSingleton<IConventionServiceDescriptorProvider, DefaultConventionServiceDescriptorProvider>();
             services.TryAddSingleton<IBasedOnServiceDescriptorProvider, DefaultBasedOnServiceDescriptorProvider>();
@@ -63,7 +64,9 @@ namespace Shashlik.Kernel
                 conditionFilterAddProvider.FilterAdd(serviceDescriptors, services, rootConfiguration, hostEnvironment);
             }
 
-            return new KernelService(services);
+            var kernelService = new KernelService(services, dependencyContext);
+            services.AddSingleton(kernelService);
+            return kernelService;
         }
 
         /// <summary>
@@ -72,12 +75,15 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
         public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
-            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies = null)
+            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
+
+            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(kernelService.ScanFromDependencyContext);
+            assemblies.Add(typeof(IKernelService).Assembly);
 
             foreach (var item in assemblies)
             {
@@ -93,20 +99,20 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
-        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
-            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration, DependencyContext dependencyContext = null)
+        public static IKernelService AddServiceByBasedOn(this IKernelService kernelService, TypeInfo baseType,
+            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
-            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(dependencyContext);
+            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(kernelService.ScanFromDependencyContext);
             assemblies.Add(typeof(IKernelService).Assembly);
 
             foreach (var item in assemblies)
             {
-                var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
+                var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, baseType, serviceLifetime);
                 conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, rootConfiguration, hostEnvironment);
             }
 

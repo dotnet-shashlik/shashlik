@@ -23,13 +23,11 @@ namespace Shashlik.Kernel
         /// <param name="rootConfiguration"></param>
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
-        public static IKernelConfigure AutoAspNetConfire(
+        public static IKernelConfigure AutoAspNetConfigure(
             this IKernelConfigure kernelConfigure,
-            IApplicationBuilder app,
-            DependencyContext dependencyContext = null)
+            IApplicationBuilder app)
         {
             return kernelConfigure.BeginAutoAspNetConfigure()
-                .UseDependencyContext(dependencyContext)
                 .BuildAutoAspNetConfigure(app);
         }
 

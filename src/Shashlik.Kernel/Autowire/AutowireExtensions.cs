@@ -20,14 +20,12 @@ namespace Shashlik.Kernel.Autowire
         /// <returns></returns>
         public static IKernelService AutoOptions(
             this IKernelService kernelService,
-            IConfiguration rootConfiguration,
-            DependencyContext dependencyContext = null)
+            IConfiguration rootConfiguration)
         {
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
               .GetMethod("Configure", new Type[] { typeof(IServiceCollection), typeof(IConfiguration) });
 
             kernelService.BeginAutowireService<AutoOptionsAttribute>()
-                .UseDependencyContext(dependencyContext)
                 .Build(
                     r =>
                     {
@@ -53,11 +51,9 @@ namespace Shashlik.Kernel.Autowire
         /// <returns></returns>
         public static IKernelService AutoService(
             this IKernelService kernelService,
-            IConfiguration rootConfiguration,
-            DependencyContext dependencyContext = null)
+            IConfiguration rootConfiguration)
         {
             return kernelService.BeginAutoService()
-                    .UseDependencyContext(dependencyContext)
                     .BuildAutoService(rootConfiguration);
         }
 
@@ -107,11 +103,9 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
         public static IKernelConfigure AutoConfire(
-            this IKernelConfigure kernelConfigure,
-            DependencyContext dependencyContext = null)
+            this IKernelConfigure kernelConfigure)
         {
             return kernelConfigure.BeginAutoConfigure()
-                .UseDependencyContext(dependencyContext)
                 .BuildAutoConfigure();
         }
 

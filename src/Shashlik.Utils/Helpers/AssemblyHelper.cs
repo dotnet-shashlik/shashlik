@@ -69,7 +69,7 @@ namespace Shashlik.Utils.Common
         /// <summary>
         /// 获取所有的子类,不包括接口和抽象类
         /// </summary>
-        /// <param name="baseType"></param>
+        /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="assembly"></param>
         /// <returns></returns>
         public static List<TypeInfo> GetFinalSubTypes(Type baseType, Assembly assembly)
@@ -80,7 +80,7 @@ namespace Shashlik.Utils.Common
         /// <summary>
         /// 获取所有的子类,不包括接口和抽象类
         /// </summary>
-        /// <param name="baseType"></param>
+        /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static List<TypeInfo> GetFinalSubTypes(Type baseType, DependencyContext dependencyContext = null)
@@ -141,7 +141,7 @@ namespace Shashlik.Utils.Common
         /// <summary>
         /// 根据特性获取类和特性值,不支持多特性Multiple
         /// </summary>
-        /// <param name="baseType"></param>
+        /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType, DependencyContext dependencyContext = null, bool inherit = true)
@@ -160,7 +160,7 @@ namespace Shashlik.Utils.Common
         /// <summary>
         /// 根据特性获取类和特性值,不支持多特性Multiple
         /// </summary>
-        /// <param name="baseType"></param>
+        /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="assembly"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(Assembly assembly, bool inherit = true)
