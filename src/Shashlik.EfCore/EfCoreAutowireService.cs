@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Asn1.X509.Qualified;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowire;
+using Shashlik.Kernel.Autowire.Attributes;
 using Shashlik.Utils.Common;
 using Shashlik.Utils.Extensions;
 using System;
@@ -19,14 +20,14 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 自动注册嵌套事务, 自动注册ef实体类
     /// </summary>
-    public class EfAutowireService : IAutowireConfigureServices
+    public class EfCoreAutowireService : IAutowireConfigureServices
     {
-        public EfAutowireService(ILogger<EfAutowireService> logger)
+        public EfCoreAutowireService(ILogger<EfCoreAutowireService> logger)
         {
             Logger = logger;
         }
 
-        ILogger<EfAutowireService> Logger { get; }
+        ILogger<EfCoreAutowireService> Logger { get; }
 
         public void ConfigureServices(IKernelService kernelService, IConfiguration rootConfiguration)
         {
@@ -37,11 +38,10 @@ namespace Shashlik.EfCore
 
             foreach (var item in dbContextTypes)
             {
-                if (!kernelService.Services.Any(r => r.ServiceType == item.GetType()))
-                    Logger.LogWarning($"{item} can't configure, please make sure invoke AddDbContext<>(...) before AddShashlik(...)");
-
-                kernelService.Services.TryAddScoped(typeof(IEfNestedTransaction<>).MakeGenericType(item),
-                    typeof(DefaultEfNestedTransaction<>).MakeGenericType(item));
+                kernelService.Services.TryAddScoped(
+                    typeof(IEfNestedTransaction<>).MakeGenericType(item),
+                    typeof(DefaultEfNestedTransaction<>).MakeGenericType(item)
+                );
             }
         }
     }

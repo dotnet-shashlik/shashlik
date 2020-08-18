@@ -18,9 +18,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <returns></returns>
-        public static IKernelService AutoOptions(
-            this IKernelService kernelService,
-            IConfiguration rootConfiguration)
+        public static IKernelService AutoConfigureOptions(this IKernelService kernelService)
         {
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
               .GetMethod("Configure", new Type[] { typeof(IServiceCollection), typeof(IConfiguration) });
@@ -43,18 +41,16 @@ namespace Shashlik.Kernel.Autowire
         }
 
         /// <summary>
-        /// 自动装配AutoService
+        /// 自动装配 <see cref="IAutowireConfigureServices"/>服务配置
         /// </summary>
         /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IKernelService AutoService(
-            this IKernelService kernelService,
-            IConfiguration rootConfiguration)
+        public static IKernelService AutoConfigureService(this IKernelService kernelService)
         {
             return kernelService.BeginAutoService()
-                    .BuildAutoService(rootConfiguration);
+                    .BuildAutoService();
         }
 
         /// <summary>
@@ -63,8 +59,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <returns></returns>
-        public static IAutowireServiceBuilder BeginAutoService(
-            this IKernelService kernelService)
+        public static IAutowireServiceBuilder BeginAutoService(this IKernelService kernelService)
         {
             return kernelService.BeginAutowireService<IAutowireConfigureServices>();
         }
@@ -74,7 +69,7 @@ namespace Shashlik.Kernel.Autowire
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IKernelService BuildAutoService(this IAutowireServiceBuilder builder, IConfiguration rootConfiguration)
+        public static IKernelService BuildAutoService(this IAutowireServiceBuilder builder)
         {
             if (builder.AutowireBaseType != typeof(IAutowireConfigureServices))
                 throw new Exception($"error auto service type, must be {typeof(IAutowireConfigureServices)}.");
@@ -90,7 +85,7 @@ namespace Shashlik.Kernel.Autowire
                     var serviceInstance = serviceProvider.GetService(r.ServiceType);
                     var instance = serviceInstance as IAutowireConfigureServices;
                     // IAutoServices类型
-                    instance.ConfigureServices(builder.KernelService, rootConfiguration);
+                    instance.ConfigureServices(builder.KernelService, builder.RootConfiguration);
                 });
             return builder.KernelService;
         }
@@ -102,8 +97,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="rootConfiguration"></param>
         /// <param name="replaces"></param>
         /// <param name="dependencyContext"></param>
-        public static IKernelConfigure AutoConfire(
-            this IKernelConfigure kernelConfigure)
+        public static IKernelConfigure AutoConfire(this IKernelConfigure kernelConfigure)
         {
             return kernelConfigure.BeginAutoConfigure()
                 .BuildAutoConfigure();

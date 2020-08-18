@@ -1,7 +1,7 @@
 ﻿namespace Shashlik.Kernel.Autowire
 {
     /// <summary>
-    /// 自动装配服务
+    /// 自动配置项目
     /// </summary>
     public interface IAutowireConfigure : Shashlik.Kernel.Dependency.ISingleton
     {

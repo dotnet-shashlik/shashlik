@@ -40,6 +40,11 @@ namespace Shashlik.Kernel.Autowire
         DependencyContext DependencyContext { get; set; }
 
         /// <summary>
+        /// 根配置
+        /// </summary>
+        IConfiguration RootConfiguration { get; set; }
+
+        /// <summary>
         /// 自动装配初始化器
         /// </summary>
         IAutowireInitializer AutoInitializer { get; }

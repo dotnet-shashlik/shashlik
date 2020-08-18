@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System;
 using System.Collections.Generic;
@@ -18,21 +19,32 @@ namespace Shashlik.Kernel
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// 扫码上下文
+        /// 程序集扫描上下文
         /// </summary>
         DependencyContext ScanFromDependencyContext { get; }
+
+        /// <summary>
+        /// 根配置
+        /// </summary>
+        IConfiguration RootConfiguration { get; }
     }
 
     class KernelService : IKernelService
     {
-        public KernelService(IServiceCollection services, DependencyContext scanFromDependencyContext)
+        public KernelService(
+            IServiceCollection services,
+            DependencyContext scanFromDependencyContext,
+            IConfiguration rootConfiguration)
         {
             Services = services;
             ScanFromDependencyContext = scanFromDependencyContext;
+            RootConfiguration = rootConfiguration;
         }
 
         public IServiceCollection Services { get; }
 
         public DependencyContext ScanFromDependencyContext { get; }
+
+        public IConfiguration RootConfiguration { get; }
     }
 }

@@ -18,7 +18,12 @@ namespace Shashlik.Kernel.Autowire
                 Invoke(item.Value as InnerAutowireDescriptor, autoServices, initAction);
         }
 
-        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(TypeInfo baseType, IDictionary<TypeInfo, TypeInfo> replaces = null, IEnumerable<TypeInfo> removes = null, DependencyContext dependencyContext = null)
+        public IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
+            TypeInfo baseType,
+            IServiceCollection services,
+            IDictionary<TypeInfo, TypeInfo> replaces = null,
+            IEnumerable<TypeInfo> removes = null,
+            DependencyContext dependencyContext = null)
         {
             var types = AssemblyHelper.GetFinalSubTypes(baseType, dependencyContext);
             if (removes.IsNullOrEmpty())

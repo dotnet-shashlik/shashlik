@@ -64,7 +64,7 @@ namespace Shashlik.Kernel
                 conditionFilterAddProvider.FilterAdd(serviceDescriptors, services, rootConfiguration, hostEnvironment);
             }
 
-            var kernelService = new KernelService(services, dependencyContext);
+            var kernelService = new KernelService(services, dependencyContext, rootConfiguration);
             services.AddSingleton(kernelService);
             return kernelService;
         }
@@ -75,7 +75,7 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
         public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
-            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration)
+            ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
@@ -88,7 +88,7 @@ namespace Shashlik.Kernel
             foreach (var item in assemblies)
             {
                 var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
-                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, rootConfiguration, hostEnvironment);
+                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, kernelService.RootConfiguration, hostEnvironment);
             }
 
             return kernelService;
@@ -100,7 +100,7 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
         public static IKernelService AddServiceByBasedOn(this IKernelService kernelService, TypeInfo baseType,
-            ServiceLifetime serviceLifetime, IConfiguration rootConfiguration)
+            ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
@@ -113,7 +113,7 @@ namespace Shashlik.Kernel
             foreach (var item in assemblies)
             {
                 var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, baseType, serviceLifetime);
-                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, rootConfiguration, hostEnvironment);
+                conditionFilterAddProvider.FilterAdd(serviceDescriptors, kernelService.Services, kernelService.RootConfiguration, hostEnvironment);
             }
 
             return kernelService;

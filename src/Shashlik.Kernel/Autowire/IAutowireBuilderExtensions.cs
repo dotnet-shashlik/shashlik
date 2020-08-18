@@ -25,13 +25,14 @@ namespace Shashlik.Kernel.Autowire
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var autoInitializer = serviceProvider.GetRequiredService<IAutowireInitializer>();
-            var builder = new DefaultAutowireServiceBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelService);
+            var builder = new DefaultAutowireServiceBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer,
+                kernelService.ScanFromDependencyContext, kernelService.RootConfiguration, kernelService);
             builder.DependencyContext = kernelService.ScanFromDependencyContext;
             return builder;
         }
 
         /// <summary>
-        /// 开始自动配置
+        /// 开始自动配置项目
         /// </summary>
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="kernelService"></param>
@@ -41,8 +42,10 @@ namespace Shashlik.Kernel.Autowire
             where TBaseType : class
         {
             var autoInitializer = kernelConfigure.ServiceProvider.GetRequiredService<IAutowireInitializer>();
-            var builder = new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer, kernelConfigure);
-            builder.DependencyContext = kernelConfigure.ServiceProvider.GetService<IKernelService>().ScanFromDependencyContext;
+            var kernelService = kernelConfigure.ServiceProvider.GetService<IKernelService>();
+            var builder = new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer,
+                kernelService.ScanFromDependencyContext, kernelService.RootConfiguration, kernelConfigure);
+
             return builder;
         }
 
@@ -97,16 +100,16 @@ namespace Shashlik.Kernel.Autowire
         /// 替换
         /// </summary>
         /// <typeparam name="TMatchType"></typeparam>
-        /// <typeparam name="TReplceType"></typeparam>
+        /// <typeparam name="TReplaceType"></typeparam>
         /// <param name="automaticBuilder"></param>
         /// <returns></returns>
-        public static T Replace<TMatchType, TReplceType, T>(this T automaticBuilder)
+        public static T Replace<TMatchType, TReplaceType, T>(this T automaticBuilder)
             where T : IAutowireBuilder
         {
-            var newType = typeof(TReplceType).GetTypeInfo();
+            var newType = typeof(TReplaceType).GetTypeInfo();
             if (!newType.IsSubTypeOf(automaticBuilder.AutowireBaseType))
                 throw new ArgumentException($"replace type is not sub type from: {automaticBuilder.AutowireBaseType}");
-            automaticBuilder.Replaces[typeof(TMatchType).GetTypeInfo()] = typeof(TReplceType).GetTypeInfo();
+            automaticBuilder.Replaces[typeof(TMatchType).GetTypeInfo()] = typeof(TReplaceType).GetTypeInfo();
             return automaticBuilder;
         }
 

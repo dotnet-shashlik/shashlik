@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyModel;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -26,6 +27,7 @@ namespace Shashlik.Kernel.Autowire
         /// <returns></returns>
         IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
             TypeInfo baseType,
+            IServiceCollection services,
             IDictionary<TypeInfo, TypeInfo> replaces = null,
             IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
