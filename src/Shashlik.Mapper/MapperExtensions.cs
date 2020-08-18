@@ -22,7 +22,7 @@ namespace Shashlik.Mapper
         /// </summary>
         /// <param name="kernelService"></param>
         /// <returns></returns>
-        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelService, DependencyContext dependencyContext = null)
+        public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService, DependencyContext dependencyContext = null)
         {
             var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
             return kernelService.AddAutoMapperByConvention(assemblies);
@@ -34,7 +34,7 @@ namespace Shashlik.Mapper
         /// <param name="kernelService"></param>
         /// <param name="assemblies">需要注册的程序集</param>
         /// <returns></returns>
-        public static IKernelService AddAutoMapperByConvention(this IKernelService kernelService, IEnumerable<Assembly> assemblies)
+        public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService, IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
             {

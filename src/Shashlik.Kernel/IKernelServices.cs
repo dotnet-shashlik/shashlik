@@ -11,7 +11,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// Shashlik 内核 服务配置
     /// </summary>
-    public interface IKernelService
+    public interface IKernelServices
     {
         /// <summary>
         /// 服务集
@@ -29,7 +29,7 @@ namespace Shashlik.Kernel
         IConfiguration RootConfiguration { get; }
     }
 
-    class KernelService : IKernelService
+    class KernelService : IKernelServices
     {
         public KernelService(
             IServiceCollection services,

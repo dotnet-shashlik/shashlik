@@ -28,7 +28,7 @@ namespace Shashlik.EfCore
             modelBuilder.RegisterEntities<IEntity>(
                 entityTypeConfigurationServiceProvider: this.GetService<IServiceProvider>(),
                 registerAfter: EntityRegisterAfter,
-                dependencyContext: this.GetService<IKernelService>().ScanFromDependencyContext);
+                dependencyContext: this.GetService<IKernelServices>().ScanFromDependencyContext);
         }
     }
 }

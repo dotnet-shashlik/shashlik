@@ -15,7 +15,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="kernelService"></param>
         /// <param name="rootConfiguration"></param>
         /// <returns></returns>
-        public static IAutowireServiceBuilder BeginAutowireService<TBaseType>(this IKernelService kernelService)
+        public static IAutowireServiceBuilder BeginAutowireService<TBaseType>(this IKernelServices kernelService)
             where TBaseType : class
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
@@ -37,7 +37,7 @@ namespace Shashlik.Kernel.Autowire
             where TBaseType : class
         {
             var autoInitializer = kernelConfigure.ServiceProvider.GetRequiredService<IAutowireProvider>();
-            var kernelService = kernelConfigure.ServiceProvider.GetService<IKernelService>();
+            var kernelService = kernelConfigure.ServiceProvider.GetService<IKernelServices>();
             var builder = new DefaultAutowireConfigureBuilder(typeof(TBaseType).GetTypeInfo(), autoInitializer,
                 kernelService.ScanFromDependencyContext, kernelService.RootConfiguration, kernelConfigure);
 
@@ -51,7 +51,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="initBeforeAction"></param>
         /// <param name="autowireAction"></param>
         /// <returns></returns>
-        public static IKernelService Build(this IAutowireServiceBuilder builder, Action<AutowireDescriptor> autowireAction)
+        public static IKernelServices Build(this IAutowireServiceBuilder builder, Action<AutowireDescriptor> autowireAction)
         {
             IDictionary<TypeInfo, AutowireDescriptor> descriptors;
             if (!builder.AutowireBaseTypeIsAttribute)

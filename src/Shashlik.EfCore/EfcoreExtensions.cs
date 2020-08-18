@@ -26,7 +26,7 @@ namespace Shashlik.EfCore
         /// <param name="kernelBuilder"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IKernelService AddEfEntityMappings(this IKernelService kernelBuilder)
+        public static IKernelServices AddEfEntityMappings(this IKernelServices kernelBuilder)
         {
             kernelBuilder.AddServiceByBasedOn(typeof(IEntityTypeConfiguration<>).GetTypeInfo(), ServiceLifetime.Transient);
             return kernelBuilder;
@@ -166,7 +166,7 @@ namespace Shashlik.EfCore
         /// <typeparam name="TDbContext"></typeparam>
         /// <param name="kernelService"></param>
         /// <param name="beginTransactionFunc"></param>
-        public static void AddBeginTransationFunction<TDbContext>(this IKernelService kernelService, Func<TDbContext, IDbContextTransaction> beginTransactionFunc)
+        public static void AddBeginTransationFunction<TDbContext>(this IKernelServices kernelService, Func<TDbContext, IDbContextTransaction> beginTransactionFunc)
             where TDbContext : DbContext
         {
             kernelService.Services.AddSingleton(

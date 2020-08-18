@@ -47,7 +47,7 @@ namespace Shashlik.Kernel.Autowire
 
     public interface IAutowireServiceBuilder : IAutowireBuilder
     {
-        IKernelService KernelService { get; }
+        IKernelServices KernelService { get; }
     }
 
     public interface IAutowireConfigureBuilder : IAutowireBuilder

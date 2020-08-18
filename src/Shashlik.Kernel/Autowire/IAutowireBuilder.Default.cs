@@ -42,13 +42,13 @@ namespace Shashlik.Kernel.Autowire
     class DefaultAutowireServiceBuilder : DefaultAutowireBuilder, IAutowireServiceBuilder
     {
         public DefaultAutowireServiceBuilder(TypeInfo autowireBaseType, IAutowireProvider autoInitializer,
-            DependencyContext dependencyContext, IConfiguration rootConfiguration, IKernelService kernelService)
+            DependencyContext dependencyContext, IConfiguration rootConfiguration, IKernelServices kernelService)
             : base(autowireBaseType, autoInitializer, dependencyContext, rootConfiguration)
         {
             KernelService = kernelService;
         }
 
-        public IKernelService KernelService { get; }
+        public IKernelServices KernelService { get; }
     }
 
     class DefaultAutowireConfigureBuilder : DefaultAutowireBuilder, IAutowireConfigureBuilder

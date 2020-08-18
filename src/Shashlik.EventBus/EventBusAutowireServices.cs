@@ -10,16 +10,16 @@ using System.Text;
 
 namespace Shashlik.EventBus
 {
-    public class EventBusAutowireService : IAutowireConfigureService
+    public class EventBusAutowireServices : IAutowireConfigureServices
     {
-        public EventBusAutowireService(IOptions<EventBusOptions> eventBusOptions)
+        public EventBusAutowireServices(IOptions<EventBusOptions> eventBusOptions)
         {
             EventBusOptions = eventBusOptions.Value;
         }
 
         EventBusOptions EventBusOptions { get; }
 
-        public void ConfigureServices(IKernelService kernelService)
+        public void ConfigureServices(IKernelServices kernelService)
         {
             kernelService.Services.AddCap(r =>
             {
@@ -31,10 +31,10 @@ namespace Shashlik.EventBus
                 r.SucceedMessageExpiredAfter = EventBusOptions.SucceedMessageExpiredAfter;
 
                 kernelService
-                    .BeginAutowireService<IEventBusConfigureService>()
+                    .BeginAutowireService<IEventBusConfigureServices>()
                     .Build(descriptor =>
                        {
-                           (descriptor.ServiceInstance as IEventBusConfigureService)
+                           (descriptor.ServiceInstance as IEventBusConfigureServices)
                                .Configure(r);
                        });
             });

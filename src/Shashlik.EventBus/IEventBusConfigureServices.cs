@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shashlik.EventBus
 {
-    public interface IEventBusConfigureService
+    public interface IEventBusConfigureServices
     {
         void Configure(CapOptions capOptions);
     }

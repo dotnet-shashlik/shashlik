@@ -106,7 +106,7 @@ namespace Shashlik.Kernel.Autowire
         {
             var instances = serviceProvider.GetServices(baseType);
             Dictionary<TypeInfo, AutowireDescriptor> descriptors = new Dictionary<TypeInfo, AutowireDescriptor>();
-            var kernelService = serviceProvider.GetService<IKernelService>();
+            var kernelService = serviceProvider.GetService<IKernelServices>();
             foreach (var item in instances)
             {
                 var serviceType = item.GetType().GetTypeInfo();

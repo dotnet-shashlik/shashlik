@@ -24,7 +24,7 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        public static IKernelService AddShashlik(
+        public static IKernelServices AddShashlik(
             this IServiceCollection services,
             IConfiguration rootConfiguration,
             DependencyContext dependencyContext = null,
@@ -35,8 +35,8 @@ namespace Shashlik.Kernel
             dependencyContext = dependencyContext ?? DependencyContext.Default;
 
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
-            var conventionAssemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(dependencyContext);
-            conventionAssemblies.Add(typeof(IKernelService).Assembly);
+            var conventionAssemblies = AssemblyHelper.GetReferredAssemblies<IKernelServices>(dependencyContext);
+            conventionAssemblies.Add(typeof(IKernelServices).Assembly);
             var kernelService = services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
             if (autowireOptions)
                 kernelService.AutowireConfigureOptions();
@@ -52,7 +52,7 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        static IKernelService AddShashlik(
+        static IKernelServices AddShashlik(
             this IServiceCollection services,
             IConfiguration rootConfiguration,
             IEnumerable<Assembly> assemblies,
@@ -89,7 +89,7 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
-        public static IKernelService AddServiceByBasedOn<TBaseType>(this IKernelService kernelService,
+        public static IKernelServices AddServiceByBasedOn<TBaseType>(this IKernelServices kernelService,
             ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
@@ -97,8 +97,8 @@ namespace Shashlik.Kernel
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
-            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(kernelService.ScanFromDependencyContext);
-            assemblies.Add(typeof(IKernelService).Assembly);
+            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelServices>(kernelService.ScanFromDependencyContext);
+            assemblies.Add(typeof(IKernelServices).Assembly);
 
             foreach (var item in assemblies)
             {
@@ -114,7 +114,7 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="assembly">程序集</param>
-        public static IKernelService AddServiceByBasedOn(this IKernelService kernelService, TypeInfo baseType,
+        public static IKernelServices AddServiceByBasedOn(this IKernelServices kernelService, TypeInfo baseType,
             ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
@@ -122,8 +122,8 @@ namespace Shashlik.Kernel
             var conditionFilterAddProvider = serviceProvider.GetService<IConditionFilterAddProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
-            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(kernelService.ScanFromDependencyContext);
-            assemblies.Add(typeof(IKernelService).Assembly);
+            List<Assembly> assemblies = AssemblyHelper.GetReferredAssemblies<IKernelServices>(kernelService.ScanFromDependencyContext);
+            assemblies.Add(typeof(IKernelServices).Assembly);
 
             foreach (var item in assemblies)
             {

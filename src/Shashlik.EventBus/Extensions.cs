@@ -14,7 +14,7 @@ namespace Shashlik.EventBus
         /// </summary>
         /// <param name="kernelService"></param>
         /// <returns></returns>
-        public static IKernelService AddEventBus(this IKernelService kernelService, Action<CapOptions> capAction)
+        public static IKernelServices AddEventBus(this IKernelServices kernelService, Action<CapOptions> capAction)
         {
             kernelService.Services.AddCap(capAction);
 
