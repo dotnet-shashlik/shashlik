@@ -9,10 +9,12 @@ using DotNetCore.CAP;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
+using Shashlik.Kernel.Dependency.Conditions;
 
 namespace Shashlik.EventBus
 {
-    class ShashlikConsumerServiceSelector : IConsumerServiceSelector
+    [DependsOnMissing(typeof(IConsumerServiceSelector))]
+    class ShashlikConsumerServiceSelector : IConsumerServiceSelector, Shashlik.Kernel.Dependency.ISingleton
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
