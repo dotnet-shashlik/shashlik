@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Asn1.X509.Qualified;
@@ -39,7 +40,7 @@ namespace Shashlik.EfCore
                 if (!kernelService.Services.Any(r => r.ServiceType == item.GetType()))
                     Logger.LogWarning($"{item} can't configure, please make sure invoke AddDbContext<>(...) before AddShashlik(...)");
 
-                kernelService.Services.AddScoped(typeof(IEfNestedTransaction<>).MakeGenericType(item),
+                kernelService.Services.TryAddScoped(typeof(IEfNestedTransaction<>).MakeGenericType(item),
                     typeof(DefaultEfNestedTransaction<>).MakeGenericType(item));
             }
         }

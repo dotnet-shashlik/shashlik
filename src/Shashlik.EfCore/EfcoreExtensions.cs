@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Shashlik.EfCore
 {
@@ -156,6 +158,20 @@ namespace Shashlik.EfCore
                     }
                     registerAfter?.Invoke(builder, r);
                 });
+        }
+
+        /// <summary>
+        /// 增加数据库上下文开启事务的方式
+        /// </summary>
+        /// <typeparam name="TDbContext"></typeparam>
+        /// <param name="kernelService"></param>
+        /// <param name="beginTransactionFunc"></param>
+        public static void AddBeginTransationFunction<TDbContext>(this IKernelService kernelService, Func<TDbContext, IDbContextTransaction> beginTransactionFunc)
+            where TDbContext : DbContext
+        {
+            kernelService.Services.AddSingleton(
+                typeof(IEfNestedTransactionFunction<TDbContext>),
+                new DefaultEfNestedTransactionFunction<TDbContext>(beginTransactionFunc));
         }
     }
 }
