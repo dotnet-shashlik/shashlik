@@ -9,7 +9,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// context.Request.EnableBuffering
     /// </summary>
-    public class EnableBufferingConfigure : IAutoAspNetConfigure
+    public class EnableBufferingConfigure : IAutowireConfigureAspNet
     {
         public void Configure(IApplicationBuilder App)
         {

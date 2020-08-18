@@ -39,7 +39,7 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IAutowireConfigureBuilder BeginAutoAspNetConfigure(this IKernelConfigure kernelConfigure)
         {
-            return kernelConfigure.BeginAutowireConfigure<IAutoAspNetConfigure>();
+            return kernelConfigure.BeginAutowireConfigure<IAutowireConfigureAspNet>();
         }
 
         /// <summary>
@@ -49,12 +49,12 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IKernelConfigure BuildAutoAspNetConfigure(this IAutowireConfigureBuilder builder, IApplicationBuilder app)
         {
-            if (builder.AutowireBaseType != typeof(IAutoAspNetConfigure))
-                throw new Exception($"error auto configure type, must be {typeof(IAutoAspNetConfigure)}.");
-            return builder.Build(null, r =>
-            {
-                (r.ServiceInstance as IAutoAspNetConfigure).Configure(app);
-            });
+            if (builder.AutowireBaseType != typeof(IAutowireConfigureAspNet))
+                throw new Exception($"error auto configure type, must be {typeof(IAutowireConfigureAspNet)}.");
+            return builder.Build(r =>
+           {
+               (r.ServiceInstance as IAutowireConfigureAspNet).Configure(app);
+           });
         }
     }
 }

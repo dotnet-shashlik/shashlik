@@ -1,6 +1,7 @@
 ﻿using DotNetCore.CAP.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowire;
 using System;
@@ -11,9 +12,9 @@ namespace Shashlik.EventBus
 {
     public class EventBusAutowireService : IAutowireConfigureServices
     {
-        public EventBusAutowireService(EventBusOptions eventBusOptions)
+        public EventBusAutowireService(IOptions<EventBusOptions> eventBusOptions)
         {
-            EventBusOptions = eventBusOptions;
+            EventBusOptions = eventBusOptions.Value;
         }
 
         EventBusOptions EventBusOptions { get; }

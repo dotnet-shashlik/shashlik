@@ -24,15 +24,26 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        public static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, DependencyContext dependencyContext)
+        public static IKernelService AddShashlik(
+            this IServiceCollection services,
+            IConfiguration rootConfiguration,
+            DependencyContext dependencyContext = null,
+            bool autowireOptions = true,
+            bool autowireConfigureService = true
+            )
         {
-            if (dependencyContext == null)
-                throw new ArgumentNullException(nameof(dependencyContext));
+            dependencyContext = dependencyContext ?? DependencyContext.Default;
 
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
             var conventionAssemblies = AssemblyHelper.GetReferredAssemblies<IKernelService>(dependencyContext);
             conventionAssemblies.Add(typeof(IKernelService).Assembly);
-            return services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
+            var kernelService = services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
+            if (autowireOptions)
+                kernelService.AutowireConfigureOptions();
+            if (autowireConfigureService)
+                kernelService.AutowireConfigureService();
+
+            return kernelService;
         }
 
         /// <summary>
@@ -41,7 +52,11 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        static IKernelService AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration, IEnumerable<Assembly> assemblies, DependencyContext dependencyContext)
+        static IKernelService AddShashlik(
+            this IServiceCollection services,
+            IConfiguration rootConfiguration,
+            IEnumerable<Assembly> assemblies,
+            DependencyContext dependencyContext)
         {
             if (assemblies == null)
                 throw new ArgumentNullException(nameof(assemblies));
@@ -124,10 +139,13 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        public static IKernelConfigure UseShashlik(this IServiceProvider serviceProvider)
+        public static IKernelConfigure UseShashlik(this IServiceProvider serviceProvider, bool autowireConfigure = true)
         {
             KernelServiceProvider.InitServiceProvider(serviceProvider);
-            return new KernelConfigure(serviceProvider);
+            var kernelConfigure = new KernelConfigure(serviceProvider);
+            if (autowireConfigure)
+                kernelConfigure.AutowireConfigure();
+            return kernelConfigure;
         }
     }
 }

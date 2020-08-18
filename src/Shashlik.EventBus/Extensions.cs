@@ -18,9 +18,6 @@ namespace Shashlik.EventBus
         {
             kernelService.Services.AddCap(capAction);
 
-            kernelService.BeginAutowireService<IEventBusAutowireService>()
-                .BuildAutoService(null)
-
             // 替换cap默认的消费者服务查找器
             kernelService.Services.AddSingleton<IConsumerServiceSelector, ShashlikConsumerServiceSelector>();
             return kernelService;

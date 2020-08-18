@@ -8,7 +8,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// Shashlik aspnet core 配置
     /// </summary>
-    public interface IAutoAspNetConfigure : Shashlik.Kernel.Dependency.ISingleton
+    public interface IAutowireConfigureAspNet : Shashlik.Kernel.Dependency.ISingleton
     {
         void Configure(IApplicationBuilder App);
     }
