@@ -97,5 +97,19 @@ namespace Shashlik.Kernel.Autowire
             automaticBuilder.Removes.Add(typeof(TMatchType).GetTypeInfo());
             return automaticBuilder;
         }
+
+        /// <summary>
+        /// 按条件移除
+        /// </summary>
+        /// <typeparam name="TMatchType"></typeparam>
+        /// <param name="automaticBuilder"></param>
+        /// <returns></returns>
+        public static T Remove<TMatchType, T>(this T automaticBuilder, bool condition)
+            where T : IAutowireBuilder
+        {
+            if (condition)
+                automaticBuilder.Removes.Add(typeof(TMatchType).GetTypeInfo());
+            return automaticBuilder;
+        }
     }
 }
