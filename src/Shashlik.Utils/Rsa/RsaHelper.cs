@@ -32,16 +32,16 @@ namespace SecurityProxyClient
         }
 
         /// <summary>
-        /// x509公钥加密
+        /// x509公钥加密,填充模式pkcs1
         /// </summary>
         /// <param name="data">明文</param>
         /// <param name="publicKey">x509公钥</param>
         /// <param name="encoding">明文编码方式</param>
         /// <param name="padding">填充方式</param>
         /// <returns></returns>
-        public static string EncryptByX509(string data, string publicKey, string encoding = "UTF8")
+        public static string EncryptByX509(string data, string publicKey, string encoding = "UTF-8")
         {
-            return EncryptByX509(data, publicKey, Encoding.GetEncoding(encoding), RSAEncryptionPadding.OaepSHA256);
+            return EncryptByX509(data, publicKey, Encoding.GetEncoding(encoding), RSAEncryptionPadding.Pkcs1);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace SecurityProxyClient
         /// <param name="isPem">是否为pem格式</param>/// 
         /// <returns></returns>
         public static string Encrypt(string data, string publicKey, RSAKeyType keyType, Encoding encoding,
-            RSAEncryptionPadding padding, bool isPem = false)
+            RSAEncryptionPadding padding, bool isPem)
         {
             using (var rsa = RSA.Create())
             {
@@ -64,19 +64,19 @@ namespace SecurityProxyClient
         }
 
         /// <summary>
-        /// rsa公钥加密:pem+pkcs8+oaepsha256
+        /// rsa公钥加密:(pem+pkcs8公钥格式)+pkcs1(填充模式)
         /// </summary>
         /// <param name="data">明文</param>
         /// <param name="publicKey">公钥:pem</param>
         /// <param name="encoding">明文编码方式</param>
         /// <returns></returns>
-        public static string Encrypt(string data, string publicKey, string encoding = "UTF8")
+        public static string Encrypt(string data, string publicKey, string encoding = "UTF-8")
         {
-            return Encrypt(data, publicKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), RSAEncryptionPadding.OaepSHA256, true);
+            return Encrypt(data, publicKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), RSAEncryptionPadding.Pkcs1, true);
         }
 
         /// <summary>
-        /// 私钥解密,pkcs8
+        /// 私钥解密
         /// </summary>
         /// <param name="data">密文数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
@@ -86,17 +86,17 @@ namespace SecurityProxyClient
         /// <param name="keySize">密钥长度</param>
         /// <returns></returns>
         public static string Decrypt(string data, string privateKey, RSAKeyType keyType, Encoding encoding,
-            RSAEncryptionPadding padding)
+            RSAEncryptionPadding padding, bool isPem)
         {
             using (var rsa = RSA.Create())
             {
-                rsa.ImportPrivateKey(keyType, privateKey, true);
+                rsa.ImportPrivateKey(keyType, privateKey, isPem);
                 return rsa.DecryptBigData(data, padding, encoding);
             }
         }
 
         /// <summary>
-        /// 私钥解密:pem+pkcs8+oaepsha256
+        /// 私钥解密:(pem+pkcs8公钥格式)+pkcs1(填充模式)
         /// </summary>
         /// <param name="data">密文数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
@@ -105,13 +105,13 @@ namespace SecurityProxyClient
         /// <param name="padding">填充方式</param>
         /// <param name="keySize">密钥长度</param>
         /// <returns></returns>
-        public static string Decrypt(string data, string privateKey, string encoding = "UTF8")
+        public static string Decrypt(string data, string privateKey, string encoding = "UTF-8")
         {
-            return Decrypt(data, privateKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), RSAEncryptionPadding.OaepSHA256);
+            return Decrypt(data, privateKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), RSAEncryptionPadding.Pkcs1, true);
         }
 
         /// <summary>
-        /// 私钥签名,pkcs8
+        /// 私钥签名
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
@@ -122,27 +122,27 @@ namespace SecurityProxyClient
         /// <param name="keySize">密钥长度</param>
         /// <returns>签名</returns>
         public static string Sign(string data, string privateKey, RSAKeyType keyType, Encoding encoding,
-            HashAlgorithmName hash, RSASignaturePadding padding)
+            HashAlgorithmName hash, RSASignaturePadding padding, bool isPem)
         {
             using (var rsa = RSA.Create())
             {
-                rsa.ImportPrivateKey(keyType, privateKey, true);
+                rsa.ImportPrivateKey(keyType, privateKey, isPem);
                 var signed = rsa.SignData(encoding.GetBytes(data), hash, padding);
                 return Convert.ToBase64String(signed);
             }
         }
 
         /// <summary>
-        /// 私钥签名,pem+pkcs8+sha256+pss,
+        /// 私钥签名:(pem+pkcs8私钥格式)+(sha256散列算法)+(pss填充模式)
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
         /// <param name="encoding">待签名数据编码方式</param>
         /// <param name="keySize">密钥长度</param>
         /// <returns>签名</returns>
-        public static string Sign(string data, string privateKey, string encoding = "UTF8")
+        public static string Sign(string data, string privateKey, string encoding = "UTF-8")
         {
-            return Sign(data, privateKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
+            return Sign(data, privateKey, RSAKeyType.Pkcs8, Encoding.GetEncoding(encoding), HashAlgorithmName.SHA256, RSASignaturePadding.Pss, true);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace SecurityProxyClient
         }
 
         /// <summary>
-        /// x509公钥验签,sha256+pss
+        /// x509公钥验签: (sha256散列算法)+(pss填充模式)
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="signature">签名</param>
@@ -177,7 +177,7 @@ namespace SecurityProxyClient
         /// <param name="hash">签名hash算法</param>
         /// <param name="padding">签名填充模式</param>
         /// <returns></returns>
-        public static bool VerifyByX509(string data, string signature, string publicKey, string encoding)
+        public static bool VerifyByX509(string data, string signature, string publicKey, string encoding = "UTF-8")
         {
             return VerifyByX509(data, signature, publicKey, Encoding.GetEncoding(encoding), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
         }
@@ -194,7 +194,7 @@ namespace SecurityProxyClient
         /// <param name="padding">签名填充模式</param>
         /// <returns></returns>
         public static bool Verify(string data, string signature, string publicKey, RSAKeyType keyType
-            , Encoding encoding, HashAlgorithmName hash, RSASignaturePadding padding, bool isPem = false)
+            , Encoding encoding, HashAlgorithmName hash, RSASignaturePadding padding, bool isPem)
         {
             using (var rsa = RSA.Create())
             {
@@ -209,14 +209,14 @@ namespace SecurityProxyClient
         }
 
         /// <summary>
-        /// 公钥验签,pem+pkcs8+sha256+pss
+        /// 公钥验签:(pem+pkcs8私钥格式)+(sha256散列算法)+(pss填充模式)
         /// </summary>
         /// <param name="data">待签名数据</param>
         /// <param name="signature">签名</param>
         /// <param name="publicKey">公钥:pem</param>
         /// <param name="encoding">待签名数据编码方式</param>
         /// <returns></returns>
-        public static bool Verify(string data, string signature, string publicKey, string encoding)
+        public static bool Verify(string data, string signature, string publicKey, string encoding = "UTF-8")
         {
             return Verify(data, signature, publicKey, RSAKeyType.Pkcs8,
                 Encoding.GetEncoding(encoding), HashAlgorithmName.SHA256, RSASignaturePadding.Pss, true);

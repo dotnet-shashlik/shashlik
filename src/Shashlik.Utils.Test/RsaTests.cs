@@ -30,27 +30,46 @@ namespace Shashlik.Utils.Test
         public void test()
         {
             string data = "jb3rhg03pj5yl4756860h-590hu4-9hu90-hno[3h945u-5468upmobvg37546-[8pu5m7p[68ih90";
-            var a1 = RsaHelper.EncryptByX509(data, publicKeyCer, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);
-            var a2 = RsaHelper.Encrypt(data, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1, isPem: true);
 
-            var d1 = RsaHelper.Decrypt(a1, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);
-            var d2 = RsaHelper.Decrypt(a2, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);
-            var d3 = RsaHelper.Decrypt(a1, privateKeyPkcs1, Rsa.RSAKeyType.Pkcs1, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);
+            {
+                var a1 = RsaHelper.EncryptByX509(data, publicKeyCer, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);
+                var a2 = RsaHelper.Encrypt(data, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1, true);
 
-            d1.ShouldBe(d2);
-            d1.ShouldBe(d3);
+                var d1 = RsaHelper.Decrypt(a1, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1, true);
+                var d2 = RsaHelper.Decrypt(a2, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, RSAEncryptionPadding.Pkcs1, true);
+                var d3 = RsaHelper.Decrypt(a1, privateKeyPkcs1, Rsa.RSAKeyType.Pkcs1, Encoding.UTF8, RSAEncryptionPadding.Pkcs1, true);
 
-            var signture = RsaHelper.Sign(data, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss);
-            RsaHelper.VerifyByX509(data, signture, publicKeyCer, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss)
-                .ShouldBe(true);
-            RsaHelper.Verify(data, signture, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, isPem: true)
-                .ShouldBe(true);
+                d1.ShouldBe(d2);
+                d1.ShouldBe(d3);
 
-            var signture1 = RsaHelper.Sign(data, privateKeyPkcs1, Rsa.RSAKeyType.Pkcs1, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss);
-            RsaHelper.VerifyByX509(data, signture1, publicKeyCer, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss)
-                .ShouldBe(true);
-            RsaHelper.Verify(data, signture1, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, isPem: true)
-                .ShouldBe(true);
+                var signture = RsaHelper.Sign(data, privateKeyPkcs8, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, true);
+                RsaHelper.VerifyByX509(data, signture, publicKeyCer, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss)
+                    .ShouldBe(true);
+                RsaHelper.Verify(data, signture, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, true)
+                    .ShouldBe(true);
+
+                var signture1 = RsaHelper.Sign(data, privateKeyPkcs1, Rsa.RSAKeyType.Pkcs1, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, true);
+                RsaHelper.VerifyByX509(data, signture1, publicKeyCer, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss)
+                    .ShouldBe(true);
+                RsaHelper.Verify(data, signture1, publicKeyPem, Rsa.RSAKeyType.Pkcs8, Encoding.UTF8, HashAlgorithmName.MD5, RSASignaturePadding.Pss, true)
+                    .ShouldBe(true);
+            }
+
+            {
+                var a1 = RsaHelper.EncryptByX509(data, publicKeyCer);
+                var a2 = RsaHelper.Encrypt(data, publicKeyPem);
+
+                var d1 = RsaHelper.Decrypt(a1, privateKeyPkcs8);
+                var d2 = RsaHelper.Decrypt(a2, privateKeyPkcs8);
+
+                d1.ShouldBe(d2);
+
+                var signture = RsaHelper.Sign(data, privateKeyPkcs8);
+                RsaHelper.VerifyByX509(data, signture, publicKeyCer)
+                    .ShouldBe(true);
+                RsaHelper.Verify(data, signture, publicKeyPem)
+                    .ShouldBe(true);
+            }
         }
     }
 }
