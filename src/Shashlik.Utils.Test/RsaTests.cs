@@ -13,10 +13,10 @@ namespace Shashlik.Utils.Test
     {
         static RsaTests()
         {
-            publicKeyCer = File.ReadAllText(@"D:\testrsa\x509_public.cer");
-            publicKeyPem = File.ReadAllText(@"D:\testrsa\rsa_publick_key.pem");
-            privateKeyPkcs8 = File.ReadAllText(@"D:\testrsa\pkcs8_rsa_private_key.pem");
-            privateKeyPkcs1 = File.ReadAllText(@"D:\testrsa\rsa_private_key.pem");
+            publicKeyCer = File.ReadAllText(@"./rsatest.demokey/x509_public.cer");
+            publicKeyPem = File.ReadAllText(@"./rsatest.demokey/rsa_publick_key.pem");
+            privateKeyPkcs8 = File.ReadAllText(@"./rsatest.demokey/pkcs8_rsa_private_key.pem");
+            privateKeyPkcs1 = File.ReadAllText(@"./rsatest.demokey/rsa_private_key.pem");
         }
 
         static string publicKeyCer { get; }
