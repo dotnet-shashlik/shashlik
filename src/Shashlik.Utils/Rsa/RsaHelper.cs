@@ -37,7 +37,6 @@ namespace SecurityProxyClient
         /// <param name="data">明文</param>
         /// <param name="publicKey">x509公钥</param>
         /// <param name="encoding">明文编码方式</param>
-        /// <param name="padding">填充方式</param>
         /// <returns></returns>
         public static string EncryptByX509(string data, string publicKey, string encoding = "UTF-8")
         {
@@ -49,6 +48,7 @@ namespace SecurityProxyClient
         /// </summary>
         /// <param name="data">明文</param>
         /// <param name="publicKey">公钥:pem</param>
+        /// <param name="keyType">公钥格式</param>
         /// <param name="encoding">明文编码方式</param>
         /// <param name="padding">填充方式</param>
         /// <param name="isPem">是否为pem格式</param>/// 
@@ -83,7 +83,7 @@ namespace SecurityProxyClient
         /// <param name="keyType">私钥格式</param>
         /// <param name="encoding">解密密文编码</param>
         /// <param name="padding">填充方式</param>
-        /// <param name="keySize">密钥长度</param>
+        /// <param name="isPem">是否为pem格式</param>/// 
         /// <returns></returns>
         public static string Decrypt(string data, string privateKey, RSAKeyType keyType, Encoding encoding,
             RSAEncryptionPadding padding, bool isPem)
@@ -100,10 +100,7 @@ namespace SecurityProxyClient
         /// </summary>
         /// <param name="data">密文数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
-        /// <param name="keyType">私钥格式</param>
         /// <param name="encoding">解密密文编码</param>
-        /// <param name="padding">填充方式</param>
-        /// <param name="keySize">密钥长度</param>
         /// <returns></returns>
         public static string Decrypt(string data, string privateKey, string encoding = "UTF-8")
         {
@@ -119,7 +116,7 @@ namespace SecurityProxyClient
         /// <param name="encoding">待签名数据编码方式</param>
         /// <param name="hash">签名hash算法</param>
         /// <param name="padding">签名填充模式,pss/pkcs1,pss安全性更好</param>
-        /// <param name="keySize">密钥长度</param>
+        /// <param name="isPem">是否为pem格式</param>/// 
         /// <returns>签名</returns>
         public static string Sign(string data, string privateKey, RSAKeyType keyType, Encoding encoding,
             HashAlgorithmName hash, RSASignaturePadding padding, bool isPem)
@@ -138,7 +135,6 @@ namespace SecurityProxyClient
         /// <param name="data">待签名数据</param>
         /// <param name="privateKey">pkcs8,私钥:pem</param>
         /// <param name="encoding">待签名数据编码方式</param>
-        /// <param name="keySize">密钥长度</param>
         /// <returns>签名</returns>
         public static string Sign(string data, string privateKey, string encoding = "UTF-8")
         {
@@ -174,8 +170,6 @@ namespace SecurityProxyClient
         /// <param name="signature">签名</param>
         /// <param name="publicKey">公钥:pem</param>
         /// <param name="encoding">待签名数据编码方式</param>
-        /// <param name="hash">签名hash算法</param>
-        /// <param name="padding">签名填充模式</param>
         /// <returns></returns>
         public static bool VerifyByX509(string data, string signature, string publicKey, string encoding = "UTF-8")
         {
@@ -192,6 +186,7 @@ namespace SecurityProxyClient
         /// <param name="encoding">待签名数据编码方式</param>
         /// <param name="hash">签名hash算法</param>
         /// <param name="padding">签名填充模式</param>
+        /// <param name="isPem">是否为pem格式</param>
         /// <returns></returns>
         public static bool Verify(string data, string signature, string publicKey, RSAKeyType keyType
             , Encoding encoding, HashAlgorithmName hash, RSASignaturePadding padding, bool isPem)
