@@ -36,7 +36,7 @@ namespace SecurityProxyClient
         /// </summary>
         /// <param name="data">明文</param>
         /// <param name="publicKey">x509公钥</param>
-        /// <param name="encoding">明文编码方式</param>
+        /// <param name="encoding">明文编码方式</param>-
         /// <returns></returns>
         public static string EncryptByX509(string data, string publicKey, string encoding = "UTF-8")
         {
