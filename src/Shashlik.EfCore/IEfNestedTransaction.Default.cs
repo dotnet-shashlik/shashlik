@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
@@ -11,12 +12,12 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransaction, TDbContext dbContext,
-            IEfNestedTransactionFunction<TDbContext> beginTransactionFunc)
+        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransaction, TDbContext dbContext)
         {
             EfTransaction = efTransaction;
             DbContext = dbContext;
-            BeginTransactionFunc = beginTransactionFunc;
+            // 从服务中获取开启事务的方式,没注册的话就是null
+            BeginTransactionFunc = dbContext.GetService<IEfNestedTransactionFunction<TDbContext>>();
         }
 
         /// <summary>
