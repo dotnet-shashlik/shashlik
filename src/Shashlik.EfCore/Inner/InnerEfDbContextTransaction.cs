@@ -1,14 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Shashlik.Kernel.Dependency;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using Microsoft.Extensions.DependencyInjection;
-using System.Transactions;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 using System.Threading;
 
 namespace Shashlik.EfCore

@@ -12,7 +12,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// ef嵌套事务包装类
     /// </summary>
-    public class DefaultEfNestedTransactionnWrapper : IEfNestedTransactionWrapper
+    public class DefaultEfNestedTransactionWrapper : IEfNestedTransactionWrapper
     {
         ConcurrentDictionary<DbContext, ConcurrentBag<TransactionModel>> Trans { get; }
             = new ConcurrentDictionary<DbContext, ConcurrentBag<TransactionModel>>();

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using System;
+
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace Shashlik.EfCore
@@ -9,21 +9,30 @@ namespace Shashlik.EfCore
     /// 默认的嵌套事务
     /// </summary>
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
-           where TDbContext : DbContext
+        where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransaction, TDbContext dbContext, Func<TDbContext, IDbContextTransaction> beginTransactionFunc)
+        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransaction, TDbContext dbContext,
+            IEfNestedTransactionFunction<TDbContext> beginTransactionFunc)
         {
             EfTransaction = efTransaction;
             DbContext = dbContext;
             BeginTransactionFunc = beginTransactionFunc;
         }
 
-        IEfNestedTransactionWrapper EfTransaction { get; }
-        TDbContext DbContext { get; }
+        /// <summary>
+        /// 嵌套事务包装类
+        /// </summary>
+        private IEfNestedTransactionWrapper EfTransaction { get; }
+
+        /// <summary>
+        /// 数据库上下文
+        /// </summary>
+        private TDbContext DbContext { get; }
+
         /// <summary>
         /// 开启事务的方式
         /// </summary>
-        Func<TDbContext, IDbContextTransaction> BeginTransactionFunc { get; }
+        private IEfNestedTransactionFunction<TDbContext> BeginTransactionFunc { get; }
 
         public virtual IDbContextTransaction Current => EfTransaction.GetCurrent(DbContext);
 
@@ -31,8 +40,8 @@ namespace Shashlik.EfCore
         {
             if (BeginTransactionFunc == null)
                 return EfTransaction.Begin(DbContext);
-            else
-                return EfTransaction.Begin(DbContext, dbContext => BeginTransactionFunc((TDbContext)dbContext));
+            return EfTransaction.Begin(DbContext,
+                dbContext => BeginTransactionFunc.BeginTransactionFunc((TDbContext) dbContext));
         }
     }
 }
