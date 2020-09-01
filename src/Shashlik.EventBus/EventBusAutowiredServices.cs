@@ -38,7 +38,7 @@ namespace Shashlik.EventBus
                     r.SucceedMessageExpiredAfter = EventBusOptions.SucceedMessageExpiredAfter.Value;
 
                 kernelService
-                    .BeginAutowireService<IEventBusConfigureServices>()
+                    .BeginAutowired<IEventBusConfigureServices>()
                     .Build(descriptor =>
                     {
                         (descriptor.ServiceInstance as IEventBusConfigureServices)?.Configure(r);

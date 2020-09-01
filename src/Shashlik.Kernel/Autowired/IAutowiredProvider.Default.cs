@@ -13,11 +13,11 @@ namespace Shashlik.Kernel.Autowired
 {
     public class DefaultAutowiredProvider : IAutowiredProvider
     {
-        public void Autowire(IDictionary<TypeInfo, AutowiredDescriptor> pipelineService,
-            Action<AutowiredDescriptor> autowireAction)
+        public void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> pipelineService,
+            Action<AutowiredDescriptor> autowiredAction)
         {
             foreach (var item in pipelineService)
-                Invoke(item.Value as InnerAutowiredDescriptor, pipelineService, autowireAction);
+                Invoke(item.Value as InnerAutowiredDescriptor, pipelineService, autowiredAction);
         }
 
         public IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(

@@ -1,13 +1,6 @@
-﻿using Shashlik.Kernel.Dependency;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
 using System;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using System.Reflection;
-using Microsoft.Extensions.DependencyModel;
-using Shashlik.Kernel.Autowire;
-using Microsoft.Extensions.Configuration;
+using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Kernel
 {
@@ -20,40 +13,38 @@ namespace Shashlik.Kernel
         /// 自动配置IAutoAspNetConfigure
         /// </summary>
         /// <param name="kernelConfigure"></param>
-        /// <param name="rootConfiguration"></param>
-        /// <param name="replaces"></param>
-        /// <param name="dependencyContext"></param>
-        public static IKernelConfigure AutoAspNetConfigure(
+        /// <param name="app"></param>
+        public static IKernelConfigure AutowiredAspNetConfigure(
             this IKernelConfigure kernelConfigure,
             IApplicationBuilder app)
         {
-            return kernelConfigure.BeginAutoAspNetConfigure()
-                .BuildAutoAspNetConfigure(app);
+            return kernelConfigure.BeginAutowiredAspNetConfigure()
+                .BuildAutowiredAspNetConfigure(app);
         }
 
         /// <summary>
         /// 开始自动配置IAutoConfigure
         /// </summary>
         /// <param name="kernelConfigure"></param>
-        /// <param name="rootConfiguration"></param>
         /// <returns></returns>
-        public static IAutowireConfigureBuilder BeginAutoAspNetConfigure(this IKernelConfigure kernelConfigure)
+        public static IAutowiredConfigureBuilder BeginAutowiredAspNetConfigure(this IKernelConfigure kernelConfigure)
         {
-            return kernelConfigure.BeginAutowireConfigure<IAutowireConfigureAspNet>();
+            return kernelConfigure.BeginAutowiredConfigure();
         }
 
         /// <summary>
         /// 构建自动配置IAutoConfigure
         /// </summary>
         /// <param name="builder"></param>
+        /// <param name="app"></param>
         /// <returns></returns>
-        public static IKernelConfigure BuildAutoAspNetConfigure(this IAutowireConfigureBuilder builder, IApplicationBuilder app)
+        public static IKernelConfigure BuildAutowiredAspNetConfigure(this IAutowiredConfigureBuilder builder, IApplicationBuilder app)
         {
-            if (builder.AutowireBaseType != typeof(IAutowireConfigureAspNet))
-                throw new Exception($"error auto configure type, must be {typeof(IAutowireConfigureAspNet)}.");
+            if (builder.AutowiredBaseType != typeof(IAutowiredConfigureAspNetCore))
+                throw new Exception($"error auto configure type, must be {typeof(IAutowiredConfigureAspNetCore)}.");
             return builder.Build(r =>
            {
-               (r.ServiceInstance as IAutowireConfigureAspNet).Configure(app);
+               (r.ServiceInstance as IAutowiredConfigureAspNetCore)?.Configure(app);
            });
         }
     }

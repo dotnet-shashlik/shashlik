@@ -9,27 +9,13 @@ namespace Shashlik.Kernel
     /// <summary>
     /// context.Request.EnableBuffering
     /// </summary>
-    public class EnableBufferingConfigure : IAutowireConfigureAspNet
+    public class EnableBufferingConfigure : IAutowiredConfigureAspNetCore
     {
-        public void Configure(IApplicationBuilder App)
+        public void Configure(IApplicationBuilder app)
         {
-            App.UseMiddleware<EnableBufferinMiddleware>();
+            app.UseMiddleware<EnableBufferinMiddleware>();
         }
 
-        public class EnableBufferinMiddleware
-        {
-            private readonly RequestDelegate _next;
 
-            public EnableBufferinMiddleware(RequestDelegate next)
-            {
-                _next = next;
-            }
-
-            public async Task Invoke(HttpContext context)
-            {
-                context.Request.EnableBuffering();
-                await _next(context);
-            }
-        }
     }
 }

@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="kernelServices"></param>
         /// <typeparam name="TBaseType"></typeparam>
         /// <returns></returns>
-        public static IAutowiredServiceBuilder BeginAutowireService<TBaseType>(this IKernelServices kernelServices)
+        public static IAutowiredServiceBuilder BeginAutowired<TBaseType>(this IKernelServices kernelServices)
             where TBaseType : class
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
@@ -36,7 +36,7 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="kernelConfigure"></param>
         /// <typeparam name="TBaseType"></typeparam>
         /// <returns></returns>
-        public static IAutowiredConfigureBuilder BeginAutowiredConfigure<TBaseType>(
+        public static IAutowiredConfigureBuilder BeginAutowired<TBaseType>(
             this IKernelConfigure kernelConfigure)
             where TBaseType : class
         {
@@ -58,14 +58,14 @@ namespace Shashlik.Kernel.Autowired
             Action<AutowiredDescriptor> autowiredAction)
         {
             IDictionary<TypeInfo, AutowiredDescriptor> descriptors;
-            if (!builder.AutowireBaseTypeIsAttribute)
-                descriptors = builder.AutowireProvider.LoadFrom(builder.AutowireBaseType,
+            if (!builder.AutowiredBaseTypeIsAttribute)
+                descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType,
                     builder.KernelService.Services, builder.DependencyContext);
             else
-                descriptors = builder.AutowireProvider.LoadFrom(builder.AutowireBaseType, builder.DependencyContext);
+                descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType, builder.DependencyContext);
 
             if (autowiredAction != null)
-                builder.AutowireProvider.Autowire(descriptors, autowiredAction);
+                builder.AutowiredProvider.Autowired(descriptors, autowiredAction);
             return builder.KernelService;
         }
 
@@ -73,20 +73,20 @@ namespace Shashlik.Kernel.Autowired
         /// 执行自动装配 应用配置
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="autowireAction"></param>
+        /// <param name="autowiredAction"></param>
         /// <returns></returns>
         public static IKernelConfigure Build(this IAutowiredConfigureBuilder builder,
-            Action<AutowiredDescriptor> autowireAction)
+            Action<AutowiredDescriptor> autowiredAction)
         {
             IDictionary<TypeInfo, AutowiredDescriptor> descriptors;
-            if (!builder.AutowireBaseTypeIsAttribute)
-                descriptors = builder.AutowireProvider.LoadFrom(builder.AutowireBaseType,
+            if (!builder.AutowiredBaseTypeIsAttribute)
+                descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType,
                     builder.KernelConfigure.ServiceProvider);
             else
-                descriptors = builder.AutowireProvider.LoadFrom(builder.AutowireBaseType, builder.DependencyContext);
+                descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType, builder.DependencyContext);
 
-            if (autowireAction != null)
-                builder.AutowireProvider.Autowire(descriptors, autowireAction);
+            if (autowiredAction != null)
+                builder.AutowiredProvider.Autowired(descriptors, autowiredAction);
             return builder.KernelConfigure;
         }
     }

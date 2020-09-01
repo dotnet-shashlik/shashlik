@@ -14,10 +14,10 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 执行装配
         /// </summary>
-        /// <param name="autowireService"></param>
-        /// <param name="autowireAction"></param>
-        void Autowire(IDictionary<TypeInfo, AutowiredDescriptor> autowireService,
-            Action<AutowiredDescriptor> autowireAction);
+        /// <param name="autowiredService"></param>
+        /// <param name="autowiredAction"></param>
+        void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> autowiredService,
+            Action<AutowiredDescriptor> autowiredAction);
 
         /// <summary>
         /// 从依赖上下文加载
@@ -44,10 +44,11 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 扫描特性类型
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="attributeType"></param>
         /// <param name="dependencyContext"></param>
+        /// <param name="inherit"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(TypeInfo attiributeType,
+        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(TypeInfo attributeType,
             DependencyContext dependencyContext = null, bool inherit = true);
     }
 }

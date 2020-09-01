@@ -17,12 +17,12 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 自动装配类型
         /// </summary>
-        TypeInfo AutowireBaseType { get; }
+        TypeInfo AutowiredBaseType { get; }
 
         /// <summary>
         /// 装配类型是否为特性
         /// </summary>
-        bool AutowireBaseTypeIsAttribute { get; }
+        bool AutowiredBaseTypeIsAttribute { get; }
 
         // /// <summary>
         // /// 需要移除的装配类型
@@ -37,7 +37,7 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 自动装配提供类
         /// </summary>
-        IAutowiredProvider AutowireProvider { get; }
+        IAutowiredProvider AutowiredProvider { get; }
     }
 
     public interface IAutowiredServiceBuilder : IAutowiredBuilder

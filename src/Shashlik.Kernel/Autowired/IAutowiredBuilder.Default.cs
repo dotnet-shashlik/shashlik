@@ -7,38 +7,38 @@ using Microsoft.Extensions.Configuration;
 
 namespace Shashlik.Kernel.Autowired
 {
-    class DefaultAutowireBuilder : IAutowiredBuilder
+    class DefaultAutowiredBuilder : IAutowiredBuilder
     {
-        public DefaultAutowireBuilder(TypeInfo autowireBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext)
         {
-            AutowireBaseType = autowireBaseType;
-            AutowireBaseTypeIsAttribute = autowireBaseType.IsSubTypeOf<Attribute>();
-            AutowireProvider = autoInitializer;
+            AutowiredBaseType = autowiredBaseType;
+            AutowiredBaseTypeIsAttribute = autowiredBaseType.IsSubTypeOf<Attribute>();
+            AutowiredProvider = autoInitializer;
             DependencyContext = dependencyContext;
         }
 
         /// <summary>
         /// 自动装配基类
         /// </summary>
-        public TypeInfo AutowireBaseType { get; }
+        public TypeInfo AutowiredBaseType { get; }
 
-        public bool AutowireBaseTypeIsAttribute { get; }
+        public bool AutowiredBaseTypeIsAttribute { get; }
 
         public DependencyContext DependencyContext { get; set; }
 
         /// <summary>
         /// 自动装配初始化器
         /// </summary>
-        public IAutowiredProvider AutowireProvider { get; }
+        public IAutowiredProvider AutowiredProvider { get; }
     }
 
 
-    class DefaultAutowiredServiceBuilder : DefaultAutowireBuilder, IAutowiredServiceBuilder
+    class DefaultAutowiredServiceBuilder : DefaultAutowiredBuilder, IAutowiredServiceBuilder
     {
-        public DefaultAutowiredServiceBuilder(TypeInfo autowireBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredServiceBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext, IKernelServices kernelService)
-            : base(autowireBaseType, autoInitializer, dependencyContext)
+            : base(autowiredBaseType, autoInitializer, dependencyContext)
         {
             KernelService = kernelService;
         }
@@ -46,11 +46,11 @@ namespace Shashlik.Kernel.Autowired
         public IKernelServices KernelService { get; }
     }
 
-    class DefaultAutowiredConfigureBuilder : DefaultAutowireBuilder, IAutowiredConfigureBuilder
+    class DefaultAutowiredConfigureBuilder : DefaultAutowiredBuilder, IAutowiredConfigureBuilder
     {
-        public DefaultAutowiredConfigureBuilder(TypeInfo autowireBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredConfigureBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext, IKernelConfigure kernelConfigure)
-            : base(autowireBaseType, autoInitializer, dependencyContext)
+            : base(autowiredBaseType, autoInitializer, dependencyContext)
         {
             KernelConfigure = kernelConfigure;
         }

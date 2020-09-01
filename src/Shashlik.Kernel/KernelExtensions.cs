@@ -40,9 +40,9 @@ namespace Shashlik.Kernel
             conventionAssemblies.Add(typeof(IKernelServices).Assembly);
             var kernelService = services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
             if (autowireOptions)
-                kernelService.AutowiredConfigureOptions();
+                kernelService.AutowiredOptions();
             if (autowireConfigureService)
-                kernelService.AutowiredConfigureServices();
+                kernelService.AutowiredServices();
 
             return kernelService;
         }

@@ -13,7 +13,7 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="kernelService"></param>
         /// <returns></returns>
-        public static IKernelServices AutowiredConfigureOptions(this IKernelServices kernelService)
+        public static IKernelServices AutowiredOptions(this IKernelServices kernelService)
         {
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
                 .GetMethod("Configure", new Type[] {typeof(IServiceCollection), typeof(IConfiguration)});
@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Autowired
                 throw new KernelExceptionInitException(
                     $"cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
 
-            kernelService.BeginAutowireService<AutoOptionsAttribute>()
+            kernelService.BeginAutowired<AutoOptionsAttribute>()
                 .Build(r =>
                 {
                     // 注册options
@@ -45,10 +45,10 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
-        public static IKernelServices AutowiredConfigureServices(this IKernelServices kernelServices)
+        public static IKernelServices AutowiredServices(this IKernelServices kernelServices)
         {
-            return kernelServices.BeginAutowiredConfigureService()
-                .BuildAutowireConfigureServices();
+            return kernelServices.BeginAutowiredServices()
+                .BuildAutowiredServices();
         }
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
-        public static IAutowiredServiceBuilder BeginAutowiredConfigureService(this IKernelServices kernelServices)
+        public static IAutowiredServiceBuilder BeginAutowiredServices(this IKernelServices kernelServices)
         {
-            return kernelServices.BeginAutowireService<IAutowiredConfigureServices>();
+            return kernelServices.BeginAutowired<IAutowiredConfigureServices>();
         }
 
         /// <summary>
@@ -66,13 +66,13 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public static IKernelServices BuildAutowireConfigureServices(this IAutowiredServiceBuilder builder)
+        public static IKernelServices BuildAutowiredServices(this IAutowiredServiceBuilder builder)
         {
-            if (builder.AutowireBaseType != typeof(IAutowiredConfigureServices))
+            if (builder.AutowiredBaseType != typeof(IAutowiredConfigureServices))
                 throw new Exception($"error auto service type, must be {typeof(IAutowiredConfigureServices)}.");
 
             builder.Build(r =>
-                ((IAutowiredConfigureServices) r.ServiceInstance).ConfigureServices(builder.KernelService));
+                ((IAutowiredConfigureServices) r.ServiceInstance)?.ConfigureServices(builder.KernelService));
             return builder.KernelService;
         }
 
@@ -82,7 +82,7 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="kernelConfigure"></param>
         public static IKernelConfigure AutowiredConfigure(this IKernelConfigure kernelConfigure)
         {
-            return kernelConfigure.BeginAutowireConfigure()
+            return kernelConfigure.BeginAutowiredConfigure()
                 .BuildAutowiredConfigure();
         }
 
@@ -91,9 +91,9 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="kernelConfigure"></param>
         /// <returns></returns>
-        public static IAutowiredConfigureBuilder BeginAutowireConfigure(this IKernelConfigure kernelConfigure)
+        public static IAutowiredConfigureBuilder BeginAutowiredConfigure(this IKernelConfigure kernelConfigure)
         {
-            return kernelConfigure.BeginAutowiredConfigure<IAutowiredConfigure>();
+            return kernelConfigure.BeginAutowired<IAutowiredConfigure>();
         }
 
         /// <summary>
@@ -103,9 +103,9 @@ namespace Shashlik.Kernel.Autowired
         /// <returns></returns>
         public static IKernelConfigure BuildAutowiredConfigure(this IAutowiredConfigureBuilder builder)
         {
-            if (builder.AutowireBaseType != typeof(IAutowiredConfigure))
+            if (builder.AutowiredBaseType != typeof(IAutowiredConfigure))
                 throw new Exception($"error auto configure type, must be {typeof(IAutowiredConfigure)}.");
-            return builder.Build(r => ((IAutowiredConfigure) r.ServiceInstance).Configure(builder.KernelConfigure));
+            return builder.Build(r => ((IAutowiredConfigure) r.ServiceInstance)?.Configure(builder.KernelConfigure));
         }
     }
 }
