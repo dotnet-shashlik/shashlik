@@ -82,7 +82,7 @@ namespace Shashlik.Utils.Test
             };
 
             var dic = obj.MapToDictionary();
-            dic.Count.ShouldBe(4);
+            dic.Count.ShouldBe(9);
             dic.ContainsKey("first").ShouldBeTrue();
             dic["first"].ShouldBe("用户11111，提交了新的实名认证申请。");
         }

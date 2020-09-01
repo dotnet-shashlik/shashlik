@@ -27,7 +27,7 @@ namespace Shashlik.Utils.Test
 
             }, TimeSpan.FromSeconds(1));
 
-            Thread.Sleep(12 * 1000);
+            Thread.Sleep(2 * 1000);
 
             i.ShouldBe(origin + 1);
         }
