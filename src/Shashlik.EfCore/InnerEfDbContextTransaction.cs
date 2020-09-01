@@ -20,7 +20,6 @@ namespace Shashlik.EfCore
         /// </summary>
         /// <param name="topDbContextTransaction">顶层事务</param>
         /// <param name="isTopTransaction">是否为顶层事务</param>
-        /// <param name="onTopTransactionComplete">顶层事务完成时</param>
         public InnerEfDbContextTransaction(
             IDbContextTransaction topDbContextTransaction,
             bool isTopTransaction)
@@ -95,8 +94,7 @@ namespace Shashlik.EfCore
             {
                 TopDbContextTransaction.Rollback();
                 IsTopRollback = true;
-                var tran = (TopDbContextTransaction as InnerEfDbContextTransaction);
-                if (tran != null)
+                if (TopDbContextTransaction is InnerEfDbContextTransaction tran)
                     tran.IsCompleted = true;
             }
             IsCompleted = true;
@@ -106,7 +104,7 @@ namespace Shashlik.EfCore
         {
             if (IsTopTransaction && !IsTopRollback && !IsTopDisposed)
             {
-                await TopDbContextTransaction.CommitAsync();
+                await TopDbContextTransaction.CommitAsync(cancellationToken);
             }
             IsCompleted = true;
         }
@@ -115,10 +113,9 @@ namespace Shashlik.EfCore
         {
             if (!IsTopRollback && !IsTopDisposed)
             {
-                await TopDbContextTransaction.RollbackAsync();
+                await TopDbContextTransaction.RollbackAsync(cancellationToken);
                 IsTopRollback = true;
-                var tran = (TopDbContextTransaction as InnerEfDbContextTransaction);
-                if (tran != null)
+                if (TopDbContextTransaction is InnerEfDbContextTransaction tran)
                     tran.IsCompleted = true;
             }
             IsCompleted = true;

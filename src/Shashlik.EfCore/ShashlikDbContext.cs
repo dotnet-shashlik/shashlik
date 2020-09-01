@@ -18,8 +18,8 @@ namespace Shashlik.EfCore
         /// 实体注册完成以后的钩子方法
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="type"></param>
-        protected virtual void EntityRegisterAfter(EntityTypeBuilder builder, Type type) { }
+        /// <param name="entityType">实体类型</param>
+        protected virtual void EntityRegisterAfter(EntityTypeBuilder builder, Type entityType) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

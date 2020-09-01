@@ -7,12 +7,12 @@ using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Autowired
 {
     /// <summary>
     /// 自动装配构建
     /// </summary>
-    public interface IAutowireBuilder
+    public interface IAutowiredBuilder
     {
         /// <summary>
         /// 自动装配类型
@@ -24,33 +24,28 @@ namespace Shashlik.Kernel.Autowire
         /// </summary>
         bool AutowireBaseTypeIsAttribute { get; }
 
-        /// <summary>
-        /// 需要移除的装配类型
-        /// </summary>
-        HashSet<TypeInfo> Removes { get; }
+        // /// <summary>
+        // /// 需要移除的装配类型
+        // /// </summary>
+        // HashSet<TypeInfo> Removes { get; }
 
         /// <summary>
         /// 扫描依赖上下文
         /// </summary>
-        DependencyContext DependencyContext { get; set; }
-
-        /// <summary>
-        /// 根配置
-        /// </summary>
-        IConfiguration RootConfiguration { get; set; }
+        DependencyContext DependencyContext { get; }
 
         /// <summary>
         /// 自动装配提供类
         /// </summary>
-        IAutowireProvider AutowireProvider { get; }
+        IAutowiredProvider AutowireProvider { get; }
     }
 
-    public interface IAutowireServiceBuilder : IAutowireBuilder
+    public interface IAutowiredServiceBuilder : IAutowiredBuilder
     {
         IKernelServices KernelService { get; }
     }
 
-    public interface IAutowireConfigureBuilder : IAutowireBuilder
+    public interface IAutowiredConfigureBuilder : IAutowiredBuilder
     {
         IKernelConfigure KernelConfigure { get; }
     }

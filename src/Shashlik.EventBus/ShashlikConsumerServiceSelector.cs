@@ -26,7 +26,7 @@ namespace Shashlik.EventBus
         private readonly ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>> _poundList;
 
         /// <summary>
-        /// Creates a new <see cref="DefaultConsumerServiceSelector" />.
+        /// Creates a new <see cref="ShashlikConsumerServiceSelector" />.
         /// </summary>
         public ShashlikConsumerServiceSelector(IServiceProvider serviceProvider)
         {

@@ -24,7 +24,6 @@ namespace Shashlik.EfCore
         /// 增加EF配置映射,注册所有的IEntityTypeConfiguration<>实现类
         /// </summary>
         /// <param name="kernelBuilder"></param>
-        /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelServices AddEfEntityMappings(this IKernelServices kernelBuilder)
         {

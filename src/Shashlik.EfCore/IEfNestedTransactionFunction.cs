@@ -7,7 +7,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 定义开启事务的方式
     /// </summary>
-    public interface IEfNestedTransactionFunction<TDbContext>
+    public interface IEfNestedTransactionFunction<in TDbContext>
         where TDbContext : DbContext
     {
         /// <summary>

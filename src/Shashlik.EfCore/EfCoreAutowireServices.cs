@@ -14,13 +14,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.EfCore
 {
     /// <summary>
     /// 自动注册嵌套事务, 自动注册ef实体类
     /// </summary>
-    public class EfCoreAutowireServices : IAutowireConfigureServices
+    public class EfCoreAutowireServices : IAutowiredConfigureServices
     {
         public void ConfigureServices(IKernelServices kernelService)
         {

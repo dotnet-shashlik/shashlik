@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 
 namespace Shashlik.Kernel.Autowire.Attributes
 {
@@ -8,13 +6,16 @@ namespace Shashlik.Kernel.Autowire.Attributes
     /// 在指定类型之前进行装配
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class BeforeOnAttribute : Attribute
+    public class AfterAtAttribute : Attribute
     {
-        public BeforeOnAttribute(params Type[] types)
+        public AfterAtAttribute(Type type)
         {
-            Types = types.Select(r => r.GetTypeInfo()).ToArray();
+            AfterAt = type;
         }
 
-        public TypeInfo[] Types { get; set; }
+        /// <summary>
+        /// 依赖类型
+        /// </summary>
+        public Type AfterAt { get; set; }
     }
 }

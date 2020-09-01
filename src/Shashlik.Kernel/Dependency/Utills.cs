@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Shashlik.Kernel.Dependency
 {
-    static class Utils
+    public static class Utils
     {
         /// <summary>
         /// 泛型参数是否匹配
@@ -59,7 +59,8 @@ namespace Shashlik.Kernel.Dependency
         {
             var convectionInterfaces = type.ImplementedInterfaces.Where(r => IsConvectionInterfaceType(r)).ToList();
             if (convectionInterfaces.Count > 1)
-                throw new System.Exception($"convention type:{type} can't inherit from multiple interface:{Environment.NewLine}{convectionInterfaces.Select(r => r.FullName).Join(Environment.NewLine)}");
+                throw new System.Exception(
+                    $"convention type:{type} can't inherit from multiple interface:{Environment.NewLine}{convectionInterfaces.Select(r => r.FullName).Join(Environment.NewLine)}");
         }
 
         /// <summary>
@@ -70,9 +71,9 @@ namespace Shashlik.Kernel.Dependency
         public static List<(IConditionBase condition, int order)> GetConditions(Type type)
         {
             return type.GetCustomAttributes()
-                 .Where(r => r is IConditionBase)
-                 .Select(r => (r as IConditionBase, r.GetType().GetCustomAttribute<ConditionOrderAttribute>().Order))
-                 .ToList();
+                .Where(r => r is IConditionBase)
+                .Select(r => (r as IConditionBase, r.GetType().GetCustomAttribute<ConditionOrderAttribute>().Order))
+                .ToList();
         }
 
         private static void FillBaseType(HashSet<Type> results, Type type)
@@ -117,6 +118,5 @@ namespace Shashlik.Kernel.Dependency
         {
             return services.Any(r => r.ServiceType == serviceType);
         }
-
     }
 }

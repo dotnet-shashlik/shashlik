@@ -28,7 +28,7 @@ namespace Shashlik.EventBus
         /// <typeparam name="T">事件类型</typeparam>
         /// <param name="eventModel">事件模型</param>
         /// <param name="callbackName"></param>
-        /// <param name="callbackName"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         Task PublishAsync<T>(T eventModel, string callbackName = null, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent;
     }

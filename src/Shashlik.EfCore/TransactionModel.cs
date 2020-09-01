@@ -9,7 +9,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 事务模型
     /// </summary>
-    class TransationModel
+    class TransactionModel
     {
         public DbContext DbContext { get; set; }
 

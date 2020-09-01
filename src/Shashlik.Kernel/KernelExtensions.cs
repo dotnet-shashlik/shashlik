@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Shashlik.Kernel.Autowire;
+using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Kernel
 {
@@ -39,9 +40,9 @@ namespace Shashlik.Kernel
             conventionAssemblies.Add(typeof(IKernelServices).Assembly);
             var kernelService = services.AddShashlik(rootConfiguration, conventionAssemblies, dependencyContext);
             if (autowireOptions)
-                kernelService.AutowireConfigureOptions();
+                kernelService.AutowiredConfigureOptions();
             if (autowireConfigureService)
-                kernelService.AutowireConfigureService();
+                kernelService.AutowiredConfigureServices();
 
             return kernelService;
         }
@@ -65,7 +66,7 @@ namespace Shashlik.Kernel
             services.TryAddSingleton<IConventionServiceDescriptorProvider, DefaultConventionServiceDescriptorProvider>();
             services.TryAddSingleton<IBasedOnServiceDescriptorProvider, DefaultBasedOnServiceDescriptorProvider>();
             services.TryAddSingleton<IConditionFilterAddProvider, DefaultConditionFilterAddProvider>();
-            services.TryAddSingleton<IAutowireProvider>(new DefaultAutowireProvider());
+            services.TryAddSingleton<IAutowiredProvider>(new DefaultAutowiredProvider());
 
 
             using var serviceProvider = services.BuildServiceProvider();
@@ -144,7 +145,7 @@ namespace Shashlik.Kernel
             KernelServiceProvider.InitServiceProvider(serviceProvider);
             var kernelConfigure = new KernelConfigure(serviceProvider);
             if (autowireConfigure)
-                kernelConfigure.AutowireConfigure();
+                kernelConfigure.AutowiredConfigure();
             return kernelConfigure;
         }
     }

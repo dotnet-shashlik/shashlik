@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+// ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
 namespace Shashlik.EfCore
 {
     /// <summary>
-    /// 默认的环境事务
+    /// 默认的嵌套事务
     /// </summary>
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
            where TDbContext : DbContext

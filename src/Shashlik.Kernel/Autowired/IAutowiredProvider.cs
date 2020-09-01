@@ -4,49 +4,42 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Autowired
 {
     /// <summary>
     /// 自动装配初始化器
     /// </summary>
-    public interface IAutowireProvider
+    public interface IAutowiredProvider
     {
         /// <summary>
         /// 执行装配
         /// </summary>
-        /// <param name="pipelineService"></param>
+        /// <param name="autowireService"></param>
         /// <param name="autowireAction"></param>
-        void Autowire(IDictionary<TypeInfo, AutowireDescriptor> pipelineService, Action<AutowireDescriptor> autowireAction);
+        void Autowire(IDictionary<TypeInfo, AutowiredDescriptor> autowireService,
+            Action<AutowiredDescriptor> autowireAction);
 
         /// <summary>
-        /// 
+        /// 从依赖上下文加载
         /// </summary>
         /// <param name="baseType"></param>
         /// <param name="services"></param>
-        /// <param name="replaces"></param>
-        /// <param name="removes"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
+        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
             TypeInfo baseType,
             IServiceCollection services,
-            IEnumerable<TypeInfo> removes = null,
             DependencyContext dependencyContext = null);
 
         /// <summary>
-        /// 
+        /// 从服务提供类加载
         /// </summary>
         /// <param name="baseType"></param>
         /// <param name="serviceProvider"></param>
-        /// <param name="replaces"></param>
-        /// <param name="removes"></param>
-        /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowireDescriptor> LoadFrom(
+        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
             TypeInfo baseType,
-            IServiceProvider serviceProvider,
-            IEnumerable<TypeInfo> removes = null,
-            DependencyContext dependencyContext = null);
+            IServiceProvider serviceProvider);
 
         /// <summary>
         /// 扫描特性类型
@@ -54,6 +47,7 @@ namespace Shashlik.Kernel.Autowire
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowireDescriptor> LoadFromAttribute(TypeInfo attiributeType, DependencyContext dependencyContext = null, bool inherit = true);
+        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(TypeInfo attiributeType,
+            DependencyContext dependencyContext = null, bool inherit = true);
     }
 }
