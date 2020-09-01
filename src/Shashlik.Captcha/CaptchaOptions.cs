@@ -6,6 +6,11 @@ namespace Shashlik.Captcha
     public class CaptchaOptions
     {
         /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; }
+
+        /// <summary>
         /// 验证码过期时间,默认60分钟
         /// </summary>
         public int ExpireSecond { get; set; } = 5 * 60;

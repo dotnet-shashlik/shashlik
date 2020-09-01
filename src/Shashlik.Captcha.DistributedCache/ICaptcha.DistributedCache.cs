@@ -17,13 +17,16 @@ namespace Shashlik.Captcha
     {
         public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)
         {
-            this.cache = cache;
-            this.options = options;
+            this.Cache = cache;
+            this.Options = options;
         }
 
-        IDistributedCache cache { get; }
-        IOptionsMonitor<CaptchaOptions> options { get; }
-        const string cachePrefix = "CAPTCHA:";
+        private IDistributedCache Cache { get; }
+
+        private IOptionsMonitor<CaptchaOptions> Options { get; }
+
+        // 0:subject,1:target
+        private const string CachePrefix = "CAPTCHA:{0}:{1}";
 
         /// <summary>
         /// 验证code是否正确
@@ -35,31 +38,31 @@ namespace Shashlik.Captcha
         /// <returns></returns>
         public async Task<bool> IsValid(string subject, string target, string code, bool isDeleteOnSucceed = true)
         {
-            string key = cachePrefix + subject + "_" + target;
+            var key = CachePrefix.Format(subject, target);
 
-            var codeModel = await cache.GetObjectAsync<CodeModel>(key);
+            var codeModel = await Cache.GetObjectAsync<CodeModel>(key);
             if (codeModel == null)
                 return false;
 
             if (code == codeModel.Code)
             {
                 if (isDeleteOnSucceed)
-                    await cache.RemoveAsync(key);
+                    await Cache.RemoveAsync(key);
                 return true;
             }
 
             codeModel.ErrorCount += 1;
-            if (codeModel.ErrorCount >= options.CurrentValue.MaxErrorCount)
+            if (codeModel.ErrorCount >= Options.CurrentValue.MaxErrorCount)
             {
-                await cache.RemoveAsync(key);
+                await Cache.RemoveAsync(key);
                 return false;
             }
 
             var expire = codeModel.ExpiresAt - DateTime.Now.GetLongDate();
             if (expire <= 0)
-                cache.Remove(key);
+                await Cache.RemoveAsync(key);
             else
-                await cache.SetObjectAsync(key, codeModel, (int)expire);
+                await Cache.SetObjectAsync(key, codeModel, (int) expire);
             return false;
         }
 
@@ -68,57 +71,42 @@ namespace Shashlik.Captcha
         /// </summary>
         /// <param name="subject">验证类型</param>
         /// <param name="target">验证目标</param>
-        /// <param name="code">验证码</param>
+        /// <param name="codeLength"></param>
         /// <returns></returns>
         public async Task<CodeModel> Build(string subject, string target, int codeLength = 6)
         {
-            if (string.IsNullOrWhiteSpace(subject))
-            {
-                throw new ArgumentException("subject", nameof(subject));
-            }
+            if (subject == null) throw new ArgumentNullException(nameof(subject));
+            if (target == null) throw new ArgumentNullException(nameof(target));
 
-            if (string.IsNullOrWhiteSpace(target))
-            {
-                throw new ArgumentException("target", nameof(target));
-            }
-
-            if (subject.Length > 32)
-                throw new ArgumentException("subject max length:32");
-            if (target.Length > 512)
-                throw new ArgumentException("target max length:512");
-            if (codeLength > 32)
-                throw new ArgumentException("code max length:32");
-
-            string key = cachePrefix + subject + "_" + target;
+            var key = CachePrefix.Format(subject, target);
             var now = DateTime.Now.GetLongDate();
 
-            CodeModel verifyCode = new CodeModel
+            var verifyCode = new CodeModel
             {
                 Code = RandomHelper.GetRandomCode(codeLength),
                 Subject = subject,
                 Target = target,
-                ExpiresAt = now + options.CurrentValue.ExpireSecond,
+                ExpiresAt = now + Options.CurrentValue.ExpireSecond,
                 SendTime = now,
                 ErrorCount = 0
             };
 
-            await cache.SetObjectAsync(key, verifyCode, options.CurrentValue.ExpireSecond);
+            await Cache.SetObjectAsync(key, verifyCode, Options.CurrentValue.ExpireSecond);
             return verifyCode;
         }
     }
 
-    static class Extensions
+    internal static class Extensions
     {
         internal static async Task<T> GetObjectAsync<T>(this IDistributedCache cache, string key)
             where T : class
         {
             var content = await cache.GetStringAsync(key);
-            if (content.IsNullOrWhiteSpace())
-                return null;
-            return JsonSerializer.Deserialize<T>(content);
+            return content.IsNullOrWhiteSpace() ? null : JsonSerializer.Deserialize<T>(content);
         }
 
-        internal static async Task SetObjectAsync(this IDistributedCache cache, string key, object obj, int expireSeconds)
+        internal static async Task SetObjectAsync(this IDistributedCache cache, string key, object obj,
+            int expireSeconds)
         {
             await cache.SetStringAsync(key, JsonSerializer.Serialize(obj), new DistributedCacheEntryOptions
             {
