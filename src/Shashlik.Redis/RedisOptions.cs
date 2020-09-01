@@ -5,6 +5,11 @@ namespace Shashlik.Redis
     [AutoOptions("Shashlik:Redis")]
     public class RedisOptions
     {
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; }
+
         /*
          * 典型的哨兵模式配置
          * ConnectionString: mymaster,password=123,prefix=my_

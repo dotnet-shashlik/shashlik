@@ -4,7 +4,7 @@ using Shashlik.Utils.Helpers;
 namespace Shashlik.Redis
 {
     /// <summary>
-    /// 通过redis自动分配workid/dcid
+    /// 通过redis自动分配WorkId/DcId
     /// </summary>
     public class RedisSnowflakeId
     {
@@ -12,19 +12,19 @@ namespace Shashlik.Redis
         {
             if (RedisHelper.Instance == null)
                 throw new System.Exception($"redis not initialized.");
-            var ids = IdGetter.Instance.GetIdFromRedis();
-            idWorker = new SnowflakeId(ids.workId, ids.dcId);
+            var (workId, dcId) = RedisSnowflakeIdCalculator.GetIdFromRedis();
+            IdWorker = new SnowflakeId(workId, dcId);
         }
 
-        public static SnowflakeId idWorker { get; }
+        public static SnowflakeId IdWorker { get; }
 
         /// <summary>
-        /// 雪花算法获取id,通过redis自动分配workid/dcid,适用于集群环境
+        /// 雪花算法获取id,通过redis自动分配WorkId/DcId,适用于集群环境
         /// </summary>
         /// <returns></returns>
         public static long GetId()
         {
-            return idWorker.NextId();
+            return IdWorker.NextId();
         }
     }
 }

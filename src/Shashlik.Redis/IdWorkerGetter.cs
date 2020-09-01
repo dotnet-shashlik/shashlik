@@ -1,81 +1,60 @@
 ﻿using CSRedis;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Redis
 {
-    class IdGetter
+    /// <summary>
+    /// 雪花算法 WorkId/DcId自动计算器
+    /// </summary>
+    internal static class RedisSnowflakeIdCalculator
     {
+        private const string WorkerIdPrefix = "SNOWFLAKE_WORKERID_GETTER:";
+        private const string DcIdPrefix = "SNOWFLAKE_DCID_GETTER:";
+        private const int Expire = 60 * 60 + 5 * 60;
 
-        private IdGetter()
-        {
+        private static int? _workId = null;
 
-        }
-        static IdGetter()
-        {
-            Instance = new IdGetter();
-        }
-
-        public static IdGetter Instance { get; }
-
-        const string WorkerIdPrefix = "SNOWFLAKE_WORKERID_GETTER:";
-        const string DcIdPrefix = "SNOWFLAKE_DCID_GETTER:";
-        const int expire = 60 * 60 + 5 * 60;
-
-        private static int? workId = null;
-
-        private static int? dcId = null;
+        private static int? _dcId = null;
+        private static readonly object Locker = new object();
 
         /// <summary>
         /// 得到一个有效的id
         /// </summary>
         /// <returns></returns>
-        public (int workId, int dcId) GetIdFromRedis()
+        public static (int workId, int dcId) GetIdFromRedis()
         {
-
-            lock (Instance)
+            lock (Locker)
             {
-                if (!workId.HasValue)
+                if (!_workId.HasValue)
                 {
-                    for (int i = 0; i < 32; i++)
+                    for (var i = 0; i < 32; i++)
                     {
                         var key = WorkerIdPrefix + i;
-                        if (RedisHelper.Set(key, i, expire, RedisExistence.Nx))
+                        if (RedisHelper.Set(key, i, Expire, RedisExistence.Nx))
                         {
                             // 每小时刷新下数据
-                            TimerHelper.SetInterval(() =>
-                            {
-                                RedisHelper.Set(key, i, expire);
-                            }, TimeSpan.FromHours(1));
-                            workId = i;
+                            TimerHelper.SetInterval(() => { RedisHelper.Set(key, i, Expire); }, TimeSpan.FromHours(1));
+                            _workId = i;
                         }
                     }
 
                     throw new Exception("未能从redis从计算得到workerId");
                 }
 
-                if (!dcId.HasValue)
+                if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
                 {
-                    for (int i = 0; i < 32; i++)
+                    for (var i = 0; i < 32; i++)
                     {
                         var key = DcIdPrefix + i;
-                        if (RedisHelper.Set(key, i, expire, RedisExistence.Nx))
-                        {
-                            // 每小时刷新下数据
-                            TimerHelper.SetInterval(() =>
-                            {
-                                RedisHelper.Set(key, i, expire);
-                            }, TimeSpan.FromHours(1));
-                            dcId = i;
-                        }
+                        if (!RedisHelper.Set(key, i, Expire, RedisExistence.Nx)) continue;
+                        // 每小时刷新下数据
+                        TimerHelper.SetInterval(() => { RedisHelper.Set(key, i, Expire); }, TimeSpan.FromHours(1));
+                        _dcId = i;
                     }
 
                     throw new Exception("未能从redis从计算得到dcId");
                 }
-
-                return (workId.Value, dcId.Value);
             }
         }
     }
