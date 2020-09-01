@@ -14,7 +14,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void MD5Test()
         {
-            "123123".Md532().ShouldBe("4297f44b13955235245b2497399d7a93");
+            SecurityHelper.Md532("123123").ShouldBe("4297f44b13955235245b2497399d7a93");
         }
 
         [Fact]
@@ -30,7 +30,8 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void sha256()
         {
-            SecurityHelper.Sha256("123123").ShouldBe("96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e");
+            SecurityHelper.Sha256("123123")
+                .ShouldBe("96cae35ce8a9b0244178bf28e4966c2ce1b8385723a96a6b838858cdd6ca0a1e");
         }
     }
 }

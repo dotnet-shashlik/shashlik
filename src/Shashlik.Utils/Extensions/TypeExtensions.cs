@@ -53,7 +53,7 @@ namespace Shashlik.Utils.Extensions
                 return default(T);
 
             if (value is T)
-                return (T)value;
+                return (T) value;
 
             var destinationType = typeof(T);
             var sourceType = value.GetType();
@@ -63,14 +63,14 @@ namespace Shashlik.Utils.Extensions
             TypeConverter destinationConverter = TypeDescriptor.GetConverter(destinationType);
             TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
             if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
-                return (T)destinationConverter.ConvertFrom(value);
+                return (T) destinationConverter.ConvertFrom(value);
             if (sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
-                return (T)sourceConverter.ConvertTo(value, destinationType);
+                return (T) sourceConverter.ConvertTo(value, destinationType);
             if (destinationType.IsEnum && value is int)
-                return (T)Enum.ToObject(destinationType, (int)value);
+                return (T) Enum.ToObject(destinationType, (int) value);
             if (!destinationType.IsInstanceOfType(value))
-                return (T)Convert.ChangeType(value, destinationType);
-            return (T)value;
+                return (T) Convert.ChangeType(value, destinationType);
+            return (T) value;
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace Shashlik.Utils.Extensions
             if (sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
                 return sourceConverter.ConvertTo(value, destinationType);
             if (destinationType.IsEnum && value is int)
-                return Enum.ToObject(destinationType, (int)value);
+                return Enum.ToObject(destinationType, (int) value);
             if (!destinationType.IsInstanceOfType(value))
                 return Convert.ChangeType(value, destinationType);
 
@@ -165,9 +165,8 @@ namespace Shashlik.Utils.Extensions
                 return (obj as IEnumerable)
                     .OfType<dynamic>()
                     .ToDictionary<dynamic, string, object>(
-                    r => r.Key.ToString(),
-                    r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
-
+                        r => r.Key.ToString(),
+                        r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
             }
             else if (obj is JsonElement json)
             {
@@ -222,13 +221,13 @@ namespace Shashlik.Utils.Extensions
 
             if (propArr.Length == 1)
             {
-                var value = getObjectValue(obj, prop);
+                var value = GetObjectValue(obj, prop);
                 return value;
             }
             else
             {
                 var childPro = prop.TrimStart(propArr[0].ToCharArray()).TrimStart('.');
-                var value = getObjectValue(obj, propArr[0]);
+                var value = GetObjectValue(obj, propArr[0]);
                 if (!value.exists)
                     return (false, null);
                 return GetPropertyValue(value.value, childPro);
@@ -269,6 +268,7 @@ namespace Shashlik.Utils.Extensions
             {
                 return System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(obj));
             }
+
             return default;
         }
 
@@ -348,7 +348,6 @@ namespace Shashlik.Utils.Extensions
         public static bool IsCollectionType(this Type type)
         {
             return type.IsSubTypeOf<IEnumerable>();
-
         }
 
         /// <summary>
@@ -369,7 +368,7 @@ namespace Shashlik.Utils.Extensions
         public static HashSet<Type> GetAllBaseTypes(this Type type)
         {
             HashSet<Type> types = new HashSet<Type>();
-            fillBaseType(types, type);
+            FillBaseType(types, type);
             return types;
         }
 
@@ -383,12 +382,11 @@ namespace Shashlik.Utils.Extensions
         {
             if (includeInherited || type.BaseType == null)
                 return type.GetInterfaces();
-            else
-                return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
+            return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
         }
 
         /// <summary>
-        /// json序列化
+        /// json序列化,默认Indented/ReferenceLoopHandling.Ignore
         /// </summary>
         /// <param name="obj"></param>
         /// <param name="jsonSerializerSettings"></param>
@@ -396,30 +394,33 @@ namespace Shashlik.Utils.Extensions
         public static string ToJson<T>(this T obj, JsonSerializerSettings jsonSerializerSettings = null)
             where T : class
         {
-            if (obj == null)
-                return null;
-            return JsonConvert.SerializeObject(obj, jsonSerializerSettings);
+            return obj == null
+                ? null
+                : JsonConvert.SerializeObject(obj, jsonSerializerSettings ?? new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    Formatting = Formatting.Indented
+                });
         }
 
         /// <summary>
         /// json序列化,小驼峰命名
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="jsonSerializerSettings"></param>
         /// <returns></returns>
         public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
             where T : class
         {
-            if (obj == null)
-                return null;
-            return JsonConvert.SerializeObject(obj,
-                new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    Formatting = Formatting.Indented,
-                    // 默认小驼峰用法
-                    ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                });
+            return obj == null
+                ? null
+                : JsonConvert.SerializeObject(obj,
+                    new JsonSerializerSettings
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        Formatting = Formatting.Indented,
+                        // 默认小驼峰用法
+                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
+                    });
         }
 
         /// <summary>
@@ -434,27 +435,28 @@ namespace Shashlik.Utils.Extensions
 
         #region private
 
-        static object JToken2Object(JToken token)
+        private static object JToken2Object(JToken token)
         {
             switch (token.Type)
             {
                 case JTokenType.Object:
+                {
+                    var dic = new Dictionary<string, object>();
+                    foreach (var item in token.Value<JObject>())
                     {
-                        var dic = new Dictionary<string, object>();
-                        foreach (var item in token.Value<JObject>())
-                        {
-                            dic[item.Key] = JToken2Object(item.Value);
-                        }
-                        return dic;
+                        dic[item.Key] = JToken2Object(item.Value);
                     }
 
+                    return dic;
+                }
+
                 case JTokenType.Array:
-                    {
-                        List<object> children = new List<object>();
-                        foreach (var item in token.Value<JArray>())
-                            children.Add(JToken2Object(item));
-                        return children;
-                    }
+                {
+                    List<object> children = new List<object>();
+                    foreach (var item in token.Value<JArray>())
+                        children.Add(JToken2Object(item));
+                    return children;
+                }
 
                 case JTokenType.Integer:
                 case JTokenType.Float:
@@ -469,7 +471,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        static object JTokenValue(JToken token)
+        private static object JTokenValue(JToken token)
         {
             switch (token.Type)
             {
@@ -497,7 +499,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        static object JsonElement2Object(JsonElement obj)
+        private static object JsonElement2Object(JsonElement obj)
         {
             switch (obj.ValueKind)
             {
@@ -505,50 +507,52 @@ namespace Shashlik.Utils.Extensions
                 case JsonValueKind.Undefined:
                     return null;
                 case JsonValueKind.String:
-                    {
-                        if (obj.TryGetDateTime(out var datetime))
-                            return datetime;
-                        else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
-                            return datetimeOffset;
-                        return obj.GetString();
-                    }
+                {
+                    if (obj.TryGetDateTime(out var datetime))
+                        return datetime;
+                    else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                        return datetimeOffset;
+                    return obj.GetString();
+                }
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
+                {
+                    if (obj.TryGetInt64(out var value2))
                     {
-                        if (obj.TryGetInt64(out var value2))
-                        {
-                            return value2;
-                        }
-                        else if (obj.TryGetDecimal(out var value3))
-                        {
-                            return value3;
-                        }
-                        return null;
+                        return value2;
                     }
+                    else if (obj.TryGetDecimal(out var value3))
+                    {
+                        return value3;
+                    }
+
+                    return null;
+                }
                 case JsonValueKind.Object:
+                {
+                    var dic = new Dictionary<string, object>();
+                    foreach (var item in obj.EnumerateObject())
                     {
-                        var dic = new Dictionary<string, object>();
-                        foreach (var item in obj.EnumerateObject())
-                        {
-                            dic[item.Name] = JsonElement2Object(item.Value);
-                        }
-                        return dic;
+                        dic[item.Name] = JsonElement2Object(item.Value);
                     }
+
+                    return dic;
+                }
                 case JsonValueKind.Array:
-                    {
-                        List<object> children = new List<object>();
-                        foreach (var item in obj.EnumerateArray())
-                            children.Add(JsonElement2Object(item));
-                        return children;
-                    }
+                {
+                    List<object> children = new List<object>();
+                    foreach (var item in obj.EnumerateArray())
+                        children.Add(JsonElement2Object(item));
+                    return children;
+                }
                 default:
                     throw new FormatException("json format error!");
             }
         }
 
-        static object JsonElementValue(JsonElement obj)
+        private static object JsonElementValue(JsonElement obj)
         {
             switch (obj.ValueKind)
             {
@@ -556,28 +560,29 @@ namespace Shashlik.Utils.Extensions
                 case JsonValueKind.Undefined:
                     return null;
                 case JsonValueKind.String:
-                    {
-                        if (obj.TryGetDateTime(out var datetime))
-                            return datetime;
-                        else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
-                            return datetimeOffset;
-                        return obj.GetString();
-                    }
+                {
+                    if (obj.TryGetDateTime(out var datetime))
+                        return datetime;
+                    else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                        return datetimeOffset;
+                    return obj.GetString();
+                }
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
+                {
+                    if (obj.TryGetInt64(out var value2))
                     {
-                        if (obj.TryGetInt64(out var value2))
-                        {
-                            return value2;
-                        }
-                        else if (obj.TryGetDecimal(out var value3))
-                        {
-                            return value3;
-                        }
-                        return null;
+                        return value2;
                     }
+                    else if (obj.TryGetDecimal(out var value3))
+                    {
+                        return value3;
+                    }
+
+                    return null;
+                }
                 case JsonValueKind.Object:
                 case JsonValueKind.Array:
                     return obj;
@@ -586,7 +591,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        static (bool exists, object value) getObjectValue(object obj, string proName)
+        private static (bool exists, object value) GetObjectValue(object obj, string proName)
         {
             var objType = obj.GetType();
             if (obj is JToken jToken)
@@ -619,7 +624,7 @@ namespace Shashlik.Utils.Extensions
             }
             else if (objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
-                var list = (obj as IEnumerable).OfType<dynamic>();
+                var list = (obj as IEnumerable)!.OfType<dynamic>();
                 try
                 {
                     var el = list.First(r => r.Key?.ToString() == proName);
@@ -673,26 +678,27 @@ namespace Shashlik.Utils.Extensions
                         return (true, item);
                     i++;
                 }
+
                 return (true, null);
             }
             else
             {
-                var pro = objType.GetProperty(proName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
+                var pro = objType.GetProperty(proName,
+                    BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
                 if (pro == null) return (false, null);
                 return (true, pro.GetValue(obj));
             }
         }
 
-        static void fillBaseType(HashSet<Type> results, Type type)
+        private static void FillBaseType(HashSet<Type> results, Type type)
         {
             if (type.BaseType != typeof(object))
             {
                 results.Add(type.BaseType);
-                fillBaseType(results, type.BaseType);
+                FillBaseType(results, type.BaseType);
             }
         }
 
         #endregion
-
     }
 }

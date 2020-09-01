@@ -1,10 +1,8 @@
-﻿using SecurityProxyClient;
-using Shouldly;
-using System;
-using System.Collections.Generic;
+﻿using Shouldly;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using Shashlik.Utils.Helpers;
 using Xunit;
 
 namespace Shashlik.Utils.Test

@@ -23,14 +23,13 @@ namespace Shashlik.Mapper
         /// <summary>
         /// 自定义配置映射
         /// </summary>
-        /// <param name="mappingExpression"></param>
+        /// <param name="mapper"></param>
         void Config(IMappingExpression<TSource, TDest> mapper);
     }
 
     /// <summary>
     /// 单向映射,默认配置(直接继承接口有效,注意继承时的查询bug)
     /// </summary>
-    /// <typeparam name="TSource"></typeparam>
     /// <typeparam name="TDest"></typeparam>
     public interface IMapTo<TDest>
     {
@@ -47,7 +46,7 @@ namespace Shashlik.Mapper
         /// <summary>
         /// 自定义配置映射
         /// </summary>
-        /// <param name="mappingExpression"></param>
+        /// <param name="mapper"></param>
         void Config(IMappingExpression<TSource, TDest> mapper);
     }
 }

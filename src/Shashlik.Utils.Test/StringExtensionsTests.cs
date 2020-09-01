@@ -13,7 +13,6 @@ namespace Shashlik.Utils.Test
 {
     public class StringExtensionsTests
     {
-
         [Fact]
         public void ConfidentialData_test()
         {
@@ -28,35 +27,37 @@ namespace Shashlik.Utils.Test
                 string url = "http://www.baidu.com?code=cae29605fe284afabb4edd1d9cbc1527";
                 var res1 = url.UrlArgsCombine(new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>("openid","oleaE55VwSmo_qO6tjA-0gOj1vUI"),
+                    new KeyValuePair<string, object>("openid", "oleaE55VwSmo_qO6tjA-0gOj1vUI"),
                     new KeyValuePair<string, object>("type", "wxlogpush"),
                     new KeyValuePair<string, object>("attach", "cae29605fe284afabb4edd1d9cbc1527"),
                     new KeyValuePair<string, object>("empty", null),
                 });
 
-                res1.ShouldBe($"http://www.baidu.com?code=cae29605fe284afabb4edd1d9cbc1527&openid=oleaE55VwSmo_qO6tjA-0gOj1vUI&type=wxlogpush&attach=cae29605fe284afabb4edd1d9cbc1527");
+                res1.ShouldBe(
+                    $"http://www.baidu.com?code=cae29605fe284afabb4edd1d9cbc1527&openid=oleaE55VwSmo_qO6tjA-0gOj1vUI&type=wxlogpush&attach=cae29605fe284afabb4edd1d9cbc1527");
             }
 
             {
                 string url = "http://www.baidu.com";
                 var res1 = url.UrlArgsCombine(new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>("code","cae29605fe284afabb4edd1d9cbc1527"),
-                    new KeyValuePair<string, object>("openid","oleaE55VwSmo_qO6tjA-0gOj1vUI"),
+                    new KeyValuePair<string, object>("code", "cae29605fe284afabb4edd1d9cbc1527"),
+                    new KeyValuePair<string, object>("openid", "oleaE55VwSmo_qO6tjA-0gOj1vUI"),
                     new KeyValuePair<string, object>("type", "wxlogpush"),
                     new KeyValuePair<string, object>("attach", "cae29605fe284afabb4edd1d9cbc1527"),
                     new KeyValuePair<string, object>("empty", null),
                 });
 
-                res1.ShouldBe($"http://www.baidu.com?code=cae29605fe284afabb4edd1d9cbc1527&openid=oleaE55VwSmo_qO6tjA-0gOj1vUI&type=wxlogpush&attach=cae29605fe284afabb4edd1d9cbc1527");
+                res1.ShouldBe(
+                    $"http://www.baidu.com?code=cae29605fe284afabb4edd1d9cbc1527&openid=oleaE55VwSmo_qO6tjA-0gOj1vUI&type=wxlogpush&attach=cae29605fe284afabb4edd1d9cbc1527");
             }
 
             {
                 string url = null;
                 var res1 = url.UrlArgsCombine(new List<KeyValuePair<string, object>>
                 {
-                    new KeyValuePair<string, object>("code","cae29605fe284afabb4edd1d9cbc1527"),
-                    new KeyValuePair<string, object>("openid","oleaE55VwSmo_qO6tjA-0gOj1vUI"),
+                    new KeyValuePair<string, object>("code", "cae29605fe284afabb4edd1d9cbc1527"),
+                    new KeyValuePair<string, object>("openid", "oleaE55VwSmo_qO6tjA-0gOj1vUI"),
                     new KeyValuePair<string, object>("type", "wxlogpush"),
                     new KeyValuePair<string, object>("attach", "cae29605fe284afabb4edd1d9cbc1527"),
                     new KeyValuePair<string, object>("empty", null),
@@ -82,6 +83,7 @@ namespace Shashlik.Utils.Test
             {
                 e.ShouldNotBe(null);
             }
+
             try
             {
                 RazorFormatExtensions.Registy(new ErrorFormatter());
@@ -90,6 +92,7 @@ namespace Shashlik.Utils.Test
             {
                 e.ShouldNotBe(null);
             }
+
             try
             {
                 RazorFormatExtensions.Registy(new DuplicateFormatter());
@@ -107,14 +110,15 @@ namespace Shashlik.Utils.Test
                 Company = new UserTestModel._Company
                 {
                     CompanyName = "test company",
-                    Address = new UserTestModel._Company._Address { Code = 1 }
+                    Address = new UserTestModel._Company._Address {Code = 1}
                 }
             };
 
 
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
                 .RazorFormat(model)
-                .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}@{{NotMatch}}");
+                .ShouldBe(
+                    $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}@{{NotMatch}}");
 
             string value = null;
             value.RazorFormat(model).ShouldBeNull();
@@ -129,12 +133,15 @@ namespace Shashlik.Utils.Test
 
             "@{Company|ggggggg}".RazorFormat(model);
 
-            "@{Age}@{Birthday}@{Money|f2}".RazorFormat(model).ShouldBe($"{model.Age}{model.Birthday}{model.Money.ToString("f2")}");
-            "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}".RazorFormat(model).ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}");
+            "@{Age}@{Birthday}@{Money|f2}".RazorFormat(model)
+                .ShouldBe($"{model.Age}{model.Birthday}{model.Money.ToString("f2")}");
+            "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}".RazorFormat(model).ShouldBe(
+                $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}");
 
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}"
                 .RazorFormat(model)
-                .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
+                .ShouldBe(
+                    $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
             var switchFormatString = "@{Gender|switch(0:未知|1:男性|2:女性|null:不男不女|empty:空|default:未知)}";
             switchFormatString.RazorFormat(new {Gender = 2}).ShouldBe("女性");
             //switchFormatString.RazorFormat(new {}).ShouldBe("不男不女");
@@ -163,7 +170,6 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void Encoding()
         {
-
             var en = System.Text.Encoding.GetEncoding("UTF-8");
         }
 
@@ -188,19 +194,21 @@ namespace Shashlik.Utils.Test
             }
         }
     }
-    
+
     internal class ErrorFormatter : IFormatter
     {
         public string Action { get; }
+
         public string Format(string value, string expression)
         {
             throw new NotImplementedException();
         }
     }
-    
+
     internal class DuplicateFormatter : IFormatter
     {
         public string Action { get; } = "switch";
+
         public string Format(string value, string expression)
         {
             throw new NotImplementedException();
