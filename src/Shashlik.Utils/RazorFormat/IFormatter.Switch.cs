@@ -24,9 +24,7 @@ namespace Shashlik.Utils.RazorFormat
 
         public string Format(string value, string expression)
         {
-            string[] formats = expression.Split('|');
-            if (formats.IsNullOrEmpty())
-                return value;
+            var formats = expression.Split('|');
             string s;
             // 择值表达式
             var selectors = formats.Select(r =>
