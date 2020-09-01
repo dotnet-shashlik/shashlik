@@ -1,6 +1,7 @@
 using System;
+// ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     /// 随机函数

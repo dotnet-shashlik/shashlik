@@ -1,14 +1,15 @@
-using Shashlik.Utils.Extensions;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using RestSharp;
+using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
+    //TODO: 增加客户端证书上传功能
     public static class HttpHelper
     {
         private static IRestClient GetClient(Uri uri, IWebProxy proxy = null, Encoding encoding = null)
@@ -16,21 +17,24 @@ namespace Shashlik.Utils.Common
             RestClient client = new RestClient(uri);
             if (encoding != null)
                 client.Encoding = encoding;
-            client.Proxy = proxy;
-            // 撒鬼玩意证实都通过,linux环境下可能出现 https验证不通过的莫名其妙的错误
+            if (proxy != null)
+                client.Proxy = proxy;
+            // 放通一切证书
             client.RemoteCertificateValidationCallback = (a, b, c, d) => true;
             return client;
         }
 
-        private static IRestRequest GetRequest(Uri uri, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30)
+        private static IRestRequest GetRequest(Uri uri, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30)
         {
-            var request = new RestRequest { Timeout = timeout * 1000 };
+            var request = new RestRequest {Timeout = timeout * 1000};
 
             if (!headers.IsNullOrEmpty())
                 foreach (var item in headers)
                 {
                     request.AddHeader(item.Key, item.Value);
                 }
+
             if (!cookies.IsNullOrEmpty())
                 foreach (var item in headers)
                     request.AddCookie(item.Key, item.Value);
@@ -49,7 +53,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> PostJson(string url, object jsonData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostJson(string url, object jsonData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -62,7 +68,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -76,7 +84,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> PostJson<TResult>(string url, object jsonData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostJson<TResult>(string url, object jsonData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -90,7 +100,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -104,7 +116,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object jsonData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object jsonData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -127,7 +141,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> PostForm(string url, IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostForm(string url, IEnumerable<KeyValuePair<string, string>> formData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -141,7 +157,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -155,7 +173,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> PostForm(string url, object formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostForm(string url, object formData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -167,8 +187,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
-
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -181,7 +202,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> PostForm<TResult>(string url, IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostForm<TResult>(string url,
+            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
+            Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -196,7 +220,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -210,7 +236,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> PostForm<TResult>(string url, object formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostForm<TResult>(string url, object formData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -223,8 +251,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
-
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -238,7 +267,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFormForOriginResponse(string url, object formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostFormForOriginResponse(string url, object formData,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -260,7 +291,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFormForOriginResponse(string url, IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostFormForOriginResponse(string url,
+            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
+            Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -282,7 +316,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formDatas,
+            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
+            Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -300,7 +337,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -313,7 +352,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> PostFiles(string url, object formData, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostFiles(string url, object formData, IEnumerable<UploadFileModel> files,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -329,7 +370,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -342,7 +385,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> PostFiles<TResult>(string url, IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostFiles<TResult>(string url,
+            IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -361,7 +407,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -374,7 +422,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> PostFiles<TResult>(string url, object formData, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostFiles<TResult>(string url, object formData,
+            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
+            Encoding encoding = null)
             where TResult : class
         {
             var uri = new Uri(url);
@@ -391,7 +442,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -404,7 +457,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFilesForOriginResponse(string url, IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostFilesForOriginResponse(string url,
+            IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -431,7 +487,10 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFilesForOriginResponse(string url, object formData, IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostFilesForOriginResponse(string url, object formData,
+            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
+            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
+            Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -446,7 +505,9 @@ namespace Shashlik.Utils.Common
             return await client.ExecutePostAsync(request);
         }
 
-        public static async Task<IRestResponse> Post(string url, string body, string contentType, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> Post(string url, string body, string contentType,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -467,7 +528,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<string> GetString(string url, object queryStringData = null, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> GetString(string url, object queryStringData = null,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -479,8 +542,11 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Content;
             else
-                throw new Exception($"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
+
         /// <summary>
         /// get 请求
         /// </summary>
@@ -492,7 +558,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<TResult> Get<TResult>(string url, object queryStringData = null, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> Get<TResult>(string url, object queryStringData = null,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -504,7 +572,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.Data;
             else
-                throw new Exception($"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -518,7 +588,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<Stream> GetStream(string url, object queryStringData = null, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<Stream> GetStream(string url, object queryStringData = null,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -530,7 +602,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return new MemoryStream(response.RawBytes);
             else
-                throw new Exception($"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -544,7 +618,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<byte[]> GetBytes(string url, object queryStringData = null, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<byte[]> GetBytes(string url, object queryStringData = null,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);
@@ -557,7 +633,9 @@ namespace Shashlik.Utils.Common
             if (response.IsSuccessful)
                 return response.RawBytes;
             else
-                throw new Exception($"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}", response.ErrorException);
+                throw new Exception(
+                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
+                    response.ErrorException);
         }
 
         /// <summary>
@@ -571,7 +649,9 @@ namespace Shashlik.Utils.Common
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
         /// <returns></returns>
-        public static async Task<IRestResponse> GetForOriginResponse(string url, object queryStringData = null, IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> GetForOriginResponse(string url, object queryStringData = null,
+            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
+            IWebProxy proxy = null, Encoding encoding = null)
         {
             var uri = new Uri(url);
             var client = GetClient(uri, proxy, encoding);

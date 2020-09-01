@@ -7,14 +7,15 @@ namespace Shashlik.Utils.Rsa
 {
     public static class EncryptExtensions
     {
-        static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic = new Dictionary<RSAEncryptionPadding, int>()
-        {
-            [RSAEncryptionPadding.Pkcs1] = 11,
-            [RSAEncryptionPadding.OaepSHA1] = 42,
-            [RSAEncryptionPadding.OaepSHA256] = 66,
-            [RSAEncryptionPadding.OaepSHA384] = 98,
-            [RSAEncryptionPadding.OaepSHA512] = 130,
-        };
+        static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic =
+            new Dictionary<RSAEncryptionPadding, int>()
+            {
+                [RSAEncryptionPadding.Pkcs1] = 11,
+                [RSAEncryptionPadding.OaepSHA1] = 42,
+                [RSAEncryptionPadding.OaepSHA256] = 66,
+                [RSAEncryptionPadding.OaepSHA384] = 98,
+                [RSAEncryptionPadding.OaepSHA512] = 130,
+            };
 
         /// <summary>
         /// 加密,没有使用任何连接 64个字节长度的拼接加密
@@ -24,10 +25,10 @@ namespace Shashlik.Utils.Rsa
         /// <param name="padding"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string EncryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding, Encoding encoding = null)
+        public static string EncryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
+            Encoding encoding = null)
         {
-            if (encoding == null)
-                encoding = Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
 
             var data = encoding.GetBytes(dataStr);
             List<byte> bytes = new List<byte>();
@@ -51,10 +52,13 @@ namespace Shashlik.Utils.Rsa
         /// <param name="padding"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string DecryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding, Encoding encoding = null)
+        public static string DecryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
+            Encoding encoding = null)
         {
+            encoding ??= Encoding.UTF8;
+
             var data = Convert.FromBase64String(dataStr);
-            List<byte> bytes = new List<byte>();
+            var bytes = new List<byte>();
             for (int i = 0; i < data.Length; i += 128)
             {
                 var end = i + 128;
@@ -63,6 +67,7 @@ namespace Shashlik.Utils.Rsa
                 byte[] output = rsa.Decrypt(data[i..end], padding);
                 bytes.AddRange(output);
             }
+
             return encoding.GetString(bytes.ToArray());
         }
     }

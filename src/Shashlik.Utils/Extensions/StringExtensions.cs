@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Collections.Concurrent;
-using NPOI.OpenXml4Net.Exceptions;
 
 namespace Shashlik.Utils.Extensions
 {
@@ -83,7 +78,10 @@ namespace Shashlik.Utils.Extensions
                 {
                     result.Add(item.ConvertTo<T>());
                 }
-                catch { }
+                catch
+                {
+                    // ignored
+                }
             }
             return result;
         }
@@ -214,29 +212,21 @@ namespace Shashlik.Utils.Extensions
 
         public static string HtmlEncode(this string value)
         {
-            if (value == null)
-                return null;
             return HttpUtility.HtmlEncode(value);
         }
 
         public static string HtmlDecode(this string value)
         {
-            if (value == null)
-                return null;
             return HttpUtility.HtmlDecode(value);
         }
 
         public static string UrlEncode(this string value)
         {
-            if (value == null)
-                return null;
             return HttpUtility.UrlEncode(value);
         }
 
         public static string UrlDecode(this string value)
         {
-            if (value == null)
-                return null;
             return HttpUtility.UrlDecode(value);
         }
 
@@ -273,21 +263,6 @@ namespace Shashlik.Utils.Extensions
             }
 
             return sb.ToString().TrimEnd('&');
-        }
-
-        /// <summary>
-        /// MD5 32位
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static string Md532(this string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-            {
-                throw new ArgumentException("message", nameof(input));
-            }
-
-            return SecurityHelper.Md532(input);
         }
 
         /// <summary>
@@ -332,10 +307,8 @@ namespace Shashlik.Utils.Extensions
             {
                 var xmlSerializer = new XmlSerializer(typeof(T));
                 var stringReader = new StringReader(xml);
-                using (var reader = XmlReader.Create(stringReader))
-                {
-                    return (T)xmlSerializer.Deserialize(reader);
-                }
+                using var reader = XmlReader.Create(stringReader);
+                return (T)xmlSerializer.Deserialize(reader);
             }
             catch (Exception e)
             {
@@ -349,25 +322,42 @@ namespace Shashlik.Utils.Extensions
         /// 将字符串转换成base64格式,使用UTF8字符集
         /// </summary>
         /// <param name="content">加密内容</param>
+        /// <param name="encoding"></param>
+        /// <param name="urlSafe"></param>
         /// <returns></returns>
-        public static string Base64Encode(this string content, Encoding encoding = null)
+        public static string Base64Encode(this string content, Encoding encoding = null, bool urlSafe = false)
         {
-            if (encoding == null)
-                encoding = Encoding.UTF8;
-            byte[] bytes = encoding.GetBytes(content);
-            return Convert.ToBase64String(bytes);
+            encoding ??= Encoding.UTF8;
+            var bytes = encoding.GetBytes(content);
+            var str = Convert.ToBase64String(bytes);
+            if (!urlSafe)
+                return str;
+            return str.Replace("=", "")
+                    .Replace("+", "-")
+                    .Replace("/", "_")
+                ;
         }
 
-        /// <summary>
-        /// 将base64格式，转换utf8
-        /// </summary>
-        /// <param name="content">解密内容</param>
-        /// <returns></returns>
-        public static string Base64Decode(this string content, Encoding encoding = null)
+      /// <summary>
+      /// 将base64格式，转换utf8
+      /// </summary>
+      /// <param name="content">解密内容</param>
+      /// <param name="encoding"></param>
+      /// <param name="urlSafe"></param>
+      /// <returns></returns>
+      public static string Base64Decode(this string content, Encoding encoding = null, bool urlSafe = false)
         {
-            if (encoding == null)
-                encoding = Encoding.UTF8;
-            byte[] bytes = Convert.FromBase64String(content);
+            if (urlSafe)
+            {
+                content = content.Replace("-", "+").Replace("_", "/");
+                var base64 = Encoding.ASCII.GetBytes(content);
+                var padding = base64.Length * 3 % 4; //(base64.Length*6 % 8)/2
+                if (padding != 0)
+                    content = content.PadRight(content.Length + padding, '=');
+            }
+
+            encoding ??= Encoding.UTF8;
+            var bytes = Convert.FromBase64String(content);
             return encoding.GetString(bytes);
         }
 
@@ -378,8 +368,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static byte[] Base64DecodeToBytes(this string content, Encoding encoding = null)
         {
-            if (encoding == null)
-                encoding = Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             return Convert.FromBase64String(content);
         }
 
@@ -397,8 +386,7 @@ namespace Shashlik.Utils.Extensions
             var ch = str[0];
             if (ch >= 65 && ch <= 90)
             {
-                var s = new Span<char>(str.ToCharArray());
-                s[0] = (char)(ch + 32);
+                var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch + 32)};
                 return s.ToString();
             }
             return str;
@@ -416,8 +404,7 @@ namespace Shashlik.Utils.Extensions
             var ch = str[0];
             if (ch >= 97 && ch <= 122)
             {
-                var s = new Span<char>(str.ToCharArray());
-                s[0] = (char)(ch - 32);
+                var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch - 32)};
                 return s.ToString();
             }
             return str;

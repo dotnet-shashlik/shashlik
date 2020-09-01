@@ -7,7 +7,6 @@ using Org.BouncyCastle.Asn1.X509.Qualified;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowire;
 using Shashlik.Kernel.Autowire.Attributes;
-using Shashlik.Utils.Common;
 using Shashlik.Utils.Extensions;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.EfCore
 {

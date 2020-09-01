@@ -39,14 +39,9 @@ namespace Shashlik.Utils.RazorFormat
             if (selectors.IsNullOrEmpty())
                 return value;
 
-            var selectValue = selectors.FirstOrDefault(r =>
-            {
-                return
-                    r[0] == value
-                    || (r[0] == "null" && value == null) // null选择器
-                    || (r[0] == "empty" && value.IsNullOrWhiteSpace()) // 空字符串选择器
-                    ;
-            });
+            var selectValue = selectors.FirstOrDefault(r => r[0] == value
+                                                            || (r[0] == "null" && value == null) // null选择器
+                                                            || (r[0] == "empty" && value.IsNullOrWhiteSpace()));
             if (selectValue != null)
                 // 找到了对应的值
                 s = selectValue[1];

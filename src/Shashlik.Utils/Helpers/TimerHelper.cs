@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     public class TimerHelper
     {

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Org.BouncyCastle.Asn1.X509.Qualified;
-using RestSharp.Extensions;
-using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Rsa;
 
-namespace SecurityProxyClient
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     /// RsaHelper,加密/解密/签名/验签

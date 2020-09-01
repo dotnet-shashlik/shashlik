@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Shashlik.Utils.Common;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Dependency
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Text;
@@ -8,7 +7,7 @@ using ExcelDataReader.Exceptions;
 using NPOI.XSSF.UserModel;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     /// excel帮助类
@@ -29,17 +28,15 @@ namespace Shashlik.Utils.Common
         {
             try
             {
-                using (var reader = ExcelReaderFactory.CreateReader(excelStream))
+                using var reader = ExcelReaderFactory.CreateReader(excelStream);
+                do
                 {
-                    do
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                        }
-                    } while (reader.NextResult());
+                    }
+                } while (reader.NextResult());
 
-                    return reader.AsDataSet();
-                }
+                return reader.AsDataSet();
             }
             catch (HeaderException)
             {

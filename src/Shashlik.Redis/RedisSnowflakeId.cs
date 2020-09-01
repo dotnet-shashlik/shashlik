@@ -1,5 +1,5 @@
 ﻿using Org.BouncyCastle.Crypto;
-using Shashlik.Utils.Common;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Redis
 {

@@ -1,14 +1,11 @@
-﻿using Shashlik.Utils.Extensions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.Extensions.DependencyModel;
-using NPOI.SS.Formula.Functions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using Microsoft.Extensions.DependencyModel;
+using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     public class AssemblyHelper
     {

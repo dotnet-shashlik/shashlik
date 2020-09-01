@@ -81,7 +81,7 @@ namespace Shashlik.Utils.Rsa
         private static void AppendBody(StringBuilder sb, string key)
         {
             var count = Convert.ToInt32(Math.Ceiling(key.Length * 1.0 / 64));
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 var start = i * 64;
                 var end = start + 64;

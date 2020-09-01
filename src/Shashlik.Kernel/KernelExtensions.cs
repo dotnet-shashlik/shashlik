@@ -1,5 +1,4 @@
 ﻿using Shashlik.Kernel.Dependency;
-using Shashlik.Utils.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using Shashlik.Kernel.Autowire;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel
 {

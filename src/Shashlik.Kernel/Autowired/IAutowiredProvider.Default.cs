@@ -6,8 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Shashlik.Kernel.Autowire.Attributes;
 using Shashlik.Kernel.Autowired.Inner;
-using Shashlik.Utils.Common;
 using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Autowired
 {

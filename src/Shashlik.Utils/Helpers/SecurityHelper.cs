@@ -1,33 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using Shashlik.Utils.Extensions;
+// ReSharper disable CommentTypo
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
 
-namespace Shashlik.Utils.Extensions
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     /// 加解密
     /// </summary>
     public static class SecurityHelper
     {
-
         /// <summary>
         /// MD5加密
         /// </summary>
         public static string Md532(string value, Encoding encoding = null)
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException("未将对象引用设置到对象的实例。");
-            }
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
-            encoding = encoding ?? Encoding.UTF8;
-            using MD5 md5 = MD5.Create();
+            encoding ??= Encoding.UTF8;
+            using var md5 = MD5.Create();
             return HashAlgorithmBase(md5, value, encoding);
         }
 
@@ -40,10 +34,10 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string HMACSHA256(string message, string secret, Encoding encoding = null)
         {
-            encoding = encoding ?? Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             byte[] keyByte = encoding.GetBytes(secret);
-            using var hmacsha256 = new HMACSHA256(keyByte);
-            return HashAlgorithmBase(hmacsha256, message, encoding);
+            using var hmacSha256 = new HMACSHA256(keyByte);
+            return HashAlgorithmBase(hmacSha256, message, encoding);
         }
 
         /// <summary>
@@ -55,16 +49,48 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string HMACSHA256Base64(string message, string secret, Encoding encoding = null)
         {
-            encoding = encoding ?? Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             byte[] keyByte = encoding.GetBytes(secret);
             byte[] messageBytes = encoding.GetBytes(message);
-            using var hmacsha256 = new HMACSHA256(keyByte);
-            byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
-            return Convert.ToBase64String(hashmessage);
+            using var hmacSha256 = new HMACSHA256(keyByte);
+            byte[] hashMessage = hmacSha256.ComputeHash(messageBytes);
+            return Convert.ToBase64String(hashMessage);
         }
 
         /// <summary>
-        /// SHA1 加密
+        /// HMACSHA1,默认 UTF8编码,原始字符串结果
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="secret"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string HMACSHA1(string message, string secret, Encoding encoding = null)
+        {
+            encoding ??= Encoding.UTF8;
+            byte[] keyByte = encoding.GetBytes(secret);
+            using var hmacSha1 = new HMACSHA1(keyByte);
+            return HashAlgorithmBase(hmacSha1, message, encoding);
+        }
+
+        /// <summary>
+        /// HMACSHA1,默认 UTF8编码,结果是base64后的,不同于直接HMACSHA1再转base64
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="secret"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static string HMACSHA1Base64(string message, string secret, Encoding encoding = null)
+        {
+            encoding ??= Encoding.UTF8;
+            byte[] keyByte = encoding.GetBytes(secret);
+            byte[] messageBytes = encoding.GetBytes(message);
+            using var hmacSha1 = new HMACSHA1(keyByte);
+            byte[] hashMessage = hmacSha1.ComputeHash(messageBytes);
+            return Convert.ToBase64String(hashMessage);
+        }
+
+        /// <summary>
+        /// SHA1 
         /// </summary>
         public static string Sha1(this string value)
         {
@@ -74,7 +100,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// SHA256 加密
+        /// SHA256 
         /// </summary>
         public static string Sha256(this string value)
         {
@@ -101,12 +127,16 @@ namespace Shashlik.Utils.Extensions
         static string Bytes2Str(this IEnumerable<byte> source, string formatStr = "{0:x2}")
         {
             StringBuilder pwd = new StringBuilder();
-            foreach (byte btStr in source) { pwd.AppendFormat(formatStr, btStr); }
+            foreach (byte btStr in source)
+            {
+                pwd.AppendFormat(formatStr, btStr);
+            }
+
             return pwd.ToString();
         }
 
         /// <summary>
-        /// HashAlgorithm 加密统一方法
+        /// HashAlgorithm 加密散列方法
         /// </summary>
         static string HashAlgorithmBase(HashAlgorithm hashAlgorithmObj, string source, Encoding encoding)
         {

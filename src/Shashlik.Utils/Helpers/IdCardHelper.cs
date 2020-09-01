@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     /// 国内身份证相关
@@ -87,21 +85,21 @@ namespace Shashlik.Utils.Common
             IdCardModel result;
             try
             {
-                IdCardModel cardIDModel = new IdCardModel
+                var cardIdModel = new IdCardModel
                 {
                     IdCard = idCard,
                     Birthday = Convert.ToDateTime(idCard.Substring(6, 8).Insert(6, "-").Insert(4, "-"))
                 };
                 Math.DivRem(int.Parse(idCard.Substring(idCard.Length - 4, 3)), 2, out var num);
-                cardIDModel.Sex = sbyte.Parse(num.ToString());
+                cardIdModel.Sex = sbyte.Parse(num.ToString());
                 DateTime now = DateTime.Now;
-                int num2 = now.Year - cardIDModel.Birthday.Year;
-                if (now.Month < cardIDModel.Birthday.Month || (now.Month == cardIDModel.Birthday.Month && now.Day < cardIDModel.Birthday.Day))
+                int num2 = now.Year - cardIdModel.Birthday.Year;
+                if (now.Month < cardIdModel.Birthday.Month || (now.Month == cardIdModel.Birthday.Month && now.Day < cardIdModel.Birthday.Day))
                 {
                     num2--;
                 }
-                cardIDModel.Age = ((num2 < 0) ? 0 : num2);
-                result = cardIDModel;
+                cardIdModel.Age = ((num2 < 0) ? 0 : num2);
+                result = cardIdModel;
             }
             catch
             {

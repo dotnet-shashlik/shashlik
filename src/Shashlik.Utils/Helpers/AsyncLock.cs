@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Shashlik.Utils.Common
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
     ///     This API supports the Entity Framework Core infrastructure and is not intended to be used

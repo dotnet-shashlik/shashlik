@@ -6,6 +6,8 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+// ReSharper disable InconsistentNaming
+
 namespace Shashlik.Utils.Extensions
 {
     public static class IEnumerableExtensions
@@ -19,13 +21,14 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static int GetIndex<T>(this IEnumerable<T> source, T value)
         {
-            for (int i = 0; i < source.Count(); i++)
+            var i = 0;
+            foreach (var item in source)
             {
-                var v = source.ElementAt(i);
-
-                if (value.Equals(v))
+                if (item.Equals(value))
                     return i;
+                i++;
             }
+
             return -1;
         }
 
@@ -105,6 +108,7 @@ namespace Shashlik.Utils.Extensions
             {
                 throw new ArgumentNullException(nameof(list));
             }
+
             if (keyComparer == null)
                 return list.GroupBy(r => r).Any(g => g.Count() > 1);
             else
@@ -120,7 +124,8 @@ namespace Shashlik.Utils.Extensions
         /// <param name="selectProperty"></param>
         /// <param name="keyComparer"></param>
         /// <returns></returns>
-        public static bool HasRepeat<T, P>(this IEnumerable<T> list, Func<T, P> selectProperty, IEqualityComparer<P> keyComparer = null)
+        public static bool HasRepeat<T, P>(this IEnumerable<T> list, Func<T, P> selectProperty,
+            IEqualityComparer<P> keyComparer = null)
         {
             if (list == null)
             {
@@ -176,8 +181,7 @@ namespace Shashlik.Utils.Extensions
         /// 分页查询
         /// </summary>
         /// <param name="query">查询源</param>
-        /// <param name="pageIndex">当前页,索引从1开始</param>
-        /// <param name="pageSize">每页大小</param>
+        /// <param name="input"></param>
         /// <returns></returns>
         public static IQueryable<T> Paging<T>(this IQueryable<T> query, PageInput input)
         {
@@ -242,6 +246,7 @@ namespace Shashlik.Utils.Extensions
                 if (!value.IsNullOrWhiteSpace())
                     return false;
             }
+
             return true;
         }
 
@@ -284,6 +289,7 @@ namespace Shashlik.Utils.Extensions
                 PropertyDescriptor prop = props[i];
                 table.Columns.Add(prop.Name, prop.PropertyType);
             }
+
             object[] values = new object[props.Count];
             foreach (T item in data)
             {
@@ -291,8 +297,10 @@ namespace Shashlik.Utils.Extensions
                 {
                     values[i] = props[i].GetValue(item);
                 }
+
                 table.Rows.Add(values);
             }
+
             return table;
         }
     }
