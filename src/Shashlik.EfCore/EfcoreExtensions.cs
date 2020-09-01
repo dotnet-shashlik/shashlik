@@ -3,17 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shashlik.Utils.Extensions;
 using System.Linq.Expressions;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Dependency;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.EfCore
@@ -21,7 +17,7 @@ namespace Shashlik.EfCore
     public static class EfCoreExtensions
     {
         /// <summary>
-        /// 增加EF配置映射,注册所有的IEntityTypeConfiguration<>实现类
+        /// 增加EF配置映射,注册所有的IEntityTypeConfiguration>实现类
         /// </summary>
         /// <param name="kernelBuilder"></param>
         /// <returns></returns>
