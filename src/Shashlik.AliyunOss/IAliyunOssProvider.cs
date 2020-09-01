@@ -3,8 +3,17 @@ using System.Collections.Generic;
 
 namespace Shashlik.AliyunOss
 {
+    //TODO: 支持多文件上传
+    
     public interface IAliyunOssProvider
     {
+        /// <summary>
+        /// 验证文件类型,仅基于简单的扩展名校验
+        /// </summary>
+        /// <param name="ext">文件扩展名,不包含.</param>
+        /// <returns></returns>
+        (bool success, string errorMsg) ValidExt(string ext);
+
         /// <summary>
         /// 生成上传策略
         /// </summary>

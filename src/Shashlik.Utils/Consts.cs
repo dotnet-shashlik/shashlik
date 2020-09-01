@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Shashlik.Utils
@@ -17,7 +18,7 @@ namespace Shashlik.Utils
             /// <summary>
             /// 邮件地址
             /// </summary>
-            public const string Email = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
+            [EmailAddress]public const string Email = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
             /// <summary>
             /// 国内手机号码
             /// </summary>
