@@ -75,6 +75,30 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void RazorFormatTest()
         {
+            try
+            {
+                RazorFormatExtensions.Registy(null);
+            }
+            catch (Exception e)
+            {
+                e.ShouldNotBe(null);
+            }
+            try
+            {
+                RazorFormatExtensions.Registy(new ErrorFormatter());
+            }
+            catch (Exception e)
+            {
+                e.ShouldNotBe(null);
+            }
+            try
+            {
+                RazorFormatExtensions.Registy(new DuplicateFormatter());
+            }
+            catch (Exception e)
+            {
+                e.ShouldNotBe(null);
+            }
 
             var model = new UserTestModel
             {
@@ -89,9 +113,9 @@ namespace Shashlik.Utils.Test
             };
 
 
-            "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}"
+            "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
                 .RazorFormat(model)
-                .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
+                .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}@{{NotMatch}}");
 
             string value = null;
             value.RazorFormat(model).ShouldBeNull();
@@ -102,23 +126,9 @@ namespace Shashlik.Utils.Test
             "@{age}".RazorFormat(model).ShouldBe("@{age}");
             "@empty".RazorFormat(model).ShouldBe("@empty");
 
-            try
-            {
-                "@{Age|d2|f2}".RazorFormat(model);
-            }
-            catch (Exception ex)
-            {
-                ex.ShouldNotBeNull();
-            }
+            "@{Age|d2|f2}".RazorFormat(model);
 
-            try
-            {
-                "@{Company|ggggggg}".RazorFormat(model);
-            }
-            catch (Exception ex)
-            {
-                ex.ShouldNotBeNull();
-            }
+            "@{Company|ggggggg}".RazorFormat(model);
 
             "@{Age}@{Birthday}@{Money|f2}".RazorFormat(model).ShouldBe($"{model.Age}{model.Birthday}{model.Money.ToString("f2")}");
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}".RazorFormat(model).ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}");
@@ -126,6 +136,20 @@ namespace Shashlik.Utils.Test
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}"
                 .RazorFormat(model)
                 .ShouldBe($"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
+            var switchFormatString = "@{Gender|switch(0:未知|1:男性|2:女性|null:不男不女|empty:空|default:未知)}";
+            switchFormatString.RazorFormat(new {Gender = 2}).ShouldBe("女性");
+            //switchFormatString.RazorFormat(new {}).ShouldBe("不男不女");
+            switchFormatString.RazorFormat(new {Gender = ""}).ShouldBe("空");
+            switchFormatString.RazorFormat(new {Gender = 7}).ShouldBe("未知");
+            "@{Gender|switch(0:未知)}".RazorFormat(new {Gender = 7}).ShouldBe("7");
+            try
+            {
+                "@{Gender|switch(0未知)}".RazorFormat(new {Gender = 7});
+            }
+            catch (Exception e)
+            {
+                e.ShouldNotBeNull();
+            }
         }
 
         [Fact]
@@ -163,6 +187,24 @@ namespace Shashlik.Utils.Test
                     public int Code { get; set; }
                 }
             }
+        }
+    }
+    
+    internal class ErrorFormatter : IFormatter
+    {
+        public string Action { get; }
+        public string Format(string value, string expression)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    
+    internal class DuplicateFormatter : IFormatter
+    {
+        public string Action { get; } = "switch";
+        public string Format(string value, string expression)
+        {
+            throw new NotImplementedException();
         }
     }
 }
