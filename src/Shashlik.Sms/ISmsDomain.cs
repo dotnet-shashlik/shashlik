@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信发送执行接口
     /// </summary>
-    public interface ISmsInvoker
+    public interface ISmsDomain
     {
         /// <summary>
         /// 主机类型
@@ -15,6 +16,7 @@ namespace Shashlik.Sms
         /// <summary>
         /// 发送短信
         /// </summary>
+        /// <param name="options"></param>
         /// <param name="phones"></param>
         /// <param name="subject"></param>
         /// <param name="args"></param>

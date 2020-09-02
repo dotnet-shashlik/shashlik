@@ -10,6 +10,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void getId_test()
         {
+            
             var worker = new SnowflakeId(1, 1);
 
             HashSet<long> ids = new HashSet<long>();

@@ -19,6 +19,8 @@ namespace Shashlik.Kernel.Test
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
+            
             services.Configure<TestOptions2>(r => r.Enable = false);
 
             services.AddShashlik(Configuration)

@@ -1,5 +1,4 @@
-﻿using Shashlik.Kernel.Dependency;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Shashlik.Sms
 {
@@ -9,17 +8,9 @@ namespace Shashlik.Sms
     public interface ISms
     {
         /// <summary>
-        /// 发送频率限制检查
-        /// </summary>
-        /// <param name="phone"></param>
-        /// <param name="subject"></param>
-        /// <returns></returns>
-        bool LimitCheck(string phone, string subject);
-
-        /// <summary>
         /// 短信发送
         /// </summary>
-        /// <param name="phones">手机号码</param>
+        /// <param name="phone">手机号码</param>
         /// <param name="subject">短信类型</param>
         /// <param name="args">模板参数,注意参数顺序</param>
         void Send(string phone, string subject, params string[] args);

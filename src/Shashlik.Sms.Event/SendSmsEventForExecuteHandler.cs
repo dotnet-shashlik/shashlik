@@ -6,7 +6,7 @@ namespace Shashlik.Sms.Event
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
-    public class SendSmsEventForExecuteHandler : Shashlik.EventBus.IEventHandler<SendSmsEvent>
+    public class SendSmsEventForExecuteHandler : EventBus.IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {
@@ -14,8 +14,8 @@ namespace Shashlik.Sms.Event
             Logger = logger;
         }
 
-        ISms Sms { get; }
-        ILogger<SendSmsEventForExecuteHandler> Logger { get; }
+        private ISms Sms { get; }
+        private ILogger<SendSmsEventForExecuteHandler> Logger { get; }
 
         public async Task Execute(SendSmsEvent @event)
         {
@@ -34,7 +34,7 @@ namespace Shashlik.Sms.Event
             }
             catch (SmsDomainException e)
             {
-                Logger.LogWarning(e, "短信发送失败, 服务商错误");
+                Logger.LogError(e, "短信发送失败, 服务商错误");
                 throw;
             }
         }

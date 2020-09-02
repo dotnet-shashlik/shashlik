@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shashlik.Utils.Extensions;
 using static Shashlik.Utils.Consts;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Shashlik.Utils;
-using Shashlik.Kernel.Exception;
 using Shashlik.EventBus;
+using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms.Event
 {
@@ -31,38 +33,36 @@ namespace Shashlik.Sms.Event
         void Send(string phone, string subject, params string[] args);
     }
 
-    public class DefaultSmsSender : ISmsSender, Shashlik.Kernel.Dependency.ITransient
+    public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ITransient
     {
-        public DefaultSmsSender(IEventPublisher eventPublisher, ILogger<DefaultSmsSender> logger, ISms sms)
+        public DefaultSmsSender(IEventPublisher eventPublisher,
+            ILogger<DefaultSmsSender> logger, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options)
         {
             EventPublisher = eventPublisher;
             Logger = logger;
-            Sms = sms;
+            SmsLimit = smsLimit;
+            Options = options;
         }
-        ILogger<DefaultSmsSender> Logger { get; }
 
-        IEventPublisher EventPublisher { get; }
-
-        ISms Sms { get; }
+        private ILogger<DefaultSmsSender> Logger { get; }
+        private IEventPublisher EventPublisher { get; }
+        private ISmsLimit SmsLimit { get; }
+        private IOptionsMonitor<SmsOptions> Options { get; }
 
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
         {
-            if (phones != null && phones.Count() > 1000)
-            {
-                Logger.LogError($"批量短信发送最多1000条");
-                return;
-            }
-            if (phones == null || phones.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Regexs.MobilePhoneNumber)))
-            {
-                Logger.LogError($"{phones.Join(",")}短信发送手机验证失败");
-                return;
-            }
-            if (phones.Count() == 1 && !Sms.LimitCheck(phones.First(), subject))
-                throw ShashlikException.LogicalError("操作过于频繁");
+            if (phones == null) throw new ArgumentNullException(nameof(phones));
+            var list = phones?.ToList();
+            if (list.Count() > Options.CurrentValue.Max)
+                throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.Max}个号码");
+            if (list.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Regexs.MobilePhoneNumber)))
+                throw new SmsArgException($"{list.Join(",")} 存在手机号码格式错误");
+            if (list.Count() == 1 && !SmsLimit.LimitCheck(list.First(), subject))
+                throw new SmsArgException("短信发送过于频繁");
 
             EventPublisher.Publish(new SendSmsEvent
             {
-                Phones = phones.ToList(),
+                Phones = list.ToList(),
                 Subject = subject,
                 Args = args.ToList()
             });
@@ -71,17 +71,13 @@ namespace Shashlik.Sms.Event
         public void Send(string phone, string subject, params string[] args)
         {
             if (phone.IsNullOrWhiteSpace() || !phone.IsMatch(Consts.Regexs.MobilePhoneNumber))
-            {
-                Logger.LogError($"{phone}短信发送手机验证失败");
-                return;
-            }
-
-            if (!Sms.LimitCheck(phone, subject))
-                throw ShashlikException.LogicalError("操作过于频繁");
+                throw new SmsArgException($"{phone} 手机号码格式错误");
+            if (!SmsLimit.LimitCheck(phone, subject))
+                throw new SmsArgException("短信发送过于频繁");
 
             EventPublisher.Publish(new SendSmsEvent
             {
-                Phones = new List<string> { phone },
+                Phones = new List<string> {phone},
                 Subject = subject,
                 Args = args.ToList()
             });

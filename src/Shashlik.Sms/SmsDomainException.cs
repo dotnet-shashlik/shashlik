@@ -3,7 +3,7 @@
 namespace Shashlik.Sms
 {
     /// <summary>
-    /// 短信发送 主机异常
+    /// 短信发送 主机异常,一般需要重试
     /// </summary>
     public class SmsDomainException : Exception
     {

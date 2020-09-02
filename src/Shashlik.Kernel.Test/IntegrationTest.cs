@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
@@ -17,6 +18,11 @@ namespace Shashlik.Kernel.Test
         [Fact]
         public void DoTest()
         {
+            {
+               var memoryCache= GetService<IMemoryCache>();
+              var op= memoryCache.Get<TestOptions3>("tt");
+            }
+            
             // AutoOptions
             {
                 var options1 = GetService<IOptions<TestOptions1>>();

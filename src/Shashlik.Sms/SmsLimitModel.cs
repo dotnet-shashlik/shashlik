@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Shashlik.Sms
 {
-    public class SmsLimit
+    public class SmsLimitModel
     {
         public int Day { get; set; }
 
