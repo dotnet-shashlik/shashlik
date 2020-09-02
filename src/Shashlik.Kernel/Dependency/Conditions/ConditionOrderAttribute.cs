@@ -11,6 +11,10 @@ namespace Shashlik.Kernel.Dependency.Conditions
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ConditionOrderAttribute : Attribute
     {
+        /// <summary>
+        /// 条件序号,优先级从小到大执行
+        /// </summary>
+        /// <param name="order">条件序号,优先级从小到大执行</param>
         public ConditionOrderAttribute(int order)
         {
             Order = order;

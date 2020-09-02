@@ -31,7 +31,7 @@ namespace Shashlik.Kernel.Autowired
         }
 
         /// <summary>
-        /// 开始装配 应用配置
+        /// 开始装配 应用配置,<typeparam name="TBaseType"></typeparam>需要自行实现注入,最简单的方式就是继承自:ISingleton/IScoped/ITransient
         /// </summary>
         /// <param name="kernelConfigure"></param>
         /// <typeparam name="TBaseType"></typeparam>

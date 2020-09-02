@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Kernel.Dependency.Conditions
 {
@@ -43,10 +44,21 @@ namespace Shashlik.Kernel.Dependency.Conditions
         /// </summary>
         public bool MatchIfMissing { get; set; } = false;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
+        /// <summary>
+        /// 是否区分大小写,bool值的话,到程序中会变成首字母大写,默认不区分true
+        /// </summary>
+        public bool IgnoreCase { get; set; } = true;
+
+        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+            IHostEnvironment hostEnvironment)
         {
-            var value = rootConfiguration[Property];
-            return (value == null && MatchIfMissing) || Value == value;
+            var value = rootConfiguration.GetValue<string>(Property);
+            return value switch
+            {
+                null when MatchIfMissing => true,
+                null => false,
+                _ => IgnoreCase ? value.EqualsIgnoreCase(Value) : value.Equals(Value)
+            };
         }
     }
 }

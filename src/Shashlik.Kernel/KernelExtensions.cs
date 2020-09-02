@@ -67,6 +67,9 @@ namespace Shashlik.Kernel
             if (assemblies == null)
                 throw new ArgumentNullException(nameof(assemblies));
 
+            var kernelService = new KernelService(services, dependencyContext, rootConfiguration);
+            services.AddSingleton<IKernelServices>(kernelService);
+
             services
                 .TryAddSingleton<IConventionServiceDescriptorProvider, DefaultConventionServiceDescriptorProvider>();
             services.TryAddSingleton<IBasedOnServiceDescriptorProvider, DefaultBasedOnServiceDescriptorProvider>();
@@ -85,8 +88,6 @@ namespace Shashlik.Kernel
                 conditionFilterAddProvider.FilterAdd(serviceDescriptors, services, rootConfiguration, hostEnvironment);
             }
 
-            var kernelService = new KernelService(services, dependencyContext, rootConfiguration);
-            services.AddSingleton(kernelService);
             return kernelService;
         }
 
@@ -95,7 +96,7 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="kernelService"></param>
         /// <param name="serviceLifetime"></param>
-        public static IKernelServices AddServiceByBasedOn<TBaseType>(this IKernelServices kernelService,
+        public static IKernelServices AddServicesByBasedOn<TBaseType>(this IKernelServices kernelService,
             ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
@@ -125,7 +126,7 @@ namespace Shashlik.Kernel
         /// <param name="kernelService"></param>
         /// <param name="baseType"></param>
         /// <param name="serviceLifetime"></param>
-        public static IKernelServices AddServiceByBasedOn(this IKernelServices kernelService, TypeInfo baseType,
+        public static IKernelServices AddServicesByBasedOn(this IKernelServices kernelService, TypeInfo baseType,
             ServiceLifetime serviceLifetime)
         {
             using var serviceProvider = kernelService.Services.BuildServiceProvider();

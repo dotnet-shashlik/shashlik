@@ -10,16 +10,11 @@ namespace Shashlik.Kernel.Autowire.Attributes
     {
         public AutoOptionsAttribute(string section)
         {
-            if (string.IsNullOrWhiteSpace(section))
-            {
-                throw new ArgumentException($"“{nameof(section)}”不能为 Null 或空白", nameof(section));
-            }
-
-            Section = section;
+            Section = section ?? throw new ArgumentNullException(nameof(section));
         }
 
         /// <summary>
-        /// 配置节点名称，例：Logger:Microsft
+        /// 配置节点名称，例：Logger:Microsoft
         /// </summary>
         public string Section { get; set; }
     }

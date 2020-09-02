@@ -23,7 +23,7 @@ namespace Shashlik.EfCore
         /// <returns></returns>
         public static IKernelServices AddEfEntityMappings(this IKernelServices kernelBuilder)
         {
-            kernelBuilder.AddServiceByBasedOn(typeof(IEntityTypeConfiguration<>).GetTypeInfo(), ServiceLifetime.Transient);
+            kernelBuilder.AddServicesByBasedOn(typeof(IEntityTypeConfiguration<>).GetTypeInfo(), ServiceLifetime.Transient);
             return kernelBuilder;
         }
 

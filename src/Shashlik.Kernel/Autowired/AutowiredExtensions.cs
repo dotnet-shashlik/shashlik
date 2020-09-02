@@ -33,7 +33,7 @@ namespace Shashlik.Kernel.Autowired
                     method.MakeGenericMethod(r.ServiceType)
                         .Invoke(null, new object[]
                         {
-                            kernelService.Services, kernelService.RootConfiguration.GetSection(instance.Section)
+                            kernelService.Services, kernelService.RootConfiguration.GetSection(instance!.Section)
                         });
                 });
 
@@ -72,7 +72,7 @@ namespace Shashlik.Kernel.Autowired
                 throw new Exception($"error auto service type, must be {typeof(IAutowiredConfigureServices)}.");
 
             builder.Build(r =>
-                ((IAutowiredConfigureServices) r.ServiceInstance)?.ConfigureServices(builder.KernelService));
+                ((IAutowiredConfigureServices) r.ServiceInstance)!.ConfigureServices(builder.KernelService));
             return builder.KernelService;
         }
 
@@ -105,7 +105,7 @@ namespace Shashlik.Kernel.Autowired
         {
             if (builder.AutowiredBaseType != typeof(IAutowiredConfigure))
                 throw new Exception($"error auto configure type, must be {typeof(IAutowiredConfigure)}.");
-            return builder.Build(r => ((IAutowiredConfigure) r.ServiceInstance)?.Configure(builder.KernelConfigure));
+            return builder.Build(r => ((IAutowiredConfigure) r.ServiceInstance)!.Configure(builder.KernelConfigure));
         }
     }
 }

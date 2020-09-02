@@ -33,6 +33,11 @@ namespace Shashlik.Kernel.Autowired
         public List<TypeInfo> Prevs { get; } = new List<TypeInfo>();
 
         /// <summary>
+        /// 在我之后有哪些依赖
+        /// </summary>
+        public List<TypeInfo> Nexts { get; } = new List<TypeInfo>();
+        
+        /// <summary>
         /// 自动装配服务类执行
         /// </summary>
         public TypeInfo ServiceType { get; set; }

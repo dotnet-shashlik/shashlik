@@ -29,7 +29,7 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IAutowiredConfigureBuilder BeginAutowiredAspNetConfigure(this IKernelConfigure kernelConfigure)
         {
-            return kernelConfigure.BeginAutowiredConfigure();
+            return kernelConfigure.BeginAutowired<IAutowiredConfigureAspNetCore>();
         }
 
         /// <summary>

@@ -13,11 +13,13 @@ namespace Shashlik.Kernel.Autowired
 {
     public class DefaultAutowiredProvider : IAutowiredProvider
     {
-        public void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> pipelineService,
+        public void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> autoServices,
             Action<AutowiredDescriptor> autowiredAction)
         {
-            foreach (var item in pipelineService)
-                Invoke(item.Value as InnerAutowiredDescriptor, pipelineService, autowiredAction);
+            foreach (var item in autoServices
+                    .OrderBy(r => r.Value.Prevs.IsNullOrEmpty() && r.Value.Nexts.IsNullOrEmpty() ? 0 : 1))
+                // 把没有任务顺序要求的放在最前面执行
+                Invoke(item.Value as InnerAutowiredDescriptor, autoServices, autowiredAction);
         }
 
         public IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
@@ -35,7 +37,7 @@ namespace Shashlik.Kernel.Autowired
                 if (beforeOnAttribute != null && afterOnAttribute != null)
                     throw new KernelExceptionInitException($"[AfterAt] and [BeforeAt] cannot be used together.");
                 //bool isRemove = !removes.IsNullOrEmpty() && removes.Contains(serviceType);
-                services.AddSingleton(serviceType);
+                services.AddSingleton(serviceType, serviceType);
                 descriptors.Add(serviceType, new InnerAutowiredDescriptor(afterOnAttribute?.AfterAt?.GetTypeInfo(),
                     beforeOnAttribute?.BeforeAt?.GetTypeInfo(), serviceType, InitStatus.Waiting)
                 );
@@ -46,10 +48,16 @@ namespace Shashlik.Kernel.Autowired
             foreach (var item in descriptors)
             {
                 if (item.Value.AfterAt != null)
+                {
                     item.Value.Prevs.Add(item.Value.AfterAt);
+                    descriptors[item.Value.AfterAt].Nexts.Add(item.Key);
+                }
 
                 if (item.Value.BeforeAt != null)
+                {
+                    item.Value.Nexts.Add(item.Value.BeforeAt);
                     descriptors[item.Value.BeforeAt].Prevs.Add(item.Key);
+                }
 
                 item.Value.ServiceInstance = serviceProvider.GetService(item.Key);
             }
@@ -81,10 +89,16 @@ namespace Shashlik.Kernel.Autowired
             foreach (var item in descriptors)
             {
                 if (item.Value.AfterAt != null)
+                {
                     item.Value.Prevs.Add(item.Value.AfterAt);
+                    descriptors[item.Value.AfterAt].Nexts.Add(item.Key);
+                }
 
                 if (item.Value.BeforeAt != null)
+                {
+                    item.Value.Nexts.Add(item.Value.BeforeAt);
                     descriptors[item.Value.BeforeAt].Prevs.Add(item.Key);
+                }
 
                 item.Value.ServiceInstance = serviceProvider.GetService(item.Key);
             }
