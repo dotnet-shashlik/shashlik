@@ -1,5 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DotNetCore.CAP.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using RestSharp.Extensions;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 
@@ -36,14 +39,12 @@ namespace Shashlik.EventBus
                     r.FailedRetryInterval = EventBusOptions.FailedRetryInterval.Value;
                 if (EventBusOptions.SucceedMessageExpiredAfter.HasValue)
                     r.SucceedMessageExpiredAfter = EventBusOptions.SucceedMessageExpiredAfter.Value;
-
                 kernelService
-                    .BeginAutowired<IEventBusConfigureServices>()
-                    .Build(descriptor =>
-                    {
-                        (descriptor.ServiceInstance as IEventBusConfigureServices)?.Configure(r);
-                    });
+                    .BeginAutowired<IEventBusConfigure>()
+                    .Build(descriptor => { (descriptor.ServiceInstance as IEventBusConfigure)!.Configure(r); });
             });
+            kernelService.Services.Replace(ServiceDescriptor.Describe(typeof(IConsumerServiceSelector),
+                typeof(ShashlikConsumerServiceSelector), ServiceLifetime.Singleton));
         }
     }
 }

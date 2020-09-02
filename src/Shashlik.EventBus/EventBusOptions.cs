@@ -16,12 +16,12 @@ namespace Shashlik.EventBus
         /// <summary>
         /// CAP默认组名
         /// </summary>
-        public string DefaultGroup { get; set; }
+        public string? DefaultGroup { get; set; }
 
         /// <summary>
         /// CAP当前版本名称,一般用于区分不用的环境
         /// </summary>
-        public string Version { get; set; }
+        public string? Version { get; set; }
 
         /// <summary>
         /// 成功的消息过期时间:秒,空则使用CAP默认配置

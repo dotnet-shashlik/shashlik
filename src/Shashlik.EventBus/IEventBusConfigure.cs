@@ -8,7 +8,7 @@ namespace Shashlik.EventBus
     /// <summary>
     /// event bus 自动装配,主要是配置cap
     /// </summary>
-    public interface IEventBusConfigureServices
+    public interface IEventBusConfigure
     {
         void Configure(CapOptions capOptions);
     }

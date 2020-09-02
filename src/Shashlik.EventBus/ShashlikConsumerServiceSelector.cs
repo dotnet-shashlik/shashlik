@@ -13,7 +13,6 @@ using Shashlik.Kernel.Dependency.Conditions;
 
 namespace Shashlik.EventBus
 {
-    [DependsOnMissing(typeof(IConsumerServiceSelector))]
     class ShashlikConsumerServiceSelector : IConsumerServiceSelector, Shashlik.Kernel.Dependency.ISingleton
     {
         private readonly CapOptions _capOptions;
@@ -22,8 +21,11 @@ namespace Shashlik.EventBus
         /// <summary>
         /// since this class be designed as a Singleton service,the following two list must be thread safe!!!
         /// </summary>
-        private readonly ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>> _asteriskList;
-        private readonly ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>> _poundList;
+        private readonly ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>
+            _asteriskList;
+
+        private readonly ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>
+            _poundList;
 
         /// <summary>
         /// Creates a new <see cref="ShashlikConsumerServiceSelector" />.
@@ -33,7 +35,8 @@ namespace Shashlik.EventBus
             _serviceProvider = serviceProvider;
             _capOptions = serviceProvider.GetService<IOptions<CapOptions>>().Value;
 
-            _asteriskList = new ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>();
+            _asteriskList =
+                new ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>();
             _poundList = new ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>();
         }
 
@@ -45,7 +48,8 @@ namespace Shashlik.EventBus
             return executorDescriptorList;
         }
 
-        public ConsumerExecutorDescriptor SelectBestCandidate(string key, IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
+        public ConsumerExecutorDescriptor SelectBestCandidate(string key,
+            IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             var result = MatchUsingName(key, executeDescriptor);
             if (result != null)
@@ -110,6 +114,7 @@ namespace Shashlik.EventBus
 
                 names.Add(eventType.Name);
             }
+
             return names;
         }
 
@@ -124,15 +129,16 @@ namespace Shashlik.EventBus
             foreach (var eventName in names)
             {
                 var method = methods.FirstOrDefault(r => r.Name == "Execute"
-                                                        && r.GetParameters().Length == 1
-                                                        && r.GetParameters()[0].ParameterType.Name == eventName
-                                                        && r.GetParameters()[0].ParameterType.IsSubTypeOf<IEvent>());
+                                                         && r.GetParameters().Length == 1
+                                                         && r.GetParameters()[0].ParameterType.Name == eventName
+                                                         && r.GetParameters()[0].ParameterType.IsSubTypeOf<IEvent>());
                 if (method == null)
                     throw new Exception($"{typeInfo} event handler definetion error!");
 
                 results.Add(new ConsumerExecutorDescriptor
                 {
-                    Attribute = new CapSubscribeAttribute(eventName) { Group = typeInfo.Name + "." + _capOptions.Version },
+                    Attribute =
+                        new CapSubscribeAttribute(eventName) {Group = typeInfo.Name + "." + _capOptions.Version},
                     ImplTypeInfo = typeInfo,
                     MethodInfo = method,
                     ServiceTypeInfo = typeInfo,
@@ -149,12 +155,14 @@ namespace Shashlik.EventBus
             return results;
         }
 
-        private ConsumerExecutorDescriptor MatchUsingName(string key, IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
+        private ConsumerExecutorDescriptor MatchUsingName(string key,
+            IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             return executeDescriptor.FirstOrDefault(x => x.Attribute.Name == key);
         }
 
-        private ConsumerExecutorDescriptor MatchAsteriskUsingRegex(string key, IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
+        private ConsumerExecutorDescriptor MatchAsteriskUsingRegex(string key,
+            IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             var group = executeDescriptor.First().Attribute.Group;
             if (!_asteriskList.TryGetValue(group, out var tmpList))
@@ -179,7 +187,8 @@ namespace Shashlik.EventBus
             return null;
         }
 
-        private ConsumerExecutorDescriptor MatchPoundUsingRegex(string key, IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
+        private ConsumerExecutorDescriptor MatchPoundUsingRegex(string key,
+            IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             var group = executeDescriptor.First().Attribute.Group;
             if (!_poundList.TryGetValue(group, out var tmpList))
