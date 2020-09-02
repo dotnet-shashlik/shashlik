@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace Shashlik.AliyunOss
 {
     //TODO: 支持多文件上传
+    //TODO: 文件签名访问
     
     public interface IAliyunOssProvider
     {
