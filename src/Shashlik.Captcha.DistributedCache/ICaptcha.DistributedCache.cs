@@ -18,8 +18,8 @@ namespace Shashlik.Captcha
     {
         public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)
         {
-            this.Cache = cache;
-            this.Options = options;
+            Cache = cache;
+            Options = options;
         }
 
         private IDistributedCache Cache { get; }
