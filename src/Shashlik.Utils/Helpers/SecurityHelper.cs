@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+
 // ReSharper disable CommentTypo
 // ReSharper disable InconsistentNaming
 // ReSharper disable IdentifierTypo
@@ -92,9 +93,9 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA1 
         /// </summary>
-        public static string Sha1(this string value)
+        public static string Sha1(this string value, Encoding encoding = null)
         {
-            var encoding = Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             using SHA1 sha1 = new SHA1CryptoServiceProvider();
             return HashAlgorithmBase(sha1, value, encoding);
         }
@@ -102,9 +103,9 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA256 
         /// </summary>
-        public static string Sha256(this string value)
+        public static string Sha256(this string value, Encoding encoding = null)
         {
-            var encoding = Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             using SHA256 sha256 = new SHA256Managed();
             return HashAlgorithmBase(sha256, value, encoding);
         }
@@ -112,9 +113,9 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA512 加密
         /// </summary>
-        public static string Sha512(this string value)
+        public static string Sha512(this string value, Encoding encoding = null)
         {
-            var encoding = Encoding.UTF8;
+            encoding ??= Encoding.UTF8;
             using SHA512 sha512 = new SHA512Managed();
             return HashAlgorithmBase(sha512, value, encoding);
         }

@@ -7,7 +7,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Utils.Test
 {
-    public class ExtensionsTest
+    public class MathExtensionsTest
     {
         [Fact]
         public void IsMaxPrecision_test()

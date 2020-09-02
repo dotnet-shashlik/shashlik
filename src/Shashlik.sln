@@ -73,6 +73,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Wx.Http", "Shashli
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.TencentFaceId", "Shashlik.TencentFaceId\Shashlik.TencentFaceId.csproj", "{393674D8-2F35-40BE-ACCC-92125343670B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Kernel.Test", "Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj", "{E1D283DD-5362-4B52-9C39-A186BBDAEE57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -278,6 +280,12 @@ Global
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{393674D8-2F35-40BE-ACCC-92125343670B}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -286,6 +294,7 @@ Global
 		{DA0E9DA9-3087-4772-B93E-71513B0F3285} = {7BD6B26F-6C3F-4B5B-B403-3FD921BDBE93}
 		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20} = {7BD6B26F-6C3F-4B5B-B403-3FD921BDBE93}
 		{0DAB2912-0F2E-4EE3-969A-5A54F529319B} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{E1D283DD-5362-4B52-9C39-A186BBDAEE57} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

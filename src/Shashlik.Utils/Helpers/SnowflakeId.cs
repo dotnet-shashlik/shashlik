@@ -4,7 +4,7 @@ namespace Shashlik.Utils.Helpers
 {
     public class SnowflakeId
     {
-        public const long Twepoch = 1288834974657L;
+        private const long Twepoch = 1288834974657L;
 
         private const int WorkerIdBits = 5;
         private const int DatacenterIdBits = 5;
@@ -14,7 +14,7 @@ namespace Shashlik.Utils.Helpers
 
         private const int WorkerIdShift = SequenceBits;
         private const int DatacenterIdShift = SequenceBits + WorkerIdBits;
-        public const int TimestampLeftShift = SequenceBits + WorkerIdBits + DatacenterIdBits;
+        private const int TimestampLeftShift = SequenceBits + WorkerIdBits + DatacenterIdBits;
         private const long SequenceMask = -1L ^ (-1L << SequenceBits);
 
         private readonly object _lock = new object();
@@ -34,9 +34,9 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException($"datacenter Id can't be greater than {MaxDatacenterId} or less than 0");
         }
 
-        public long WorkerId { get; protected set; }
-        public long DatacenterId { get; protected set; }
-        public long Sequence { get; internal set; }
+        private long WorkerId { get; set; }
+        private long DatacenterId { get; set; }
+        private long Sequence { get; set; }
 
         public virtual long NextId()
         {

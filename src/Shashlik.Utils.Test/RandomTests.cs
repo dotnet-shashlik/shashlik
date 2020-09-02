@@ -8,7 +8,7 @@ namespace Shashlik.Utils.Test
     public class SnowflakeIdTests
     {
         [Fact]
-        void getId_test()
+        public void getId_test()
         {
             var worker = new SnowflakeId(1, 1);
 

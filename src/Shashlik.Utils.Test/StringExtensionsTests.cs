@@ -118,13 +118,11 @@ namespace Shashlik.Utils.Test
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
                 .RazorFormat(model)
                 .ShouldBe(
-                    $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}@{{NotMatch}}");
+                    $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}{model.Company.CompanyName}{model.Company.Address.Code:d6}@{{NotMatch}}");
 
-            string value = null;
-            value.RazorFormat(model).ShouldBeNull();
+            ((string) null).RazorFormat(model).ShouldBeNull();
             "".RazorFormat(model).ShouldBeNullOrWhiteSpace();
-            UserTestModel nullModel = null;
-            "@{Age}@{Birthday}@{Money}".RazorFormat(nullModel).ShouldBe("@{Age}@{Birthday}@{Money}");
+            "@{Age}@{Birthday}@{Money}".RazorFormat((UserTestModel) null).ShouldBe("@{Age}@{Birthday}@{Money}");
 
             "@{age}".RazorFormat(model).ShouldBe("@{age}");
             "@empty".RazorFormat(model).ShouldBe("@empty");
@@ -134,14 +132,14 @@ namespace Shashlik.Utils.Test
             "@{Company|ggggggg}".RazorFormat(model);
 
             "@{Age}@{Birthday}@{Money|f2}".RazorFormat(model)
-                .ShouldBe($"{model.Age}{model.Birthday}{model.Money.ToString("f2")}");
+                .ShouldBe($"{model.Age}{model.Birthday}{model.Money:f2}");
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}".RazorFormat(model).ShouldBe(
-                $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}");
+                $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}");
 
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}"
                 .RazorFormat(model)
                 .ShouldBe(
-                    $"{model.Age.ToString("d5")}{model.Birthday.ToString("yyyy-MM-dd HH:mm:ss")}{model.Money.ToString("f2")}{model.Company.CompanyName}{model.Company.Address.Code.ToString("d6")}");
+                    $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}{model.Company.CompanyName}{model.Company.Address.Code:d6}");
             var switchFormatString = "@{Gender|switch(0:未知|1:男性|2:女性|null:不男不女|empty:空|default:未知)}";
             switchFormatString.RazorFormat(new {Gender = 2}).ShouldBe("女性");
             //switchFormatString.RazorFormat(new {}).ShouldBe("不男不女");
