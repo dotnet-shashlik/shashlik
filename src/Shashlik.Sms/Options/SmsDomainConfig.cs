@@ -13,12 +13,12 @@ namespace Shashlik.Sms.Options
         public int Priority { get; set; }
 
         /// <summary>
-        /// 短信主机,已定义的有,1:阿里云,2:腾讯
+        /// 短信主机,已定义的有,aliyun:阿里云,tencent:腾讯云
         /// </summary>
-        public int Domain { get; set; }
+        public string Domain { get; set; }
 
         /// <summary>
-        /// 区域
+        /// 区域(阿里云有效)
         /// </summary>
         public string Region { get; set; }
 
@@ -31,6 +31,11 @@ namespace Shashlik.Sms.Options
         /// 云服务短信 appkey
         /// </summary>
         public string AppKey { get; set; }
+
+        /// <summary>
+        /// 主机额外的参数,扩展用
+        /// </summary>
+        public IDictionary<string, string> Extra { get; set; }
 
         /// <summary>
         /// 模板列表

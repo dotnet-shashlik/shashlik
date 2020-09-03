@@ -18,7 +18,7 @@ namespace Shashlik.Sms.Domains
             Logger = logger;
         }
 
-        public int SmsDomain => 2;
+        public string SmsDomain => "tencent";
         private ILogger<TencentSms> Logger { get; }
 
         public void Send(SmsDomainConfig options, IEnumerable<string> phones, string subject,

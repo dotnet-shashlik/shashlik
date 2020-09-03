@@ -21,7 +21,7 @@ namespace Shashlik.Sms.Domains
             Logger = logger;
         }
 
-        public int SmsDomain => 1;
+        public string SmsDomain => "aliyun";
         private ILogger<AliSms> Logger { get; }
 
         public void Send(SmsDomainConfig options, IEnumerable<string> phones, string subject,
