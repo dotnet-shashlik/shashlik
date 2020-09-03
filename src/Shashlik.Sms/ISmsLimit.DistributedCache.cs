@@ -37,7 +37,7 @@ namespace Shashlik.Sms
             if (limit != null && (limit.DayLimitCount.HasValue || limit.HourLimitCount.HasValue ||
                                   limit.MinuteLimitCount.HasValue))
             {
-                var smsLimit = Cache.GetObjectAsync<SmsLimitModel>(key).GetAwaiter().GetResult();
+                var smsLimit = Cache.GetObject<SmsLimitModel>(key);
                 if (smsLimit == null)
                     return true;
 
@@ -76,7 +76,7 @@ namespace Shashlik.Sms
             var minute = DateTime.Now.Minute;
             var expire = DateTimeOffset.Now.Date.AddDays(1);
 
-            var smsLimit = Cache.GetObjectAsync<SmsLimitModel>(key).GetAwaiter().GetResult() ?? new SmsLimitModel
+            var smsLimit = Cache.GetObject<SmsLimitModel>(key) ?? new SmsLimitModel
             {
                 Day = day,
                 Records = new List<SmsLimitModel.Record>()
@@ -87,7 +87,7 @@ namespace Shashlik.Sms
                 Minute = minute
             });
 
-            Cache.SetObjectAsync(key, smsLimit, expire).Wait();
+            Cache.SetObject(key, smsLimit, expire);
         }
     }
 }

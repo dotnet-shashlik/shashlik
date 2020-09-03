@@ -19,21 +19,21 @@ namespace Shashlik.Sms.Inner
                    && Regex.IsMatch(phone, Consts.Regexs.MobilePhoneNumber);
         }
 
-        internal static async Task<T> GetObjectAsync<T>(this IDistributedCache cache, string key)
+        internal static T GetObject<T>(this IDistributedCache cache, string key)
             where T : class
         {
-            var content = await cache.GetStringAsync(key);
+            var content = cache.GetString(key);
             return content.IsNullOrWhiteSpace()
                 ? null
                 : JsonConvert.DeserializeObject<T>(content);
         }
 
-        internal static async Task SetObjectAsync(this IDistributedCache cache, string key, object obj,
-            DateTimeOffset expire)
+        internal static void SetObject(this IDistributedCache cache, string key, object obj,
+            DateTimeOffset expireAt)
         {
-            await cache.SetStringAsync(key, obj.ToJson(), new DistributedCacheEntryOptions
+            cache.SetString(key, obj.ToJson(), new DistributedCacheEntryOptions
             {
-                AbsoluteExpiration = expire
+                AbsoluteExpiration = expireAt
             });
         }
     }
