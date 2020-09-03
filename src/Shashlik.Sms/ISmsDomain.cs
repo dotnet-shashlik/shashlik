@@ -11,7 +11,7 @@ namespace Shashlik.Sms
         /// <summary>
         /// 主机类型
         /// </summary>
-        int SmsDomain { get; }
+        string SmsDomain { get; }
 
         /// <summary>
         /// 发送短信

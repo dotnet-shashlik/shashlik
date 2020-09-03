@@ -3,12 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30330.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hangfire.redis", "hangfire.redis", "{7BD6B26F-6C3F-4B5B-B403-3FD921BDBE93}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.Redis.CSRedisCore", "Hangfire.Redis.CSRedisCore\Hangfire.Redis.CSRedisCore\Hangfire.Redis.CSRedisCore.csproj", "{DA0E9DA9-3087-4772-B93E-71513B0F3285}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hangfire.Redis.Tests", "Hangfire.Redis.CSRedisCore\Hangfire.Redis.Tests\Hangfire.Redis.Tests.csproj", "{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AliyunOss", "Shashlik.AliyunOss\Shashlik.AliyunOss.csproj", "{24376E23-656A-4117-9CDB-45CCE2DCE447}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha", "Shashlik.Captcha\Shashlik.Captcha.csproj", "{AEA2D216-8B51-4E5E-8C4A-1C4B024E9556}"
@@ -46,18 +40,6 @@ Global
 		Test|Any CPU = Test|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{24376E23-656A-4117-9CDB-45CCE2DCE447}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{24376E23-656A-4117-9CDB-45CCE2DCE447}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24376E23-656A-4117-9CDB-45CCE2DCE447}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -147,8 +129,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{DA0E9DA9-3087-4772-B93E-71513B0F3285} = {7BD6B26F-6C3F-4B5B-B403-3FD921BDBE93}
-		{DA99B09F-3B14-437D-AAAE-E09BF05CBE20} = {7BD6B26F-6C3F-4B5B-B403-3FD921BDBE93}
 		{0DAB2912-0F2E-4EE3-969A-5A54F529319B} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection

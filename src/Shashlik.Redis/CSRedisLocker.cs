@@ -40,7 +40,7 @@ namespace Shashlik.Redis
 
         private string Value { get; }
 
-        CancellationTokenSource CancelTokenSource { get; }
+        private CancellationTokenSource CancelTokenSource { get; }
 
         public void Dispose()
         {
