@@ -75,32 +75,9 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void RazorFormatTest()
         {
-            try
-            {
-                RazorFormatExtensions.Registy(null);
-            }
-            catch (Exception e)
-            {
-                e.ShouldNotBe(null);
-            }
-
-            try
-            {
-                RazorFormatExtensions.Registy(new ErrorFormatter());
-            }
-            catch (Exception e)
-            {
-                e.ShouldNotBe(null);
-            }
-
-            try
-            {
-                RazorFormatExtensions.Registy(new DuplicateFormatter());
-            }
-            catch (Exception e)
-            {
-                e.ShouldNotBe(null);
-            }
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(null));
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(new ErrorFormatter()));
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(new DuplicateFormatter()));
 
             var model = new UserTestModel
             {
@@ -128,7 +105,7 @@ namespace Shashlik.Utils.Test
             "@empty".RazorFormat(model).ShouldBe("@empty");
 
             "@{Age|d2|f2}".RazorFormat(model);
-            
+
             "@{Detail}".RazorFormat(new UserTestModel()).ShouldBe("");
 
             "@{Company|ggggggg}".RazorFormat(model);
@@ -175,7 +152,7 @@ namespace Shashlik.Utils.Test
 
         public class UserTestModel
         {
-            public  string Detail { get; set; }
+            public string Detail { get; set; }
             public int Age { get; set; }
             public DateTime Birthday { get; set; }
 

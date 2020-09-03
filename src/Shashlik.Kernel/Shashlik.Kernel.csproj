@@ -12,5 +12,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LifeTime" />
+  </ItemGroup>
 
 </Project>
