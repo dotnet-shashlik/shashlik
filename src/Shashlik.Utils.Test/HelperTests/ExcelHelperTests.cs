@@ -70,5 +70,41 @@ namespace Shashlik.Utils.Test
             ds.Tables[0].Rows[2][1].ShouldBe(row1[1]);
             File.Delete(fileName);
         }
+
+        [Fact]
+        public void WriteToTemplate()
+        {
+            var col1 = "A2";
+            var col2 = "B2";
+            var col3 = "C2";
+            var fileName = "3333.xlsx";
+            using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+            {
+                DataTable table = new DataTable("test");
+                table.Columns.Add("A");
+                table.Columns.Add("B");
+                table.Columns.Add("C");
+                table.Rows.Add(col1, col2, col3);
+                ExcelHelper.WriteTo(File.OpenRead("HelperTests/test_template.xlsx"), fs, table, 2);
+            }
+            var ds = ExcelHelper.ToDataSet(File.OpenRead(fileName));
+            
+            ds.Tables[0].Rows[0][0].ShouldBe("A");
+            ds.Tables[0].Rows[0][1].ShouldBe("B");
+            ds.Tables[0].Rows[0][2].ShouldBe("C");
+
+            ds.Tables[0].Rows[2][0].ShouldBe(col1);
+            ds.Tables[0].Rows[2][1].ShouldBe(col2);
+            ds.Tables[0].Rows[2][2].ShouldBe(col3);
+            File.Delete(fileName);
+        }
+
+        [Fact]
+        public void ReadWrongStream()
+        {
+            using var ms = new MemoryStream();
+            var ds = ExcelHelper.ToDataSet(ms);
+            ds.ShouldBeNull();
+        }
     }
 }
