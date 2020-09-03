@@ -83,7 +83,7 @@ namespace Shashlik.Utils.RazorFormat
 
                 if (formatExp.IsNullOrWhiteSpace())
                     // 没有格式化输出,直接replace
-                    value = value.Replace(item.Value, v.ToString());
+                    value = value.Replace(item.Value, v?.ToString());
                 else
                 {
                     bool hasFormater = false; // 有没有格式化器

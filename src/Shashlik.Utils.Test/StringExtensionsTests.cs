@@ -128,6 +128,8 @@ namespace Shashlik.Utils.Test
             "@empty".RazorFormat(model).ShouldBe("@empty");
 
             "@{Age|d2|f2}".RazorFormat(model);
+            
+            "@{Detail}".RazorFormat(new UserTestModel()).ShouldBe("");
 
             "@{Company|ggggggg}".RazorFormat(model);
 
@@ -173,6 +175,7 @@ namespace Shashlik.Utils.Test
 
         public class UserTestModel
         {
+            public  string Detail { get; set; }
             public int Age { get; set; }
             public DateTime Birthday { get; set; }
 
