@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
+    <PackageReference Include="IdentityServer4" Version="3.1.3" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
+
+    <ProjectReference Include="..\..\modules\Sbt.Enterprise\Sbt.Enterprise.csproj" />
+
+    <ProjectReference Include="..\..\modules\Sbt.Identity\Sbt.Identity.csproj" />
+    <ProjectReference Include="..\..\utils\Guc.Features\Guc.Features.csproj" />
+    <ProjectReference Include="..\..\utils\Guc.Mapper\Guc.Mapper.csproj" />
+    <ProjectReference Include="..\Sbt.Common\Sbt.Common.csproj" />
+    <ProjectReference Include="..\Sbt.Data\Sbt.Data.csproj" />
+  </ItemGroup>
+
+</Project>

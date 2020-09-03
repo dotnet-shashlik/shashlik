@@ -9,7 +9,6 @@ namespace Shashlik.Kernel.Test.TestClasses
     /// <summary>
     /// 测试自定义条件注册
     /// </summary>
-    [ConditionOrder(-99)]
     public class TestConditionAttribute : Attribute, IConditionBase
     {
         public TestConditionAttribute(bool shouldDependency)

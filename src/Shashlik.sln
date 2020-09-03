@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Utils.Test", "Shas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Kernel.Test", "Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj", "{E1D283DD-5362-4B52-9C39-A186BBDAEE57}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4", "Shashlik.Ids4\Shashlik.Ids4.csproj", "{9DDA764D-B002-4578-A997-9C725160F4D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -124,6 +126,12 @@ Global
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DDA764D-B002-4578-A997-9C725160F4D0}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

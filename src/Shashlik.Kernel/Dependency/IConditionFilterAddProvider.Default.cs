@@ -11,27 +11,25 @@ namespace Shashlik.Kernel.Dependency
 {
     public class DefaultConditionFilterAddProvider : IConditionFilterAddProvider
     {
-        public void FilterAdd(IEnumerable<ShashlikServiceDescriptor> serviceDescriptors, IServiceCollection services, IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
+        public void FilterAdd(IEnumerable<ShashlikServiceDescriptor> serviceDescriptors, IServiceCollection services,
+            IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
         {
             // 先全部注册一遍,再根据条件进行删除
-            foreach (var item in serviceDescriptors)
+            var list = serviceDescriptors.ToList();
+            foreach (var item in list)
                 services.Add(item.ServiceDescriptor);
-
-            foreach (var item in serviceDescriptors)
-            {
-                if (!item.Conditions.All(r => r.condition.ConditionOn(services, rootConfiguration, hostEnvironment)))
-                    services.Remove(item.ServiceDescriptor);
-            }
-
+ 
             // 查询有哪些条件序号
-            var orders = serviceDescriptors.SelectMany(r => r.Conditions.Select(c => c.order)).Distinct();
+            var orders = list
+                .SelectMany(r => r.Conditions.Select(c => c.order))
+                .Distinct()
+                .OrderBy(r => r);
 
-            // 根据
+            // 根据条件排序号,从小到大依次过滤
             foreach (var order in orders)
             {
-                foreach (var item in serviceDescriptors)
+                foreach (var item in list)
                 {
-
                     var condition = item.Conditions.FirstOrDefault(r => r.order == order);
                     if (condition.condition == null)
                         continue;
