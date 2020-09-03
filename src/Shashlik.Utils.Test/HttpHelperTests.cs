@@ -6,6 +6,7 @@ using Shouldly;
 using Shashlik.Utils.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Utils.Test
 {
@@ -14,6 +15,26 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void PostContent_test()
         {
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
+            HttpHelper.GetString($"https://api.jizhenmed.com/base/enums");
         }
     }
 }
