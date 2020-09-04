@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
+using RestSharp.Serialization.Json;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Utils.Helpers
@@ -14,13 +16,14 @@ namespace Shashlik.Utils.Helpers
     {
         private static IRestClient GetClient(Uri uri, IWebProxy proxy = null, Encoding encoding = null)
         {
-            RestClient client = new RestClient(uri);
+            var client = new RestClient(uri);
             if (encoding != null)
                 client.Encoding = encoding;
             if (proxy != null)
                 client.Proxy = proxy;
             // 放通一切证书
             client.RemoteCertificateValidationCallback = (a, b, c, d) => true;
+            client.AddHandler("application/json; charset=utf-8", new JsonDeserializer());
             return client;
         }
 
@@ -30,14 +33,14 @@ namespace Shashlik.Utils.Helpers
             var request = new RestRequest {Timeout = timeout * 1000};
 
             if (!headers.IsNullOrEmpty())
-                foreach (var item in headers)
+                foreach (var (key, value) in headers)
                 {
-                    request.AddHeader(item.Key, item.Value);
+                    request.AddHeader(key, value);
                 }
 
             if (!cookies.IsNullOrEmpty())
-                foreach (var item in headers)
-                    request.AddCookie(item.Key, item.Value);
+                foreach (var (key, value) in headers)
+                    request.AddCookie(key, value);
 
             return request;
         }
@@ -45,13 +48,13 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// post json对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="jsonData">json对象</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostJson(string url, object jsonData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -67,22 +70,22 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post json对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="jsonData">json对象</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostJson<TResult>(string url, object jsonData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -99,22 +102,22 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post json对象,返回原始的http响应对象
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="jsonData">json对象</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object jsonData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -140,6 +143,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostForm(string url, IEnumerable<KeyValuePair<string, string>> formData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -149,29 +153,29 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formData.IsNullOrEmpty())
-                foreach (var item in formData)
-                    request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
+            var keyValuePairs = formData.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var (key, value) in keyValuePairs)
+                    request.AddParameter(key, value, ParameterType.GetOrPost);
 
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post form表单
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostForm(string url, object formData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -186,10 +190,9 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
@@ -201,6 +204,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostForm<TResult>(string url,
             IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
@@ -212,29 +216,30 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formData.IsNullOrEmpty())
-                foreach (var item in formData)
+            var keyValuePairs = formData.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var item in keyValuePairs)
                     request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
 
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post form表单
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostForm<TResult>(string url, object formData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -250,22 +255,21 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post form表单
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFormForOriginResponse(string url, object formData,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -283,13 +287,13 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// post form表单
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFormForOriginResponse(string url,
             IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
@@ -300,9 +304,10 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formData.IsNullOrEmpty())
-                foreach (var item in formData)
-                    request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
+            var keyValuePairs = formData.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var (key, value) in keyValuePairs)
+                    request.AddParameter(key, value, ParameterType.GetOrPost);
             return await client.ExecutePostAsync(request);
         }
 
@@ -310,11 +315,13 @@ namespace Shashlik.Utils.Helpers
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formData">form表单键值对</param>
+        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formDatas,
             IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
@@ -325,21 +332,22 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formDatas.IsNullOrEmpty())
-                foreach (var item in formDatas)
+            var keyValuePairs = formDatas.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var item in keyValuePairs)
                     request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
 
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
@@ -347,10 +355,12 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostFiles(string url, object formData, IEnumerable<UploadFileModel> files,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -362,28 +372,30 @@ namespace Shashlik.Utils.Helpers
 
             if (formData != null)
                 request.AddObject(formData);
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formData">form表单键值对</param>
+        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostFiles<TResult>(string url,
             IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
@@ -395,21 +407,22 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formDatas.IsNullOrEmpty())
-                foreach (var item in formDatas)
+            var keyValuePairs = formDatas.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var item in keyValuePairs)
                     request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
 
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
@@ -417,10 +430,12 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostFiles<TResult>(string url, object formData,
             IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
@@ -434,28 +449,30 @@ namespace Shashlik.Utils.Helpers
 
             if (formData != null)
                 request.AddObject(formData);
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:post,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formData">form表单键值对</param>
+        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFilesForOriginResponse(string url,
             IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
@@ -466,12 +483,14 @@ namespace Shashlik.Utils.Helpers
             var client = GetClient(uri, proxy, encoding);
             var request = GetRequest(uri, headers, cookies, timeout);
 
-            if (!formDatas.IsNullOrEmpty())
-                foreach (var item in formDatas)
-                    request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
+            var keyValuePairs = formDatas.ToList();
+            if (!keyValuePairs.IsNullOrEmpty())
+                foreach (var (key, value) in keyValuePairs)
+                    request.AddParameter(key, value, ParameterType.GetOrPost);
 
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             return await client.ExecutePostAsync(request);
@@ -482,10 +501,12 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="url">请求地址</param>
         /// <param name="formData">form表单对象,读取public 可读的属性</param>
+        /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
         /// <param name="timeout">请求超时事件 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFilesForOriginResponse(string url, object formData,
             IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
@@ -498,8 +519,9 @@ namespace Shashlik.Utils.Helpers
 
             if (formData != null)
                 request.AddObject(formData);
-            if (!files.IsNullOrEmpty())
-                foreach (var item in files)
+            var uploadFileModels = files.ToList();
+            if (!uploadFileModels.IsNullOrEmpty())
+                foreach (var item in uploadFileModels)
                     request.AddFileBytes(item.Name, item.FileBytes, item.FileName);
 
             return await client.ExecutePostAsync(request);
@@ -520,13 +542,13 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// get 请求
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="queryStringData">url参数,读取pubic 可取的属性,转换为url参数</param>
         /// <param name="headers">请求头</param>
         /// <param name="cookies">请求时发送的cookie</param>
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> GetString(string url, object queryStringData = null,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -541,10 +563,9 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
@@ -557,6 +578,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cookies">请求时发送的cookie</param>
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> Get<TResult>(string url, object queryStringData = null,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -571,10 +593,9 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecuteGetAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
@@ -587,6 +608,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cookies">请求时发送的cookie</param>
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<Stream> GetStream(string url, object queryStringData = null,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -601,22 +623,21 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return new MemoryStream(response.RawBytes);
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// get 获取数据字节数组
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="queryStringData">url参数,读取pubic 可取的属性,转换为url参数</param>
         /// <param name="headers">请求头</param>
         /// <param name="cookies">请求时发送的cookie</param>
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<byte[]> GetBytes(string url, object queryStringData = null,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
@@ -632,22 +653,21 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return response.RawBytes;
-            else
-                throw new Exception(
-                    $"请求发生错误,url:{url},method:get,httpcode:{response.StatusCode},result:{response.Content}",
-                    response.ErrorException);
+            throw new Exception(
+                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+                response.ErrorException);
         }
 
         /// <summary>
         /// get 返回响应结果
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="queryStringData">url参数,读取pubic 可取的属性,转换为url参数</param>
         /// <param name="headers">请求头</param>
         /// <param name="cookies">请求时发送的cookie</param>
         /// <param name="timeout">请求超时 秒</param>
         /// <param name="proxy">代理设置</param>
+        /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> GetForOriginResponse(string url, object queryStringData = null,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
