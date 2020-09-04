@@ -17,4 +17,25 @@
     <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Filters\**" />
+    <Compile Remove="PatchUpdate\**" />
+    <Compile Remove="Extensions.cs" />
+    <Compile Remove="IOnException.cs" />
+    <Compile Remove="NoAuto404Attribute.cs" />
+    <Compile Remove="NoGucAspNetCoreAttribute.cs" />
+    <Compile Remove="NoWrapperAttribute.cs" />
+    <Compile Remove="ResponseResult.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Filters\**" />
+    <EmbeddedResource Remove="PatchUpdate\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Filters\**" />
+    <None Remove="PatchUpdate\**" />
+  </ItemGroup>
+
 </Project>

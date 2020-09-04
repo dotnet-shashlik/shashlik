@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Kernel.Test", "Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4", "Shashlik.Ids4\Shashlik.Ids4.csproj", "{9DDA764D-B002-4578-A997-9C725160F4D0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AspNetCore", "Shashlik.AspNetCore\Shashlik.AspNetCore.csproj", "{21F966C3-692D-4D02-9DDC-814F6D93E43E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,12 @@ Global
 		{9DDA764D-B002-4578-A997-9C725160F4D0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9DDA764D-B002-4578-A997-9C725160F4D0}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{9DDA764D-B002-4578-A997-9C725160F4D0}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{21F966C3-692D-4D02-9DDC-814F6D93E43E}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
