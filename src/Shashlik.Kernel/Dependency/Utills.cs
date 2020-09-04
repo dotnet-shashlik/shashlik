@@ -72,7 +72,8 @@ namespace Shashlik.Kernel.Dependency
         {
             return type.GetCustomAttributes()
                 .Where(r => r is IConditionBase)
-                .Select(r => (r as IConditionBase, r.GetType().GetCustomAttribute<ConditionOrderAttribute>().Order))
+                .Select(r => (r as IConditionBase,
+                    r.GetType().GetCustomAttribute<ConditionOrderAttribute>()?.Order ?? int.MaxValue))
                 .ToList();
         }
 
