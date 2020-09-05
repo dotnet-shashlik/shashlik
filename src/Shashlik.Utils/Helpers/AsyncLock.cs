@@ -29,14 +29,15 @@ namespace Shashlik.Utils.Helpers
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public Task<Releaser> LockAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public Task<Releaser> LockAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var wait = _semaphore.WaitAsync(cancellationToken);
 
             return wait.IsCompleted
                 ? _releaserTask
                 : wait.ContinueWith(
-                    (_, state) => ((AsyncLock)state)._releaser,
+                    (_, state) => ((AsyncLock) state)._releaser,
                     this, CancellationToken.None,
                     TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
         }
@@ -45,10 +46,10 @@ namespace Shashlik.Utils.Helpers
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public Releaser Lock()
+        public Releaser Lock(CancellationToken token = default)
         {
-            _semaphore.Wait();
-
+            token.ThrowIfCancellationRequested();
+            _semaphore.Wait(token);
             return _releaser;
         }
 

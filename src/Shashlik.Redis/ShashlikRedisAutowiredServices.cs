@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Kernel.Locker;
 
 namespace Shashlik.Redis
 {
@@ -25,6 +26,8 @@ namespace Shashlik.Redis
             kernelService.Services.AddSingleton(csRedis);
             kernelService.Services.AddSingleton<IDistributedCache>(
                 new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
+            if (Options.EnableRedisLock)
+                kernelService.Services.AddSingleton<ILock, RedisLock>();
         }
     }
 }

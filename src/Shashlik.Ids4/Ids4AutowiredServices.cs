@@ -29,6 +29,9 @@ namespace Shashlik.Ids4
 
         public void ConfigureServices(IKernelServices kernelService)
         {
+            if (!Options.Enable)
+                return;
+
             #region options
 
             var builder = kernelService.Services

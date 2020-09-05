@@ -19,9 +19,30 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException("invalid expire.", nameof(expire));
             Task.Run(() =>
             {
-                Task.Delay((int)expire.TotalMilliseconds)
-                .ContinueWith(task => action())
-                .ConfigureAwait(false);
+                Task.Delay((int) expire.TotalMilliseconds)
+                    .ContinueWith(task => action())
+                    .ConfigureAwait(false);
+            }, cancellationToken ?? CancellationToken.None);
+        }
+
+        /// <summary>
+        /// 在指定时间执行指定的表达式
+        /// </summary>
+        /// <param name="action">要执行的表达式</param>
+        /// <param name="expireAt">过期时间</param>
+        /// <param name="cancellationToken">撤销</param>
+        /// <return>返回timer对象</return>
+        public static void SetTimeout(Action action, DateTimeOffset expireAt,
+            CancellationToken? cancellationToken = null)
+        {
+            if (expireAt <= DateTimeOffset.Now)
+                throw new ArgumentException("invalid expire.", nameof(expireAt));
+
+            Task.Run(() =>
+            {
+                Task.Delay((int) (expireAt - DateTimeOffset.Now).TotalMilliseconds)
+                    .ContinueWith(task => action())
+                    .ConfigureAwait(false);
             }, cancellationToken ?? CancellationToken.None);
         }
 
@@ -38,10 +59,10 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException("invalid interval.", nameof(interval));
             Task.Run(() =>
             {
-                Task.Delay((int)interval.TotalMilliseconds)
-                .ContinueWith(task => SetInterval(action, interval, cancellationToken))
-                .ContinueWith(task => action())
-                .ConfigureAwait(false);
+                Task.Delay((int) interval.TotalMilliseconds)
+                    .ContinueWith(task => SetInterval(action, interval, cancellationToken))
+                    .ContinueWith(task => action())
+                    .ConfigureAwait(false);
             }, cancellationToken ?? CancellationToken.None);
         }
     }

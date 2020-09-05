@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Kernel.Autowire.Attributes;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Kernel.Locker;
+using Shashlik.Kernel.Locker.Memory;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel
@@ -68,6 +70,8 @@ namespace Shashlik.Kernel
                 throw new ArgumentNullException(nameof(assemblies));
 
             var kernelService = new KernelService(services, dependencyContext, rootConfiguration);
+
+            services.TryAddSingleton<ILock, MemoryLock>();
             services.AddSingleton<IKernelServices>(kernelService);
 
             services

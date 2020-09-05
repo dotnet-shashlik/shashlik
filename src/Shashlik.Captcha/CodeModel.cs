@@ -1,4 +1,6 @@
-﻿namespace Shashlik.Captcha
+﻿using System;
+
+namespace Shashlik.Captcha
 {
     /// <summary>
     /// 验证码
@@ -30,11 +32,11 @@
         /// <summary>
         /// 发送时间
         /// </summary>
-        public long SendTime { get; set; }
+        public DateTimeOffset SendTime { get; set; }
 
         /// <summary>
         /// 超时时间
         /// </summary>
-        public long ExpiresAt { get; set; }
+        public DateTimeOffset ExpiresAt { get; set; }
     }
 }
