@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
-using System;
+﻿using System;
+using Microsoft.AspNetCore.Builder;
 using Shashlik.Kernel.Autowired;
 
-namespace Shashlik.Kernel
+namespace Shashlik.Kernel.AspNetCore
 {
     /// <summary>
     /// 内核扩展类

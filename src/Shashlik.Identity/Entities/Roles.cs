@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Shashlik.Ids4.Identity.Entities
+namespace Shashlik.Identity.Entities
 {
     /// <summary>
     /// 角色

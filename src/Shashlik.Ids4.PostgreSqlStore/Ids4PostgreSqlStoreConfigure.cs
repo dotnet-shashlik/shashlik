@@ -7,10 +7,11 @@ using Shashlik.Kernel;
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {
+    //TODO: 生成迁移
     /// <summary>
     /// ids4 postgresql数据库存储配置
     /// </summary>
-    public class Ids4PostgreSqlStoreConfigure : IIds4ConfigureServices
+    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure
     {
         public Ids4PostgreSqlStoreConfigure(IOptions<IdsdPostgreSqlStoreOptions> options,
             IKernelServices kernelServices)

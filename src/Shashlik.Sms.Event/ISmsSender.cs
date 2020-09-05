@@ -33,7 +33,7 @@ namespace Shashlik.Sms.Event
         void Send(string phone, string subject, params string[] args);
     }
 
-    public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ITransient
+    public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ISingleton
     {
         public DefaultSmsSender(IEventPublisher eventPublisher,
             ILogger<DefaultSmsSender> logger, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options)

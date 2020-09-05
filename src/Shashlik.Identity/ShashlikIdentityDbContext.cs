@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Shashlik.EfCore;
 using Shashlik.Identity.Entities;
-using Shashlik.Ids4.Identity.Entities;
 using Shashlik.Kernel;
 
 namespace Shashlik.Identity

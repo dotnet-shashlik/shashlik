@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+    </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+    </ItemGroup>
+
+</Project>
