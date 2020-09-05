@@ -32,14 +32,14 @@ namespace Shashlik.Utils.Helpers
         public Task<Releaser> LockAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var wait = _semaphore.WaitAsync(cancellationToken);
+            var waitTask = _semaphore.WaitAsync(cancellationToken);
 
-            return wait.IsCompleted
+            return waitTask.IsCompleted
                 ? _releaserTask
-                : wait.ContinueWith(
+                : waitTask.ContinueWith(
                     (_, state) => ((AsyncLock) state)._releaser,
                     this, CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default);
+                    TaskContinuationOptions.ExecuteSynchronously| TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
         }
 
         /// <summary>
