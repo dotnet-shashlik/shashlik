@@ -1,6 +1,6 @@
 ﻿using Shashlik.Kernel.Autowire.Attributes;
 
-namespace Shashlik.Identity.PostgreSql
+namespace Shashlik.Ids4.PostgreSqlStore
 {
     [AutoOptions("Shashlik:Ids4:PostgreSql")]
     public class IdsdPostgreSqlStoreOptions

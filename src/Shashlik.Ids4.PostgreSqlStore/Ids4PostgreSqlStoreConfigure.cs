@@ -3,10 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
-using Shashlik.Ids4;
 using Shashlik.Kernel;
 
-namespace Shashlik.Identity.PostgreSql
+namespace Shashlik.Ids4.PostgreSqlStore
 {
     /// <summary>
     /// ids4 postgresql数据库存储配置
