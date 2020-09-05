@@ -59,11 +59,7 @@ namespace Shashlik.Captcha
                 return false;
             }
 
-            var expire = codeModel.ExpiresAt - DateTime.Now.GetLongDate();
-            if (expire <= 0)
-                await Cache.RemoveAsync(key);
-            else
-                await Cache.SetObjectAsync(key, codeModel, (int) expire);
+            await Cache.SetObjectAsync(key, codeModel, codeModel.ExpiresAt);
             return false;
         }
 
@@ -80,39 +76,20 @@ namespace Shashlik.Captcha
             if (target == null) throw new ArgumentNullException(nameof(target));
 
             var key = CachePrefix.Format(subject, target);
-            var now = DateTime.Now.GetLongDate();
+            var now = DateTime.Now;
 
-            var verifyCode = new CodeModel
+            var codeModel = new CodeModel
             {
                 Code = RandomHelper.GetRandomCode(codeLength),
                 Subject = subject,
                 Target = target,
-                ExpiresAt = now + Options.CurrentValue.ExpireSecond,
+                ExpiresAt = now.AddSeconds(Options.CurrentValue.ExpireSecond),
                 SendTime = now,
                 ErrorCount = 0
             };
 
-            await Cache.SetObjectAsync(key, verifyCode, Options.CurrentValue.ExpireSecond);
-            return verifyCode;
-        }
-    }
-
-    internal static class Extensions
-    {
-        internal static async Task<T> GetObjectAsync<T>(this IDistributedCache cache, string key)
-            where T : class
-        {
-            var content = await cache.GetStringAsync(key);
-            return content.IsNullOrWhiteSpace() ? null : JsonSerializer.Deserialize<T>(content);
-        }
-
-        internal static async Task SetObjectAsync(this IDistributedCache cache, string key, object obj,
-            int expireSeconds)
-        {
-            await cache.SetStringAsync(key, JsonSerializer.Serialize(obj), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(expireSeconds)
-            });
+            await Cache.SetObjectAsync(key, codeModel, codeModel.ExpiresAt);
+            return codeModel;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Shashlik.Captcha
         public bool Enable { get; set; }
 
         /// <summary>
-        /// 验证码过期时间,默认60分钟
+        /// 验证码过期时间,默认5分钟
         /// </summary>
         public int ExpireSecond { get; set; } = 5 * 60;
 

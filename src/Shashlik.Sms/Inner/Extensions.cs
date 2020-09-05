@@ -18,23 +18,5 @@ namespace Shashlik.Sms.Inner
             return !string.IsNullOrWhiteSpace(phone)
                    && Regex.IsMatch(phone, Consts.Regexs.MobilePhoneNumber);
         }
-
-        internal static T GetObject<T>(this IDistributedCache cache, string key)
-            where T : class
-        {
-            var content = cache.GetString(key);
-            return content.IsNullOrWhiteSpace()
-                ? null
-                : JsonConvert.DeserializeObject<T>(content);
-        }
-
-        internal static void SetObject(this IDistributedCache cache, string key, object obj,
-            DateTimeOffset expireAt)
-        {
-            cache.SetString(key, obj.ToJson(), new DistributedCacheEntryOptions
-            {
-                AbsoluteExpiration = expireAt
-            });
-        }
     }
 }
