@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity", "Shashl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.MySqlStore", "Shashlik.Ids4.MySqlStore\Shashlik.Ids4.MySqlStore.csproj", "{083257FA-9157-43D1-A855-927CE6EA4FC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.PostgreSql", "Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj", "{9918C564-4B4E-42B7-8BFB-7083605F984D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.PostgreSqlStore", "Shashlik.Ids4.PostgreSqlStore\Shashlik.Ids4.PostgreSqlStore.csproj", "{C5364FE5-30F7-46B7-BA54-5B5A186BB639}"
 EndProject
 Global
@@ -168,12 +166,6 @@ Global
 		{083257FA-9157-43D1-A855-927CE6EA4FC5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{083257FA-9157-43D1-A855-927CE6EA4FC5}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{083257FA-9157-43D1-A855-927CE6EA4FC5}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{9918C564-4B4E-42B7-8BFB-7083605F984D}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{C5364FE5-30F7-46B7-BA54-5B5A186BB639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5364FE5-30F7-46B7-BA54-5B5A186BB639}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5364FE5-30F7-46B7-BA54-5B5A186BB639}.Release|Any CPU.ActiveCfg = Release|Any CPU
