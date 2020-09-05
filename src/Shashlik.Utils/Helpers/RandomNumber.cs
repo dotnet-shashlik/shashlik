@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+
 // ReSharper disable ClassNeverInstantiated.Global
 
 namespace Shashlik.Utils.Helpers
@@ -48,38 +51,19 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static int[] GetRandomNum(int num, int minValue, int maxValue)
         {
-            Random ra = new Random(unchecked((int)DateTime.Now.Ticks));//保证产生的数字的随机性
-            int[] arrNum = new int[num];
-            for (int i = 0; i <= num - 1; i++)
+            if (maxValue - minValue < num)
             {
-                int tmp = ra.Next(minValue, maxValue);
-                arrNum[i] = GetNum(arrNum, tmp, minValue, maxValue, ra); //取出值赋到数组中 
+                throw new ArgumentException("no enough number to generate");
             }
-            return arrNum;
-        }
-
-        /// <summary>
-        /// 取出值赋到数组中 
-        /// </summary>
-        /// <param name="arrNum"></param>
-        /// <param name="tmp"></param>
-        /// <param name="minValue"></param>
-        /// <param name="maxValue"></param>
-        /// <param name="ra"></param>
-        /// <returns></returns>
-        static int GetNum(int[] arrNum, int tmp, int minValue, int maxValue, Random ra)
-        {
-            int n = 0;
-            while (n > arrNum.Length - 1)
+            var ra = new Random(unchecked((int)DateTime.Now.Ticks));//保证产生的数字的随机性
+            var numberList = new List<int>();
+            while (numberList.Count < num)
             {
-                if (arrNum[n] == tmp) //利用循环判断是否有重复
-                {
-                    tmp = ra.Next(minValue, maxValue); //重新随机获取。
-                    GetNum(arrNum, tmp, minValue, maxValue, ra); //递归:如果取出来的数字和已取得的数字有重复就重新随机获取。
-                }
-                n++;
+                var number = ra.Next(minValue, maxValue);
+                if(numberList.Contains(number)) continue;
+                numberList.Add(number);
             }
-            return tmp;
+            return numberList.ToArray();
         }
     }
 }
