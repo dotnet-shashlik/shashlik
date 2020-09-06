@@ -37,26 +37,6 @@ namespace Shashlik.Identity.Entities
         public string? RealName { get; set; }
 
         /// <summary>
-        /// 所在省份编号
-        /// </summary>     
-        public string? ProvinceCode { get; set; }
-
-        /// <summary>
-        /// 所在城市编号
-        /// </summary>     
-        public string? CityCode { get; set; }
-
-        /// <summary>
-        /// 所在区域编号
-        /// </summary>      
-        public string? AreaCode { get; set; }
-
-        /// <summary>
-        /// 详细地址
-        /// </summary>
-        public string? Address { get; set; }
-
-        /// <summary>
         /// 性别
         /// </summary>
         public Gender Gender { get; set; }
@@ -73,10 +53,6 @@ namespace Shashlik.Identity.Entities
             builder.Property(r => r.IdCard).HasMaxLength(32);
             builder.Property(r => r.RealName).HasMaxLength(32);
             builder.Property(r => r.NickName).HasMaxLength(255);
-            builder.Property(r => r.ProvinceCode).HasMaxLength(32);
-            builder.Property(r => r.CityCode).HasMaxLength(32);
-            builder.Property(r => r.AreaCode).HasMaxLength(32);
-            builder.Property(r => r.Address).HasMaxLength(255);
             builder.Property(r => r.Avatar).HasMaxLength(255);
         }
     }

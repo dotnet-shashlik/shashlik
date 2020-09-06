@@ -10,13 +10,20 @@
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+
 
   </ItemGroup>
 
   <ItemGroup>
     <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
     <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
+    <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DefaultMigrations" />
   </ItemGroup>
 
 </Project>
