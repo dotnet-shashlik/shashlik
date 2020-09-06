@@ -26,7 +26,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
-            if (Options.EnableClientStore)
+            if (Options.EnableConfigurationStore)
                 builder.AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = dbOptions =>
@@ -54,7 +54,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
                 });
 
             // 执行client store 数据库迁移
-            if (Options.AutoMigration && Options.EnableClientStore)
+            if (Options.AutoMigration && Options.EnableConfigurationStore)
                 KernelServices.Services.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移
