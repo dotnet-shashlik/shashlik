@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Identity.PostgreSql
 {
@@ -21,7 +22,11 @@ namespace Shashlik.Identity.PostgreSql
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
             {
                 options.UseNpgsql(Options.ConnectionString!,
-                    db => { db.MigrationsAssembly(Options.MigrationAssembly ?? this.GetType().Assembly.FullName); });
+                    db =>
+                    {
+                        db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??
+                                              this.GetType().Assembly.FullName);
+                    });
             });
 
             if (Options.AutoMigration)

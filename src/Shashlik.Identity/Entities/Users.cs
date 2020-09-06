@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
 
 namespace Shashlik.Identity.Entities
@@ -48,12 +49,19 @@ namespace Shashlik.Identity.Entities
 
     public class UsersConfig : IEntityTypeConfiguration<Users>
     {
+        public UsersConfig(IOptions<ShashlikIdentityOptions> options)
+        {
+            Options = options.Value;
+        }
+
+        private ShashlikIdentityOptions Options { get; }
+
         public void Configure(EntityTypeBuilder<Users> builder)
         {
-            builder.Property(r => r.IdCard).HasMaxLength(32);
-            builder.Property(r => r.RealName).HasMaxLength(32);
-            builder.Property(r => r.NickName).HasMaxLength(255);
-            builder.Property(r => r.Avatar).HasMaxLength(255);
+            builder.Property(r => r.IdCard).HasMaxLength(32).IsRequired(Options.UserProperty.RequireIdCard);
+            builder.Property(r => r.RealName).HasMaxLength(32).IsRequired(Options.UserProperty.RequireRealName);
+            builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.UserProperty.RequireNickName);
+            builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.UserProperty.RequireAvatar);
         }
     }
 }
