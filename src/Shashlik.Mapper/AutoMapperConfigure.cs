@@ -3,7 +3,7 @@ using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Mapper
 {
-    public class MapperAutowiredServices : IAutowiredConfigureServices
+    public class AutoMapperConfigure : IAutowiredConfigureServices
     {
         public void ConfigureServices(IKernelServices kernelService)
         {

@@ -11,9 +11,9 @@ namespace Shashlik.Sms
     /// <summary>
     /// 短信服务自动配置
     /// </summary>
-    public class SmsAutowiredConfigureServices : IAutowiredConfigureServices
+    public class SmsConfigure : IAutowiredConfigureServices
     {
-        public SmsAutowiredConfigureServices(IOptions<SmsOptions> options)
+        public SmsConfigure(IOptions<SmsOptions> options)
         {
             Options = options;
         }
