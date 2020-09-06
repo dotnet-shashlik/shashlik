@@ -434,7 +434,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 属性值浅拷贝,常用语Action&lt;Options&gt;,属性值拷贝
+        /// 属性值浅拷贝,常用于Action&lt;Options&gt;,属性值拷贝
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="dest">目标对象</param>

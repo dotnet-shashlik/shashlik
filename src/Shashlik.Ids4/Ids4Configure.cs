@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -18,9 +19,9 @@ namespace Shashlik.Ids4
     /// <summary>
     /// ids4自动配置,使用推荐的典型配置, 可以通过<see cref="IIdentityServerBuilderConfigure"/>扩展配置
     /// </summary>
-    public class Ids4ConfigureServices : IAutowiredConfigureServices
+    public class Ids4Configure : IAutowiredConfigureServices, IAutowiredConfigureAspNetCore
     {
-        public Ids4ConfigureServices(IOptions<Ids4Options> options)
+        public Ids4Configure(IOptions<Ids4Options> options)
         {
             Options = options.Value;
         }
@@ -103,6 +104,11 @@ namespace Shashlik.Ids4
             kernelService
                 .BeginAutowired<IIdentityServerBuilderConfigure>()
                 .Build(r => (r.ServiceInstance as IIdentityServerBuilderConfigure)!.ConfigureIds4(builder));
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            app.UseIdentityServer();
         }
     }
 }

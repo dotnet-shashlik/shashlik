@@ -11,9 +11,9 @@ namespace Shashlik.Identity.AspNetCore
     /// <summary>
     /// identity配置,集群环境下关于identity的token算法,强烈建议使用X509RsaDataProtector
     /// </summary>
-    public class IdentityConfigureServices : IAutowiredConfigureServices
+    public class IdentityConfigure : IAutowiredConfigureServices
     {
-        public IdentityConfigureServices(IOptions<ShashlikIdentityOptions> options,
+        public IdentityConfigure(IOptions<ShashlikIdentityOptions> options,
             IOptions<ShashlikAspNetIdentityOptions> options2)
         {
             Options1 = options.Value;
