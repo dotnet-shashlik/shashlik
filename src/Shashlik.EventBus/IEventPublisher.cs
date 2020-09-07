@@ -5,7 +5,7 @@ using DotNetCore.CAP;
 namespace Shashlik.EventBus
 {
     /// <summary>
-    /// 事件发布,事件类型的FullName将作为事件名称Name
+    /// 事件发布,事件类型的TypeName将作为事件名称Name
     /// </summary>
     public interface IEventPublisher : Shashlik.Kernel.Dependency.ISingleton
     {
@@ -15,21 +15,21 @@ namespace Shashlik.EventBus
         ICapPublisher CapPublisher { get; }
 
         /// <summary>
-        /// 事件发布,事件类型的FullName将作为事件名称Name
+        /// 事件发布,事件类型的TypeName将作为事件名称Name
         /// </summary>
         /// <typeparam name="T">事件类型</typeparam>
         /// <param name="eventModel">事件模型</param>
         /// <param name="callbackName"></param>
-        void Publish<T>(T eventModel, string callbackName = null) where T : class, IEvent;
+        void Publish<T>(T eventModel, string? callbackName = null) where T : class, IEvent;
 
         /// <summary>
-        /// 事件发布,事件类型的FullName将作为事件名称Name
+        /// 事件发布,事件类型的TypeName将作为事件名称Name
         /// </summary>
         /// <typeparam name="T">事件类型</typeparam>
         /// <param name="eventModel">事件模型</param>
         /// <param name="callbackName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task PublishAsync<T>(T eventModel, string callbackName = null, CancellationToken cancellationToken = default(CancellationToken)) where T : class, IEvent;
+        Task PublishAsync<T>(T eventModel, string? callbackName = null, CancellationToken cancellationToken = default) where T : class, IEvent;
     }
 }

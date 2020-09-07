@@ -10,6 +10,7 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void DesEncryptTest()
         {
+
             var key = "12345678";
             var iv = "12345678";
             var data = DesHelper.Encrypt("DES加密", key, iv);
@@ -48,7 +49,7 @@ namespace Shashlik.Utils.Test.HelperTests
         public void BCryptTest()
         {
             var password = "password";
-            var hash = BCryptHelper.BCrypt(password);
+            var hash = BCryptHelper.Hash(password);
             var result = BCryptHelper.Verify(password, hash);
             result.ShouldBeTrue();
         }
