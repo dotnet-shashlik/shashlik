@@ -7,10 +7,11 @@ using Shashlik.Kernel;
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {
+    //TODO: 生成迁移
     /// <summary>
     /// ids4 postgresql数据库存储配置
     /// </summary>
-    public class Ids4PostgreSqlStoreConfigure : IIds4ConfigureServices
+    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure
     {
         public Ids4PostgreSqlStoreConfigure(IOptions<IdsdPostgreSqlStoreOptions> options,
             IKernelServices kernelServices)
@@ -25,7 +26,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
-            if (Options.EnableClientStore)
+            if (Options.EnableConfigurationStore)
                 builder.AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = dbOptions =>
@@ -53,7 +54,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
                 });
 
             // 执行client store 数据库迁移
-            if (Options.AutoMigration && Options.EnableClientStore)
+            if (Options.AutoMigration && Options.EnableConfigurationStore)
                 KernelServices.Services.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移

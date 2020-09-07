@@ -7,9 +7,9 @@ using Shashlik.Kernel.Locker;
 
 namespace Shashlik.Redis
 {
-    public class ShashlikRedisAutowiredServices : IAutowiredConfigureServices
+    public class RedisConfigure : IAutowiredConfigureServices
     {
-        public ShashlikRedisAutowiredServices(IOptions<RedisOptions> options)
+        public RedisConfigure(IOptions<RedisOptions> options)
         {
             Options = options.Value;
         }

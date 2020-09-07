@@ -56,7 +56,7 @@ namespace Shashlik.Ids4
             public string? RsaPrivateKey { get; set; }
 
             /// <summary>
-            /// 私钥类型,默认PKCS8
+            /// 私钥类型,默认PKCS8,支持PKCS1/PKCS8/XML
             /// </summary>
             public RSAKeyType KeyType { get; set; } = RSAKeyType.Pkcs8;
 

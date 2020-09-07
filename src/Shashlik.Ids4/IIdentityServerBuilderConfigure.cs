@@ -2,7 +2,7 @@
 
 namespace Shashlik.Ids4
 {
-    public interface IIds4ConfigureServices
+    public interface IIdentityServerBuilderConfigure
     {
         void ConfigureIds4(IIdentityServerBuilder builder);
     }

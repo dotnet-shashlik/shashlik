@@ -1,11 +1,7 @@
-﻿using System;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Shashlik.EfCore;
 using Shashlik.Identity.Entities;
-using Shashlik.Ids4.Identity.Entities;
-using Shashlik.Kernel;
 
 namespace Shashlik.Identity
 {
@@ -18,7 +14,7 @@ namespace Shashlik.Identity
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration(new UsersConfig());
+            modelBuilder.ApplyConfiguration(this.GetService<UsersConfig>());
         }
     }
 }

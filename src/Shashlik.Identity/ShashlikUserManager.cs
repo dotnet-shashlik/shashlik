@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -7,9 +7,10 @@ using Shashlik.Identity.Entities;
 
 namespace Shashlik.Identity
 {
-    public class UserManager : UserManager<Users>
+    //TODO: 完善方法
+    public class ShashlikUserManager : UserManager<Users>
     {
-        public UserManager(IUserStore<Users> store,
+        public ShashlikUserManager(IUserStore<Users> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<Users> passwordHasher,
             IEnumerable<IUserValidator<Users>> userValidators,

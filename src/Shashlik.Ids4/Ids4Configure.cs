@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -16,11 +17,11 @@ using Shashlik.Utils.Rsa;
 namespace Shashlik.Ids4
 {
     /// <summary>
-    /// ids4自动配置,使用推荐的典型配置, 可以通过<see cref="IIds4ConfigureOptions"/>和<see cref="IIds4ConfigureServices"/>扩展配置
+    /// ids4自动配置,使用推荐的典型配置, 可以通过<see cref="IIdentityServerBuilderConfigure"/>扩展配置
     /// </summary>
-    public class Ids4AutowiredServices : IAutowiredConfigureServices
+    public class Ids4Configure : IAutowiredConfigureServices, IAutowiredConfigureAspNetCore
     {
-        public Ids4AutowiredServices(IOptions<Ids4Options> options)
+        public Ids4Configure(IOptions<Ids4Options> options)
         {
             Options = options.Value;
         }
@@ -37,21 +38,8 @@ namespace Shashlik.Ids4
             var builder = kernelService.Services
                 .AddIdentityServer(options =>
                 {
-                    // 反射配置options
-                    foreach (var propertyInfo in Options.IdentityServerOptions.GetType()
-                        .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty))
-                    {
-                        if (propertyInfo.GetIndexParameters().Any())
-                            return;
-                        var value = propertyInfo.GetValue(Options);
-                        if (value == null)
-                            return;
-                        propertyInfo.SetValue(Options, value);
-                    }
-
-                    // 扩展配置,自定义想咋配就咋配
-                    kernelService.BeginAutowired<IIds4ConfigureOptions>()
-                        .Build(r => (r.ServiceInstance as IIds4ConfigureOptions)!.ConfigureIds4(options));
+                    // 属性值复制
+                    Options.IdentityServerOptions.CopyTo(options);
                 });
 
             #endregion
@@ -114,8 +102,13 @@ namespace Shashlik.Ids4
 
             // 执行扩展的自定义配置
             kernelService
-                .BeginAutowired<IIds4ConfigureServices>()
-                .Build(r => (r.ServiceInstance as IIds4ConfigureServices)!.ConfigureIds4(builder));
+                .BeginAutowired<IIdentityServerBuilderConfigure>()
+                .Build(r => (r.ServiceInstance as IIdentityServerBuilderConfigure)!.ConfigureIds4(builder));
+        }
+
+        public void Configure(IApplicationBuilder app)
+        {
+            app.UseIdentityServer();
         }
     }
 }

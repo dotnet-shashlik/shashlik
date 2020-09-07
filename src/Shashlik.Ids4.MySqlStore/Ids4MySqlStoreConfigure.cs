@@ -7,10 +7,11 @@ using Shashlik.Kernel;
 
 namespace Shashlik.Ids4.MySqlStore
 {
+    //TODO: 生成迁移
     /// <summary>
     /// ids4 mysql 数据库存储配置
     /// </summary>
-    public class Ids4MySqlStoreConfigure : IIds4ConfigureServices
+    public class Ids4MySqlStoreConfigure : IIdentityServerBuilderConfigure
     {
         public Ids4MySqlStoreConfigure(IOptions<IdsdMySqlStoreOptions> options, IKernelServices kernelServices)
         {
@@ -24,7 +25,7 @@ namespace Shashlik.Ids4.MySqlStore
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
-            if (Options.EnableClientStore)
+            if (Options.EnableConfigurationStore)
                 builder.AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = dbOptions =>
@@ -52,7 +53,7 @@ namespace Shashlik.Ids4.MySqlStore
                 });
 
             // 执行client store 数据库迁移
-            if (Options.AutoMigration && Options.EnableClientStore)
+            if (Options.AutoMigration && Options.EnableConfigurationStore)
                 KernelServices.Services.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移

@@ -11,9 +11,9 @@ namespace Shashlik.EventBus
     /// <summary>
     /// event bus自动装配
     /// </summary>
-    public class EventBusAutowiredServices : IAutowiredConfigureServices
+    public class EventBusConfigure : IAutowiredConfigureServices
     {
-        public EventBusAutowiredServices(IOptions<EventBusOptions> eventBusOptions)
+        public EventBusConfigure(IOptions<EventBusOptions> eventBusOptions)
         {
             EventBusOptions = eventBusOptions.Value;
         }

@@ -10,9 +10,9 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 自动注册嵌套事务/自动注册ef实体类/自动注册
     /// </summary>
-    public class EfCoreAutowiredServices : IAutowiredConfigureServices
+    public class EfCoreConfigure : IAutowiredConfigureServices
     {
-        public EfCoreAutowiredServices(IOptions<EfCoreOptions> options)
+        public EfCoreConfigure(IOptions<EfCoreOptions> options)
         {
             Options = options.Value;
         }

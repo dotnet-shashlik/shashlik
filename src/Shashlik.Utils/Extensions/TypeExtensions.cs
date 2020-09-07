@@ -433,6 +433,31 @@ namespace Shashlik.Utils.Extensions
             return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().AddSeconds(time);
         }
 
+        /// <summary>
+        /// 属性值浅拷贝,常用于Action&lt;Options&gt;,属性值拷贝
+        /// </summary>
+        /// <param name="source">源对象</param>
+        /// <param name="dest">目标对象</param>
+        /// <typeparam name="T"></typeparam>
+        public static void CopyTo<T>(this T source, T dest)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (dest == null) throw new ArgumentNullException(nameof(dest));
+            
+            var type = typeof(T);
+
+            foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public |
+                                                            BindingFlags.GetProperty))
+            {
+                if (propertyInfo.GetIndexParameters().Any())
+                    return;
+                var value = propertyInfo.GetValue(source);
+                if (value == null)
+                    return;
+                propertyInfo.SetValue(dest, value);
+            }
+        }
+
         #region private
 
         private static object JToken2Object(JToken token)
