@@ -3,9 +3,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Shashlik.Utils.Encrypt
+namespace Shashlik.Utils.Helpers.Encrypt
 {
-    public static class DesExtensions
+    public static class DesHelper
     {
         /// <summary>
         /// DES加密
@@ -17,17 +17,28 @@ namespace Shashlik.Utils.Encrypt
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>加密后的BASE64</returns>
-        public static string DesEncrypt(this string text, byte[] key, byte[] iv,
+        public static string Encrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            var des = DES.Create();
+            var keyBytes = encoding.GetBytes(key);
+            var ivBytes = encoding.GetBytes(iv);
+            if (keyBytes.Length != 8)
+            {
+                throw new ArgumentException(nameof(key));
+            }
+
+            if (ivBytes.Length != 8)
+            {
+                throw new ArgumentException(nameof(key));
+            }
+            using var des = DES.Create();
             des.Padding = paddingMode;
             des.Mode = cipherMode;
             using var ms = new MemoryStream();
             using var cStream = new CryptoStream(ms,
-                des.CreateEncryptor(key, iv),
+                des.CreateEncryptor(keyBytes, ivBytes),
                 CryptoStreamMode.Write);
             var toEncrypt = encoding.GetBytes(text);
             cStream.Write(toEncrypt, 0, toEncrypt.Length);
@@ -45,18 +56,29 @@ namespace Shashlik.Utils.Encrypt
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>原文</returns>
-        public static string DesDecrypt(this string text, byte[] key, byte[] iv,
+        public static string Decrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
+            var keyBytes = encoding.GetBytes(key);
+            var ivBytes = encoding.GetBytes(iv);
+            if (keyBytes.Length != 8)
+            {
+                throw new ArgumentException(nameof(key));
+            }
+
+            if (ivBytes.Length != 8)
+            {
+                throw new ArgumentException(nameof(key));
+            }
             var bytes = Convert.FromBase64String(text);
-            var des = DES.Create();
+            using var des = DES.Create();
             des.Padding = paddingMode;
             des.Mode = cipherMode;
             using var ms = new MemoryStream();
             using var csDecrypt = new CryptoStream(ms,
-                des.CreateDecryptor(key, iv),
+                des.CreateDecryptor(keyBytes, ivBytes),
                 CryptoStreamMode.Write);
             
             csDecrypt.Write(bytes, 0, bytes.Length);

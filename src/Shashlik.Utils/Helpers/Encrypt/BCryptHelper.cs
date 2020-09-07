@@ -1,13 +1,13 @@
-﻿namespace Shashlik.Utils.Encrypt
+﻿namespace Shashlik.Utils.Helpers.Encrypt
 {
-    public static class BCryptExtensions
+    public static class BCryptHelper
     {
         /// <summary>
-        /// BCrypt加密
+        /// BCrypt HASH
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static string BCrypt(this string password)
+        public static string BCrypt(string password)
         {
             return global::BCrypt.Net.BCrypt.HashPassword(password);
         }
@@ -16,9 +16,9 @@
         /// 验证BCrypt
         /// </summary>
         /// <param name="password"></param>
-        /// <param name="hash">加密数据</param>
+        /// <param name="hash">HASH数据</param>
         /// <returns></returns>
-        public static bool BCryptVerify(this string password, string hash)
+        public static bool Verify(string password, string hash)
         {
             return global::BCrypt.Net.BCrypt.Verify(password, hash);
         }
