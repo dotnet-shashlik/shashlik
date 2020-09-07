@@ -7,7 +7,7 @@
         /// </summary>
         /// <param name="password"></param>
         /// <returns></returns>
-        public static string BCrypt(string password)
+        public static string Hash(string password)
         {
             return global::BCrypt.Net.BCrypt.HashPassword(password);
         }

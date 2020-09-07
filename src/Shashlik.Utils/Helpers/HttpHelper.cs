@@ -22,8 +22,8 @@ namespace Shashlik.Utils.Helpers
             if (proxy != null)
                 client.Proxy = proxy;
             // 放通一切证书
+            //TODO: 优化这句代码
             client.RemoteCertificateValidationCallback = (a, b, c, d) => true;
-            client.AddHandler("application/json; charset=utf-8", new JsonDeserializer());
             return client;
         }
 

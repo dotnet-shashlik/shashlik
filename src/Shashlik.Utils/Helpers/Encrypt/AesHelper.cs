@@ -11,8 +11,8 @@ namespace Shashlik.Utils.Helpers.Encrypt
         /// AES加密
         /// </summary>
         /// <param name="text">原文</param>
-        /// <param name="key">密钥（必须16位）</param>
-        /// <param name="iv">向量（必须16位）</param>
+        /// <param name="key">密钥（必须16位字节码）,所以最好不要使用多字节的字符,比如中文等等</param>
+        /// <param name="iv">向量（必须16位字节码）,所以最好不要使用多字节的字符,比如中文等等</param>
         /// <param name="paddingMode">PaddingMode默认PKCS7</param>
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
@@ -22,8 +22,8 @@ namespace Shashlik.Utils.Helpers.Encrypt
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            var keyBytes = encoding.GetBytes(key);
-            var ivBytes = encoding.GetBytes(iv);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var ivBytes = Encoding.UTF8.GetBytes(iv);
             if (keyBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));
@@ -52,8 +52,8 @@ namespace Shashlik.Utils.Helpers.Encrypt
         /// AES解密
         /// </summary>
         /// <param name="text">BASE64密文</param>
-        /// <param name="key">密钥（必须16位）</param>
-        /// <param name="iv">向量（必须16位）</param>
+        /// <param name="key">密钥（必须16位字节码）,所以最好不要使用多字节的字符,比如中文等等</param>
+        /// <param name="iv">向量（必须16位字节码）,所以最好不要使用多字节的字符,比如中文等等</param>
         /// <param name="paddingMode">PaddingMode默认PKCS7</param>
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
@@ -63,8 +63,8 @@ namespace Shashlik.Utils.Helpers.Encrypt
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            var keyBytes = encoding.GetBytes(key);
-            var ivBytes = encoding.GetBytes(iv);
+            var keyBytes = Encoding.UTF8.GetBytes(key);
+            var ivBytes = Encoding.UTF8.GetBytes(iv);
             if (keyBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));

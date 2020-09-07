@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Shashlik.Identity.Entities;
-using Shashlik.Utils.Encrypt;
+using Shashlik.Utils.Helpers.Encrypt;
 
 namespace Shashlik.Identity.AspNetCore
 {
@@ -8,14 +7,14 @@ namespace Shashlik.Identity.AspNetCore
     {
         public string HashPassword(TUser user, string password)
         {
-            return password.BCrypt();
+            return BCryptHelper.Hash(password);
         }
 
         public PasswordVerificationResult VerifyHashedPassword(TUser user, string hashedPassword,
             string providedPassword)
         {
             //TODO: 什么时候该用PasswordVerificationResult.SuccessRehashNeeded?
-            return hashedPassword.BCryptVerify(providedPassword)
+            return BCryptHelper.Verify(providedPassword, hashedPassword)
                 ? PasswordVerificationResult.Success
                 : PasswordVerificationResult.Failed;
         }

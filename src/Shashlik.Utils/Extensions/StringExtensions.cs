@@ -52,8 +52,8 @@ namespace Shashlik.Utils.Extensions
                 return new List<T>();
             return
                 str
-                .Split(separators, StringSplitOptions.RemoveEmptyEntries)
-                .Select(TypeExtensions.ConvertTo<T>).ToList();
+                    .Split(separators, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(TypeExtensions.ConvertTo<T>).ToList();
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Shashlik.Utils.Extensions
                 return new List<T>();
             var query =
                 str
-                .Split(separators, StringSplitOptions.RemoveEmptyEntries);
+                    .Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             List<T> result = new List<T>();
             foreach (var item in query)
@@ -83,13 +83,22 @@ namespace Shashlik.Utils.Extensions
                     // ignored
                 }
             }
+
             return result;
         }
 
         public static bool Contains(this string source, string value, StringComparison stringComparison)
         {
-            if (source == null || value == null) { return false; }
-            if (value == "") { return true; }
+            if (source == null || value == null)
+            {
+                return false;
+            }
+
+            if (value == "")
+            {
+                return true;
+            }
+
             return (source.IndexOf(value, stringComparison) >= 0);
         }
 
@@ -172,7 +181,7 @@ namespace Shashlik.Utils.Extensions
         {
             return string.Format(value, ps);
         }
-     
+
         /// <summary>
         /// 字符串脱敏
         /// </summary>
@@ -244,9 +253,9 @@ namespace Shashlik.Utils.Extensions
             StringBuilder sb = new StringBuilder();
             sb.Append(url);
             var span = url.AsSpan().Trim();
-            if (!span.Contains(new[] { '?' }, StringComparison.OrdinalIgnoreCase))
+            if (!span.Contains(new[] {'?'}, StringComparison.OrdinalIgnoreCase))
                 sb.Append('?');
-            else if (!span.EndsWith(new[] { '&' }, StringComparison.OrdinalIgnoreCase))
+            else if (!span.EndsWith(new[] {'&'}, StringComparison.OrdinalIgnoreCase))
                 sb.Append('&');
 
             var count = values.Count();
@@ -290,6 +299,7 @@ namespace Shashlik.Utils.Extensions
             {
                 return input;
             }
+
             return stringInfo.SubstringByTextElements(start, length);
         }
 
@@ -303,17 +313,10 @@ namespace Shashlik.Utils.Extensions
         {
             if (string.IsNullOrEmpty(xml)) throw new NotSupportedException("Empty string!!");
 
-            try
-            {
-                var xmlSerializer = new XmlSerializer(typeof(T));
-                var stringReader = new StringReader(xml);
-                using var reader = XmlReader.Create(stringReader);
-                return (T)xmlSerializer.Deserialize(reader);
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            var stringReader = new StringReader(xml);
+            using var reader = XmlReader.Create(stringReader);
+            return (T) xmlSerializer.Deserialize(reader);
         }
 
         #region Base64位加密解密
@@ -338,14 +341,14 @@ namespace Shashlik.Utils.Extensions
                 ;
         }
 
-      /// <summary>
-      /// 将base64格式，转换utf8
-      /// </summary>
-      /// <param name="content">解密内容</param>
-      /// <param name="encoding"></param>
-      /// <param name="urlSafe"></param>
-      /// <returns></returns>
-      public static string Base64Decode(this string content, Encoding encoding = null, bool urlSafe = false)
+        /// <summary>
+        /// 将base64格式，转换utf8
+        /// </summary>
+        /// <param name="content">解密内容</param>
+        /// <param name="encoding"></param>
+        /// <param name="urlSafe"></param>
+        /// <returns></returns>
+        public static string Base64Decode(this string content, Encoding encoding = null, bool urlSafe = false)
         {
             if (urlSafe)
             {
@@ -389,6 +392,7 @@ namespace Shashlik.Utils.Extensions
                 var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch + 32)};
                 return s.ToString();
             }
+
             return str;
         }
 
@@ -407,6 +411,7 @@ namespace Shashlik.Utils.Extensions
                 var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch - 32)};
                 return s.ToString();
             }
+
             return str;
         }
     }
