@@ -27,11 +27,11 @@ namespace Shashlik.X509DataProtector
             if (!Options.Enable)
                 return;
             if (Options.X509RsaPrivateKey.IsNullOrEmpty())
-                throw new InvalidOperationException($"Cannot be empty private key.");
+                throw new InvalidOperationException($"Certificate cannot be empty.");
 
             var cer = new X509Certificate2(Encoding.UTF8.GetBytes(Options.X509RsaPrivateKey));
             if(!cer.HasPrivateKey)
-                throw new InvalidOperationException($"Private key has been empty.");
+                throw new InvalidOperationException($"Certificate must be contains private key.");
                 
             kernelService.Services.AddDataProtection()
                 .ProtectKeysWithCertificate(cer);
