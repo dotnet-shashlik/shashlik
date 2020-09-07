@@ -3,9 +3,9 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Shashlik.Utils.Encrypt
+namespace Shashlik.Utils.Helpers.Encrypt
 {
-    public static class AesExtensions
+    public static class AesHelper
     {
         /// <summary>
         /// AES加密
@@ -17,14 +17,25 @@ namespace Shashlik.Utils.Encrypt
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>加密后的BASE64</returns>
-        public static string AesEncrypt(this string text, byte[] key, byte[] iv,
+        public static string Encrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
+            var keyBytes = encoding.GetBytes(key);
+            var ivBytes = encoding.GetBytes(iv);
+            if (keyBytes.Length != 16)
+            {
+                throw new ArgumentException(nameof(key));
+            }
+
+            if (ivBytes.Length != 16)
+            {
+                throw new ArgumentException(nameof(key));
+            }
             using var aes = Aes.Create();
-            aes.Key = key;
-            aes.IV = iv;
+            aes.Key = keyBytes;
+            aes.IV = ivBytes;
             aes.Padding = paddingMode;
             aes.Mode = cipherMode;
             var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -47,18 +58,29 @@ namespace Shashlik.Utils.Encrypt
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>原文</returns>
-        public static string AesDecrypt(this string text, byte[] key, byte[] iv,
+        public static string Decrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
+            var keyBytes = encoding.GetBytes(key);
+            var ivBytes = encoding.GetBytes(iv);
+            if (keyBytes.Length != 16)
+            {
+                throw new ArgumentException(nameof(key));
+            }
+
+            if (ivBytes.Length != 16)
+            {
+                throw new ArgumentException(nameof(key));
+            }
             var bytes = Convert.FromBase64String(text);
-            var aes = Aes.Create();
+            using var aes = Aes.Create();
             aes.Padding = paddingMode;
             aes.Mode = cipherMode;
             using var ms = new MemoryStream();
             using var csDecrypt = new CryptoStream(ms,
-                aes.CreateDecryptor(key, iv),
+                aes.CreateDecryptor(keyBytes, ivBytes),
                 CryptoStreamMode.Write);
             
             csDecrypt.Write(bytes, 0, bytes.Length);
