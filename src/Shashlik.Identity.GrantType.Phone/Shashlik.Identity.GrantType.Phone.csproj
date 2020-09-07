@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
+    <ProjectReference Include="..\Shashlik.Ids4\Shashlik.Ids4.csproj" />
+  </ItemGroup>
+
+</Project>
