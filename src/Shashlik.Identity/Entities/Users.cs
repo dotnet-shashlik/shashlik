@@ -62,6 +62,12 @@ namespace Shashlik.Identity.Entities
             builder.Property(r => r.RealName).HasMaxLength(32).IsRequired(Options.UserProperty.RequireRealName);
             builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.UserProperty.RequireNickName);
             builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.UserProperty.RequireAvatar);
+
+            if (Options.UserProperty.IdCardUnique)
+                builder.HasIndex(r => r.IdCard).IsUnique();
+
+            if (Options.UserProperty.PhoneNumberUnique)
+                builder.HasIndex(r => r.PhoneNumber).IsUnique();
         }
     }
 }

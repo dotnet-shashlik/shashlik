@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity.Entities;
 using Shashlik.Kernel;
@@ -30,14 +31,15 @@ namespace Shashlik.Identity.AspNetCore
 
             if (Options1.UseBCryptPasswordHasher)
                 // 使用bcrypt作为密码hash算法
-                kernelService.Services.AddScoped<IPasswordHasher<Users>, BCryptPasswordHasher<Users>>();
+                kernelService.Services.TryAddScoped<IPasswordHasher<Users>, BCryptPasswordHasher<Users>>();
 
             var builder = kernelService.Services
-                    .AddIdentity<Users, Roles>(options => Options2.IdentityOptions.CopyTo(options))
+                    .AddIdentity<Users, Roles>(options => { Options2.IdentityOptions.CopyTo(options); })
                     .AddEntityFrameworkStores<ShashlikIdentityDbContext>()
                     .AddDefaultTokenProviders()
                 ;
 
+            // 扩展identity配置
             kernelService.BeginAutowired<IIdentityBuilderConfigure>()
                 .Build(r => (r.ServiceInstance as IIdentityBuilderConfigure)!.Configure(builder));
         }

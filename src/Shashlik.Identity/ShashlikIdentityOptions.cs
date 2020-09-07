@@ -63,5 +63,15 @@ namespace Shashlik.Identity
         /// 生日是否必填
         /// </summary>
         public bool RequireBirthday { get; set; }
+
+        /// <summary>
+        /// 身份证号码是否唯一,默认true
+        /// </summary>
+        public bool IdCardUnique { get; set; } = true;
+
+        /// <summary>
+        /// 手机号码是否唯一,默认true
+        /// </summary>
+        public bool PhoneNumberUnique { get; set; } = true;
     }
 }

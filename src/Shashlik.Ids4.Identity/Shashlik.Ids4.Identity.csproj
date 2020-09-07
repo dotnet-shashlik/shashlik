@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
     <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
     <ProjectReference Include="..\Shashlik.Ids4\Shashlik.Ids4.csproj" />
