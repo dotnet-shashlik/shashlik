@@ -1,4 +1,5 @@
-﻿using Shouldly;
+﻿using System;
+using Shouldly;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -25,7 +26,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void IntegrationTest()
         {
-            var data = "jb3rhg03pj5yl4756860h-590hu4-9hu90-hno[3h945u-5468upmobvg37546-[8pu5m7p[68ih90";
+            var data = Guid.NewGuid().ToString();
 
             {
                 var a1 = RsaHelper.EncryptByX509(data, PublicKeyCer, Encoding.UTF8, RSAEncryptionPadding.Pkcs1);

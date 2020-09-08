@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
@@ -26,15 +27,27 @@ namespace Shashlik.X509DataProtector
         {
             if (!Options.Enable)
                 return;
-            if (Options.X509RsaPrivateKey.IsNullOrEmpty())
+            if (Options.X509CertificateContent.IsNullOrEmpty() && Options.X509CertificateFile.IsNullOrEmpty())
                 throw new InvalidOperationException($"Certificate cannot be empty.");
+            X509Certificate2 certificate;
+            if (!Options.X509CertificateContent.IsNullOrEmpty())
+            {
+                var bytes = Convert.FromBase64String(Options.X509CertificateContent);
+                certificate = new X509Certificate2(bytes, Options.Password);
+            }
+            else
+            {
+                if (!File.Exists(Options.X509CertificateFile))
+                    throw new FileNotFoundException("Certifacite not found.", Options.X509CertificateFile);
+                certificate = new X509Certificate2(Options.X509CertificateFile, Options.Password);
+            }
 
-            var cer = new X509Certificate2(Encoding.UTF8.GetBytes(Options.X509RsaPrivateKey));
-            if(!cer.HasPrivateKey)
+
+            if (!certificate.HasPrivateKey)
                 throw new InvalidOperationException($"Certificate must be contains private key.");
-                
+
             kernelService.Services.AddDataProtection()
-                .ProtectKeysWithCertificate(cer);
+                .ProtectKeysWithCertificate(certificate);
         }
     }
 }
