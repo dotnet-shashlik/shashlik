@@ -31,27 +31,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{6AE2BE45
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Utils.Test", "Shashlik.Utils.Test\Shashlik.Utils.Test.csproj", "{0DAB2912-0F2E-4EE3-969A-5A54F529319B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Kernel.Test", "Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj", "{E1D283DD-5362-4B52-9C39-A186BBDAEE57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Kernel.Test", "Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj", "{E1D283DD-5362-4B52-9C39-A186BBDAEE57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4", "Shashlik.Ids4\Shashlik.Ids4.csproj", "{9DDA764D-B002-4578-A997-9C725160F4D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Ids4", "Shashlik.Ids4\Shashlik.Ids4.csproj", "{9DDA764D-B002-4578-A997-9C725160F4D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AspNetCore", "Shashlik.AspNetCore\Shashlik.AspNetCore.csproj", "{21F966C3-692D-4D02-9DDC-814F6D93E43E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AspNetCore", "Shashlik.AspNetCore\Shashlik.AspNetCore.csproj", "{21F966C3-692D-4D02-9DDC-814F6D93E43E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.Identity", "Shashlik.Ids4.Identity\Shashlik.Ids4.Identity.csproj", "{DA2968D2-29CE-47A9-96A3-FB24B8C91436}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Ids4.Identity", "Shashlik.Ids4.Identity\Shashlik.Ids4.Identity.csproj", "{DA2968D2-29CE-47A9-96A3-FB24B8C91436}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity", "Shashlik.Identity\Shashlik.Identity.csproj", "{CF02F520-7FBB-41D3-819B-B94532760F60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity", "Shashlik.Identity\Shashlik.Identity.csproj", "{CF02F520-7FBB-41D3-819B-B94532760F60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.MySqlStore", "Shashlik.Ids4.MySqlStore\Shashlik.Ids4.MySqlStore.csproj", "{083257FA-9157-43D1-A855-927CE6EA4FC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Ids4.MySqlStore", "Shashlik.Ids4.MySqlStore\Shashlik.Ids4.MySqlStore.csproj", "{083257FA-9157-43D1-A855-927CE6EA4FC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.PostgreSqlStore", "Shashlik.Ids4.PostgreSqlStore\Shashlik.Ids4.PostgreSqlStore.csproj", "{C5364FE5-30F7-46B7-BA54-5B5A186BB639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Ids4.PostgreSqlStore", "Shashlik.Ids4.PostgreSqlStore\Shashlik.Ids4.PostgreSqlStore.csproj", "{C5364FE5-30F7-46B7-BA54-5B5A186BB639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.AspNetCore", "Shashlik.Identity.AspNetCore\Shashlik.Identity.AspNetCore.csproj", "{26280511-980C-4ECE-AC3F-0BE027490FCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.AspNetCore", "Shashlik.Identity.AspNetCore\Shashlik.Identity.AspNetCore.csproj", "{26280511-980C-4ECE-AC3F-0BE027490FCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.MySql", "Shashlik.Identity.MySql\Shashlik.Identity.MySql.csproj", "{05D37D6B-4909-47E0-A510-86441768ACAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.MySql", "Shashlik.Identity.MySql\Shashlik.Identity.MySql.csproj", "{05D37D6B-4909-47E0-A510-86441768ACAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.PostgreSql", "Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj", "{4FCD1BF4-FD92-436F-BDB7-32853B28D054}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.PostgreSql", "Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj", "{4FCD1BF4-FD92-436F-BDB7-32853B28D054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.X509DataProtector", "Shashlik.X509DataProtector\Shashlik.X509DataProtector.csproj", "{B082D0C2-DA64-4DCB-A74D-0DB8F855ADE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.X509DataProtector", "Shashlik.X509DataProtector\Shashlik.X509DataProtector.csproj", "{B082D0C2-DA64-4DCB-A74D-0DB8F855ADE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.GrantType.Password", "Shashlik.Identity.GrantType.Password\Shashlik.Identity.GrantType.Password.csproj", "{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.GrantType.Phone", "Shashlik.Identity.GrantType.Phone\Shashlik.Identity.GrantType.Phone.csproj", "{B5704024-47F3-4BA7-A756-E458E8EBE6C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -204,6 +208,18 @@ Global
 		{B082D0C2-DA64-4DCB-A74D-0DB8F855ADE0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B082D0C2-DA64-4DCB-A74D-0DB8F855ADE0}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{B082D0C2-DA64-4DCB-A74D-0DB8F855ADE0}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{7548C1C1-F9C9-42CE-89CD-4E2C36E8466E}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5704024-47F3-4BA7-A756-E458E8EBE6C6}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
