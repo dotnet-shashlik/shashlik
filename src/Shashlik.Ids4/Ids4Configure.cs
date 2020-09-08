@@ -1,6 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using IdentityServer4;
 using IdentityServer4.Services;
 using IdentityServer4.Validation;
@@ -46,17 +49,42 @@ namespace Shashlik.Ids4
 
             #region 签名证书
 
-            if (Options.SignOptions.UseDevSigningCredential && Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
-                // 使用开发证书
+            if (Options.SignOptions.CredentialType.EqualsIgnoreCase("dev"))
                 builder.AddDeveloperSigningCredential();
-            if (!Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
+            else if (Options.SignOptions.CredentialType.EqualsIgnoreCase("rsa"))
             {
+                if (Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
+                    throw new ArgumentException($"Invalid rsa private key");
                 var rsa = RSA.Create();
-                rsa.ImportPrivateKey(Options.SignOptions.KeyType, Options.SignOptions.RsaPrivateKey,
-                    Options.SignOptions.KeyIsPem);
-                builder.AddSigningCredential(new RsaSecurityKey(rsa),
-                    IdentityServerConstants.RsaSigningAlgorithm.RS256);
+                rsa.ImportPrivateKey(Options.SignOptions.RsaKeyType, Options.SignOptions.RsaPrivateKey,
+                    Options.SignOptions.RsaIsPem);
+                builder.AddSigningCredential(new RsaSecurityKey(rsa), Options.SignOptions.SigningAlgorithm);
             }
+            else if (Options.SignOptions.CredentialType.EqualsIgnoreCase("x509"))
+            {
+                X509Certificate2 certificate;
+                if (!Options.SignOptions.X509CertificateContent.IsNullOrEmpty())
+                {
+                    var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateContent!);
+                    certificate = new X509Certificate2(bytes, Options.SignOptions.X509CertificatePassword);
+                }
+                else if (!Options.SignOptions.X509CertificateFile.IsNullOrEmpty())
+                {
+                    if (!File.Exists(Options.SignOptions.X509CertificateFile))
+                        throw new FileNotFoundException($"Cannot found cerfitificate file.",
+                            Options.SignOptions.X509CertificateFile);
+
+                    certificate = new X509Certificate2(Options.SignOptions.X509CertificateFile!,
+                        Options.SignOptions.X509CertificatePassword);
+                }
+                else
+                    throw new InvalidOperationException("X509Certificate cannor be empty. ");
+
+
+                builder.AddSigningCredential(certificate, Options.SignOptions.SigningAlgorithm);
+            }
+            else
+                throw new InvalidOperationException($"Invalid credential type: {Options.SignOptions.CredentialType}");
 
             #endregion
 
