@@ -41,9 +41,9 @@ namespace Shashlik.Utils.Rsa
         /// <summary>
         /// 从私钥构建RSA对象
         /// </summary>
-        /// <param name="privateKey"></param>
-        /// <param name="keyType"></param>
-        /// <param name="isPem"></param>
+        /// <param name="privateKey">私钥内容</param>
+        /// <param name="keyType">私钥类型</param>
+        /// <param name="isPem">是否为pem格式</param>
         /// <returns></returns>
         public static RSA FromPrivateKey(string privateKey, RSAKeyType keyType, bool isPem)
         {
@@ -55,9 +55,9 @@ namespace Shashlik.Utils.Rsa
         /// <summary>
         /// 从公钥构建RSA对象
         /// </summary>
-        /// <param name="publicKey"></param>
-        /// <param name="keyType"></param>
-        /// <param name="isPem"></param>
+        /// <param name="publicKey">公钥内容</param>
+        /// <param name="keyType">公钥类型</param>
+        /// <param name="isPem">是否为pem格式</param>
         /// <returns></returns>
         public static RSA FromPublicKey(string publicKey, RSAKeyType keyType, bool isPem)
         {
@@ -91,11 +91,11 @@ namespace Shashlik.Utils.Rsa
 
 
         /// <summary>
-        /// RSA公钥加密
+        /// RSA公钥加密,未分块
         /// </summary>
         /// <param name="rsa"></param>
-        /// <param name="data">Need to encrypt data</param>
-        /// <param name="padding">Padding algorithm</param>
+        /// <param name="data">待加密数据</param>
+        /// <param name="padding">填充算法</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static string Encrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding encoding = null)
@@ -111,9 +111,9 @@ namespace Shashlik.Utils.Rsa
         /// </summary>
         /// <param name="rsa"></param>
         /// <param name="dataStr">待加密字符串</param>
+        /// <param name="padding">填充算法</param>
         /// <param name="encoding"></param>
         /// <param name="connChar">块数据连接字符</param>
-        /// <param name="padding">填充算法</param>
         /// <returns></returns>
         public static string EncryptBigDataWithSplit(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
             Encoding encoding = null, char? connChar = '$')
@@ -196,11 +196,11 @@ namespace Shashlik.Utils.Rsa
         /// <summary>
         /// RSA 大数据分块解密,使用<paramref name="connChar"/>分割
         /// </summary>
-        /// <param name="encoding"></param>
-        /// <param name="connChar">Encrypted result link character</param>
         /// <param name="rsa"></param>
-        /// <param name="dataStr">Need to decrypt the data</param>
-        /// <param name="padding">Padding algorithm</param>
+        /// <param name="dataStr">待解密数据</param>
+        /// <param name="padding">填充算法</param>
+        /// <param name="encoding"></param>
+        /// <param name="connChar">块数据分割符</param>
         /// <returns></returns>
         public static string DecryptBigDataWithSplit(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
             Encoding encoding = null, char connChar = '$')
