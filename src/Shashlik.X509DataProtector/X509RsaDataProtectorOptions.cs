@@ -10,6 +10,11 @@ namespace Shashlik.X509DataProtector
         /// </summary>
         public bool Enable { get; set; }
 
+        /// <summary>
+        /// 应用程序名称
+        /// </summary>
+        public string ApplicationName { get; set; } = "defaultApplicationName";
+
         /**
          *    demo:
          *    var bytes = File.ReadAllBytes($@"./domain.pfx");

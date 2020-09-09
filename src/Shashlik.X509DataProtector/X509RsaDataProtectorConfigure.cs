@@ -47,6 +47,11 @@ namespace Shashlik.X509DataProtector
                 throw new InvalidOperationException($"Certificate must be contains private key.");
 
             kernelService.Services.AddDataProtection()
+                // 禁用自动创建密钥
+                .DisableAutomaticKeyGeneration()
+                // 设置应用名称
+                .SetApplicationName(Options.ApplicationName)
+                // 使用x509证书
                 .ProtectKeysWithCertificate(certificate);
         }
     }
