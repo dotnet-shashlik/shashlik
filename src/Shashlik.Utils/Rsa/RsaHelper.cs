@@ -67,7 +67,7 @@ namespace Shashlik.Utils.Rsa
         }
 
         /// <summary>
-        /// 从base64编码后的证书文件加载X509证书, 可用于加载所有的证书文件,以及加载pfx证书文件base64编码后的格式
+        /// 从base64编码后的证书文件加载X509证书
         /// </summary>
         /// <param name="certificateBase64Content">证书内容</param>
         /// <param name="password">证书密码</param>
@@ -77,6 +77,16 @@ namespace Shashlik.Utils.Rsa
             return password == null
                 ? new X509Certificate2(Convert.FromBase64String(certificateBase64Content))
                 : new X509Certificate2(Convert.FromBase64String(certificateBase64Content), password);
+        }
+
+        /// <summary>
+        /// 加载x509的公钥证书,比如cer,crt文件
+        /// </summary>
+        /// <param name="certificateContent">证书内容</param>
+        /// <returns></returns>
+        public static X509Certificate2 LoadX509FromPublicCertificate(string certificateContent)
+        {
+            return new X509Certificate2(Encoding.UTF8.GetBytes(certificateContent));
         }
 
 
