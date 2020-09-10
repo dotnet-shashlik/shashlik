@@ -7,7 +7,7 @@ using Shashlik.Utils.Rsa;
 
 namespace Shashlik.Ids4
 {
-    [AutoOptions("Shashlik:Ids4")]
+    [AutoOptions("Shashlik.Ids4")]
     public class Ids4Options
     {
         /// <summary>

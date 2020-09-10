@@ -2,7 +2,7 @@
 
 namespace Shashlik.Redis
 {
-    [AutoOptions("Shashlik:Redis")]
+    [AutoOptions("Shashlik.Redis")]
     public class RedisOptions
     {
         /// <summary>

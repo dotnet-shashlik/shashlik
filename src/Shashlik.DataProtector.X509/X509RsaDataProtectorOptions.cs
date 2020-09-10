@@ -1,8 +1,8 @@
 ﻿using Shashlik.Kernel.Autowire.Attributes;
 
-namespace Shashlik.X509DataProtector
+namespace Shashlik.DataProtector.X509
 {
-    [AutoOptions("Shashlik:X509DataProtector")]
+    [AutoOptions("Shashlik.DataProtector.X509")]
     public class X509RsaDataProtectorOptions
     {
         /// <summary>
@@ -13,7 +13,7 @@ namespace Shashlik.X509DataProtector
         /// <summary>
         /// 应用程序名称
         /// </summary>
-        public string ApplicationName { get; set; } = "defaultApplicationName";
+        public string ApplicationName { get; set; } = "DefaulApplicationName";
 
         /**
          *    demo:

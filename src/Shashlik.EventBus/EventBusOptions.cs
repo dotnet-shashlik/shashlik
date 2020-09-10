@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Shashlik.EventBus
 {
-    [AutoOptions("Shashlik:EventBus")]
+    [AutoOptions("Shashlik.EventBus")]
     public class EventBusOptions
     {
         /// <summary>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -9,7 +8,7 @@ using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.X509DataProtector
+namespace Shashlik.DataProtector.X509
 {
     /// <summary>
     /// 使用X509证书作为数据保护,主要用于分布式环境,默认是自动生成,在分布式/集群环境是有问题的

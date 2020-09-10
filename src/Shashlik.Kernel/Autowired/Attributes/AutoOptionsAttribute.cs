@@ -11,6 +11,8 @@ namespace Shashlik.Kernel.Autowire.Attributes
         public AutoOptionsAttribute(string section)
         {
             Section = section ?? throw new ArgumentNullException(nameof(section));
+            // 可以使用.作为属性连接符
+            Section = Section.Replace(".", ":");
         }
 
         /// <summary>

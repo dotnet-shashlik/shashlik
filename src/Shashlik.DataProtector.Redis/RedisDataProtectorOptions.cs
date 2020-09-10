@@ -1,0 +1,23 @@
+﻿using Shashlik.Kernel.Autowire.Attributes;
+
+namespace Shashlik.DataProtector.Redis
+{
+    [AutoOptions("Shashlik.DataProtector.Redis")]
+    public class RedisDataProtectorOptions
+    {
+        /// <summary>
+        /// 是否启用
+        /// </summary>
+        public bool Enable { get; set; }
+
+        /// <summary>
+        /// 缓存key
+        /// </summary>
+        public string Key { get; set; } = "Shashlik-DataProtection-Keys";
+
+        /// <summary>
+        /// 应用程序名称
+        /// </summary>
+        public string ApplicationName { get; set; } = "DefaulApplicationName";
+    }
+}

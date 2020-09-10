@@ -6,7 +6,7 @@ using Shashlik.Kernel.Autowire.Attributes;
 
 namespace Shashlik.AliyunOss
 {
-    [AutoOptions("Shashlik:AliyunOss")]
+    [AutoOptions("Shashlik.AliyunOss")]
     public class AliyunOssOptions
     {
         /// <summary>

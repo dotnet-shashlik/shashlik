@@ -3,7 +3,7 @@ using Shashlik.Kernel.Autowire.Attributes;
 
 namespace Shashlik.Identity.AspNetCore
 {
-    [AutoOptions("Shashlik:Identity")]
+    [AutoOptions("Shashlik.Identity")]
     public class ShashlikAspNetIdentityOptions
     {
         /// <summary>

@@ -6,7 +6,7 @@ namespace Shashlik.Sms.Options
     /// <summary>
     /// 短信配置
     /// </summary>
-    [AutoOptions("Shashlik:Sms")]
+    [AutoOptions("Shashlik.Sms")]
     public class SmsOptions
     {
         /// <summary>

@@ -2,7 +2,7 @@
 
 namespace Shashlik.Captcha
 {
-    [AutoOptions("Shashlik:Captcha")]
+    [AutoOptions("Shashlik.Captcha")]
     public class CaptchaOptions
     {
         /// <summary>

@@ -2,7 +2,7 @@
 
 namespace Shashlik.EfCore
 {
-    [AutoOptions("Shashlik:EfCore")]
+    [AutoOptions("Shashlik.EfCore")]
     public class EfCoreOptions
     {
         /// <summary>

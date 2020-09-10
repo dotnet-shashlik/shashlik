@@ -2,7 +2,7 @@
 
 namespace Shashlik.Identity
 {
-    [AutoOptions("Shashlik:Identity")]
+    [AutoOptions("Shashlik.Identity")]
     public partial class ShashlikIdentityOptions
     {
         /// <summary>
