@@ -13,7 +13,7 @@ namespace Shashlik.DataProtector.X509
         /// <summary>
         /// 应用程序名称
         /// </summary>
-        public string ApplicationName { get; set; } = "DefaulApplicationName";
+        public string ApplicationName { get; set; } = "DefaultApplicationName";
 
         /**
          *    demo:

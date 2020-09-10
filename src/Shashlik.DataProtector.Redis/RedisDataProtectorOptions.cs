@@ -18,6 +18,6 @@ namespace Shashlik.DataProtector.Redis
         /// <summary>
         /// 应用程序名称
         /// </summary>
-        public string ApplicationName { get; set; } = "DefaulApplicationName";
+        public string ApplicationName { get; set; } = "DefaultApplicationName";
     }
 }
