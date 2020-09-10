@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;

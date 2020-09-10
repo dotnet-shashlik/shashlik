@@ -4,7 +4,6 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Shashlik.Kernel.Dependency.Conditions;
-using System.Text.Json;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Captcha
