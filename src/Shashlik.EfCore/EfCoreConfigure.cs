@@ -19,18 +19,8 @@ namespace Shashlik.EfCore
     /// </summary>
     public class EfCoreConfigure : IAutowiredConfigureServices
     {
-        public EfCoreConfigure(IOptions<EfCoreOptions> options)
-        {
-            Options = options.Value;
-        }
-
-        private EfCoreOptions Options { get; }
-
         public void ConfigureServices(IKernelServices kernelService)
         {
-            if (!Options.Enable)
-                return;
-
             kernelService.AddEfEntityMappings();
             kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
 
@@ -46,30 +36,6 @@ namespace Shashlik.EfCore
                     typeof(IEfNestedTransaction<>).MakeGenericType(item),
                     typeof(DefaultEfNestedTransaction<>).MakeGenericType(item)
                 );
-            }
-
-            if (Options.AutoMigrationAll || !Options.AutoMigrationTypes.IsNullOrEmpty())
-            {
-                var serviceProvider = kernelService.Services.BuildServiceProvider();
-                var scope = serviceProvider.CreateScope();
-                AutoMigration(scope.ServiceProvider, scope.ServiceProvider.GetRequiredService<IKernelServices>());
-            }
-        }
-
-        private void AutoMigration(IServiceProvider serviceProvider, IKernelServices kernelServices)
-        {
-            var dbContextTypes =
-                AssemblyHelper.GetFinalSubTypes(typeof(ShashlikDbContext<>), kernelServices.ScanFromDependencyContext);
-            if (dbContextTypes.IsNullOrEmpty())
-                return;
-
-            var types = dbContextTypes.Select(r => r.Name);
-            if (!Options.AutoMigrationAll)
-                types = types.Intersect(Options.AutoMigrationTypes).ToList();
-
-            foreach (var dbContextType in dbContextTypes.Where(dbContextType => types.Contains(dbContextType.Name)))
-            {
-                serviceProvider.Migration(dbContextType);
             }
         }
     }
