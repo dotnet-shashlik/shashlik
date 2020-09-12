@@ -12,7 +12,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
     /// <summary>
     /// ids4 postgresql数据库存储配置
     /// </summary>
-    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure, IAutowiredConfigure
+    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure
     {
         public Ids4PostgreSqlStoreConfigure(IOptions<Ids4PostgreSqlStoreOptions> options,
             IKernelServices kernelServices)
@@ -40,7 +40,6 @@ namespace Shashlik.Ids4.PostgreSqlStore
                     };
                 });
 
-
             if (Options.EnableOperationalStore)
                 builder.AddOperationalStore(options =>
                 {
@@ -53,17 +52,14 @@ namespace Shashlik.Ids4.PostgreSqlStore
                             });
                     };
                 });
-        }
 
-        public void Configure(IKernelConfigure kernelConfigure)
-        {
             // 执行client store 数据库迁移
             if (Options.AutoMigration && Options.EnableConfigurationStore)
-                kernelConfigure.ServiceProvider.Migration<ConfigurationDbContext>();
+                KernelServices.Services.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移
             if (Options.AutoMigration && Options.EnableOperationalStore)
-                kernelConfigure.ServiceProvider.Migration<PersistedGrantDbContext>();
+                KernelServices.Services.Migration<PersistedGrantDbContext>();
         }
     }
 }

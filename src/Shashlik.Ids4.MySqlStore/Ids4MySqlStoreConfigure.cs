@@ -11,7 +11,7 @@ namespace Shashlik.Ids4.MySqlStore
     /// <summary>
     /// ids4 mysql 数据库存储配置
     /// </summary>
-    public class Ids4MySqlStoreConfigure : IIdentityServerBuilderConfigure, IAutowiredConfigure
+    public class Ids4MySqlStoreConfigure : IIdentityServerBuilderConfigure
     {
         public Ids4MySqlStoreConfigure(IOptions<Ids4MySqlStoreOptions> options, IKernelServices kernelServices)
         {
@@ -51,17 +51,14 @@ namespace Shashlik.Ids4.MySqlStore
                             });
                     };
                 });
-        }
 
-        public void Configure(IKernelConfigure kernelConfigure)
-        {
             // 执行client store 数据库迁移
             if (Options.AutoMigration && Options.EnableConfigurationStore)
-                kernelConfigure.ServiceProvider.Migration<ConfigurationDbContext>();
+                KernelServices.Services.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移
             if (Options.AutoMigration && Options.EnableOperationalStore)
-                kernelConfigure.ServiceProvider.Migration<PersistedGrantDbContext>();
+                KernelServices.Services.Migration<PersistedGrantDbContext>();
         }
     }
 }
