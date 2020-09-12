@@ -29,10 +29,6 @@ namespace Shashlik.Identity.AspNetCore
             if (!Options1.Enable)
                 return;
 
-            if (Options1.UseBCryptPasswordHasher)
-                // 使用bcrypt作为密码hash算法
-                kernelService.Services.TryAddScoped<IPasswordHasher<Users>, BCryptPasswordHasher<Users>>();
-
             var builder = kernelService.Services
                     .AddIdentity<Users, Roles>(options => { Options2.IdentityOptions.CopyTo(options); })
                     .AddEntityFrameworkStores<ShashlikIdentityDbContext>()

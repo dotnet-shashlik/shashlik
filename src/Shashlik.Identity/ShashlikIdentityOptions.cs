@@ -26,11 +26,6 @@ namespace Shashlik.Identity
         public string? MigrationAssembly { get; set; }
 
         /// <summary>
-        /// 使用BCrypt作为密码hash算法
-        /// </summary>
-        public bool UseBCryptPasswordHasher { get; set; }
-
-        /// <summary>
         /// users表属性配置
         /// </summary>
         public ShashlikIdentityUserPropertyOptions UserProperty { get; set; } =
