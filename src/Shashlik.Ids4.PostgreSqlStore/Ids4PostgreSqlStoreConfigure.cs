@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {
@@ -11,16 +12,16 @@ namespace Shashlik.Ids4.PostgreSqlStore
     /// <summary>
     /// ids4 postgresql数据库存储配置
     /// </summary>
-    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure
+    public class Ids4PostgreSqlStoreConfigure : IIdentityServerBuilderConfigure, IAutowiredConfigure
     {
-        public Ids4PostgreSqlStoreConfigure(IOptions<IdsdPostgreSqlStoreOptions> options,
+        public Ids4PostgreSqlStoreConfigure(IOptions<Ids4PostgreSqlStoreOptions> options,
             IKernelServices kernelServices)
         {
             Options = options.Value;
             KernelServices = kernelServices;
         }
 
-        private IdsdPostgreSqlStoreOptions Options { get; }
+        private Ids4PostgreSqlStoreOptions Options { get; }
 
         private IKernelServices KernelServices { get; }
 
@@ -34,7 +35,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
                         dbOptions.UseNpgsql(Options.ConnectionString!,
                             mig =>
                             {
-                                mig.MigrationsAssembly(typeof(IdsdPostgreSqlStoreOptions).Assembly.GetName().FullName);
+                                mig.MigrationsAssembly(typeof(Ids4PostgreSqlStoreOptions).Assembly.GetName().FullName);
                             });
                     };
                 });
@@ -48,18 +49,21 @@ namespace Shashlik.Ids4.PostgreSqlStore
                         dbOptions.UseNpgsql(Options.ConnectionString!,
                             mig =>
                             {
-                                mig.MigrationsAssembly(typeof(IdsdPostgreSqlStoreOptions).Assembly.GetName().FullName);
+                                mig.MigrationsAssembly(typeof(Ids4PostgreSqlStoreOptions).Assembly.GetName().FullName);
                             });
                     };
                 });
+        }
 
+        public void Configure(IKernelConfigure kernelConfigure)
+        {
             // 执行client store 数据库迁移
             if (Options.AutoMigration && Options.EnableConfigurationStore)
-                KernelServices.Services.Migration<ConfigurationDbContext>();
+                kernelConfigure.ServiceProvider.Migration<ConfigurationDbContext>();
 
             // 执行operation store 数据库迁移
             if (Options.AutoMigration && Options.EnableOperationalStore)
-                KernelServices.Services.Migration<PersistedGrantDbContext>();
+                kernelConfigure.ServiceProvider.Migration<PersistedGrantDbContext>();
         }
     }
 }

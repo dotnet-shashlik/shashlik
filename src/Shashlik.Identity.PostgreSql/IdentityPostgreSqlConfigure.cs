@@ -30,7 +30,7 @@ namespace Shashlik.Identity.PostgreSql
             });
 
             if (Options.AutoMigration)
-                kernelService.Services.Migration<ShashlikDbContext>();
+                kernelService.Services.Migration<ShashlikIdentityDbContext>();
         }
     }
 }

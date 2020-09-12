@@ -36,10 +36,12 @@ namespace Shashlik.Kernel.Autowired
                 var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeAtAttribute>();
                 if (beforeOnAttribute != null && afterOnAttribute != null)
                     throw new KernelExceptionInitException($"[AfterAt] and [BeforeAt] cannot be used together.");
+
                 //bool isRemove = !removes.IsNullOrEmpty() && removes.Contains(serviceType);
                 services.AddSingleton(serviceType, serviceType);
-                descriptors.Add(serviceType, new InnerAutowiredDescriptor(afterOnAttribute?.AfterAt?.GetTypeInfo(),
-                    beforeOnAttribute?.BeforeAt?.GetTypeInfo(), serviceType, InitStatus.Waiting)
+                descriptors.Add(serviceType, new InnerAutowiredDescriptor(
+                    FilterType(afterOnAttribute?.AfterAt, baseType),
+                    FilterType(beforeOnAttribute?.BeforeAt, baseType), serviceType, InitStatus.Waiting)
                 );
             }
 
@@ -79,8 +81,9 @@ namespace Shashlik.Kernel.Autowired
                 var afterOnAttribute = serviceType.GetCustomAttribute<AfterAtAttribute>();
                 var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeAtAttribute>();
 
-                descriptors.Add(serviceType, new InnerAutowiredDescriptor(afterOnAttribute?.AfterAt?.GetTypeInfo(),
-                    beforeOnAttribute?.BeforeAt?.GetTypeInfo(), serviceType, InitStatus.Waiting)
+                descriptors.Add(serviceType, new InnerAutowiredDescriptor(
+                    FilterType(afterOnAttribute?.AfterAt, baseType),
+                    FilterType(beforeOnAttribute?.BeforeAt, baseType), serviceType, InitStatus.Waiting)
                 {
                     ServiceInstance = item
                 });
@@ -117,7 +120,8 @@ namespace Shashlik.Kernel.Autowired
                     } as AutowiredDescriptor);
         }
 
-        void Invoke(InnerAutowiredDescriptor descriptor, IDictionary<TypeInfo, AutowiredDescriptor> autoServices,
+        private void Invoke(InnerAutowiredDescriptor descriptor,
+            IDictionary<TypeInfo, AutowiredDescriptor> autoServices,
             Action<AutowiredDescriptor> initAction)
         {
             if (descriptor.Status == InitStatus.Done)
@@ -140,6 +144,13 @@ namespace Shashlik.Kernel.Autowired
 
                 descriptor.Status = InitStatus.Done;
             }
+        }
+
+        private TypeInfo? FilterType(Type? type, Type baseType)
+        {
+            if (type == null)
+                return null;
+            return type.IsSubTypeOf(baseType) ? type.GetTypeInfo() : null;
         }
     }
 }

@@ -3,7 +3,7 @@
 namespace Shashlik.Ids4.PostgreSqlStore
 {
     [AutoOptions("Shashlik:Ids4:PostgreSql")]
-    public class IdsdPostgreSqlStoreOptions
+    public class Ids4PostgreSqlStoreOptions
     {
         /// <summary>
         /// 自动迁移

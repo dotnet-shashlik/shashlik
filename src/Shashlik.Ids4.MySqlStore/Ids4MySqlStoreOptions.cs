@@ -3,7 +3,7 @@
 namespace Shashlik.Ids4.MySqlStore
 {
     [AutoOptions("Shashlik:Ids4:MySql")]
-    public class IdsdMySqlStoreOptions
+    public class Ids4MySqlStoreOptions
     {
         /// <summary>
         /// 自动迁移

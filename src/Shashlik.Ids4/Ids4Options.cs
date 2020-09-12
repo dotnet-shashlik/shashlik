@@ -48,7 +48,7 @@ namespace Shashlik.Ids4
             /// <summary>
             /// 签名证书类型,不区分大小写,dev/rsa/x509
             /// </summary>
-            public string CredentialType { get; set; } = "dev";
+            public CredentialType CredentialType { get; set; } = CredentialType.dev;
 
             /// <summary>
             /// 签名算法,默认RsaSha256,dev无效
@@ -85,6 +85,13 @@ namespace Shashlik.Ids4
             /// 证书密码
             /// </summary>
             public string? X509CertificatePassword { get; set; }
+        }
+
+        public enum CredentialType
+        {
+            dev = 1,
+            rsa = 2,
+            x509 = 3
         }
     }
 }

@@ -7,16 +7,21 @@ using System;
 namespace Shashlik.EfCore
 {
     /// <summary>
-    /// Shashlik ef 上下文基类,完成自动注册实体,以及实体fluentApi配置
+    /// Shashlik ef 上下文基类,完成自动注册实体,以及自动装载fluentApi配置
     /// </summary>
-    public abstract class ShashlikDbContext : DbContext
+    public abstract class ShashlikDbContext<TDbContext> : DbContext
+        where TDbContext : ShashlikDbContext<TDbContext>
     {
         /// <summary>
-        /// 实体注册完成以后的钩子方法
+        /// 泛型必须是自己,约素构造函数的使用
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="entityType">实体类型</param>
-        protected virtual void EntityRegisterAfter(EntityTypeBuilder builder, Type entityType) { }
+        /// <param name="options"></param>
+        /// <exception cref="ArgumentException"></exception>
+        protected ShashlikDbContext(DbContextOptions<TDbContext> options) : base(options)
+        {
+            if (typeof(TDbContext) != this.GetType())
+                throw new ArgumentException($"Generic type {typeof(TDbContext)} must be {this.GetType()}.");
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,7 +29,6 @@ namespace Shashlik.EfCore
 
             modelBuilder.RegisterEntities<IEntity>(
                 entityTypeConfigurationServiceProvider: this.GetService<IServiceProvider>(),
-                registerAfter: EntityRegisterAfter,
                 dependencyContext: this.GetService<IKernelServices>().ScanFromDependencyContext);
         }
     }

@@ -49,9 +49,9 @@ namespace Shashlik.Ids4
 
             #region 签名证书
 
-            if (Options.SignOptions.CredentialType.EqualsIgnoreCase("dev"))
+            if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.dev)
                 builder.AddDeveloperSigningCredential();
-            else if (Options.SignOptions.CredentialType.EqualsIgnoreCase("rsa"))
+            else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.rsa)
             {
                 if (Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
                     throw new ArgumentException($"Invalid rsa private key");
@@ -60,7 +60,7 @@ namespace Shashlik.Ids4
                     Options.SignOptions.RsaIsPem);
                 builder.AddSigningCredential(new RsaSecurityKey(rsa), Options.SignOptions.SigningAlgorithm);
             }
-            else if (Options.SignOptions.CredentialType.EqualsIgnoreCase("x509"))
+            else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.x509)
             {
                 X509Certificate2 certificate;
                 if (!Options.SignOptions.X509CertificateContent.IsNullOrEmpty())
@@ -71,14 +71,14 @@ namespace Shashlik.Ids4
                 else if (!Options.SignOptions.X509CertificateFile.IsNullOrEmpty())
                 {
                     if (!File.Exists(Options.SignOptions.X509CertificateFile))
-                        throw new FileNotFoundException($"Cannot found cerfitificate file.",
+                        throw new FileNotFoundException($"Cannot found certificate file.",
                             Options.SignOptions.X509CertificateFile);
 
                     certificate = new X509Certificate2(Options.SignOptions.X509CertificateFile!,
                         Options.SignOptions.X509CertificatePassword);
                 }
                 else
-                    throw new InvalidOperationException("X509Certificate cannor be empty. ");
+                    throw new InvalidOperationException("X509Certificate cannot be empty. ");
 
 
                 builder.AddSigningCredential(certificate, Options.SignOptions.SigningAlgorithm);

@@ -30,7 +30,7 @@ namespace Shashlik.Identity.MySql
             });
 
             if (Options.AutoMigration)
-                kernelService.Services.Migration<ShashlikDbContext>();
+                kernelService.Services.Migration<ShashlikIdentityDbContext>();
         }
     }
 }
