@@ -8,7 +8,7 @@ namespace Shashlik.DataProtector.X509
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 应用程序名称

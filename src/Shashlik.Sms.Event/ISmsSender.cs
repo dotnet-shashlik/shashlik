@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils;
 using Shashlik.EventBus;
+using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms.Event

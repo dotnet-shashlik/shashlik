@@ -8,7 +8,7 @@ namespace Shashlik.Identity
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 数据库连接字符串

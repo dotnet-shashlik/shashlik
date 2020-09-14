@@ -13,7 +13,7 @@ namespace Shashlik.Ids4
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; } = false;
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// ids4配置参数

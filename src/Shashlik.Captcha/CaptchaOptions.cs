@@ -8,7 +8,7 @@ namespace Shashlik.Captcha
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 验证码过期时间,默认5分钟

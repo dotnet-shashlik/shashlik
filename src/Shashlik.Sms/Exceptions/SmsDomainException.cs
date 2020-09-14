@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.Sms
+namespace Shashlik.Sms.Exceptions
 {
     /// <summary>
     /// 短信发送 主机异常,一般需要重试

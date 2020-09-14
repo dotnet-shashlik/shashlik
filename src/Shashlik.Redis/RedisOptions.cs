@@ -1,4 +1,5 @@
 ﻿using Shashlik.Kernel.Autowire.Attributes;
+// ReSharper disable All
 
 namespace Shashlik.Redis
 {
@@ -8,7 +9,7 @@ namespace Shashlik.Redis
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 启用redis分布式锁

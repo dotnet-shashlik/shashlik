@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using qcloudsms_csharp;
+using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
 

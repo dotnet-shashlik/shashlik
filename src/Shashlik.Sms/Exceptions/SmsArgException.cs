@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.Sms
+namespace Shashlik.Sms.Exceptions
 {
     /// <summary>
     /// 短信发送,参数错误,一般不用重试了

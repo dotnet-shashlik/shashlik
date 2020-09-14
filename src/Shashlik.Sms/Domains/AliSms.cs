@@ -6,6 +6,7 @@ using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
 

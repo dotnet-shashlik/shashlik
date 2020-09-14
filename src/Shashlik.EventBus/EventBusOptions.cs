@@ -11,7 +11,7 @@ namespace Shashlik.EventBus
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// CAP默认组名

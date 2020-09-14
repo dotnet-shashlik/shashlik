@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
+using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Inner;
 using Shashlik.Sms.Options;
 

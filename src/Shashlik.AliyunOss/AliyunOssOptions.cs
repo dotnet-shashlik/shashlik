@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Shashlik.Kernel.Autowire.Attributes;
+
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -12,8 +13,8 @@ namespace Shashlik.AliyunOss
         /// <summary>
         /// 是否启用
         /// </summary>
-        public bool Enable { get; set; }
-        
+        public bool Enable { get; set; } = true;
+
         /// <summary>
         /// 访问密钥ID
         /// </summary>

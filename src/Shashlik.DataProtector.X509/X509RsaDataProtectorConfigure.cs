@@ -37,7 +37,7 @@ namespace Shashlik.DataProtector.X509
             else
             {
                 if (!File.Exists(Options.X509CertificateFile))
-                    throw new FileNotFoundException("Certifacite not found.", Options.X509CertificateFile);
+                    throw new FileNotFoundException("Certificate not found.", Options.X509CertificateFile);
                 certificate = new X509Certificate2(Options.X509CertificateFile, Options.Password);
             }
 
