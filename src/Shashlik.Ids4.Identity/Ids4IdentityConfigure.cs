@@ -21,13 +21,13 @@ namespace Shashlik.Ids4.Identity
                 return;
 
             builder.AddAspNetIdentity<Users>();
-            if (Options.AllowValidator.Contains(Ids4IdentityGrantTypes.Password))
-                builder.Services.Replace(
-                    ServiceDescriptor.Transient<IResourceOwnerPasswordValidator, PasswordValidator<Users>>());
-            if (Options.AllowValidator.Contains(Ids4IdentityGrantTypes.Phone))
-                builder.AddExtensionGrantValidator<PhoneValidator>();
-            if (Options.AllowValidator.Contains(Ids4IdentityGrantTypes.EMail))
-                builder.AddExtensionGrantValidator<EMailValidator>();
+            // 替换默认的密码认证器
+            builder.Services.Replace(ServiceDescriptor
+                .Transient<IResourceOwnerPasswordValidator, PasswordValidator<Users>>());
+            // 手机短信验证码
+            builder.AddExtensionGrantValidator<PhoneValidator>();
+            // 邮件验证码
+            builder.AddExtensionGrantValidator<EMailValidator>();
         }
     }
 }

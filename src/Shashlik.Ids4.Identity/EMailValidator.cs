@@ -14,6 +14,6 @@ namespace Shashlik.Ids4.Identity
             throw new System.NotImplementedException();
         }
 
-        public string GrantType => Ids4IdentityGrantTypes.EMail;
+        public string GrantType => Consts.EMailGrantType;
     }
 }
