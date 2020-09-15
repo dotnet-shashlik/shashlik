@@ -75,9 +75,9 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void RazorFormatTest()
         {
-            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(null));
-            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(new ErrorFormatter()));
-            Should.Throw<Exception>(() => RazorFormatExtensions.Registy(new DuplicateFormatter()));
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registry(null));
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registry(new ErrorFormatter()));
+            Should.Throw<Exception>(() => RazorFormatExtensions.Registry(new DuplicateFormatter()));
 
             var model = new UserTestModel
             {

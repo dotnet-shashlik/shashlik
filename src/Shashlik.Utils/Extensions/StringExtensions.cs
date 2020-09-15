@@ -150,19 +150,6 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 正则是否匹配
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static bool IsUrl(this string value)
-        {
-            if (value == null)
-                return false;
-            return Regex.IsMatch(value, @"^((https|http)?:\/\/)[^\s]+");
-        }
-
-
-        /// <summary>
         /// 空值转换为null
         /// </summary>
         /// <param name="value"></param>
@@ -196,7 +183,7 @@ namespace Shashlik.Utils.Extensions
                 return "";
 
             var span = value.AsSpan();
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (value.Length >= beginLength)
                 sb.Append(span.Slice(0, beginLength).ToString());
             else

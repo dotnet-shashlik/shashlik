@@ -237,22 +237,20 @@ namespace Shashlik.Utils.Rsa
             if (string.IsNullOrEmpty(dataStr)) return string.Empty;
             if (rsa == null) throw new ArgumentException("private key can not null");
             var inputBytes = Convert.FromBase64String(dataStr);
-            int bufferSize = rsa.KeySize / 8;
+            var bufferSize = rsa.KeySize / 8;
             var buffer = new byte[bufferSize];
-            using (MemoryStream inputStream = new MemoryStream(inputBytes), outputStream = new MemoryStream())
+            using MemoryStream inputStream = new MemoryStream(inputBytes), outputStream = new MemoryStream();
+            while (true)
             {
-                while (true)
-                {
-                    int readSize = inputStream.Read(buffer, 0, bufferSize);
-                    if (readSize <= 0) break;
-                    var temp = new byte[readSize];
-                    Array.Copy(buffer, 0, temp, 0, readSize);
-                    var rawBytes = rsa.Decrypt(temp, padding);
-                    outputStream.Write(rawBytes, 0, rawBytes.Length);
-                }
-
-                return encoding.GetString(outputStream.ToArray());
+                var readSize = inputStream.Read(buffer, 0, bufferSize);
+                if (readSize <= 0) break;
+                var temp = new byte[readSize];
+                Array.Copy(buffer, 0, temp, 0, readSize);
+                var rawBytes = rsa.Decrypt(temp, padding);
+                outputStream.Write(rawBytes, 0, rawBytes.Length);
             }
+
+            return encoding.GetString(outputStream.ToArray());
         }
 
         /// <summary>

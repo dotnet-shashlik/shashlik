@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeTypeMemberModifiers
+// ReSharper disable UseDeconstruction
+// ReSharper disable InvertIf
 
 namespace Shashlik.Utils.RazorFormat
 {
@@ -22,7 +24,7 @@ namespace Shashlik.Utils.RazorFormat
         /// 注册格式化器,不要多线程注册,非线程安全,默认已注册switch格式化器,注册时不会验证action的正确性!!!
         /// </summary>
         /// <param name="formater"></param>
-        public static void Registy(IFormatter formater)
+        public static void Registry(IFormatter formater)
         {
             if (formater is null)
                 throw new ArgumentNullException(nameof(formater));
@@ -37,7 +39,7 @@ namespace Shashlik.Utils.RazorFormat
         static RazorFormatExtensions()
         {
             var formater = new SwitchFormatter();
-            Registy(formater);
+            Registry(formater);
         }
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace Shashlik.Utils.RazorFormat
             {
                 if (!item.Success)
                     continue;
-                string exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
+                var exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
 
                 string proName = null; // 属性名
                 string formatExp = null; // 格式话表达式
@@ -86,7 +88,7 @@ namespace Shashlik.Utils.RazorFormat
                     value = value.Replace(item.Value, v?.ToString());
                 else
                 {
-                    bool hasFormater = false; // 有没有格式化器
+                    var hasFormater = false; // 有没有格式化器
                     // 正则匹配,计算action
                     var formatMatch = formatExpressionReg.Match(formatExp);
                     if (formatMatch.Success && formatMatch.Groups.Count >= 2)
