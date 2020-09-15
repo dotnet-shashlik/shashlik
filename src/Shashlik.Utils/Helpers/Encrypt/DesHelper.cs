@@ -33,6 +33,7 @@ namespace Shashlik.Utils.Helpers.Encrypt
             {
                 throw new ArgumentException(nameof(key));
             }
+
             using var des = DES.Create();
             des.Padding = paddingMode;
             des.Mode = cipherMode;
@@ -72,6 +73,7 @@ namespace Shashlik.Utils.Helpers.Encrypt
             {
                 throw new ArgumentException(nameof(key));
             }
+
             var bytes = Convert.FromBase64String(text);
             using var des = DES.Create();
             des.Padding = paddingMode;
@@ -80,7 +82,7 @@ namespace Shashlik.Utils.Helpers.Encrypt
             using var csDecrypt = new CryptoStream(ms,
                 des.CreateDecryptor(keyBytes, ivBytes),
                 CryptoStreamMode.Write);
-            
+
             csDecrypt.Write(bytes, 0, bytes.Length);
             csDecrypt.FlushFinalBlock();
             //Convert the buffer into a string and return it.
