@@ -68,5 +68,10 @@ namespace Shashlik.Identity
         /// 手机号码是否唯一,默认true
         /// </summary>
         public bool PhoneNumberUnique { get; set; } = true;
+        
+        /// <summary>
+        /// 邮件地址是否唯一,默认true
+        /// </summary>
+        public bool EMailUnique { get; set; } = true;
     }
 }
