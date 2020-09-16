@@ -28,6 +28,10 @@ namespace Shashlik.Ids4.Identity
             builder.AddExtensionGrantValidator<PhoneValidator>();
             // 邮件验证码
             builder.AddExtensionGrantValidator<EMailValidator>();
+            // 手机短信验证码
+            builder.AddExtensionGrantValidator<Phone2FAValidator>();
+            // 邮件验证码
+            builder.AddExtensionGrantValidator<EMail2FAValidator>();
         }
     }
 }

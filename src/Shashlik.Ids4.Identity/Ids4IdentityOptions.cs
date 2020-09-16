@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Shashlik.Identity.Entities;
-using Shashlik.Kernel.Autowire.Attributes;
+﻿using Shashlik.Kernel.Autowire.Attributes;
 
 namespace Shashlik.Ids4.Identity
 {
@@ -29,21 +26,26 @@ namespace Shashlik.Ids4.Identity
         /// <summary>
         /// 手机双因子验证,token获取api地址
         /// </summary>
-        public string GetPhoneTwoFactorApi { get; set; } = "/identity/phone_token";
+        public string GetPhone2FATokenApi { get; set; } = "/identity/phone_2fa_token";
 
         /// <summary>
         /// 邮件双因子验证,token获取api地址
         /// </summary>
-        public string GetEMailTwoFactorApi { get; set; } = "/identity/email_token";
+        public string GetEMail2FATokenApi { get; set; } = "/identity/email_2fa_token";
 
         /// <summary>
-        /// 用户创建时,可以自定义新用户属性
+        /// 手机短信登录,获取短信验证码api地址
         /// </summary>
-        public Action<Users> UserCreating { get; set; }
+        public string GetPhoneLoginCodeApi { get; set; } = "/identity/phone_login_code";
 
         /// <summary>
-        /// 用户创建完成后
+        /// 邮件验证码登录,获取邮件验证码api地址
         /// </summary>
-        public Action<Users> UserCreated { get; set; }
+        public string GetEMailLoginCodeApi { get; set; } = "/identity/email_login_code";
+
+        /// <summary>
+        /// 验证码长度
+        /// </summary>
+        public int CodeLength { get; set; } = 6;
     }
 }
