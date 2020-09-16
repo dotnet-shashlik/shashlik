@@ -161,51 +161,36 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 注册数据库上下文开启事务的方式,用于特定的事务Begin,比如CAP
-        /// </summary>
-        /// <typeparam name="TDbContext"></typeparam>
-        /// <param name="kernelService"></param>
-        /// <param name="beginTransactionFunc"></param>
-        public static void AddBeginTransactionFunction<TDbContext>(this IKernelServices kernelService,
-            Func<TDbContext, IDbContextTransaction> beginTransactionFunc)
-            where TDbContext : DbContext
-        {
-            kernelService.Services.AddSingleton(
-                typeof(IEfNestedTransactionFunction<TDbContext>),
-                new DefaultEfNestedTransactionFunction<TDbContext>(beginTransactionFunc));
-        }
-
-        /// <summary>
-        /// 执行迁移,服务注册阶段执行,需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void Migration<T>(this IServiceCollection services) where T : DbContext
+        public static void Migration<T>(this IServiceCollection services, ILock locker = null) where T : DbContext
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
 
-            Migration<T>(scope.ServiceProvider);
+            Migration<T>(scope.ServiceProvider, locker);
         }
 
         /// <summary>
-        /// 执行迁移,服务注册阶段执行,需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
-        public static void Migration(this IServiceCollection services, Type dbContextType)
+        public static void Migration(this IServiceCollection services, Type dbContextType, ILock locker = null)
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
 
-            Migration(scope.ServiceProvider, dbContextType);
+            Migration(scope.ServiceProvider, dbContextType, locker);
         }
 
 
         /// <summary>
-        /// 执行迁移,需要注册<see cref="ILock"/>服务
+        /// 执行迁移,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void Migration<T>(this IServiceProvider provider) where T : DbContext
+        public static void Migration<T>(this IServiceProvider provider, ILock locker = null) where T : DbContext
         {
-            var locker = provider.GetRequiredService<ILock>();
+            locker ??= provider.GetRequiredService<ILock>();
             using var @lock = locker.Lock(MigrationLockKey, 60 * 3, true, 60);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<T>();
@@ -213,13 +198,13 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 执行迁移,应用配置阶段执行,需要注册<see cref="ILock"/>服务
+        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
-        public static void Migration(this IServiceProvider provider, Type dbContextType)
+        public static void Migration(this IServiceProvider provider, Type dbContextType, ILock locker = null)
         {
             if (!dbContextType.IsSubTypeOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
-            var locker = provider.GetRequiredService<ILock>();
+            locker ??= provider.GetRequiredService<ILock>();
             using var @lock = locker.Lock(MigrationLockKey, 60 * 3, true, 60);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;

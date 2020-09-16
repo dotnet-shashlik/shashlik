@@ -22,21 +22,15 @@ namespace Shashlik.EfCore
         /// </summary>
         /// <param name="dbContext">上下文对象</param>
         /// <returns></returns>
-        IDbContextTransaction GetCurrent(DbContext dbContext);
-
-        /// <summary>
-        /// 开始事务,默认DbContext的开启事务方式
-        /// </summary>
-        /// <param name="dbContext">上下文对象</param>
-        /// <returns></returns>
-        IDbContextTransaction Begin(DbContext dbContext);
+        IDbContextTransaction GetCurrent<TDbContext>(TDbContext dbContext) where TDbContext : DbContext;
 
         /// <summary>
         /// 开始事务,自定义开启方式
         /// </summary>
         /// <param name="dbContext">上下文对象</param>
-        /// <param name="beginTransactionFunc">自定义开始事务的方法</param>
+        /// <param name="beginTransactionMethod">自定义开始事务的方法</param>
         /// <returns></returns>
-        IDbContextTransaction Begin(DbContext dbContext, Func<DbContext, IDbContextTransaction> beginTransactionFunc);
+        IDbContextTransaction Begin<TDbContext>(TDbContext dbContext,
+            Func<TDbContext, IDbContextTransaction> beginTransactionMethod = null) where TDbContext : DbContext;
     }
 }

@@ -14,10 +14,11 @@ namespace Shashlik.EfCore
     /// </summary>
     public class DefaultEfNestedTransactionWrapper : IEfNestedTransactionWrapper
     {
-        ConcurrentDictionary<DbContext, ConcurrentBag<TransactionModel>> Trans { get; }
+        private ConcurrentDictionary<DbContext, ConcurrentBag<TransactionModel>> Trans { get; }
             = new ConcurrentDictionary<DbContext, ConcurrentBag<TransactionModel>>();
 
-        public virtual IDbContextTransaction GetCurrent(DbContext dbContext)
+        public virtual IDbContextTransaction GetCurrent<TDbContext>(TDbContext dbContext)
+            where TDbContext : DbContext
         {
             return Trans.TryGetValue(dbContext, out var list)
                 ? list.FirstOrDefault()?.ScopedTransaction
@@ -28,11 +29,11 @@ namespace Shashlik.EfCore
         /// 开启事务
         /// </summary>
         /// <param name="dbContext"></param>
-        /// <param name="beginTransactionFunc"></param>
+        /// <param name="beginTransactionMethod"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public virtual IDbContextTransaction Begin(DbContext dbContext,
-            Func<DbContext, IDbContextTransaction> beginTransactionFunc)
+        public virtual IDbContextTransaction Begin<TDbContext>(TDbContext dbContext,
+            Func<TDbContext, IDbContextTransaction> beginTransactionMethod) where TDbContext : DbContext
         {
             if (Trans.TryGetValue(dbContext, out var list))
             {
@@ -53,9 +54,9 @@ namespace Shashlik.EfCore
             }
 
             {
-                var tran = beginTransactionFunc == null
+                var tran = beginTransactionMethod == null
                     ? dbContext.Database.BeginTransaction()
-                    : beginTransactionFunc(dbContext);
+                    : beginTransactionMethod(dbContext);
 
                 var top = new InnerEfDbContextTransaction(tran, true);
                 // 不存在该类型的事务
@@ -80,11 +81,6 @@ namespace Shashlik.EfCore
             foreach (var item in Trans)
             foreach (var transaction in item.Value)
                 transaction?.ScopedTransaction?.Dispose();
-        }
-
-        public virtual IDbContextTransaction Begin(DbContext dbContext)
-        {
-            return Begin(dbContext, null);
         }
     }
 }
