@@ -18,27 +18,29 @@ namespace Shashlik.Utils.Helpers
         /// <returns>随机数</returns>
         public static string GetRandomCode(int length)
         {
-            int byteLength = 1;
+            var byteLength = 1;
             byteLength *= (length / 3 + 1);
             // Create a byte array to hold the random value.  
-            byte[] randomNumber = new byte[byteLength];
+            var randomNumber = new byte[byteLength];
             // Create a new instance of the RNGCryptoServiceProvider.  
-            System.Security.Cryptography.RNGCryptoServiceProvider rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+            var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
             // Fill the array with a random value.  
             rng.GetBytes(randomNumber);
             // Convert the byte to an uint value to make the modulus operation easier.  
             uint randomResult = 0x0;
-            for (int i = 0; i < byteLength; i++)
+            for (var i = 0; i < byteLength; i++)
             {
-                randomResult |= ((uint)randomNumber[i] << ((byteLength - 1 - i) * 8));
+                randomResult |= ((uint) randomNumber[i] << ((byteLength - 1 - i) * 8));
             }
-            string s = randomResult.ToString();
+
+            var s = randomResult.ToString();
             if (s.Length > length)
                 s = s.Substring(0, length);
             while (s.Length < length)
             {
                 s = "0" + s;
             }
+
             return s;
         }
 
@@ -49,21 +51,23 @@ namespace Shashlik.Utils.Helpers
         /// <param name="minValue"></param>
         /// <param name="maxValue"></param>
         /// <returns></returns>
-        public static int[] GetRandomNum(int num, int minValue, int maxValue)
+        public static List<int> GetRandomNum(int num, int minValue, int maxValue)
         {
             if (maxValue - minValue < num)
             {
                 throw new ArgumentException("no enough number to generate");
             }
-            var ra = new Random(unchecked((int)DateTime.Now.Ticks));//保证产生的数字的随机性
+
+            var ra = new Random(unchecked((int) DateTime.Now.Ticks)); //保证产生的数字的随机性
             var numberList = new List<int>();
             while (numberList.Count < num)
             {
                 var number = ra.Next(minValue, maxValue);
-                if(numberList.Contains(number)) continue;
+                if (numberList.Contains(number)) continue;
                 numberList.Add(number);
             }
-            return numberList.ToArray();
+
+            return numberList;
         }
     }
 }

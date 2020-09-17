@@ -46,7 +46,7 @@ namespace Shashlik.Utils.Test.HelperTests
             {
                 var codes = RandomHelper.GetRandomNum(50, 1, 300);
                 codes.ShouldNotBeEmpty();
-                codes.Length.ShouldBe(50);
+                codes.Count.ShouldBe(50);
                 codes.Distinct().Count().ShouldBe(50);
             }
         }
