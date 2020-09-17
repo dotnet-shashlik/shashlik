@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Shashlik.AspNetCore;
 using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Kernel.Test.Autowired

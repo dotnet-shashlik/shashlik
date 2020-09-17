@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Kernel.AspNetCore;
+using Shashlik.AspNetCore;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
