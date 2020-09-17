@@ -72,6 +72,6 @@ namespace Shashlik.Identity
         /// <summary>
         /// 邮件地址是否唯一,默认true
         /// </summary>
-        public bool EMailUnique { get; set; } = true;
+        public bool EmailUnique { get; set; } = true;
     }
 }

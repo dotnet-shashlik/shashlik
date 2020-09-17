@@ -9,14 +9,15 @@ namespace Shashlik.Ids4.Identity
 {
     public class Ids4IdentityConfigure : IIdentityServerBuilderConfigure
     {
-        public Ids4IdentityConfigure(IOptions<Ids4IdentityOptions> options, IOptions<ShashlikIdentityOptions> identityOptions)
+        public Ids4IdentityConfigure(IOptions<Ids4IdentityOptions> options,
+            IOptions<ShashlikIdentityOptions> identityOptions)
         {
-            _identityOptions = identityOptions.Value;
+            IdentityOptions = identityOptions.Value;
             Options = options.Value;
         }
 
         private Ids4IdentityOptions Options { get; }
-        private readonly ShashlikIdentityOptions _identityOptions;
+        private ShashlikIdentityOptions IdentityOptions { get; }
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
@@ -26,23 +27,21 @@ namespace Shashlik.Ids4.Identity
             builder.AddAspNetIdentity<Users>();
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
-                .Transient<IResourceOwnerPasswordValidator, PasswordValidator<Users>>());
-            if (_identityOptions.UserProperty.PhoneNumberUnique)
+                .Transient<IResourceOwnerPasswordValidator, PasswordValidator>());
+            if (IdentityOptions.UserProperty.PhoneNumberUnique)
             {
                 // 手机短信验证码
                 builder.AddExtensionGrantValidator<PhoneValidator>();
             }
 
-            if (_identityOptions.UserProperty.EMailUnique)
+            if (IdentityOptions.UserProperty.EmailUnique)
             {
                 // 邮件验证码
-                builder.AddExtensionGrantValidator<EMailValidator>();
+                builder.AddExtensionGrantValidator<EmailValidator>();
             }
-            
-            // 手机短信验证码
-            builder.AddExtensionGrantValidator<Phone2FAValidator>();
-            // 邮件验证码
-            builder.AddExtensionGrantValidator<EMail2FAValidator>();
+
+            // 手机短信双因子验证码
+            builder.AddExtensionGrantValidator<Phone2FaValidator>();
         }
     }
 }

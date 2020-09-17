@@ -12,7 +12,8 @@ namespace Shashlik.Identity
     //TODO: 完善方法
     public class ShashlikUserManager : UserManager<Users>
     {
-        private readonly ShashlikIdentityDbContext _identityDbContext;
+        protected ShashlikIdentityDbContext DbContext { get; }
+
         public ShashlikUserManager(IUserStore<Users> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<Users> passwordHasher,
@@ -25,12 +26,27 @@ namespace Shashlik.Identity
             : base(store, optionsAccessor, passwordHasher, userValidators,
                 passwordValidators, keyNormalizer, errors, services, logger)
         {
-            _identityDbContext = identityDbContext;
+            DbContext = identityDbContext;
         }
 
-        public async Task<Users> FindByPhoneNumber(string phoneNumber)
+        /// <summary>
+        /// 根据身份证查找用户,手机号码
+        /// </summary>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public async Task<Users> FindByPhoneNumberAsync(string phoneNumber)
         {
-            return await _identityDbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            return await DbContext.Users.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+        }
+
+        /// <summary>
+        /// 根据身份证查找用户,身份证号码唯一有效
+        /// </summary>
+        /// <param name="idCard"></param>
+        /// <returns></returns>
+        public async Task<Users> FindByIdCardAsync(string idCard)
+        {
+            return await DbContext.Users.SingleOrDefaultAsync(u => u.IdCard == idCard);
         }
     }
 }

@@ -9,6 +9,9 @@ using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Shashlik.Identity;
+using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.Identity
@@ -18,27 +21,23 @@ namespace Shashlik.Ids4.Identity
     /// </summary>
     /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
-    public class PasswordValidator<TUser> : IResourceOwnerPasswordValidator
-        where TUser : class
+    public class PasswordValidator : IResourceOwnerPasswordValidator
     {
-        private readonly SignInManager<TUser> _signInManager;
-        private readonly UserManager<TUser> _userManager;
-        private readonly ILogger<PasswordValidator<TUser>> _logger;
+        private readonly SignInManager<Users> _signInManager;
+        private readonly ShashlikUserManager _userManager;
+        private readonly IOptions<ShashlikIdentityOptions> _shashlikIdentityOptions;
+        private readonly IOptions<IdentityOptions> _identityOptions;
+        private readonly IOptions<Ids4IdentityOptions> _ids4IdentityOptions;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ResourceOwnerPasswordValidator{TUser}"/> class.
-        /// </summary>
-        /// <param name="userManager">The user manager.</param>
-        /// <param name="signInManager">The sign in manager.</param>
-        /// <param name="logger">The logger.</param>
-        public PasswordValidator(
-            UserManager<TUser> userManager,
-            SignInManager<TUser> signInManager,
-            ILogger<PasswordValidator<TUser>> logger)
+        public PasswordValidator(ShashlikUserManager userManager, IOptions<Ids4IdentityOptions> ids4IdentityOptions,
+            IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions,
+            SignInManager<Users> signInManager)
         {
             _userManager = userManager;
+            _ids4IdentityOptions = ids4IdentityOptions;
+            _shashlikIdentityOptions = shashlikIdentityOptions;
+            _identityOptions = identityOptions;
             _signInManager = signInManager;
-            _logger = logger;
         }
 
         /// <summary>
@@ -50,42 +49,26 @@ namespace Shashlik.Ids4.Identity
         {
             var username = context.UserName;
             var password = context.Password;
+            var clientId = context.Request.ClientId;
+            var errorCode = 0;
 
             if (username.IsNullOrWhiteSpace())
-            {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "用户名不能为空"
-                };
-                return;
-            }
-            if (password.IsNullOrWhiteSpace() || password.Length != 32)
-            {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "密码不能为空"
-                };
-                return;
-            }
+                errorCode = -1;
+            if (password.IsNullOrWhiteSpace())
+                errorCode = -2;
 
             // 根据用户名和邮件地址查找用户
             var user = await _userManager.FindByNameAsync(username);
-            if (user == null)
+            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.EMailSource))
                 user = await _userManager.FindByEmailAsync(username);
-
+            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.PhoneSource))
+                user = await _userManager.FindByPhoneNumberAsync(username);
+            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.IdCardSource))
+                user = await _userManager.FindByPhoneNumberAsync(username);
             if (user == null)
-            {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "用户名或密码错误"
-                };
-                return;
-            }
+                errorCode = -3;
 
-            var result = await _signInManager.PasswordSignInAsync(username, password, true, true);
+            var result = await _signInManager.PasswordSignInAsync(user, password, true, true);
             if (result.Succeeded)
             {
                 var sub = await _userManager.GetUserIdAsync(user);
@@ -93,30 +76,20 @@ namespace Shashlik.Ids4.Identity
             }
             else if (result.IsLockedOut)
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "账户已被锁定"
-                };
-                return;
+                //TODO....
             }
             else if (result.IsNotAllowed)
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "不允许登录"
-                };
-                return;
+                //TODO....
+            }
+            else if (result.RequiresTwoFactor)
+            {
+                // 需要两步登录
+                //TODO....
             }
             else
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "用户名或密码错误"
-                };
-                return;
+                //TODO....
             }
         }
     }

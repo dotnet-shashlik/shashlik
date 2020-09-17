@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Shashlik.Identity.AspNetCore.Providers;
 using Shashlik.Identity.Entities;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
@@ -15,25 +16,32 @@ namespace Shashlik.Identity.AspNetCore
     public class IdentityConfigure : IAutowiredConfigureServices
     {
         public IdentityConfigure(IOptions<ShashlikIdentityOptions> options,
-            IOptions<ShashlikAspNetIdentityOptions> options2)
+            IOptions<ShashlikAspNetIdentityOptions> identityOptions)
         {
-            Options1 = options.Value;
-            Options2 = options2.Value;
+            Options = options.Value;
+            IdentityOptions = identityOptions.Value;
         }
 
-        private ShashlikIdentityOptions Options1 { get; }
-        private ShashlikAspNetIdentityOptions Options2 { get; }
+        private ShashlikIdentityOptions Options { get; }
+        private ShashlikAspNetIdentityOptions IdentityOptions { get; }
 
         public void ConfigureServices(IKernelServices kernelService)
         {
-            if (!Options1.Enable)
+            if (!Options.Enable)
                 return;
 
             var builder = kernelService.Services
-                    .AddIdentity<Users, Roles>(options => { Options2.IdentityOptions.CopyTo(options); })
+                    .AddIdentity<Users, Roles>(options => { IdentityOptions.IdentityOptions.CopyTo(options); })
                     .AddEntityFrameworkStores<ShashlikIdentityDbContext>()
                     .AddDefaultTokenProviders()
                 ;
+
+            if (IdentityOptions.UseCaptchaToken)
+            {
+                builder.AddTokenProvider<EmailCaptchaProvider>(Consts.EmailCaptchaProvider);
+                builder.AddTokenProvider<PhoneNumberCaptchaProvider>(IdentityOptions.IdentityOptions.Tokens
+                    .ChangePhoneNumberTokenProvider);
+            }
 
             // 扩展identity配置
             kernelService.BeginAutowired<IIdentityBuilderConfigure>()

@@ -18,15 +18,15 @@ namespace Shashlik.Ids4.Identity
         public const string EMailGrantType = "email";
 
         /// <summary>
-        /// 手机短信双因子验证
+        /// 手机双因子验证
         /// </summary>
-        public const string Phone2FAGrantType = "phone2fa";
+        public const string Phone2FaGrantType = "phone_2fa";
 
         /// <summary>
         /// 邮件双因子验证
         /// </summary>
-        public const string EMail2FAGrantType = "email2fa";
-
+        public const string Email2FaGrantType = "email_2fa";
+        
         /// <summary>
         /// 密码登录
         /// </summary>
@@ -38,8 +38,20 @@ namespace Shashlik.Ids4.Identity
         public const string LoginPurpose = "login";
 
         /// <summary>
-        /// 双因子验证purpose
+        /// 用户名登录源
         /// </summary>
-        public const string _2FAPurpose = "2fa";
+        public const string UsernameSource = "username";
+        /// <summary>
+        /// 手机号码登录源
+        /// </summary>
+        public const string PhoneSource = "phone";
+        /// <summary>
+        /// 邮件登录源
+        /// </summary>
+        public const string EMailSource = "email";
+        /// <summary>
+        /// 身份证号码登录源
+        /// </summary>
+        public const string IdCardSource = "idcard";
     }
 }

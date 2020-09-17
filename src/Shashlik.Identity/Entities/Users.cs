@@ -66,7 +66,7 @@ namespace Shashlik.Identity.Entities
 
             builder.HasIndex(r => r.IdCard).IsUnique(Options.UserProperty.IdCardUnique);
             builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.UserProperty.PhoneNumberUnique);
-            builder.HasIndex(r => r.Email).IsUnique(Options.UserProperty.EMailUnique);
+            builder.HasIndex(r => r.Email).IsUnique(Options.UserProperty.EmailUnique);
         }
     }
 }

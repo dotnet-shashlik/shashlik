@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
 using Shashlik.Identity;
@@ -12,21 +12,18 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Ids4.Identity
 {
     /// <summary>
-    /// 手机短信验证码验证码
+    /// 手机短信验证码验证码,手机号码唯一有效
     /// </summary>
     public class PhoneValidator : IExtensionGrantValidator
     {
         private readonly ICaptcha _captcha;
-
         private readonly ShashlikUserManager _userManager;
-
         private readonly Ids4IdentityOptions _options;
-
-        private readonly List<IUserCreated> _userCreatedList;
-        private readonly List<IUserCreating> _userCreatingList;
+        private readonly IEnumerable<IUserCreated> _userCreatedList;
+        private readonly IEnumerable<IUserCreating> _userCreatingList;
 
         public PhoneValidator(ICaptcha captcha, ShashlikUserManager userManager, IOptions<Ids4IdentityOptions> options,
-            List<IUserCreated> userCreatedList, List<IUserCreating> userCreatingList)
+            IEnumerable<IUserCreated> userCreatedList, IEnumerable<IUserCreating> userCreatingList)
         {
             _captcha = captcha;
             _userManager = userManager;
@@ -42,45 +39,25 @@ namespace Shashlik.Ids4.Identity
             var clientId = context.Request.Raw.Get("client_id");
             if (phone.IsNullOrWhiteSpace())
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "手机号码不能为空"
-                };
-                return;
+                //TODO:...
             }
 
             if (!phone.IsMatch(Utils.Consts.Regexs.MobilePhoneNumber))
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "手机号码格式错误"
-                };
-                return;
+                //TODO:...
             }
 
             if (code.IsNullOrWhiteSpace())
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "验证码不能为空"
-                };
-                return;
+                //TODO:...
             }
 
             if (!await _captcha.IsValid(Consts.LoginPurpose, phone, code))
             {
-                context.Result = new GrantValidationResult
-                {
-                    IsError = true,
-                    Error = "验证码错误"
-                };
-                return;
+                //TODO:...
             }
 
-            var user = await _userManager.FindByPhoneNumber(phone);
+            var user = await _userManager.FindByPhoneNumberAsync(phone);
             if (user == null)
             {
                 // create user if enabled
@@ -91,9 +68,10 @@ namespace Shashlik.Ids4.Identity
                         UserName = phone,
                         PhoneNumber = phone,
                         PhoneNumberConfirmed = true,
-                        Gender = Gender.Unknown
+                        Gender = Gender.Unknown,
+                        //TODO: 数据库必填字段填入默认值
                     };
-                    if (_userCreatingList.Count > 0)
+                    if (_userCreatingList.Any())
                     {
                         foreach (var userCreating in _userCreatingList)
                         {
@@ -102,7 +80,7 @@ namespace Shashlik.Ids4.Identity
                     }
 
                     await _userManager.CreateAsync(user);
-                    if (_userCreatedList.Count > 0)
+                    if (_userCreatedList.Any())
                     {
                         foreach (var userCreated in _userCreatedList)
                         {
@@ -112,12 +90,7 @@ namespace Shashlik.Ids4.Identity
                 }
                 else
                 {
-                    context.Result = new GrantValidationResult
-                    {
-                        IsError = true,
-                        Error = "手机号码不存在"
-                    };
-                    return;
+                    //TODO:....
                 }
             }
 
