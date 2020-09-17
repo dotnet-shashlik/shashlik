@@ -51,7 +51,7 @@ namespace Shashlik.Ids4.Identity
             if (user == null)
                 errorCode = -3;
 
-            if (!await _userManager.VerifyTwoFactorTokenAsync(user, provider, token))
+            if (user != null && !await _userManager.VerifyTwoFactorTokenAsync(user, provider, token))
                 errorCode = -4;
 
             if (errorCode != 0)
@@ -64,7 +64,7 @@ namespace Shashlik.Ids4.Identity
                 return;
             }
 
-            context.Result = new GrantValidationResult(user.Id.ToString(), this.GrantType);
+            context.Result = new GrantValidationResult(user!.Id.ToString(), this.GrantType);
         }
 
         public string GrantType => Consts.TwoFactorGrantType;
