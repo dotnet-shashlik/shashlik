@@ -36,5 +36,10 @@ namespace Shashlik.Ids4.Identity
         /// 登录purpose
         /// </summary>
         public const string LoginPurpose = "login";
+
+        /// <summary>
+        /// 双因子验证purpose
+        /// </summary>
+        public const string _2FAPurpose = "2fa";
     }
 }

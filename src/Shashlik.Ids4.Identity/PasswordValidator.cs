@@ -3,11 +3,13 @@
 
 
 using System.Threading.Tasks;
+using IdentityModel;
+using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using static IdentityModel.OidcConstants;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.Identity
 {
@@ -44,41 +46,78 @@ namespace Shashlik.Ids4.Identity
         /// </summary>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var user = await _userManager.FindByNameAsync(context.UserName);
-            if (user != null)
+            var username = context.UserName;
+            var password = context.Password;
+
+            if (username.IsNullOrWhiteSpace())
             {
-                var result = await _signInManager.CheckPasswordSignInAsync(user, context.Password, true);
-                if (result.Succeeded)
+                context.Result = new GrantValidationResult
                 {
-                    var sub = await _userManager.GetUserIdAsync(user);
+                    IsError = true,
+                    Error = "用户名不能为空"
+                };
+                return;
+            }
+            if (password.IsNullOrWhiteSpace() || password.Length != 32)
+            {
+                context.Result = new GrantValidationResult
+                {
+                    IsError = true,
+                    Error = "密码不能为空"
+                };
+                return;
+            }
 
-                    _logger.LogInformation("Credentials validated for username: {username}", context.UserName);
+            // 根据用户名和邮件地址查找用户
+            var user = await _userManager.FindByNameAsync(username);
+            if (user == null)
+                user = await _userManager.FindByEmailAsync(username);
 
-                    context.Result = new GrantValidationResult(sub, AuthenticationMethods.Password);
-                    return;
-                }
+            if (user == null)
+            {
+                context.Result = new GrantValidationResult
+                {
+                    IsError = true,
+                    Error = "用户名或密码错误"
+                };
+                return;
+            }
 
-                if (result.IsLockedOut)
+            var result = await _signInManager.PasswordSignInAsync(username, password, true, true);
+            if (result.Succeeded)
+            {
+                var sub = await _userManager.GetUserIdAsync(user);
+                context.Result = new GrantValidationResult(sub, OidcConstants.AuthenticationMethods.Password);
+            }
+            else if (result.IsLockedOut)
+            {
+                context.Result = new GrantValidationResult
                 {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: locked out", context.UserName);
-                }
-                else if (result.IsNotAllowed)
+                    IsError = true,
+                    Error = "账户已被锁定"
+                };
+                return;
+            }
+            else if (result.IsNotAllowed)
+            {
+                context.Result = new GrantValidationResult
                 {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: not allowed", context.UserName);
-                }
-                else
-                {
-                    _logger.LogInformation("Authentication failed for username: {username}, reason: invalid credentials", context.UserName);
-                }
+                    IsError = true,
+                    Error = "不允许登录"
+                };
+                return;
             }
             else
             {
-                _logger.LogInformation("No user found matching username: {username}", context.UserName);
+                context.Result = new GrantValidationResult
+                {
+                    IsError = true,
+                    Error = "用户名或密码错误"
+                };
+                return;
             }
-
-            context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
         }
     }
 }

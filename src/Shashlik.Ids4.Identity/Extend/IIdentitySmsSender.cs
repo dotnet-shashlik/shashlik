@@ -1,7 +1,9 @@
-﻿namespace Shashlik.Ids4.Identity.Extend
+﻿using System.Threading.Tasks;
+
+namespace Shashlik.Ids4.Identity.Extend
 {
-    public class IIdentitySmsSender
+    public interface IIdentitySmsSender
     {
-        
+        Task Send(string purpose, string email, string code);
     }
 }
