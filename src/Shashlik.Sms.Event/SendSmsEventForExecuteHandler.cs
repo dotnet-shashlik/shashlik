@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Sms.Exceptions;
 
 namespace Shashlik.Sms.Event
@@ -7,6 +8,7 @@ namespace Shashlik.Sms.Event
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
+    [ConditionOnProperty("Shashlik.Sms.Enable", "true")]
     public class SendSmsEventForExecuteHandler : EventBus.IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)

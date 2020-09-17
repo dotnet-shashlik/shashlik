@@ -2,7 +2,7 @@
 
 namespace Shashlik.AspNetCore
 {
-    [AutoOptions("Shashlik:AspNetCore")]
+    [AutoOptions("Shashlik.AspNetCore")]
     public class AspNetCoreOptions
     {
         /// <summary>

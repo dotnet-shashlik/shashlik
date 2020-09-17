@@ -12,7 +12,7 @@ namespace Shashlik.Sms.Domains
     /// <summary>
     /// 手机短信
     /// </summary>
-    class TencentSms : ISmsDomain
+    public class TencentSms : ISmsDomain
     {
         public TencentSms(ILogger<TencentSms> logger)
         {

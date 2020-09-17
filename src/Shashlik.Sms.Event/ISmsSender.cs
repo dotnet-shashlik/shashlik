@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils;
 using Shashlik.EventBus;
+using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 
@@ -34,6 +35,7 @@ namespace Shashlik.Sms.Event
         void Send(string phone, string subject, params string[] args);
     }
 
+    [ConditionOnProperty("Shashlik.Sms.Enable", "true")]
     public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ISingleton
     {
         public DefaultSmsSender(IEventPublisher eventPublisher,

@@ -9,7 +9,7 @@ namespace Shashlik.Sms
     public interface ISmsDomain
     {
         /// <summary>
-        /// 主机类型
+        /// 主机类型,aliyun/tencent ....
         /// </summary>
         string SmsDomain { get; }
 

@@ -12,6 +12,13 @@ namespace Shashlik.Kernel.Dependency.Conditions
     [ConditionOrder(20)]
     public class ConditionOnPropertyAttribute : Attribute, IConditionBase
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="property">属性名称</param>
+        /// <param name="value">属性值,默认不区分大小写</param>
+        /// <param name="matchIfMissing">不存在该配置项时,条件是否成立</param>
+        /// <exception cref="ArgumentException"></exception>
         public ConditionOnPropertyAttribute(string property, string value, bool matchIfMissing = false)
         {
             if (string.IsNullOrWhiteSpace(property))
@@ -24,7 +31,7 @@ namespace Shashlik.Kernel.Dependency.Conditions
                 throw new ArgumentException($"“{nameof(value)}”不能为 Null 或空白", nameof(value));
             }
 
-            Property = property;
+            Property = property.Replace(".", ":");
             Value = value;
             MatchIfMissing = matchIfMissing;
         }
@@ -40,7 +47,7 @@ namespace Shashlik.Kernel.Dependency.Conditions
         public string Value { get; set; }
 
         /// <summary>
-        /// 未配置时是否注册
+        /// 不存在该配置项时,条件是否成立
         /// </summary>
         public bool MatchIfMissing { get; set; } = false;
 
