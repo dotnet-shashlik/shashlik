@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Utils.Extensions;
 using Shashlik.Kernel.Autowired;
@@ -15,7 +12,7 @@ using Shashlik.Utils.Helpers;
 namespace Shashlik.EfCore
 {
     /// <summary>
-    /// 自动注册嵌套事务/自动注册ef实体类/自动注册
+    /// 自动注册嵌套事务/自动注册ef实体类
     /// </summary>
     public class EfCoreConfigure : IAutowiredConfigureServices
     {
@@ -25,7 +22,7 @@ namespace Shashlik.EfCore
             kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
 
             var dbContextTypes =
-                AssemblyHelper.GetFinalSubTypes(typeof(ShashlikDbContext<>), kernelService.ScanFromDependencyContext);
+                AssemblyHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
             if (dbContextTypes.IsNullOrEmpty())
                 return;
 

@@ -12,18 +12,18 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransaction, TDbContext dbContext)
+        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransactionWrapper, TDbContext dbContext)
         {
-            EfTransaction = efTransaction;
+            EfTransactionWrapper = efTransactionWrapper;
             DbContext = dbContext;
             // 从服务中获取开启事务的方式,没注册的话就是null
-            BeginTransactionFunc = dbContext.GetService<IEfNestedTransactionFunction<TDbContext>>();
+            BeginTransactionMethod = dbContext.GetService<IEfNestedTransactionMethod<TDbContext>>();
         }
 
         /// <summary>
         /// 嵌套事务包装类
         /// </summary>
-        private IEfNestedTransactionWrapper EfTransaction { get; }
+        private IEfNestedTransactionWrapper EfTransactionWrapper { get; }
 
         /// <summary>
         /// 数据库上下文
@@ -33,16 +33,22 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 开启事务的方式
         /// </summary>
-        private IEfNestedTransactionFunction<TDbContext> BeginTransactionFunc { get; }
+        private IEfNestedTransactionMethod<TDbContext> BeginTransactionMethod { get; }
 
-        public virtual IDbContextTransaction Current => EfTransaction.GetCurrent(DbContext);
+        /// <summary>
+        /// 当前事务
+        /// </summary>
+        public virtual IDbContextTransaction Current => EfTransactionWrapper.GetCurrent(DbContext);
 
+        /// <summary>
+        /// 开启事务
+        /// </summary>
+        /// <returns></returns>
         public virtual IDbContextTransaction Begin()
         {
-            if (BeginTransactionFunc == null)
-                return EfTransaction.Begin(DbContext);
-            return EfTransaction.Begin(DbContext,
-                dbContext => BeginTransactionFunc.BeginTransactionFunc((TDbContext) dbContext));
+            return BeginTransactionMethod == null
+                ? EfTransactionWrapper.Begin(DbContext)
+                : EfTransactionWrapper.Begin(DbContext, BeginTransactionMethod.BeginTransaction);
         }
     }
 }
