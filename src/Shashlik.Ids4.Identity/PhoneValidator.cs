@@ -65,11 +65,9 @@ namespace Shashlik.Ids4.Identity
                 {
                     user = new Users()
                     {
-                        UserName = phone,
                         PhoneNumber = phone,
                         PhoneNumberConfirmed = true,
-                        Gender = Gender.Unknown,
-                        //TODO: 数据库必填字段填入默认值
+                        Gender = Gender.Unknown
                     };
                     if (_userCreatingList.Any())
                     {

@@ -5,7 +5,7 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Ids4.Identity.Extend
 {
     /// <summary>
-    /// 用户创建中,userId还没有,自动注册为scoped
+    /// 用户创建中,userId还没有,<see cref="Ids4IdentityOptions.CreateUserIfNotExistsOnPhoneValidator"/>或<see cref="Ids4IdentityOptions.CreateUserIfNotExistsOnEmailValidator"/>为true时必须有实现类,来定义创建时用户字段的赋值逻辑,自动注册为scoped
     /// </summary>
     public interface IUserCreating : IScoped
     {

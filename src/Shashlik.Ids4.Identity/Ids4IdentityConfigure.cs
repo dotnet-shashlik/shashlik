@@ -41,7 +41,7 @@ namespace Shashlik.Ids4.Identity
             }
 
             // 手机短信双因子验证码
-            builder.AddExtensionGrantValidator<Phone2FaValidator>();
+            builder.AddExtensionGrantValidator<TwoFactorValidator>();
         }
     }
 }

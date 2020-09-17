@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
@@ -13,20 +13,20 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Ids4.Identity.HttpApi
 {
     /// <summary>
-    /// 手机短信双因子验证验证码发送默认实现
+    /// 手机短信登录验证码发送默认实现
     /// </summary>
-    public class GetPhone2FATokenApi : IAutowiredConfigureAspNetCore
+    public class GetPhoneLoginCodeApi : IAutowiredConfigureAspNetCore
     {
         private readonly Ids4IdentityOptions _identityOptions;
 
-        public GetPhone2FATokenApi(IOptions<Ids4IdentityOptions> identityOptions)
+        public GetPhoneLoginCodeApi(IOptions<Ids4IdentityOptions> identityOptions)
         {
             _identityOptions = identityOptions.Value;
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            app.Map(_identityOptions.GetPhone2FATokenApi, builder =>
+            app.Map(_identityOptions.GetPhoneLoginCodeApi, builder =>
             {
                 builder.Run(async context =>
                 {
@@ -37,9 +37,9 @@ namespace Shashlik.Ids4.Identity.HttpApi
                         return;
                     }
                     var captcha = context.RequestServices.GetService<ICaptcha>();
-                    var code = await captcha.Build(Consts._2FAPurpose, phone, _identityOptions.CodeLength);
+                    var code = await captcha.Build(Consts.LoginPurpose, phone, _identityOptions.CodeLength);
                     var smsSender = context.RequestServices.GetService<IIdentitySmsSender>();
-                    await smsSender.Send(Consts._2FAPurpose, phone, code.Code);
+                    await smsSender.Send(Consts.LoginPurpose, phone, code.Code);
                     //TODO:auto response by accept type
                 });
             });

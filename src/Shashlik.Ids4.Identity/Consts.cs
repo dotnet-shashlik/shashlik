@@ -20,13 +20,8 @@ namespace Shashlik.Ids4.Identity
         /// <summary>
         /// 手机双因子验证
         /// </summary>
-        public const string Phone2FaGrantType = "phone_2fa";
+        public const string TwoFactorGrantType = "twofactor";
 
-        /// <summary>
-        /// 邮件双因子验证
-        /// </summary>
-        public const string Email2FaGrantType = "email_2fa";
-        
         /// <summary>
         /// 密码登录
         /// </summary>

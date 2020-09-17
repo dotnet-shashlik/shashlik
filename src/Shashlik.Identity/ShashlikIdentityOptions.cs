@@ -1,4 +1,6 @@
-﻿using Shashlik.Kernel.Autowired.Attributes;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.Identity
 {
@@ -24,6 +26,12 @@ namespace Shashlik.Identity
         /// 迁移的程序集名称,如果更改 UserProperty或者identity默认项的配置,需要自行生成迁移,可以传入此参数使用传入的程序集进行自动迁移
         /// </summary>
         public string? MigrationAssembly { get; set; }
+        
+
+        /// <summary>
+        /// 两部验证模式:EmailCaptcha(邮件验证码)/Phone(手机验证码),默认phone,userSelect:用户自行选择
+        /// </summary>
+        public string? TwoFactorProvider { get; set; } = "phone";
 
         /// <summary>
         /// users表属性配置
@@ -68,7 +76,7 @@ namespace Shashlik.Identity
         /// 手机号码是否唯一,默认true
         /// </summary>
         public bool PhoneNumberUnique { get; set; } = true;
-        
+
         /// <summary>
         /// 邮件地址是否唯一,默认true
         /// </summary>

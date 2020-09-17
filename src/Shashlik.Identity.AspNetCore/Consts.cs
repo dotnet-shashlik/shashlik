@@ -1,4 +1,5 @@
 ﻿// ReSharper disable ClassNeverInstantiated.Global
+
 namespace Shashlik.Identity.AspNetCore
 {
     public class Consts
@@ -6,6 +7,6 @@ namespace Shashlik.Identity.AspNetCore
         /// <summary>
         /// 邮件验证码provider
         /// </summary>
-        public const string EmailCaptchaProvider = "email_captcha";
+        public const string EmailCaptchaProvider = "EmailCaptcha";
     }
 }

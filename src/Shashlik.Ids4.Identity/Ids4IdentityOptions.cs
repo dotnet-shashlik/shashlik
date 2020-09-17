@@ -15,7 +15,7 @@ namespace Shashlik.Ids4.Identity
         public bool Enable { get; set; } = true;
 
         /// <summary>
-        /// 密码登录源数据,允许值:username/phone/email,也就是可以使用用户名/手机号码/邮件地址作为登录用户名,使用手机号/邮件登录时务必保证其唯一性
+        /// 密码登录源数据,允许值:username/phone/email/idCard,也就是可以使用用户名/手机号码/邮件地址作为登录用户名,使用手机号/邮件登录时务必保证其唯一性
         /// </summary>
         public HashSet<string> PasswordSignInSources { get; set; } = new HashSet<string> {Consts.UsernameSource};
 
@@ -27,7 +27,7 @@ namespace Shashlik.Ids4.Identity
         /// <summary>
         /// 邮件验证,不存在时是否创建新用户
         /// </summary>
-        public bool CreateUserIfNotExistsOnEMailValidator { get; set; } = false;
+        public bool CreateUserIfNotExistsOnEmailValidator { get; set; } = false;
 
         // /// <summary>
         // /// 手机双因子验证,token获取api地址

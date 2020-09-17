@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Builder;
@@ -13,33 +13,33 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Ids4.Identity.HttpApi
 {
     /// <summary>
-    /// 手机短信登录验证码发送默认实现
+    /// 邮件登录验证码发送默认实现
     /// </summary>
-    public class GetPhoneLoginCodeApi : IAutowiredConfigureAspNetCore
+    public class GetEMailLoginCodeApi : IAutowiredConfigureAspNetCore
     {
         private readonly Ids4IdentityOptions _identityOptions;
 
-        public GetPhoneLoginCodeApi(IOptions<Ids4IdentityOptions> identityOptions)
+        public GetEMailLoginCodeApi(IOptions<Ids4IdentityOptions> identityOptions)
         {
             _identityOptions = identityOptions.Value;
         }
 
         public void Configure(IApplicationBuilder app)
         {
-            app.Map(_identityOptions.GetPhoneLoginCodeApi, builder =>
+            app.Map(_identityOptions.GetEMailLoginCodeApi, builder =>
             {
                 builder.Run(async context =>
                 {
-                    var phone = context.Request.Form["phone"].ToString();
-                    if (!phone.IsMatch(Utils.Consts.Regexs.MobilePhoneNumber))
+                    var email = context.Request.Form["email"].ToString();
+                    if (!email.IsMatch(Utils.Consts.Regexs.Email))
                     {
                         context.Response.StatusCode = StatusCodes.Status400BadRequest;
                         return;
                     }
                     var captcha = context.RequestServices.GetService<ICaptcha>();
-                    var code = await captcha.Build(Consts.LoginPurpose, phone, _identityOptions.CodeLength);
-                    var smsSender = context.RequestServices.GetService<IIdentitySmsSender>();
-                    await smsSender.Send(Consts.LoginPurpose, phone, code.Code);
+                    var code = await captcha.Build(Consts.LoginPurpose, email, _identityOptions.CodeLength);
+                    var emailSender = context.RequestServices.GetService<IIdentityEMailSender>();
+                    await emailSender.Send(Consts.LoginPurpose, email, code.Code);
                     //TODO:auto response by accept type
                 });
             });

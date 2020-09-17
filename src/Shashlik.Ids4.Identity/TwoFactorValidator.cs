@@ -10,14 +10,14 @@ namespace Shashlik.Ids4.Identity
     /// <summary>
     /// 手机两部验证
     /// </summary>
-    public class Email2FaValidator : IExtensionGrantValidator
+    public class TwoFactorValidator : IExtensionGrantValidator
     {
         private readonly ShashlikUserManager _userManager;
         private readonly IOptions<ShashlikIdentityOptions> _shashlikIdentityOptions;
         private readonly IOptions<IdentityOptions> _identityOptions;
         private readonly IOptions<Ids4IdentityOptions> _ids4IdentityOptions;
 
-        public Email2FaValidator(ShashlikUserManager userManager, IOptions<Ids4IdentityOptions> ids4IdentityOptions,
+        public TwoFactorValidator(ShashlikUserManager userManager, IOptions<Ids4IdentityOptions> ids4IdentityOptions,
             IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions)
         {
             _userManager = userManager;
@@ -30,6 +30,8 @@ namespace Shashlik.Ids4.Identity
         {
             var username = context.Request.Raw.Get("username");
             var token = context.Request.Raw.Get("token");
+            var provider = context.Request.Raw.Get("provider");
+            //TODO: 验证provider,如果
             var clientId = context.Request.ClientId;
 
             var errorCode = 0;
@@ -49,10 +51,7 @@ namespace Shashlik.Ids4.Identity
             if (user == null)
                 errorCode = -3;
 
-            // 两步验证有优化安全行的余地,驾驭clientId到purpose,不同客户端之间不能共享两步验证
-            // 使用EmailCaptchaProvider作为邮件两步验证提供类
-            if (!await _userManager.VerifyTwoFactorTokenAsync(user,
-                Shashlik.Identity.AspNetCore.Consts.EmailCaptchaProvider, token))
+            if (!await _userManager.VerifyTwoFactorTokenAsync(user, provider, token))
                 errorCode = -4;
 
             if (errorCode != 0)
@@ -68,6 +67,6 @@ namespace Shashlik.Ids4.Identity
             context.Result = new GrantValidationResult(user.Id.ToString(), this.GrantType);
         }
 
-        public string GrantType => Consts.Email2FaGrantType;
+        public string GrantType => Consts.TwoFactorGrantType;
     }
 }

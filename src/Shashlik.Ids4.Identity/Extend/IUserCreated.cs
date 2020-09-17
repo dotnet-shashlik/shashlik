@@ -5,7 +5,7 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Ids4.Identity.Extend
 {
     /// <summary>
-    /// 用户创建完成,已经有userId了,但事务未提交,自动注册为scoped
+    /// 用户创建完成,已经有userId了,但事务未提交,自动注册为scoped,创建用户后需要赋予角色等数据时可以实现此接口
     /// </summary>
     public interface IUserCreated : IScoped
     {

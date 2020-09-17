@@ -16,4 +16,15 @@
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Apis\GetEMail2FATokenApi.cs" />
+      <Compile Remove="Apis\GetEMailLoginCodeApi.cs" />
+      <Compile Remove="Apis\GetPhone2FATokenApi.cs" />
+      <Compile Remove="Apis\GetPhoneLoginCodeApi.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Apis" />
+    </ItemGroup>
+
 </Project>
