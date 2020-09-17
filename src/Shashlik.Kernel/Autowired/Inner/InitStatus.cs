@@ -3,7 +3,7 @@
     /// <summary>
     /// 初始化状态
     /// </summary>
-    enum InitStatus
+    internal enum InitStatus
     {
         /// <summary>
         /// 等待执行
@@ -21,7 +21,7 @@
         Done = 2,
 
         /// <summary>
-        /// 标识移除,暂时无用
+        /// 标记移除,暂时无用
         /// </summary>
         Removed = -1
     }

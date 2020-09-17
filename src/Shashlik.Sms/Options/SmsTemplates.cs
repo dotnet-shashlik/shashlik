@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Shashlik.Kernel.Autowire.Attributes;
 
 namespace Shashlik.Sms.Options
 {

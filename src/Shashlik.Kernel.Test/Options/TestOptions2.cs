@@ -1,4 +1,4 @@
-﻿using Shashlik.Kernel.Autowire.Attributes;
+﻿using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.Kernel.Test.Options
 {

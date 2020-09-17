@@ -10,10 +10,13 @@ using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
 using Shashlik.Kernel.Dependency.Conditions;
+// ReSharper disable LoopCanBeConvertedToQuery
+// ReSharper disable MemberCanBeMadeStatic.Local
+// ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 
 namespace Shashlik.EventBus
 {
-    class ShashlikConsumerServiceSelector : IConsumerServiceSelector, Shashlik.Kernel.Dependency.ISingleton
+    internal class ShashlikConsumerServiceSelector : IConsumerServiceSelector, Shashlik.Kernel.Dependency.ISingleton
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
@@ -74,27 +77,25 @@ namespace Shashlik.EventBus
         {
             var executorDescriptorList = new List<ConsumerExecutorDescriptor>();
 
-            using (var scoped = provider.CreateScope())
+            using var scoped = provider.CreateScope();
+            var scopedProvider = scoped.ServiceProvider;
+            var consumerServices = scopedProvider.GetServices<ICapSubscribe>();
+            foreach (var service in consumerServices)
             {
-                var scopedProvider = scoped.ServiceProvider;
-                var consumerServices = scopedProvider.GetServices<ICapSubscribe>();
-                foreach (var service in consumerServices)
-                {
-                    var typeInfo = service.GetType().GetTypeInfo();
+                var typeInfo = service.GetType().GetTypeInfo();
 
-                    // 必须是非抽象类
-                    if (!typeInfo.IsClass || typeInfo.IsAbstract)
-                        continue;
+                // 必须是非抽象类
+                if (!typeInfo.IsClass || typeInfo.IsAbstract)
+                    continue;
 
-                    // 继承自IEventHandler<>
-                    if (!typeInfo.IsSubTypeOfGenericType(typeof(IEventHandler<>)))
-                        continue;
+                // 继承自IEventHandler<>
+                if (!typeInfo.IsSubTypeOfGenericType(typeof(IEventHandler<>)))
+                    continue;
 
-                    executorDescriptorList.AddRange(GetTopicAttributesDescription(typeInfo));
-                }
-
-                return executorDescriptorList;
+                executorDescriptorList.AddRange(GetTopicAttributesDescription(typeInfo));
             }
+
+            return executorDescriptorList;
         }
 
         private List<string> GetEventNamesFromTypeInfo(TypeInfo typeInfo)
@@ -156,7 +157,7 @@ namespace Shashlik.EventBus
         }
 
         private ConsumerExecutorDescriptor MatchUsingName(string key,
-            IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
+            IEnumerable<ConsumerExecutorDescriptor> executeDescriptor)
         {
             return executeDescriptor.FirstOrDefault(x => x.Attribute.Name == key);
         }

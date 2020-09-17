@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Kernel.Autowire.Attributes;
+using Shashlik.Kernel.Autowired.Attributes;
 using Shouldly;
 
 namespace Shashlik.Kernel.Test.Autowired.TestAutowiredServicesClasses

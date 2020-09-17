@@ -5,7 +5,7 @@ using DotNetCore.CAP;
 
 namespace Shashlik.EventBus
 {
-    class DefaultEventPublisher : IEventPublisher
+    internal class DefaultEventPublisher : IEventPublisher
     {
         public DefaultEventPublisher(ICapPublisher publisher)
         {
@@ -14,7 +14,7 @@ namespace Shashlik.EventBus
 
         public ICapPublisher CapPublisher { get; }
 
-        public void Publish<T>(T eventModel, string callbackName = null)
+        public void Publish<T>(T eventModel, string? callbackName = null)
             where T : class, IEvent
         {
             if (eventModel == null)
@@ -22,7 +22,7 @@ namespace Shashlik.EventBus
             CapPublisher.Publish(typeof(T).Name, eventModel, callbackName);
         }
 
-        public Task PublishAsync<T>(T eventModel, string callbackName = null, CancellationToken cancellationToken = default(CancellationToken))
+        public Task PublishAsync<T>(T eventModel, string? callbackName = null, CancellationToken cancellationToken = default)
             where T : class, IEvent
         {
             if (eventModel == null)

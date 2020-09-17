@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Shashlik.Kernel.Autowire.Attributes;
+using Shashlik.Kernel.Autowired.Attributes;
 
 // ReSharper disable CollectionNeverUpdated.Global
 // ReSharper disable IdentifierTypo

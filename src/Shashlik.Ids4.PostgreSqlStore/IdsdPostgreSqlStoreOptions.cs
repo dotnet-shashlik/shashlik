@@ -1,4 +1,4 @@
-﻿using Shashlik.Kernel.Autowire.Attributes;
+﻿using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Autowire.Attributes;
 using Shashlik.Kernel.Autowired;
+using Shashlik.Kernel.Autowired.Attributes;
 using Shashlik.Redis;
 using Shashlik.Utils.Extensions;
 

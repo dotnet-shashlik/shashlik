@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using Shashlik.Kernel.Autowire.Attributes;
 using Microsoft.Extensions.Configuration;
+using Shashlik.Kernel.Autowired.Attributes;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.Kernel.Autowired

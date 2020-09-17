@@ -17,7 +17,7 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 自动装配类型
         /// </summary>
-        TypeInfo AutowiredBaseType { get; }
+        Type AutowiredBaseType { get; }
 
         /// <summary>
         /// 装配类型是否为特性

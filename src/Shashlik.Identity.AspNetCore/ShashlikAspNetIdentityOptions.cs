@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Shashlik.Kernel.Autowire.Attributes;
+using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.Identity.AspNetCore
 {

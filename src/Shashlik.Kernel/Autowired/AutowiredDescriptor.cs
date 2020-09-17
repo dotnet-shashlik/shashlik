@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable IdentifierTypo
 // ReSharper disable NonReadonlyMemberInGetHashCode
@@ -10,7 +11,7 @@ namespace Shashlik.Kernel.Autowired
 {
     public class AutowiredDescriptor
     {
-        public AutowiredDescriptor(TypeInfo? afterAt, TypeInfo? beforeAt, TypeInfo serviceType)
+        public AutowiredDescriptor(Type? afterAt, Type? beforeAt, Type serviceType)
         {
             AfterAt = afterAt;
             BeforeAt = beforeAt;
@@ -20,27 +21,27 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 在谁之后
         /// </summary>
-        public TypeInfo? AfterAt { get; set; }
+        public Type? AfterAt { get; set; }
 
         /// <summary>
         /// 在谁之前
         /// </summary>
-        public TypeInfo? BeforeAt { get; set; }
+        public Type? BeforeAt { get; set; }
 
         /// <summary>
         /// 在我之前有哪些依赖
         /// </summary>
-        public List<TypeInfo> Prevs { get; } = new List<TypeInfo>();
+        public List<Type> Prevs { get; } = new List<Type>();
 
         /// <summary>
         /// 在我之后有哪些依赖
         /// </summary>
-        public List<TypeInfo> Nexts { get; } = new List<TypeInfo>();
-        
+        public List<Type> Nexts { get; } = new List<Type>();
+
         /// <summary>
         /// 自动装配服务类执行
         /// </summary>
-        public TypeInfo ServiceType { get; set; }
+        public Type ServiceType { get; set; }
 
         /// <summary>
         /// ServiceType 实例
@@ -54,7 +55,9 @@ namespace Shashlik.Kernel.Autowired
 
         public override bool Equals(object obj)
         {
-            return ServiceType.Equals(((AutowiredDescriptor) obj)?.ServiceType);
+            if (ServiceType == null)
+                return false;
+            return ServiceType == (Type) obj;
         }
 
         public override int GetHashCode()

@@ -57,7 +57,7 @@ namespace Shashlik.Kernel.Autowired
         public static IKernelServices Build(this IAutowiredServiceBuilder builder,
             Action<AutowiredDescriptor> autowiredAction)
         {
-            IDictionary<TypeInfo, AutowiredDescriptor> descriptors;
+            IDictionary<Type, AutowiredDescriptor> descriptors;
             if (!builder.AutowiredBaseTypeIsAttribute)
                 descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType,
                     builder.KernelService.Services, builder.DependencyContext);
@@ -78,7 +78,7 @@ namespace Shashlik.Kernel.Autowired
         public static IKernelConfigure Build(this IAutowiredConfigureBuilder builder,
             Action<AutowiredDescriptor> autowiredAction)
         {
-            IDictionary<TypeInfo, AutowiredDescriptor> descriptors;
+            IDictionary<Type, AutowiredDescriptor> descriptors;
             if (!builder.AutowiredBaseTypeIsAttribute)
                 descriptors = builder.AutowiredProvider.LoadFrom(builder.AutowiredBaseType,
                     builder.KernelConfigure.ServiceProvider);

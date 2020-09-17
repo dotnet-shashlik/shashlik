@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Shashlik.Kernel.Autowire.Attributes
+namespace Shashlik.Kernel.Autowired.Attributes
 {
     /// <summary>
     /// 在指定类型之前进行装配
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class AfterAtAttribute : Attribute
     {
         public AfterAtAttribute(Type type)

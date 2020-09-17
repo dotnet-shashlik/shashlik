@@ -4,16 +4,21 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
-using Shashlik.Kernel.Autowire.Attributes;
+using Shashlik.Kernel.Autowired.Attributes;
 using Shashlik.Kernel.Autowired.Inner;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
+
+// ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
+
+// ReSharper disable UseDeconstruction
+// ReSharper disable MemberCanBeMadeStatic.Local
 
 namespace Shashlik.Kernel.Autowired
 {
     public class DefaultAutowiredProvider : IAutowiredProvider
     {
-        public void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> autoServices,
+        public void Autowired(IDictionary<Type, AutowiredDescriptor> autoServices,
             Action<AutowiredDescriptor> autowiredAction)
         {
             foreach (var item in autoServices
@@ -22,26 +27,37 @@ namespace Shashlik.Kernel.Autowired
                 Invoke(item.Value as InnerAutowiredDescriptor, autoServices, autowiredAction);
         }
 
-        public IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
-            TypeInfo baseType,
+        public IDictionary<Type, AutowiredDescriptor> LoadFrom(
+            Type baseType,
             IServiceCollection services,
             DependencyContext dependencyContext = null)
         {
             var types = AssemblyHelper.GetFinalSubTypes(baseType, dependencyContext);
-            var descriptors = new Dictionary<TypeInfo, AutowiredDescriptor>();
+            var descriptors = new Dictionary<Type, AutowiredDescriptor>();
 
             foreach (var serviceType in types)
             {
-                var afterOnAttribute = serviceType.GetCustomAttribute<AfterAtAttribute>();
-                var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeAtAttribute>();
+                var afterOnAttributes = serviceType.GetCustomAttributes<AfterAtAttribute>()
+                    .Where(r => r.AfterAt.IsSubTypeOf(baseType)).ToList();
+                if (afterOnAttributes.Count > 1)
+                    throw new KernelExceptionInitException(
+                        $"find too many [AfterAt] on {serviceType} for base type: {baseType}.");
+                var beforeOnAttributes = serviceType.GetCustomAttributes<BeforeAtAttribute>()
+                    .Where(r => r.BeforeAt.IsSubTypeOf(baseType)).ToList();
+                if (beforeOnAttributes.Count > 1)
+                    throw new KernelExceptionInitException(
+                        $"find too many [BeforeAt] on {serviceType} for base type: {baseType}.");
+                var afterOnAttribute = afterOnAttributes.FirstOrDefault();
+                var beforeOnAttribute = beforeOnAttributes.FirstOrDefault();
+
                 if (beforeOnAttribute != null && afterOnAttribute != null)
                     throw new KernelExceptionInitException($"[AfterAt] and [BeforeAt] cannot be used together.");
 
                 //bool isRemove = !removes.IsNullOrEmpty() && removes.Contains(serviceType);
                 services.AddSingleton(serviceType, serviceType);
-                descriptors.Add(serviceType, new InnerAutowiredDescriptor(
-                    FilterType(afterOnAttribute?.AfterAt, baseType),
-                    FilterType(beforeOnAttribute?.BeforeAt, baseType), serviceType, InitStatus.Waiting)
+                descriptors.Add(serviceType,
+                    new InnerAutowiredDescriptor(afterOnAttribute?.AfterAt, beforeOnAttribute?.BeforeAt, serviceType,
+                        InitStatus.Waiting)
                 );
             }
 
@@ -67,23 +83,36 @@ namespace Shashlik.Kernel.Autowired
             return descriptors;
         }
 
-        public IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
-            TypeInfo baseType,
+        public IDictionary<Type, AutowiredDescriptor> LoadFrom(
+            Type baseType,
             IServiceProvider serviceProvider)
         {
             var instances = serviceProvider.GetServices(baseType);
-            var descriptors = new Dictionary<TypeInfo, AutowiredDescriptor>();
+            var descriptors = new Dictionary<Type, AutowiredDescriptor>();
             foreach (var item in instances)
             {
                 var serviceType = item.GetType().GetTypeInfo();
                 if (descriptors.ContainsKey(serviceType))
                     continue;
-                var afterOnAttribute = serviceType.GetCustomAttribute<AfterAtAttribute>();
-                var beforeOnAttribute = serviceType.GetCustomAttribute<BeforeAtAttribute>();
+                var afterOnAttributes = serviceType.GetCustomAttributes<AfterAtAttribute>()
+                    .Where(r => r.AfterAt.IsSubTypeOf(baseType)).ToList();
+                if (afterOnAttributes.Count > 1)
+                    throw new KernelExceptionInitException(
+                        $"find too many [AfterAt] on {serviceType} for base type: {baseType}.");
+                var beforeOnAttributes = serviceType.GetCustomAttributes<BeforeAtAttribute>()
+                    .Where(r => r.BeforeAt.IsSubTypeOf(baseType)).ToList();
+                if (beforeOnAttributes.Count > 1)
+                    throw new KernelExceptionInitException(
+                        $"find too many [BeforeAt] on {serviceType} for base type: {baseType}.");
+                var afterOnAttribute = afterOnAttributes.FirstOrDefault();
+                var beforeOnAttribute = beforeOnAttributes.FirstOrDefault();
+
+                if (beforeOnAttribute != null && afterOnAttribute != null)
+                    throw new KernelExceptionInitException($"[AfterAt] and [BeforeAt] cannot be used together.");
 
                 descriptors.Add(serviceType, new InnerAutowiredDescriptor(
-                    FilterType(afterOnAttribute?.AfterAt, baseType),
-                    FilterType(beforeOnAttribute?.BeforeAt, baseType), serviceType, InitStatus.Waiting)
+                    afterOnAttribute?.AfterAt?.GetTypeInfo(), beforeOnAttribute?.BeforeAt, serviceType,
+                    InitStatus.Waiting)
                 {
                     ServiceInstance = item
                 });
@@ -109,11 +138,11 @@ namespace Shashlik.Kernel.Autowired
             return descriptors;
         }
 
-        public IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(TypeInfo attributeType,
+        public IDictionary<Type, AutowiredDescriptor> LoadFrom(Type attributeType,
             DependencyContext dependencyContext = null, bool inherit = true)
         {
             return AssemblyHelper.GetTypesAndAttribute(attributeType, dependencyContext, inherit)
-                .ToDictionary(r => r.Key,
+                .ToDictionary(r => (Type) r.Key,
                     r => new InnerAutowiredDescriptor(null, null, r.Key, InitStatus.Waiting)
                     {
                         Attribute = r.Value,
@@ -121,14 +150,17 @@ namespace Shashlik.Kernel.Autowired
         }
 
         private void Invoke(InnerAutowiredDescriptor descriptor,
-            IDictionary<TypeInfo, AutowiredDescriptor> autoServices,
+            IDictionary<Type, AutowiredDescriptor> autoServices,
             Action<AutowiredDescriptor> initAction)
         {
-            if (descriptor.Status == InitStatus.Done)
-                return;
-            // 递归中发现挂起的服务那就是有循环依赖
-            if (descriptor.Status == InitStatus.Hangup)
-                throw new System.Exception($"exists circular dependencies on {descriptor.ServiceType}.");
+            switch (descriptor.Status)
+            {
+                case InitStatus.Done:
+                    return;
+                // 递归中发现挂起的服务那就是有循环依赖
+                case InitStatus.Hangup:
+                    throw new System.Exception($"exists circular dependencies on {descriptor.ServiceType}.");
+            }
 
             // 在这个类型之前已经没有依赖了
             if (descriptor.Prevs.IsNullOrEmpty())
@@ -144,13 +176,6 @@ namespace Shashlik.Kernel.Autowired
 
                 descriptor.Status = InitStatus.Done;
             }
-        }
-
-        private TypeInfo? FilterType(Type? type, Type baseType)
-        {
-            if (type == null)
-                return null;
-            return type.IsSubTypeOf(baseType) ? type.GetTypeInfo() : null;
         }
     }
 }

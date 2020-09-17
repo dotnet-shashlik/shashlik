@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel.Autowire.Attributes;
+﻿using Shashlik.Kernel.Autowired.Attributes;
+
 // ReSharper disable All
 
 namespace Shashlik.Redis

@@ -7,9 +7,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace Shashlik.Kernel.Autowired
 {
-    class DefaultAutowiredBuilder : IAutowiredBuilder
+    internal class DefaultAutowiredBuilder : IAutowiredBuilder
     {
-        public DefaultAutowiredBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredBuilder(Type autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext)
         {
             AutowiredBaseType = autowiredBaseType;
@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Autowired
         /// <summary>
         /// 自动装配基类
         /// </summary>
-        public TypeInfo AutowiredBaseType { get; }
+        public Type AutowiredBaseType { get; }
 
         public bool AutowiredBaseTypeIsAttribute { get; }
 
@@ -34,9 +34,9 @@ namespace Shashlik.Kernel.Autowired
     }
 
 
-    class DefaultAutowiredServiceBuilder : DefaultAutowiredBuilder, IAutowiredServiceBuilder
+    internal class DefaultAutowiredServiceBuilder : DefaultAutowiredBuilder, IAutowiredServiceBuilder
     {
-        public DefaultAutowiredServiceBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredServiceBuilder(Type autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext, IKernelServices kernelService)
             : base(autowiredBaseType, autoInitializer, dependencyContext)
         {
@@ -46,9 +46,9 @@ namespace Shashlik.Kernel.Autowired
         public IKernelServices KernelService { get; }
     }
 
-    class DefaultAutowiredConfigureBuilder : DefaultAutowiredBuilder, IAutowiredConfigureBuilder
+    internal class DefaultAutowiredConfigureBuilder : DefaultAutowiredBuilder, IAutowiredConfigureBuilder
     {
-        public DefaultAutowiredConfigureBuilder(TypeInfo autowiredBaseType, IAutowiredProvider autoInitializer,
+        public DefaultAutowiredConfigureBuilder(Type autowiredBaseType, IAutowiredProvider autoInitializer,
             DependencyContext dependencyContext, IKernelConfigure kernelConfigure)
             : base(autowiredBaseType, autoInitializer, dependencyContext)
         {

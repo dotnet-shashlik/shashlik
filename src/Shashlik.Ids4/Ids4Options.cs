@@ -2,7 +2,7 @@
 using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
-using Shashlik.Kernel.Autowire.Attributes;
+using Shashlik.Kernel.Autowired.Attributes;
 using Shashlik.Utils.Rsa;
 
 namespace Shashlik.Ids4

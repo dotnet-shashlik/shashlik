@@ -1,7 +1,7 @@
-﻿using Shashlik.Kernel.Autowire.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.EventBus
 {

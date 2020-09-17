@@ -16,7 +16,7 @@ namespace Shashlik.Kernel.Autowired
         /// </summary>
         /// <param name="autowiredService"></param>
         /// <param name="autowiredAction"></param>
-        void Autowired(IDictionary<TypeInfo, AutowiredDescriptor> autowiredService,
+        void Autowired(IDictionary<Type, AutowiredDescriptor> autowiredService,
             Action<AutowiredDescriptor> autowiredAction);
 
         /// <summary>
@@ -26,8 +26,8 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="services"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
-            TypeInfo baseType,
+        IDictionary<Type, AutowiredDescriptor> LoadFrom(
+            Type baseType,
             IServiceCollection services,
             DependencyContext dependencyContext = null);
 
@@ -37,8 +37,8 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="baseType"></param>
         /// <param name="serviceProvider"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(
-            TypeInfo baseType,
+        IDictionary<Type, AutowiredDescriptor> LoadFrom(
+            Type baseType,
             IServiceProvider serviceProvider);
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Shashlik.Kernel.Autowired
         /// <param name="dependencyContext"></param>
         /// <param name="inherit"></param>
         /// <returns></returns>
-        IDictionary<TypeInfo, AutowiredDescriptor> LoadFrom(TypeInfo attributeType,
+        IDictionary<Type, AutowiredDescriptor> LoadFrom(Type attributeType,
             DependencyContext dependencyContext = null, bool inherit = true);
     }
 }

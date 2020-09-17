@@ -15,8 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EventBus", "Shashl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Kernel", "Shashlik.Kernel\Shashlik.Kernel.csproj", "{C1CB7A8D-9755-48E5-8B6A-A91E7B605FD4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Kernel.AspNetCore", "Shashlik.Kernel.AspNetCore\Shashlik.Kernel.AspNetCore.csproj", "{6C658973-A825-4E83-B387-FF114C491636}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Mapper", "Shashlik.Mapper\Shashlik.Mapper.csproj", "{08CFADA1-1940-4321-9213-D96B1BE552C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Redis", "Shashlik.Redis\Shashlik.Redis.csproj", "{3A3CAF8E-C7CA-4538-B66A-596EF14C8542}"
@@ -56,6 +54,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtector.Redis", "Shashlik.DataProtector.Redis\Shashlik.DataProtector.Redis.csproj", "{692C8050-D6F4-4566-A356-6C987F338B68}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.HttpApi", "Shashlik.Identity.HttpApi\Shashlik.Identity.HttpApi.csproj", "{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Response", "Shashlik.Response\Shashlik.Response.csproj", "{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -100,12 +100,6 @@ Global
 		{C1CB7A8D-9755-48E5-8B6A-A91E7B605FD4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1CB7A8D-9755-48E5-8B6A-A91E7B605FD4}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{C1CB7A8D-9755-48E5-8B6A-A91E7B605FD4}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{6C658973-A825-4E83-B387-FF114C491636}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{08CFADA1-1940-4321-9213-D96B1BE552C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{08CFADA1-1940-4321-9213-D96B1BE552C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08CFADA1-1940-4321-9213-D96B1BE552C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -220,6 +214,12 @@ Global
 		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
