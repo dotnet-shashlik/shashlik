@@ -1,44 +1,39 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
-
-
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityModel;
-using IdentityServer4.AspNetIdentity;
-using IdentityServer4.Models;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
+
+#pragma warning disable 8600
+
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
     /// </summary>
-    /// <typeparam name="TUser">The type of the user.</typeparam>
     /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
     public class PasswordValidator : IResourceOwnerPasswordValidator
     {
-        private readonly SignInManager<Users> _signInManager;
-        private readonly ShashlikUserManager _userManager;
-        private readonly IOptions<ShashlikIdentityOptions> _shashlikIdentityOptions;
-        private readonly IOptions<IdentityOptions> _identityOptions;
-        private readonly IOptions<Ids4IdentityOptions> _ids4IdentityOptions;
-
-        public PasswordValidator(ShashlikUserManager userManager, IOptions<Ids4IdentityOptions> ids4IdentityOptions,
-            IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions,
-            SignInManager<Users> signInManager)
+        public PasswordValidator(SignInManager<Users> signInManager, ShashlikUserManager userManager,
+            IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions, IDataProtector dataProtector)
         {
-            _userManager = userManager;
-            _ids4IdentityOptions = ids4IdentityOptions;
-            _shashlikIdentityOptions = shashlikIdentityOptions;
-            _identityOptions = identityOptions;
-            _signInManager = signInManager;
+            SignInManager = signInManager;
+            UserManager = userManager;
+            ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
+            DataProtector = dataProtector;
         }
+
+        private SignInManager<Users> SignInManager { get; }
+        private ShashlikUserManager UserManager { get; }
+        private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
+        private IDataProtector DataProtector { get; }
 
         /// <summary>
         /// Validates the resource owner password credential
@@ -49,49 +44,65 @@ namespace Shashlik.Ids4.Identity
         {
             var username = context.UserName;
             var password = context.Password;
-            var clientId = context.Request.ClientId;
+
             var errorCode = 0;
-
+            var customResponse = new Dictionary<string, object>();
             if (username.IsNullOrWhiteSpace())
-                errorCode = -1;
+                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UserNameEmpty;
             if (password.IsNullOrWhiteSpace())
-                errorCode = -2;
+                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.PasswordEmpty;
 
-            // 根据用户名和邮件地址查找用户
-            var user = await _userManager.FindByNameAsync(username);
-            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.EMailSource))
-                user = await _userManager.FindByEmailAsync(username);
-            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.PhoneSource))
-                user = await _userManager.FindByPhoneNumberAsync(username);
-            if (user == null && _ids4IdentityOptions.Value.PasswordSignInSources.Contains(Consts.IdCardSource))
-                user = await _userManager.FindByPhoneNumberAsync(username);
-            if (user == null)
-                errorCode = -3;
+            Users user = null;
+            if (errorCode != 0)
+            {
+                // 根据用户名和邮件地址查找用户
+                user = await UserManager.FindByNameAsync(username);
+                if (user == null &&
+                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                        .EMailSource))
+                    user = await UserManager.FindByEmailAsync(username);
+                if (user == null &&
+                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                        .PhoneSource))
+                    user = await UserManager.FindByPhoneNumberAsync(username);
+                if (user == null &&
+                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                        .IdCardSource))
+                    user = await UserManager.FindByPhoneNumberAsync(username);
+                if (user == null)
+                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UsernameOrPasswordError;
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(user, password, true, true);
-            if (result.Succeeded)
+            if (user != null)
             {
-                var sub = await _userManager.GetUserIdAsync(user);
-                context.Result = new GrantValidationResult(sub, OidcConstants.AuthenticationMethods.Password);
+                var result = await SignInManager.CheckPasswordSignInAsync(user, password, true);
+                if (result.Succeeded)
+                {
+                    var sub = await UserManager.GetUserIdAsync(user);
+                    context.Result = new GrantValidationResult(sub, OidcConstants.AuthenticationMethods.Password);
+                    return;
+                }
+
+                if (result.IsLockedOut)
+                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UserLockout;
+                else if (result.IsNotAllowed)
+                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.NotAllowLogin;
+                else if (result.RequiresTwoFactor)
+                {
+                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.RequiresTwoFactor;
+                    customResponse.Add(",", "");
+                }
+                else
+                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.Other;
             }
-            else if (result.IsLockedOut)
+
+
+            context.Result = new GrantValidationResult
             {
-                //TODO....
-            }
-            else if (result.IsNotAllowed)
-            {
-                //TODO....
-            }
-            else if (result.RequiresTwoFactor)
-            {
-                // 需要两步登录
-                //TODO:...
-                //TODO....
-            }
-            else
-            {
-                //TODO....
-            }
+                IsError = true,
+                Error = errorCode.ToString(),
+                CustomResponse = customResponse
+            };
         }
     }
 }

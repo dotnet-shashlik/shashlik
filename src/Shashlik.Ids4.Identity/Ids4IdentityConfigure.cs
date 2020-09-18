@@ -9,15 +9,12 @@ namespace Shashlik.Ids4.Identity
 {
     public class Ids4IdentityConfigure : IIdentityServerBuilderConfigure
     {
-        public Ids4IdentityConfigure(IOptions<Ids4IdentityOptions> options,
-            IOptions<ShashlikIdentityOptions> identityOptions)
+        public Ids4IdentityConfigure(IOptions<ShashlikIds4IdentityOptions> options)
         {
-            IdentityOptions = identityOptions.Value;
             Options = options.Value;
         }
 
-        private Ids4IdentityOptions Options { get; }
-        private ShashlikIdentityOptions IdentityOptions { get; }
+        private ShashlikIds4IdentityOptions Options { get; }
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
@@ -28,18 +25,9 @@ namespace Shashlik.Ids4.Identity
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
                 .Transient<IResourceOwnerPasswordValidator, PasswordValidator>());
-            if (IdentityOptions.UserProperty.PhoneNumberUnique)
-            {
-                // 手机短信验证码
-                builder.AddExtensionGrantValidator<PhoneValidator>();
-            }
 
-            if (IdentityOptions.UserProperty.EmailUnique)
-            {
-                // 邮件验证码
-                builder.AddExtensionGrantValidator<EmailValidator>();
-            }
-
+            // 验证码登录
+            builder.AddExtensionGrantValidator<CaptchaValidator>();
             // 手机短信双因子验证码
             builder.AddExtensionGrantValidator<TwoFactorValidator>();
         }

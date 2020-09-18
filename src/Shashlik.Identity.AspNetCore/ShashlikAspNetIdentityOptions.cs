@@ -12,9 +12,9 @@ namespace Shashlik.Identity.AspNetCore
         public IdentityOptions IdentityOptions { get; set; } = new IdentityOptions();
 
         /// <summary>
-        /// 使用Shashlik.Captcha作为手机短信/邮件验证码的token,默认true
+        /// 注册Shashlik.Captcha token提供类,默认true
         /// </summary>
-        public bool UseCaptchaToken { get; set; } = true;
+        public bool UseCaptchaTokenProvider { get; set; } = true;
 
         /// <summary>
         /// 验证码长度,默认6

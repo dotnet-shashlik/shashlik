@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
@@ -37,6 +38,9 @@ namespace Shashlik.DataProtector.Redis
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName);
+
+            kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+                o.TokenLifespan = TimeSpan.FromMinutes(Options.TokenLifespan));
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {

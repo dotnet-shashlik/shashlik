@@ -15,33 +15,33 @@ namespace Shashlik.Identity.AspNetCore
     /// </summary>
     public class IdentityConfigure : IAutowiredConfigureServices
     {
-        public IdentityConfigure(IOptions<ShashlikIdentityOptions> options,
-            IOptions<ShashlikAspNetIdentityOptions> identityOptions)
+        public IdentityConfigure(IOptions<ShashlikIdentityOptions> shashlikIdentityOptions,
+            IOptions<ShashlikAspNetIdentityOptions> shashlikAspNetIdentityOptions)
         {
-            Options = options.Value;
-            IdentityOptions = identityOptions.Value;
+            ShashlikIdentityOptions = shashlikIdentityOptions.Value;
+            ShashlikAspNetIdentityOptions = shashlikAspNetIdentityOptions.Value;
         }
 
-        private ShashlikIdentityOptions Options { get; }
-        private ShashlikAspNetIdentityOptions IdentityOptions { get; }
+        private ShashlikIdentityOptions ShashlikIdentityOptions { get; }
+        private ShashlikAspNetIdentityOptions ShashlikAspNetIdentityOptions { get; }
 
         public void ConfigureServices(IKernelServices kernelService)
         {
-            if (!Options.Enable)
+            if (!ShashlikIdentityOptions.Enable)
                 return;
 
             var builder = kernelService.Services
-                    .AddIdentity<Users, Roles>(options => { IdentityOptions.IdentityOptions.CopyTo(options); })
+                    .AddIdentity<Users, Roles>(options =>
+                    {
+                        ShashlikAspNetIdentityOptions.IdentityOptions.CopyTo(options);
+                    })
                     .AddEntityFrameworkStores<ShashlikIdentityDbContext>()
                     .AddDefaultTokenProviders()
                 ;
 
-            if (IdentityOptions.UseCaptchaToken)
-            {
-                builder.AddTokenProvider<EmailCaptchaProvider>(Consts.EmailCaptchaProvider);
-                builder.AddTokenProvider<PhoneNumberCaptchaProvider>(IdentityOptions.IdentityOptions.Tokens
-                    .ChangePhoneNumberTokenProvider);
-            }
+            if (ShashlikAspNetIdentityOptions.UseCaptchaTokenProvider)
+                // 注册验证码支持
+                builder.AddTokenProvider<CaptchaProvider>(ShashlikIdentityAspNetCoreConsts.CaptchaProvider);
 
             // 扩展identity配置
             kernelService.BeginAutowired<IIdentityBuilderConfigure>()
