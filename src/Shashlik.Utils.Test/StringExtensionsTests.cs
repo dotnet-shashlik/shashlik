@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using Xunit;
 using Shouldly;
@@ -8,11 +9,63 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 using Shashlik.Utils.RazorFormat;
 using Newtonsoft.Json;
+using Shashlik.Utils.Helpers.Encrypt;
+using Xunit.Abstractions;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Shashlik.Utils.Test
 {
     public class StringExtensionsTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public StringExtensionsTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
+        [Fact]
+        public void test()
+        {
+            var api = "http://api.test.yusuinet.com/openapi/test";
+            // appId
+            var appId = "12ae01c0d6fc4d8aa34dab379a3f5dcb";
+            // 密钥
+            var secret = "ed37a865b0484a01a91f653b";
+            // 计算当前时间戳
+            var timestamp = "1600504614";
+            // 使用guid生成32位随机字符
+            var nonce = "742b0467aa364ff491d163d400a17209";
+            // 使用guid生成32位请求id
+            var requestId = "e28ccc72720c4b599ef84ac7100d96fd";
+            // 创建接口调用对象
+            var obj = new
+            {
+                appId,
+                timestamp,
+                nonce,
+                data = new
+                {
+                    year = 2020,
+                    momth = 1
+                }
+            };
+
+            var json = JsonSerializer.Serialize(obj);
+            _testOutputHelper.WriteLine(json);
+            _testOutputHelper.WriteLine("");
+
+            // 使用3des加密,ECB+PKCS7
+            var encrypted = TripleDesHelper.Encrypt(json, secret, CipherMode.ECB, PaddingMode.PKCS7);
+            _testOutputHelper.WriteLine(encrypted);
+            _testOutputHelper.WriteLine("");
+
+            // HmacSha256 hash
+            var hash = HashHelper.HmacSha256Base64(json, secret);
+            _testOutputHelper.WriteLine(hash);
+        }
+
+
         [Fact]
         public void ConfidentialData_test()
         {

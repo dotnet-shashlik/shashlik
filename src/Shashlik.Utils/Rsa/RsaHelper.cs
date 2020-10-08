@@ -9,7 +9,7 @@ using System.Text;
 namespace Shashlik.Utils.Rsa
 {
     /**
-     *     # openssl 生成RSA/X509等命名
+     *     # openssl 生成RSA/X509等命令
      * 
      *     # 生成私钥(pkcs1)和公钥(x509)
      *     openssl req -newkey rsa:2048 -nodes -keyout private_pkcs1.pem -x509 -days 3650 -out public.cer
@@ -302,7 +302,7 @@ namespace Shashlik.Utils.Rsa
         /// <param name="padding">填充算法是</param>
         /// <param name="encoding"><paramref name="data"></paramref>编码格式</param>
         /// <returns></returns>
-        public static bool VerifyData(this RSA rsa, string data, string sign, HashAlgorithmName hashAlgorithmName,
+        public static bool VerifySignData(this RSA rsa, string data, string sign, HashAlgorithmName hashAlgorithmName,
             RSASignaturePadding padding, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
