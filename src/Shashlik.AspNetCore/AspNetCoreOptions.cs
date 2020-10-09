@@ -26,11 +26,6 @@ namespace Shashlik.AspNetCore
         public bool ResponseAllModelError { get; set; } = false;
 
         /// <summary>
-        /// 使用PatchUpdateBinder,默认true
-        /// </summary>
-        public bool UsePatchUpdateBinder { get; set; } = true;
-
-        /// <summary>
         /// NewtonsoftJson,默认true
         /// </summary>
         public bool UseNewtonsoftJson { get; set; } = true;

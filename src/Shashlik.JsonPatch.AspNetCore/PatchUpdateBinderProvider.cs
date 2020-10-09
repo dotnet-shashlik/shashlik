@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using Shashlik.Utils.Extensions;
-using Shashlik.Utils.PatchUpdate;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
+using Shashlik.Utils.Extensions;
+
 // ReSharper disable ConvertIfStatementToReturnStatement
 
-namespace Shashlik.AspNetCore.PatchUpdate
+namespace Shashlik.JsonPatch.AspNetCore
 {
     public class PatchUpdateBinderProvider : IModelBinderProvider
     {

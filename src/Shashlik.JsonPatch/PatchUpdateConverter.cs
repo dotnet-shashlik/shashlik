@@ -1,8 +1,9 @@
 ﻿using System;
+
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace Shashlik.Utils.PatchUpdate
+namespace Shashlik.JsonPatch
 {
     public class PatchUpdateConverter
     {

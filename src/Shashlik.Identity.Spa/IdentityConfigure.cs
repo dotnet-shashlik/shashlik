@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shashlik.Identity.AspNetCore;
 using Shashlik.Identity.AspNetCore.Providers;
 using Shashlik.Identity.Entities;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Identity.AspNetCore
+namespace Shashlik.Identity.Spa
 {
     /// <summary>
     /// identity配置,集群环境下关于identity的token算法,强烈建议使用X509RsaDataProtector

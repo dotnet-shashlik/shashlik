@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Shashlik.Identity.AspNetCore
+namespace Shashlik.Identity.Spa
 {
     /// <summary>
     /// identity扩展配置

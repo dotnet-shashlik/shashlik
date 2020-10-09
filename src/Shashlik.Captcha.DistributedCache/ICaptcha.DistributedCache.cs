@@ -1,12 +1,12 @@
-﻿using Shashlik.Utils.Extensions;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Dependency.Conditions;
+using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.Captcha
+namespace Shashlik.Captcha.DistributedCache
 {
     /// <summary>
     /// 验证码

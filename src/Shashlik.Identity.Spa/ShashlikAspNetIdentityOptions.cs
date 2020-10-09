@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shashlik.Kernel.Autowired.Attributes;
 
-namespace Shashlik.Identity.AspNetCore
+namespace Shashlik.Identity.Spa
 {
     [AutoOptions("Shashlik.Identity")]
     public class ShashlikAspNetIdentityOptions

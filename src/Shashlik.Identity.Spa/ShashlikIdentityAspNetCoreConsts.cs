@@ -1,6 +1,6 @@
 ﻿// ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Identity.AspNetCore //IdentityAspNetCore
+namespace Shashlik.Identity.Spa //IdentityAspNetCore
 {
     public class ShashlikIdentityAspNetCoreConsts
     {

@@ -22,10 +22,6 @@ namespace Shashlik.AspNetCore.Filters
             base.OnActionExecuted(context);
             Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
 
-            if (context.Filters.Any(r => r is ResponseWrapperAttribute))
-                // 无需处理
-                return;
-
             switch (context.Result)
             {
                 case EmptyResult _:
@@ -51,7 +47,7 @@ namespace Shashlik.AspNetCore.Filters
             base.OnActionExecuting(context);
             Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
 
-            if (!context.ModelState.IsValid && !context.Filters.Any(r => r is ResponseWrapperAttribute))
+            if (!context.ModelState.IsValid)
             {
                 context.HttpContext.Response.StatusCode = Options.UseResponseExceptionToHttpCode ? 400 : 200;
 

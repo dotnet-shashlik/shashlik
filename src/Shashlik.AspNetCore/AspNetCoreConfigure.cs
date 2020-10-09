@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Shashlik.AspNetCore.Middlewares;
-using Shashlik.AspNetCore.PatchUpdate;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 
@@ -19,12 +16,7 @@ namespace Shashlik.AspNetCore
 
         public void ConfigureServices(IKernelServices kernelService)
         {
-            var builder = kernelService.Services.AddControllers(options =>
-            {
-                if (Options.UsePatchUpdateBinder)
-                    options.ModelBinderProviders.Insert(0, new PatchUpdateBinderProvider());
-            });
-
+            var builder = kernelService.Services.AddControllers();
             if (Options.UseNewtonsoftJson)
                 builder.AddNewtonsoftJson();
         }

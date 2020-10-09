@@ -11,7 +11,7 @@ using Shashlik.Utils.Extensions;
 // ReSharper disable UseDeconstruction
 // ReSharper disable MemberCanBeProtected.Global
 
-namespace Shashlik.Utils.PatchUpdate
+namespace Shashlik.JsonPatch
 {
     /// <summary>
     /// 按需 部分更新,错误的属性将被忽略

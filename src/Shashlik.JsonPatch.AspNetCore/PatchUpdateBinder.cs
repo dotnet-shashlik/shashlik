@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System;
 using Shashlik.Utils.Extensions;
-using System.Threading.Tasks;
 
-namespace Shashlik.AspNetCore.PatchUpdate
+namespace Shashlik.JsonPatch.AspNetCore
 {
     public class PatchUpdateBinder : IModelBinder
     {
-
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var str = bindingContext.HttpContext.Request.BodyReader.AsStream().ReadToString();

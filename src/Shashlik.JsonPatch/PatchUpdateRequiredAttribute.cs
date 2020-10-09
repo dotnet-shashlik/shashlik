@@ -3,7 +3,7 @@ using Shashlik.Utils.Extensions;
 
 // ReSharper disable InvertIf
 
-namespace Shashlik.Utils.PatchUpdate
+namespace Shashlik.JsonPatch
 {
     /// <summary>
     /// PatchUpdate非空验证,有该数据时才验证
