@@ -38,7 +38,7 @@ namespace Shashlik.Identity
                 .AddDefaultTokenProviders();
 
             if (CaptchaOptions.Value.Enable)
-                builder.AddTokenProvider<CaptchaTokenProvider>(Consts.CaptchaTokenProvider);
+                builder.AddTokenProvider<CaptchaTokenProvider>(ShashlikIdentityConsts.CaptchaTokenProvider);
 
             kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
                 {
