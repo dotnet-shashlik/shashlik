@@ -49,8 +49,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.PostgreSq
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtector.Redis", "Shashlik.DataProtector.Redis\Shashlik.DataProtector.Redis.csproj", "{692C8050-D6F4-4566-A356-6C987F338B68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.HttpApi", "Shashlik.Identity.HttpApi\Shashlik.Identity.HttpApi.csproj", "{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Response", "Shashlik.Response\Shashlik.Response.csproj", "{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.Spa", "Shashlik.Identity.Spa\Shashlik.Identity.Spa.csproj", "{DF50827F-9261-4229-BAA0-2DD31D1C19EC}"
@@ -202,12 +200,6 @@ Global
 		{692C8050-D6F4-4566-A356-6C987F338B68}.Release|Any CPU.Build.0 = Release|Any CPU
 		{692C8050-D6F4-4566-A356-6C987F338B68}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{692C8050-D6F4-4566-A356-6C987F338B68}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1DD01B6-E505-49AA-B61B-3B0FDF9936AA}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
