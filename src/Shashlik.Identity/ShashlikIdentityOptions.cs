@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
+using Shashlik.Identity.DataProtection;
 using Shashlik.Kernel.Autowired.Attributes;
 
 namespace Shashlik.Identity
@@ -31,6 +32,11 @@ namespace Shashlik.Identity
         /// 原生的identity options配置
         /// </summary>
         public IdentityOptions IdentityOptions { get; set; }
+
+        /// <summary>
+        /// 数据保护token配置项
+        /// </summary>
+        public DataProtectionTokenProviderOptions DataProtectionTokenProviderOptions { get; set; }
 
         /// <summary>
         /// users表属性配置
@@ -80,6 +86,7 @@ namespace Shashlik.Identity
         /// 邮件地址是否唯一,默认true
         /// </summary>
         public bool EmailUnique { get; set; } = true;
+
         //TODO: 和IdentityOptions.UserOptions冲突
     }
 }

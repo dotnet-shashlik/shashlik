@@ -2,6 +2,8 @@
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
+using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -49,13 +51,18 @@ namespace Shashlik.DataProtector.X509
             kernelService.Services.AddDataProtection()
                 // 禁用自动创建密钥
                 .DisableAutomaticKeyGeneration()
+                .UseCryptographicAlgorithms(new AuthenticatedEncryptorConfiguration
+                {
+                    EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
+                    ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
+                })
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName)
                 // 使用x509证书
                 .ProtectKeysWithCertificate(certificate);
 
             kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-                o.TokenLifespan = TimeSpan.FromMinutes(Options.TokenLifespan));
+                o.TokenLifespan = TimeSpan.FromDays(Options.TokenLifespan));
         }
     }
 }

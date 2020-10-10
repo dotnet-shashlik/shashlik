@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Shashlik.Identity.DataProtection;
 using Shashlik.Identity.Entities;
+using Shashlik.Identity.Lookup;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
@@ -23,14 +26,21 @@ namespace Shashlik.Identity
             if (!Options.Value.Enable)
                 return;
 
-            kernelService.Services.TryAddScoped<IRoleValidator<Roles>, RoleValidator<Roles>>();
             kernelService.Services.TryAddScoped<IUserConfirmation<Users>, DefaultUserConfirmation<Users>>();
             kernelService.Services.TryAddScoped<RoleManager<Roles>>();
             kernelService.Services.AddIdentityCore<Users>(options => { Options.Value.IdentityOptions.CopyTo(options); })
                 .AddRoles<Roles>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ShashlikIdentityDbContext>()
+                .AddRoleValidator<RoleValidator<Roles>>()
+                .AddPersonalDataProtection<DefaultLookupProtector, DefaultLookupProtectorKeyRing>()
                 ;
+
+            kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
+                {
+                    Options.Value.DataProtectionTokenProviderOptions.CopyTo(o);
+                }
+            );
         }
     }
 }
