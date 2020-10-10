@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
+    <ProjectReference Include="..\Shashlik.Captcha\Shashlik.Captcha.csproj" />
     <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
   </ItemGroup>

@@ -40,7 +40,7 @@ namespace Shashlik.Identity.Spa
 
             if (ShashlikAspNetIdentityOptions.UseCaptchaTokenProvider)
                 // 注册验证码支持
-                builder.AddTokenProvider<CaptchaProvider>(ShashlikIdentityAspNetCoreConsts.CaptchaProvider);
+                builder.AddTokenProvider<CaptchaTokenProvider>(ShashlikIdentityAspNetCoreConsts.CaptchaProvider);
 
             // 扩展identity配置
             kernelService.BeginAutowired<IIdentityBuilderConfigure>()

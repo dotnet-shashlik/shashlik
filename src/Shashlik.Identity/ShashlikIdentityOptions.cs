@@ -29,6 +29,11 @@ namespace Shashlik.Identity
         public string? MigrationAssembly { get; set; }
 
         /// <summary>
+        /// 验证码长度
+        /// </summary>
+        public int CaptchaLength { get; set; } = 6;
+
+        /// <summary>
         /// 原生的identity options配置
         /// </summary>
         public IdentityOptions IdentityOptions { get; set; }
