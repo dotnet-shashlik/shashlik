@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
+using Shashlik.Identity.Options;
 using Shashlik.Utils.Extensions;
 
 #pragma warning disable 8600

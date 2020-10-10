@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Shashlik.Identity.AspNetCore;
 using Shashlik.Identity.AspNetCore.Providers;
 using Shashlik.Identity.Entities;
+using Shashlik.Identity.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
+using Shashlik.Identity.Options;
 
 namespace Shashlik.Identity.Entities
 {
@@ -55,24 +56,22 @@ namespace Shashlik.Identity.Entities
 
     public class UsersConfig : IEntityTypeConfiguration<Users>
     {
-        public UsersConfig(IOptions<ShashlikIdentityOptions> options)
+        public UsersConfig(IOptions<IdentityOptionsExtends> options)
         {
             Options = options.Value;
         }
 
-        private ShashlikIdentityOptions Options { get; }
+        private IdentityOptionsExtends Options { get; }
 
         public void Configure(EntityTypeBuilder<Users> builder)
         {
-            builder.Property(r => r.IdCard).HasMaxLength(32).IsRequired(Options.UserProperty.RequireIdCard);
-            builder.Property(r => r.RealName).HasMaxLength(32).IsRequired(Options.UserProperty.RequireRealName);
-            builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.UserProperty.RequireNickName);
-            builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.UserProperty.RequireAvatar);
-            builder.Property(r => r.Birthday).IsRequired(Options.UserProperty.RequireBirthday);
-
-            builder.HasIndex(r => r.IdCard).IsUnique(Options.UserProperty.IdCardUnique);
-            builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.UserProperty.PhoneNumberUnique);
-            builder.HasIndex(r => r.Email).IsUnique(Options.UserProperty.EmailUnique);
+            builder.Property(r => r.IdCard).HasMaxLength(32).IsRequired(Options.RequireIdCard);
+            builder.Property(r => r.RealName).HasMaxLength(32).IsRequired(Options.RequireRealName);
+            builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.RequireNickName);
+            builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.RequireAvatar);
+            builder.Property(r => r.Birthday).IsRequired(Options.RequireBirthday);
+            builder.HasIndex(r => r.IdCard).IsUnique(Options.IdCardUnique);
+            builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.PhoneNumberUnique);
         }
     }
 }

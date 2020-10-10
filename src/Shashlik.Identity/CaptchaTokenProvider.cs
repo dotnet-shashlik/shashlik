@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
 using Shashlik.Identity.Entities;
+using Shashlik.Identity.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
 

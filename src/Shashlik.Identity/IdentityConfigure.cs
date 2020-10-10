@@ -5,6 +5,7 @@ using Shashlik.Captcha;
 using Shashlik.Identity.DataProtection;
 using Shashlik.Identity.Entities;
 using Shashlik.Identity.Lookup;
+using Shashlik.Identity.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
