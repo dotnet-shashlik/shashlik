@@ -157,7 +157,7 @@ namespace Shashlik.Identity.DataProtection
                         var isEqualsSecurityStamp = stamp == await manager.GetSecurityStampAsync(user);
                         if (!isEqualsSecurityStamp)
                         {
-                            Logger.SequrityStampNotEquals();
+                            Logger.SecurityStampNotEquals();
                         }
 
                         return isEqualsSecurityStamp;

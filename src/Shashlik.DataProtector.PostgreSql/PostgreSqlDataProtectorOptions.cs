@@ -11,9 +11,14 @@ namespace Shashlik.DataProtector.PostgreSql
         public bool Enable { get; set; } = true;
 
         /// <summary>
-        /// 缓存key
+        /// 数据库连接字符串
         /// </summary>
-        public string Key { get; set; } = "Shashlik-DataProtection-Keys";
+        public string ConnectionString { get; set; } 
+        
+        /// <summary>
+        /// 表名
+        /// </summary>
+        public string TableName { get; set; } = "ShashlikDataProtectionKeys";
 
         /// <summary>
         /// 应用程序名称

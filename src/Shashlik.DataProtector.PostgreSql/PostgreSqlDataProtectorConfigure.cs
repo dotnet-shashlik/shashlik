@@ -26,10 +26,8 @@ namespace Shashlik.DataProtector.PostgreSql
             if (!Options.Enable)
                 return;
 
-
-            if (Options.Key.IsNullOrWhiteSpace())
-                throw new InvalidOperationException($"Certificate must be contains private key.");
-
+            if (Options.ConnectionString.IsNullOrWhiteSpace())
+                throw  new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
