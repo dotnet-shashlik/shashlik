@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
@@ -13,7 +14,7 @@ namespace Shashlik.Captcha.DistributedCache
     /// </summary>
     [DependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty("Shashlik:Captcha.Enable", "true")]
-    class DistributedCacheCatpcha : ICaptcha, Shashlik.Kernel.Dependency.ISingleton
+    internal class DistributedCacheCatpcha : ICaptcha, ISingleton
     {
         public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)
         {
@@ -31,14 +32,14 @@ namespace Shashlik.Captcha.DistributedCache
         /// <summary>
         /// 验证code是否正确
         /// </summary>
-        /// <param name="subject">验证码类型</param>
+        /// <param name="purpose">验证码类型</param>
         /// <param name="target">验证目标</param>
         /// <param name="code">验证码</param>
         /// <param name="isDeleteOnSucceed"></param>
         /// <returns></returns>
-        public async Task<bool> IsValid(string subject, string target, string code, bool isDeleteOnSucceed = true)
+        public async Task<bool> IsValid(string purpose, string target, string code, bool isDeleteOnSucceed = true)
         {
-            var key = CachePrefix.Format(subject, target);
+            var key = CachePrefix.Format(purpose, target);
 
             var codeModel = await Cache.GetObjectAsync<CodeModel>(key);
             if (codeModel == null)
@@ -65,24 +66,24 @@ namespace Shashlik.Captcha.DistributedCache
         /// <summary>
         /// 生成验证码
         /// </summary>
-        /// <param name="subject">验证类型</param>
+        /// <param name="purpose">验证类型</param>
         /// <param name="target">验证目标</param>
         /// <param name="codeLength"></param>
         /// <returns></returns>
-        public async Task<CodeModel> Build(string subject, string target, int codeLength = 6)
+        public async Task<CodeModel> Build(string purpose, string target, int codeLength = 6)
         {
-            if (subject == null) throw new ArgumentNullException(nameof(subject));
+            if (purpose == null) throw new ArgumentNullException(nameof(purpose));
             if (target == null) throw new ArgumentNullException(nameof(target));
 
-            var key = CachePrefix.Format(subject, target);
+            var key = CachePrefix.Format(purpose, target);
             var now = DateTime.Now;
 
             var codeModel = new CodeModel
             {
                 Code = RandomHelper.GetRandomCode(codeLength),
-                Subject = subject,
+                Subject = purpose,
                 Target = target,
-                ExpiresAt = now.AddSeconds(Options.CurrentValue.ExpireSecond),
+                ExpiresAt = now.AddSeconds(Options.CurrentValue.LifeTimeSecond),
                 SendTime = now,
                 ErrorCount = 0
             };
