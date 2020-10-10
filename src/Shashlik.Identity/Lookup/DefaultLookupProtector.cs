@@ -15,14 +15,14 @@ namespace Shashlik.Identity.Lookup
 
         public string Protect(string keyId, string data)
         {
-            return Encoding.UTF8.GetString(DataProtectionProvider.CreateProtector($"lookup_protector")
-                .Protect(Encoding.UTF8.GetBytes(data)));
+            return DataProtectionProvider.CreateProtector($"lookup_protector")
+                .Protect(data);
         }
 
         public string Unprotect(string keyId, string data)
         {
-            return Encoding.UTF8.GetString(DataProtectionProvider.CreateProtector($"lookup_protector")
-                .Unprotect(Encoding.UTF8.GetBytes(data)));
+            return DataProtectionProvider.CreateProtector($"lookup_protector")
+                .Unprotect(data);
         }
     }
 }
