@@ -12,6 +12,8 @@ namespace Shashlik.Identity.Entities
     /// </summary>
     public class Users : IdentityUser<int>, IEntity<int>, ISoftDeleted<long>
     {
+        private string? _idCard;
+
         /// <summary>
         /// 头像
         /// </summary>
@@ -30,7 +32,11 @@ namespace Shashlik.Identity.Entities
         /// <summary>
         /// 身份证
         /// </summary>
-        public string? IdCard { get; set; }
+        public string? IdCard
+        {
+            get => _idCard;
+            set => _idCard = value?.ToUpperInvariant();
+        }
 
         /// <summary>
         /// 真实姓名

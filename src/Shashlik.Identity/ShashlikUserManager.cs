@@ -46,6 +46,7 @@ namespace Shashlik.Identity
         /// <returns></returns>
         public async Task<Users> FindByIdCardAsync(string idCard)
         {
+            idCard = idCard.ToUpperInvariant();
             return await DbContext.Users.SingleOrDefaultAsync(u => u.IdCard == idCard);
         }
     }
