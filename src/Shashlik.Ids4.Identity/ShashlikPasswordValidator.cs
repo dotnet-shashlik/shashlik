@@ -19,9 +19,9 @@ namespace Shashlik.Ids4.Identity
     /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
     /// </summary>
     /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
-    public class PasswordValidator : IResourceOwnerPasswordValidator
+    public class ShashlikPasswordValidator : IResourceOwnerPasswordValidator
     {
-        public PasswordValidator(SignInManager<Users> signInManager, ShashlikUserManager userManager,
+        public ShashlikPasswordValidator(SignInManager<Users> signInManager, ShashlikUserManager userManager,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions, IDataProtector dataProtector)
         {
             SignInManager = signInManager;

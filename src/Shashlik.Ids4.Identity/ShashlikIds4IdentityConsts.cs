@@ -13,16 +13,6 @@ namespace Shashlik.Ids4.Identity //ShashlikIds4Identity
         public const string CaptchaGrantType = "captcha";
 
         /// <summary>
-        /// 邮件验证码登录
-        /// </summary>
-        public const string EmailCaptchaGrantType = "email_captcha";
-
-        /// <summary>
-        /// 手机验证码登录
-        /// </summary>
-        public const string PhoneNumberCaptchaGrantType = "phone_captcha";
-
-        /// <summary>
         /// 手机双因子验证
         /// </summary>
         public const string TwoFactorGrantType = "twofactor";
@@ -118,9 +108,9 @@ namespace Shashlik.Ids4.Identity //ShashlikIds4Identity
             public const int UserNotFound = -410;
 
             /// <summary>
-            /// UnifierError
+            /// IdentityError
             /// </summary>
-            public const int UnifierError = -411;
+            public const int IdentityError = -411;
 
             /// <summary>
             /// 其他错误

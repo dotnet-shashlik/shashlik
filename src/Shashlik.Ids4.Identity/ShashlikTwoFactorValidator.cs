@@ -14,14 +14,14 @@ namespace Shashlik.Ids4.Identity
     /// <summary>
     /// 手机两部验证
     /// </summary>
-    public class TwoFactorValidator : IExtensionGrantValidator
+    public class ShashlikTwoFactorValidator : IExtensionGrantValidator
     {
         private readonly ShashlikUserManager _userManager;
         private readonly IOptions<ShashlikIdentityOptions> _shashlikIdentityOptions;
         private readonly IOptions<IdentityOptions> _identityOptions;
         private readonly IOptions<ShashlikIds4IdentityOptions> _ids4IdentityOptions;
 
-        public TwoFactorValidator(ShashlikUserManager userManager, IOptions<ShashlikIds4IdentityOptions> ids4IdentityOptions,
+        public ShashlikTwoFactorValidator(ShashlikUserManager userManager, IOptions<ShashlikIds4IdentityOptions> ids4IdentityOptions,
             IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions)
         {
             _userManager = userManager;

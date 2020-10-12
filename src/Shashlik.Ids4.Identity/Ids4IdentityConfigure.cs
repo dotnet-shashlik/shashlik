@@ -24,12 +24,12 @@ namespace Shashlik.Ids4.Identity
             builder.AddAspNetIdentity<Users>();
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
-                .Transient<IResourceOwnerPasswordValidator, PasswordValidator>());
+                .Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
 
             // 验证码登录
-            builder.AddExtensionGrantValidator<CaptchaValidator>();
+            builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();
             // 手机短信双因子验证码
-            builder.AddExtensionGrantValidator<TwoFactorValidator>();
+            builder.AddExtensionGrantValidator<ShashlikTwoFactorValidator>();
         }
     }
 }
