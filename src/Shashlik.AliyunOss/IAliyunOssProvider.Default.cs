@@ -1,10 +1,10 @@
-﻿using Aliyun.OSS;
-using Microsoft.Extensions.Options;
-using System;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using Aliyun.OSS;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
@@ -13,70 +13,83 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.AliyunOss
 {
-    [ConditionOnProperty("Shashlik:AliyunOss:Enable", "true")]
-    public class AliyunOssDefaultProvider : IAliyunOssProvider, ISingleton
+    public class AliyunOssDefaultProvider : IAliyunOssProvider
     {
+        public string BucketName { get; }
         private OssClient Client { get; }
-        private AliyunOssOptions Options { get; }
+        private AliyunOssOptions._Buckets Options { get; }
 
-        public AliyunOssDefaultProvider(IOptions<AliyunOssOptions> options)
+        public AliyunOssDefaultProvider(AliyunOssOptions._Buckets options)
         {
-            Options = options.Value;
-            Client = new OssClient(options.Value.Endpoint, options.Value.AccessId, options.Value.AccessKey);
+            BucketName = options.Bucket;
+            this.Options = options;
+            Client = new OssClient(options.Endpoint, options.AccessId, options.AccessKey);
         }
 
-        public (bool success, string errorMsg) ValidExt(string ext)
+        public AliyunOssPostPolicy BuildSingleFilePolicy(string fileKey, int expireSeconds = 60,
+            int maxSize = 8 * 1024 * 1024, IEnumerable<string> policyFileExtLimit = null)
         {
-            if (ext.IsNullOrWhiteSpace())
-                return (false, "文件扩展名为空");
-            ext = ext.Trim();
-            if (!Options.FileExtLimit.IsNullOrEmpty() && !Options.FileExtLimit.Any(r => r.EqualsIgnoreCase(ext)))
-                return (false, "错误的文件类型");
-            return (true, null);
-        }
+            fileKey = fileKey.TrimStart('/');
 
-        public AliyunOssPostPolicy BuildPolicy(string ext)
-        {
-            var maxSize = 8;
-            if (Options.MaxSize > 0)
-                maxSize = Options.MaxSize;
-
-            if (ext.IsNullOrWhiteSpace()) throw new ArgumentNullException(nameof(ext));
-            ext = ext.Trim();
-            if (!Options.FileExtLimit.IsNullOrEmpty() && !Options.FileExtLimit.Any(r => r.EqualsIgnoreCase(ext)))
+            var ext = Path.GetExtension(fileKey).TrimStart('.');
+            if (!policyFileExtLimit.IsNullOrEmpty() &&
+                !policyFileExtLimit.Any(r => r.EqualsIgnoreCase(ext)))
                 throw new ArgumentException("错误的文件类型", nameof(ext));
-            if (!ext.StartsWith("."))
-                ext = $".{ext}";
-            var dir = $"{Options.Dir}{DateTime.Now:yyyyMMdd}/";
-            var fileName = $"{Guid.NewGuid():n}{ext}";
-            var expiration = DateTime.Now.AddMinutes(1);
+
+            var expiration = DateTime.Now.AddSeconds(expireSeconds);
             var policyConditions = new PolicyConditions();
             policyConditions.AddConditionItem("bucket", Options.Bucket);
             // $ must be escaped with backslash.
-            var key = $"{dir}{fileName}";
-            policyConditions.AddConditionItem(MatchMode.Exact, PolicyConditions.CondKey, key);
-            policyConditions.AddConditionItem(PolicyConditions.CondContentLengthRange, 1, maxSize * 1024 * 1024); //大小限制
+            policyConditions.AddConditionItem(MatchMode.Exact, PolicyConditions.CondKey, fileKey);
+            policyConditions.AddConditionItem(PolicyConditions.CondContentLengthRange, 1, maxSize); //大小限制
 
             var postPolicy = Client.GeneratePostPolicy(expiration, policyConditions);
             var encPolicy = Convert.ToBase64String(Encoding.UTF8.GetBytes(postPolicy));
 
             var signature = ComputeSignature(Options.AccessKey, encPolicy);
 
+            var host = (Options.CdnHost ?? Options.Host).TrimEnd('/');
             return new AliyunOssPostPolicy
             {
                 AccessId = Options.AccessId,
-                Dir = dir,
                 Expire = expiration.GetIntDate(),
                 Policy = encPolicy,
                 Signature = signature,
                 Host = Options.Host,
-                FileName = fileName,
-                Key = key,
-                Url = $"{Options.CdnHost.TrimEnd('/')}/{key}"
+                FileName = fileKey,
+                Dir = Path.GetDirectoryName(fileKey),
+                Url = $"{host}/{fileKey}"
             };
         }
 
-        private string ComputeSignature(string key, string data)
+        public AliyunOssPostPolicy BuildStartWithPolicy(string fileKeyStartWith, int expireSeconds = 60,
+            int maxSize = 8 * 1024 * 1024)
+        {
+            var expiration = DateTime.Now.AddSeconds(expireSeconds);
+            var policyConditions = new PolicyConditions();
+            policyConditions.AddConditionItem("bucket", Options.Bucket);
+            // $ must be escaped with backslash.
+            policyConditions.AddConditionItem(MatchMode.StartWith, PolicyConditions.CondKey, fileKeyStartWith);
+            policyConditions.AddConditionItem(PolicyConditions.CondContentLengthRange, 1, maxSize); //大小限制
+
+            var postPolicy = Client.GeneratePostPolicy(expiration, policyConditions);
+            var encPolicy = Convert.ToBase64String(Encoding.UTF8.GetBytes(postPolicy));
+
+            var signature = ComputeSignature(Options.AccessKey, encPolicy);
+
+            var host = (Options.CdnHost ?? Options.Host).TrimEnd('/');
+            return new AliyunOssPostPolicy
+            {
+                AccessId = Options.AccessId,
+                Expire = expiration.GetIntDate(),
+                Policy = encPolicy,
+                Signature = signature,
+                Host = Options.Host,
+                Dir = fileKeyStartWith
+            };
+        }
+
+        private static string ComputeSignature(string key, string data)
         {
             using var algorithm = KeyedHashAlgorithm.Create("HmacSHA1".ToUpperInvariant());
             algorithm.Key = Encoding.UTF8.GetBytes(key.ToCharArray());
@@ -88,7 +101,9 @@ namespace Shashlik.AliyunOss
         {
             Client.PutObject(Options.Bucket, objectName, localFullFileName);
 
-            return $"{Options.CdnHost.TrimEnd('/')}/{objectName}";
+            var host = (Options.CdnHost ?? Options.Host).TrimEnd('/');
+
+            return $"{host}/{objectName}";
         }
 
         public string Upload(string objectName, byte[] fileContent)
@@ -96,7 +111,32 @@ namespace Shashlik.AliyunOss
             using var requestContent = new MemoryStream(fileContent);
             // 上传文件。
             Client.PutObject(Options.Bucket, objectName, requestContent);
-            return $"{Options.CdnHost.TrimEnd('/')}/{objectName}";
+            var host = (Options.CdnHost ?? Options.Host).TrimEnd('/');
+            return $"{host}/{objectName}";
+        }
+
+        public string SignatureUrl(string objectName, int expires = 3600)
+        {
+            if (string.IsNullOrWhiteSpace(objectName))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(objectName));
+
+            var request = new GeneratePresignedUriRequest(BucketName, objectName, SignHttpMethod.Get)
+            {
+                Expiration = DateTime.Now.AddSeconds(expires)
+            };
+            request.ResponseHeaders.ContentDisposition = $"inline;filename={objectName}";
+            return Client.GeneratePresignedUri(request).ToString();
+        }
+
+        public Stream Download(string objectName)
+        {
+            var ossObject = Client.GetObject(BucketName, objectName);
+            return ossObject.Content;
+        }
+
+        public bool Exists(string objectName)
+        {
+            return Client.DoesObjectExist(BucketName, objectName);
         }
     }
 }
