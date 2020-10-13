@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspectCore.Abstractions" Version="2.1.0" />
+    <PackageReference Include="AspectCore.Core" Version="2.1.0" />
+    <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="2.1.0" />
+    
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.6" />

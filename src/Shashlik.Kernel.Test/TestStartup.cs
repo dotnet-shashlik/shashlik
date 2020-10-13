@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Linq;
+using AspectCore.Configuration;
+using AspectCore.DynamicProxy;
+using AspectCore.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.AspNetCore;
@@ -21,7 +25,7 @@ namespace Shashlik.Kernel.Test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
-            
+
             services.Configure<TestOptions2>(r => r.Enable = false);
 
             services.AddShashlik(Configuration)
@@ -30,6 +34,17 @@ namespace Shashlik.Kernel.Test
                 .BeginAutowired<ITestAutowiredServices>()
                 .Build(r => (r.ServiceInstance as ITestAutowiredServices)!.ConfigureServices(services))
                 .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton);
+
+            services.ConfigureDynamicProxy(r =>
+            {
+                r.Interceptors.AddTyped<CustomInterceptorAttribute>(
+                    p => p.GetCustomAttributes(typeof(CustomInterceptorAttribute), true).Any()
+                );
+                
+                r.Interceptors.AddTyped<CustomInterceptor2Attribute>(
+                    p => p.GetCustomAttributes(typeof(CustomInterceptor2Attribute), true).Any()
+                );
+            });
         }
 
         public void Configure(IApplicationBuilder app)

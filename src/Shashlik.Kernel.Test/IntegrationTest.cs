@@ -18,6 +18,15 @@ namespace Shashlik.Kernel.Test
         [Fact]
         public void DoTest()
         {
+            // aop
+            {
+               var c= GetService<ICustomService>();
+               c.Call1();
+               c.Call2();
+               return;
+            }
+            
+            
             {
                var memoryCache= GetService<IMemoryCache>();
               var op= memoryCache.Get<TestOptions3>("tt");

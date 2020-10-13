@@ -6,8 +6,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// ef嵌套事务
     /// </summary>
-    public interface IEfNestedTransaction<TDbContext>
-        where TDbContext : DbContext
+    public interface IEfNestedTransaction
     {
         /// <summary>
         /// 当前事务
@@ -19,5 +18,13 @@ namespace Shashlik.EfCore
         /// </summary>
         /// <returns></returns>
         IDbContextTransaction Begin();
+    }
+
+    /// <summary>
+    /// ef嵌套事务
+    /// </summary>
+    public interface IEfNestedTransaction<TDbContext> : IEfNestedTransaction
+        where TDbContext : DbContext
+    {
     }
 }

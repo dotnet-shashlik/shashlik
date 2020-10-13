@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AspectCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -13,6 +14,7 @@ namespace Shashlik.Kernel.Test
         {
             return
                 Host.CreateDefaultBuilder()
+                    .UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
                     .UseEnvironment("Development")
                     .ConfigureAppConfiguration((host, config) =>
                     {
@@ -22,6 +24,7 @@ namespace Shashlik.Kernel.Test
                             // .AddJsonFile("TestOption2.json")
                             .AddEnvironmentVariables();
                     })
+                    
                     .ConfigureWebHostDefaults(x =>
                     {
                         x.UseStartup<TStartup>().UseTestServer();
