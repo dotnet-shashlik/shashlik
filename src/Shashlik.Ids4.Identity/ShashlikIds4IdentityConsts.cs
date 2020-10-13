@@ -48,79 +48,8 @@ namespace Shashlik.Ids4.Identity //ShashlikIds4Identity
         public const string IdCardSource = "idcard";
 
         /// <summary>
-        /// 错误代码
+        /// 两阶段登录,数据加解密purpose
         /// </summary>
-        public class ErrorCodes
-        {
-            /// <summary>
-            /// 用户名为空
-            /// </summary>
-            public const int UserNameEmpty = -400;
-
-            /// <summary>
-            /// 密码为空
-            /// </summary>
-            public const int PasswordEmpty = -401;
-
-            /// <summary>
-            /// 用户名或密码错误
-            /// </summary>
-            public const int UsernameOrPasswordError = -402;
-
-            /// <summary>
-            /// 手机号码错误
-            /// </summary>
-            public const int PhoneNumberError = -403;
-
-            /// <summary>
-            /// 邮件地址错误
-            /// </summary>
-            public const int EmailError = -404;
-
-            /// <summary>
-            /// provider参数错误
-            /// </summary>
-            public const int ProviderError = -405;
-
-            /// <summary>
-            /// 验证码错误
-            /// </summary>
-            public const int TokenError = -406;
-
-            /// <summary>
-            /// 用户已锁定
-            /// </summary>
-            public const int UserLockout = -407;
-
-            /// <summary>
-            /// 不允许登录
-            /// </summary>
-            public const int NotAllowLogin = -408;
-
-            /// <summary>
-            /// type参数错误
-            /// </summary>
-            public const int TypeError = -409;
-
-            /// <summary>
-            /// 用户不存在
-            /// </summary>
-            public const int UserNotFound = -410;
-
-            /// <summary>
-            /// IdentityError
-            /// </summary>
-            public const int IdentityError = -411;
-
-            /// <summary>
-            /// 其他错误
-            /// </summary>
-            public const int Other = -500;
-
-            /// <summary>
-            /// 需要两步验证
-            /// </summary>
-            public const int RequiresTwoFactor = -200;
-        }
+        public const string TwoFactorTokenProviderPurpose = "two_factor_purpose";
     }
 }

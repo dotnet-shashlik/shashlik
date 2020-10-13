@@ -1,5 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 using IdentityServer4.Validation;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
@@ -12,76 +16,87 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Ids4.Identity
 {
     /// <summary>
-    /// 手机两部验证
+    /// 两步验证第二步
     /// </summary>
     public class ShashlikTwoFactorValidator : IExtensionGrantValidator
     {
-        private readonly ShashlikUserManager _userManager;
-        private readonly IOptions<ShashlikIdentityOptions> _shashlikIdentityOptions;
-        private readonly IOptions<IdentityOptions> _identityOptions;
-        private readonly IOptions<ShashlikIds4IdentityOptions> _ids4IdentityOptions;
+        private ShashlikUserManager UserManager { get; }
+        private IDataProtectionProvider DataProtectionProvider { get; }
+        private IOptions<ShashlikIdentityOptions> ShashlikIdentityOptions { get; }
+        private IOptions<IdentityOptions> IdentityOptions { get; }
+        private IOptions<ShashlikIds4IdentityOptions> Ids4IdentityOptions { get; }
 
-        public ShashlikTwoFactorValidator(ShashlikUserManager userManager, IOptions<ShashlikIds4IdentityOptions> ids4IdentityOptions,
-            IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions)
+        public ShashlikTwoFactorValidator(ShashlikUserManager userManager,
+            IOptions<ShashlikIds4IdentityOptions> ids4IdentityOptions,
+            IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions,
+            IDataProtectionProvider dataProtectionProvider)
         {
-            _userManager = userManager;
-            _ids4IdentityOptions = ids4IdentityOptions;
-            _shashlikIdentityOptions = shashlikIdentityOptions;
-            _identityOptions = identityOptions;
+            UserManager = userManager;
+            Ids4IdentityOptions = ids4IdentityOptions;
+            ShashlikIdentityOptions = shashlikIdentityOptions;
+            IdentityOptions = identityOptions;
+            DataProtectionProvider = dataProtectionProvider;
         }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
-            //TODO: username
-            var username = context.Request.Raw.Get("username");
+            var security = context.Request.Raw.Get("security");
+            ErrorCodes errorCode = 0;
             // token: 两步验证的第二部验证码
             var token = context.Request.Raw.Get("token");
-            // provider: 两步验证使用什么验证提供类,Captcha(基于Shashlik.Captcha随机验证码)/Phone(默认为totp算法)/Email
+            // provider: 两步验证使用什么验证提供类: Captcha(基于验证码)/Authenticator(标准totp),其他的都可以自行扩展TokenProvider
             var provider = context.Request.Raw.Get("provider");
 
-            var errorCode = 0;
-            if (username.IsNullOrWhiteSpace())
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UserNameEmpty;
             if (token.IsNullOrWhiteSpace())
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.TokenError;
+                errorCode = ErrorCodes.TokenError;
             if (provider.IsNullOrWhiteSpace())
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.ProviderError;
+                errorCode = ErrorCodes.ProviderError;
+
+            TwoFactorStep1SecurityModel model = null;
+            if (errorCode == 0)
+            {
+                try
+                {
+                    var json = DataProtectionProvider
+                        .CreateProtector(ShashlikIds4IdentityConsts.TwoFactorTokenProviderPurpose)
+                        .Unprotect(security);
+                    model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
+                }
+                catch (Exception e)
+                {
+                    errorCode = ErrorCodes.SecurityError;
+                }
+
+                if (model == null || model.Expiration <=
+                    DateTime.Now.AddSeconds(Ids4IdentityOptions.Value.TwoFactorExpiration).GetLongDate())
+                    errorCode = ErrorCodes.SecurityTimeout;
+            }
 
             Users user = null;
-            if (errorCode != 0)
+            if (errorCode == 0 && model != null)
             {
-                // 根据用户名和邮件地址查找用户
-                user = await _userManager.FindByNameAsync(username);
-                if (user == null &&
-                    _ids4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts.EMailSource))
-                    user = await _userManager.FindByEmailAsync(username);
-                if (user == null &&
-                    _ids4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts.PhoneSource))
-                    user = await _userManager.FindByPhoneNumberAsync(username);
-                if (user == null &&
-                    _ids4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts.IdCardSource))
-                    user = await _userManager.FindByPhoneNumberAsync(username);
-                if (user == null)
-                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UsernameOrPasswordError;
+                user = await UserManager.FindByIdAsync(model.UserId);
+                if (user != null)
+                {
+                    // 验证码provider是否可用
+                    var providers = await UserManager.GetValidTwoFactorProvidersAsync(user);
+                    if (!providers.Contains(provider))
+                        errorCode = ErrorCodes.ProviderError;
+                }
             }
 
-            if (user != null)
-            {
-                // 验证码provider是否可用
-                var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-                if (!providers.Contains(provider))
-                    errorCode = ShashlikIds4IdentityConsts.ErrorCodes.ProviderError;
-            }
-
-            if (user != null && !await _userManager.VerifyTwoFactorTokenAsync(user, provider, token))
-                errorCode = -4;
+            if (errorCode == 0 && user != null && !await UserManager.VerifyTwoFactorTokenAsync(user, provider, token))
+                errorCode = ErrorCodes.TokenError;
 
             if (errorCode != 0)
             {
                 context.Result = new GrantValidationResult
                 {
                     IsError = true,
-                    Error = errorCode.ToString(),
+                    CustomResponse = new Dictionary<string, object>
+                    {
+                        {"code", (int) errorCode}
+                    }
                 };
                 return;
             }

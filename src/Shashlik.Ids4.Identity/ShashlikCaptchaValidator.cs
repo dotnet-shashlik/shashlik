@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using Shashlik.Captcha;
@@ -36,20 +35,20 @@ namespace Shashlik.Ids4.Identity
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
-            var errorCode = 0;
+            ErrorCodes errorCode = 0;
             var identity = context.Request.Raw.Get("identity");
             var captcha = context.Request.Raw.Get("captcha");
             if (captcha.IsNullOrWhiteSpace())
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.TokenError;
+                errorCode = ErrorCodes.TokenError;
             if (identity.IsNullOrWhiteSpace())
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.PhoneNumberError;
+                errorCode = ErrorCodes.IdentityError;
 
             if (!await Captcha.IsValid(ShashlikIds4IdentityConsts.LoginPurpose, identity, captcha))
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.TokenError;
+                errorCode = ErrorCodes.TokenError;
 
             Users user = await CaptchaUserGetter.FindByUnifierAsync(identity, UserManager, context.Request.Raw);
             if (user == null)
-                errorCode = ShashlikIds4IdentityConsts.ErrorCodes.UserNotFound;
+                errorCode = ErrorCodes.UserNotFound;
 
             if (user != null)
             {
@@ -61,7 +60,10 @@ namespace Shashlik.Ids4.Identity
             context.Result = new GrantValidationResult
             {
                 IsError = true,
-                Error = errorCode.ToString()
+                CustomResponse = new Dictionary<string, object>
+                {
+                    {"code", (int) errorCode}
+                }
             };
         }
 
