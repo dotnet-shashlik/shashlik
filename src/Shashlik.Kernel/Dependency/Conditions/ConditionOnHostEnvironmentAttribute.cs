@@ -7,12 +7,12 @@ using System;
 namespace Shashlik.Kernel.Dependency.Conditions
 {
     /// <summary>
-    /// 环境变量判断
+    /// 环境名称判断
     /// </summary>
     [ConditionOrder(0)]
-    public class HostEnvironmentAttribute : Attribute, IConditionBase
+    public class ConditionOnHostEnvironmentAttribute : Attribute, IConditionBase
     {
-        public HostEnvironmentAttribute(string envName)
+        public ConditionOnHostEnvironmentAttribute(string envName)
         {
             if (string.IsNullOrWhiteSpace(envName))
             {

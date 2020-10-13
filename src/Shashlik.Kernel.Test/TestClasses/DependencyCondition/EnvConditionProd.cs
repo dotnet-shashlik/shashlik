@@ -2,7 +2,7 @@
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
-    [HostEnvironment("Production")]
+    [ConditionOnHostEnvironment("Production")]
     public class EnvConditionProd : Shashlik.Kernel.Dependency.ISingleton
     {
         // should be null

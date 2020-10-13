@@ -13,13 +13,13 @@ namespace Shashlik.Kernel.Dependency.Conditions
     /// 条件依赖,服务存在时
     /// </summary>
     [ConditionOrder(200)]
-    public class DependsOnAttribute : Attribute, IConditionBase
+    public class ConditionDependsOnAttribute : Attribute, IConditionBase
     {
         /// <summary>
         /// 条件依赖,服务存在时
         /// </summary>
         /// <param name="types">依赖的服务类型</param>
-        public DependsOnAttribute(params Type[] types)
+        public ConditionDependsOnAttribute(params Type[] types)
         {
             Types = types;
         }

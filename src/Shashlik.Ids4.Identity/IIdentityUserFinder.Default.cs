@@ -13,7 +13,7 @@ namespace Shashlik.Ids4.Identity
     /// <summary>
     /// 默认的用户查找类,一次根据手机号码/邮件地址/身份证号码/用户名查找用户
     /// </summary>
-    [DependsOnMissing(typeof(IIdentityUserFinder))]
+    [ConditionDependsOnMissing(typeof(IIdentityUserFinder))]
     public class DefaultIIdentityUserFinder : IIdentityUserFinder, IScoped
     {
         public DefaultIIdentityUserFinder(IOptions<IdentityOptions> identityOptions,

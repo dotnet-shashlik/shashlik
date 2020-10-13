@@ -13,13 +13,13 @@ namespace Shashlik.Kernel.Dependency.Conditions
     /// 条件依赖,服务不存在时,优先级
     /// </summary>
     [ConditionOrder(100)]
-    public class DependsOnMissingAttribute : Attribute, IConditionBase
+    public class ConditionDependsOnMissingAttribute : Attribute, IConditionBase
     {
         /// <summary>
         /// 条件依赖,服务不存在时
         /// </summary>
         /// <param name="types">依赖的服务类型</param>
-        public DependsOnMissingAttribute(params Type[] types)
+        public ConditionDependsOnMissingAttribute(params Type[] types)
         {
             Types = types;
         }

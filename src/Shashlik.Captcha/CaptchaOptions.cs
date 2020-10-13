@@ -5,11 +5,6 @@ namespace Shashlik.Captcha
     [AutoOptions("Shashlik.Captcha")]
     public class CaptchaOptions
     {
-        public CaptchaOptions(int lifeTimeSecond)
-        {
-            LifeTimeSecond = lifeTimeSecond;
-        }
-
         /// <summary>
         /// 是否启用
         /// </summary>

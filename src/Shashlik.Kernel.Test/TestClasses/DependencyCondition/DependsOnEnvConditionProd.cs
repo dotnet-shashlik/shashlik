@@ -2,7 +2,7 @@
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
-    [DependsOn(typeof(EnvConditionProd))]
+    [ConditionDependsOn(typeof(EnvConditionProd))]
     public class DependsOnEnvConditionProd : Shashlik.Kernel.Dependency.ISingleton
     {
         // should be null

@@ -14,7 +14,7 @@ namespace Shashlik.Captcha.Totp
     /// <summary>
     /// totp验证码
     /// </summary>
-    [DependsOn(typeof(IDistributedCache))]
+    [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty("Shashlik:Captcha.Enable", "true")]
     internal class TotpCatpcha : ICaptcha, ISingleton
     {

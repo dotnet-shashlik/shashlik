@@ -12,7 +12,7 @@ namespace Shashlik.Captcha.DistributedCache
     /// <summary>
     /// 验证码
     /// </summary>
-    [DependsOn(typeof(IDistributedCache))]
+    [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty("Shashlik:Captcha.Enable", "true")]
     internal class DistributedCacheCatpcha : ICaptcha, ISingleton
     {
