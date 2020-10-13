@@ -8,6 +8,14 @@ using Shashlik.Utils.Helpers;
 
 namespace Shashlik.EfCore.Transactional
 {
+    
+    /**
+     *    使用AspectCore作为代理拦截器, 需要额外配置ServiceProviderFactory:
+     *    Host.CreateDefaultBuilder()
+     *        .UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
+     * 
+     */
+    
     public class EfCoreTransactionalConfigure : IAutowiredConfigureServices
     {
         public void ConfigureServices(IKernelServices kernelService)
