@@ -6,25 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <ProjectReference Include="..\Shashlik.Captcha\Shashlik.Captcha.csproj" />
     <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
-    <ProjectReference Include="..\Shashlik.Identity.AspNetCore\Shashlik.Identity.AspNetCore.csproj" />
     <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
     <ProjectReference Include="..\Shashlik.Ids4\Shashlik.Ids4.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="HttpApi\GetEMail2FATokenApi.cs" />
-    <Compile Remove="HttpApi\GetEMailLoginCodeApi.cs" />
-    <Compile Remove="HttpApi\GetPhone2FATokenApi.cs" />
-    <Compile Remove="HttpApi\GetPhoneLoginCodeApi.cs" />
   </ItemGroup>
 
 </Project>
