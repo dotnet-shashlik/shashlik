@@ -188,7 +188,7 @@ namespace Shashlik.Mapper
 
             configuration.AssertConfigurationIsValid();
             var mapper = new AutoMapper.Mapper(configuration);
-            ShashlikMapper.Instance = mapper;
+            ShashlikAutoMapper.Instance = mapper;
 
             kernelService.Services.AddSingleton<IMapper>(mapper);
             return kernelService;
@@ -202,9 +202,9 @@ namespace Shashlik.Mapper
         /// <returns></returns>
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
-            if(ShashlikMapper.Instance==null)
+            if(ShashlikAutoMapper.Instance==null)
                 throw new InvalidOperationException($"shashlik mapper has been uninitialized.");
-            return source.ProjectTo<TDest>(ShashlikMapper.Instance.ConfigurationProvider);
+            return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Shashlik.Mapper
         /// <returns></returns>
         public static TDest MapTo<TDest>(this object obj)
         {
-            return ShashlikMapper.Instance.Map<TDest>(obj);
+            return ShashlikAutoMapper.Instance.Map<TDest>(obj);
         }
 
         /// <summary>
@@ -226,7 +226,7 @@ namespace Shashlik.Mapper
         /// <typeparam name="TDest"></typeparam>
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
-            ShashlikMapper.Instance.Map(obj, destObj);
+            ShashlikAutoMapper.Instance.Map(obj, destObj);
         }
     }
 }
