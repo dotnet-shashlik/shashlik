@@ -15,7 +15,7 @@ namespace Shashlik.Redis
         /// <summary>
         /// 启用redis分布式锁
         /// </summary>
-        public bool EnableRedisLock { get; set; }
+        public bool EnableRedisLock { get; set; } = true;
 
         /*
          * 典型的哨兵模式配置

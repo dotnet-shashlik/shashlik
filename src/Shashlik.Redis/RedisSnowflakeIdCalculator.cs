@@ -51,6 +51,7 @@ namespace Shashlik.Redis
                 }
 
                 if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
+                
                 {
                     for (var i = 0; i < 32; i++)
                     {
