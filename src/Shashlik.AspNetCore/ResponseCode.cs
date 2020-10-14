@@ -1,5 +1,6 @@
 ﻿using System;
 using ResponseStatus = Shashlik.Response.ResponseStatus;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.AspNetCore
@@ -81,7 +82,7 @@ namespace Shashlik.AspNetCore
         /// </summary>
         /// <param name="status"></param>
         /// <returns></returns>
-        public int GetCode(Response.ResponseStatus status)
+        public int GetCode(Response.ResponseStatus status, int otherErrorCode)
         {
             return status switch
             {
@@ -91,6 +92,7 @@ namespace Shashlik.AspNetCore
                 ResponseStatus.Forbidden => this.Forbidden,
                 ResponseStatus.NotFound => this.NotFound,
                 ResponseStatus.SystemError => this.SystemError,
+                ResponseStatus.Other => otherErrorCode,
                 _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
             };
         }

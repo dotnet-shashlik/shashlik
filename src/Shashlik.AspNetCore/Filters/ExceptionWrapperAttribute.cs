@@ -30,16 +30,15 @@ namespace Shashlik.AspNetCore.Filters
             // ResponseException包装处理
             if (exception is ResponseException responseException)
             {
-                var errorCode = responseException.ResponseStatus.HasValue
-                    ? Options.ResponseCode.GetCode(responseException.ResponseStatus.Value)
-                    : responseException.ErrorCode;
+                var errorCode =
+                    Options.ResponseCode.GetCode(responseException.ResponseStatus, responseException.ErrorCode);
 
                 var debug = Options.IsDebug ? responseException.Debug : null;
                 var responseResult = new ResponseResult(errorCode, false, responseException.Message, null,
                     responseException.Debug);
                 var httpCode = 200;
-                if (Options.UseResponseExceptionToHttpCode && responseException.ResponseStatus.HasValue)
-                    httpCode = (int) ToHttpCode(responseException.ResponseStatus.Value);
+                if (Options.UseResponseExceptionToHttpCode && responseException.ResponseStatus == ResponseStatus.Other)
+                    httpCode = (int) ToHttpCode(responseException.ResponseStatus);
                 context.Result = new StatusCodeResult(httpCode);
                 context.Result = new JsonResult(responseResult);
 

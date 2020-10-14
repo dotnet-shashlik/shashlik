@@ -1,4 +1,5 @@
 ﻿using System;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.Response
@@ -26,7 +27,7 @@ namespace Shashlik.Response
         /// <summary>
         /// 响应状态枚举,ResponseStatus和ErrorCode必有一个有值
         /// </summary>
-        public ResponseStatus? ResponseStatus { get; }
+        public ResponseStatus ResponseStatus { get; } = ResponseStatus.Other;
 
         /// <summary>
         /// 自定义错误代码,ResponseStatus和ErrorCode必有一个有值
@@ -70,13 +71,14 @@ namespace Shashlik.Response
             this(message, writeLog, writeLogMessage, debug)
         {
             ErrorCode = errorCode;
+            ResponseStatus = ResponseStatus.Other;
         }
 
         /// <summary>
         /// 参数错误异常
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException ArgError(string msg = null, string debug = null)
         {
@@ -86,8 +88,8 @@ namespace Shashlik.Response
         /// <summary>
         /// 操作错误
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException LogicalError(string msg = null, string debug = null)
         {
@@ -97,8 +99,8 @@ namespace Shashlik.Response
         /// <summary>
         /// 系统繁忙
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException SystemError(string msg = null, string debug = null)
         {
@@ -108,8 +110,8 @@ namespace Shashlik.Response
         /// <summary>
         /// 资源不存在错误
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException NotFound(string msg = null, string debug = null)
         {
@@ -119,8 +121,8 @@ namespace Shashlik.Response
         /// <summary>
         /// 拒绝访问错误
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException Forbidden(string msg = null, string debug = null)
         {
@@ -130,12 +132,24 @@ namespace Shashlik.Response
         /// <summary>
         /// 未授权错误
         /// </summary>
-        /// <param name="msg"></param>
-        /// <param name="debug"></param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
         /// <returns></returns>
         public static ResponseException Unauthorized(string msg = null, string debug = null)
         {
             return new ResponseException(msg, Response.ResponseStatus.Unauthorized, false, null, debug);
+        }
+
+        /// <summary>
+        /// 其他错误
+        /// </summary>
+        /// <param name="code">错误代码</param>
+        /// <param name="msg">错误消息</param>
+        /// <param name="debug">调试内容</param>
+        /// <returns></returns>
+        public static ResponseException Other(int code, string msg = null, string debug = null)
+        {
+            return new ResponseException(msg, code, false, null, debug);
         }
     }
 }

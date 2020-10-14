@@ -5,10 +5,6 @@ namespace Shashlik.AspNetCore
     [AutoOptions("Shashlik.AspNetCore")]
     public class AspNetCoreOptions
     {
-        /// <summary>
-        /// 是否启用
-        /// </summary>
-        public bool Enable { get; set; } = true;
 
         /// <summary>
         /// 是否输出debug信息
@@ -29,11 +25,6 @@ namespace Shashlik.AspNetCore
         /// NewtonsoftJson,默认true
         /// </summary>
         public bool UseNewtonsoftJson { get; set; } = true;
-
-        /// <summary>
-        /// 启用RequestRewind,允许body stream重复读取,默认true
-        /// </summary>
-        public bool EnableRequestRewind { get; set; } = true;
 
         /// <summary>
         /// 返回状态码配置

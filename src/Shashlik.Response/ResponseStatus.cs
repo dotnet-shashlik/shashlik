@@ -3,6 +3,11 @@
     public enum ResponseStatus
     {
         /// <summary>
+        /// 其它
+        /// </summary>
+        Other,
+        
+        /// <summary>
         /// 参数错误
         /// </summary>
         ArgError,
