@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Utils.Extensions;
 using static Shashlik.Utils.Consts;
 using Microsoft.Extensions.Logging;
@@ -38,17 +40,13 @@ namespace Shashlik.Sms.Event
     [ConditionOnProperty("Shashlik.Sms.Enable", "true")]
     public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ISingleton
     {
-        public DefaultSmsSender(IEventPublisher eventPublisher,
-            ILogger<DefaultSmsSender> logger, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options)
+        public DefaultSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options
+        )
         {
-            EventPublisher = eventPublisher;
-            Logger = logger;
             SmsLimit = smsLimit;
             Options = options;
         }
 
-        private ILogger<DefaultSmsSender> Logger { get; }
-        private IEventPublisher EventPublisher { get; }
         private ISmsLimit SmsLimit { get; }
         private IOptionsMonitor<SmsOptions> Options { get; }
 
@@ -63,27 +61,36 @@ namespace Shashlik.Sms.Event
             if (list.Count() == 1 && !SmsLimit.LimitCheck(list.First(), subject))
                 throw new SmsArgException("短信发送过于频繁");
 
-            EventPublisher.Publish(new SendSmsEvent
+            // 先用异步直接发送一次短信,如果收到主机异常,再发布事件进行重试
+            Task.Run(() =>
             {
-                Phones = list.ToList(),
-                Subject = subject,
-                Args = args.ToList()
+                using var scope = Shashlik.Kernel.KernelServiceProvider.ServiceProvider.CreateScope();
+                try
+                {
+                    var sms = scope.ServiceProvider.GetService<ISms>();
+                    sms.Send(list, subject, args);
+                }
+                catch (SmsDomainException e)
+                {
+                    var eventPublisher = scope.ServiceProvider.GetService<IEventPublisher>();
+                    eventPublisher.Publish(new SendSmsEvent
+                    {
+                        Phones = list.ToList(),
+                        Subject = subject,
+                        Args = args.ToList()
+                    });
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetService<ILogger<ISmsSender>>();
+                    logger.LogError(ex, $"短信发送异常:{list.Join(",")}");
+                }
             });
         }
 
         public void Send(string phone, string subject, params string[] args)
         {
-            if (phone.IsNullOrWhiteSpace() || !phone.IsMatch(Consts.Regexs.MobilePhoneNumber))
-                throw new SmsArgException($"{phone} 手机号码格式错误");
-            if (!SmsLimit.LimitCheck(phone, subject))
-                throw new SmsArgException("短信发送过于频繁");
-
-            EventPublisher.Publish(new SendSmsEvent
-            {
-                Phones = new List<string> {phone},
-                Subject = subject,
-                Args = args.ToList()
-            });
+            Send(new[] {phone}, subject, args);
         }
     }
 }
