@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.Paging
+namespace Shashlik.Pager
 {
     /// <summary>
     /// 排序基类,定义某个实体允许的排序方式,第一条为默认排序
@@ -12,10 +11,17 @@ namespace Shashlik.Utils.Paging
     /// <typeparam name="TEntity"></typeparam>
     public abstract class OrderByBase<TEntity>
     {
+        protected OrderByBase(params OrderByModel<TEntity>[] args)
+        {
+            foreach (var item in args)
+                Orders.Add(item.OrderBy, item);
+        }
+
         /// <summary>
         /// 定义排序方式,第一条为默认排序
         /// </summary>
-        public abstract List<OrderByModel<TEntity>> Orders { get; }
+        public IDictionary<string, OrderByModel<TEntity>> Orders { get; } =
+            new Dictionary<string, OrderByModel<TEntity>>(StringComparer.InvariantCultureIgnoreCase);
 
         /// <summary>
         /// 获取排序模型
@@ -24,17 +30,13 @@ namespace Shashlik.Utils.Paging
         /// <returns></returns>
         public OrderByModel<TEntity> Get(string orderBy)
         {
+            // 空使用第一个,即默认排序
             if (orderBy.IsNullOrWhiteSpace())
-                return Orders.FirstOrDefault();
-            var order = Orders.FirstOrDefault(r => r.OrderBy.EqualsIgnoreCase(orderBy));
-            if (order != null)
-                return order;
-            // 没找到使用默认排序
-            order = Orders.FirstOrDefault();
-            if (order != null)
-                return order;
-            // 一个都没得 则异常
-            throw new Exception($"{this.GetType()}未定义排序方式");
+                return Orders.FirstOrDefault().Value;
+            if (!Orders.ContainsKey(orderBy))
+                throw new ArgumentException($"Can not find sort definition of {orderBy}");
+
+            return Orders[orderBy];
         }
     }
 }

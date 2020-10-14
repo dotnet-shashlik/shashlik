@@ -1,11 +1,11 @@
-﻿using Shashlik.Utils.Paging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+
 // ReSharper disable InconsistentNaming
 
 namespace Shashlik.Utils.Extensions
@@ -177,24 +177,6 @@ namespace Shashlik.Utils.Extensions
             return list;
         }
 
-        /// <summary>
-        /// 分页查询
-        /// </summary>
-        /// <param name="query">查询源</param>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        public static IQueryable<T> Paging<T>(this IQueryable<T> query, PageInput input)
-        {
-            if (query == null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
-
-            return
-                query
-                    .Skip((input.PageIndex - 1) * input.PageSize)
-                    .Take(input.PageSize);
-        }
 
         /// <summary>
         /// 分页查询
@@ -227,10 +209,10 @@ namespace Shashlik.Utils.Extensions
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
             if (key == null)
-                return default(TValue);
+                return default;
             if (dic.TryGetValue(key, out TValue value))
                 return value;
-            return default(TValue);
+            return default;
         }
 
         /// <summary>

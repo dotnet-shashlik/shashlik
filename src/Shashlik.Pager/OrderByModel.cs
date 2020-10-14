@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Shashlik.Utils.Paging
+namespace Shashlik.Pager
 {
     /// <summary>
     /// 排序模型
@@ -14,20 +12,19 @@ namespace Shashlik.Utils.Paging
         /// <summary>
         /// 排序模型
         /// </summary>
-        /// <param name="orderBy">Name.asc 不区分大小写</param>
+        /// <param name="orderBy">排序定义名称: 排序字段.排序方式, 例Name.asc 不区分大小写</param>
         /// <param name="func">排序表达式</param>
         public OrderByModel(
             string orderBy,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> func
-            )
+        )
         {
             OrderBy = orderBy ?? throw new ArgumentNullException(nameof(orderBy));
-            Func = func ?? throw new ArgumentNullException(nameof(func));
+            OrderByFunction = func ?? throw new ArgumentNullException(nameof(func));
         }
 
         public string OrderBy { get; }
 
-        public Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> Func { get; }
+        public Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> OrderByFunction { get; }
     }
-
 }

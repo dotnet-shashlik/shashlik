@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Shashlik.Utils.Paging
+namespace Shashlik.Pager
 {
     /// <summary>
     /// 分页输入
@@ -26,11 +22,11 @@ namespace Shashlik.Utils.Paging
         /// <summary>
         /// 排序字段
         /// </summary>
-        public string OrderField { get; set; }
+        public string SortField { get; set; }
 
         /// <summary>
         /// 排序方式
         /// </summary>
-        public string OrderType { get; set; }
+        public SortType SortType { get; set; }
     }
 }
