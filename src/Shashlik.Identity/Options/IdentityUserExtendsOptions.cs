@@ -7,7 +7,7 @@ namespace Shashlik.Identity.Options
     /// 对IdentityOptions配置的扩展配置,<see cref="IdentityOptions.User"/>
     /// </summary>
     [AutoOptions("Shashlik.Identity.IdentityOptions.User")]
-    public class IdentityOptionsExtends
+    public class IdentityUserExtendsOptions
     {
         /// <summary>
         /// 头像是否必填
@@ -37,11 +37,11 @@ namespace Shashlik.Identity.Options
         /// <summary>
         /// 身份证号码是否唯一,默认true
         /// </summary>
-        public bool IdCardUnique { get; set; } = true;
+        public bool RequireUniqueIdCard { get; set; } = true;
 
         /// <summary>
         /// 手机号码是否唯一,默认true
         /// </summary>
-        public bool PhoneNumberUnique { get; set; } = true;
+        public bool RequireUniquePhoneNumber { get; set; } = true;
     }
 }

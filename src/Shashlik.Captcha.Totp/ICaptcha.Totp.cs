@@ -1,32 +1,31 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
-using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Captcha.Totp
 {
     /// <summary>
-    /// totp验证码
+    /// totp验证码,使用 DataProtection的当前密钥keyId作为secret混淆,需要依赖DataProtection
     /// </summary>
     [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty("Shashlik:Captcha.Enable", "true")]
     internal class TotpCatpcha : ICaptcha, ISingleton
     {
-        public TotpCatpcha(IDataProtectionProvider dataProtectionProvider,
-            IOptionsMonitor<CaptchaOptions> options)
+        public TotpCatpcha(IOptionsMonitor<CaptchaOptions> options,
+            IKeyRingProvider keyRingProvider)
         {
-            DataProtectionProvider = dataProtectionProvider;
             Options = options;
+            KeyRingProvider = keyRingProvider;
             Rfc6238AuthenticationService.SetTimeStep(TimeSpan.FromSeconds(options.CurrentValue.LifeTimeSecond));
         }
 
-        private IDataProtectionProvider DataProtectionProvider { get; }
+        private IKeyRingProvider KeyRingProvider { get; }
         private IOptionsMonitor<CaptchaOptions> Options { get; }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace Shashlik.Captcha.Totp
 
         private byte[] BuildToken(string purpose, string target)
         {
-            return Encoding.UTF8.GetBytes($"{purpose}:{target}");
+            return Encoding.UTF8.GetBytes($"{purpose}:{target}:{KeyRingProvider.GetCurrentKeyRing().DefaultKeyId}");
         }
     }
 }

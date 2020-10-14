@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
+using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
@@ -21,17 +22,15 @@ namespace Shashlik.Ids4.Identity
     /// </summary>
     public class ShashlikCaptchaValidator : IExtensionGrantValidator
     {
-        public ShashlikCaptchaValidator(ICaptcha captcha, ShashlikUserManager userManager,
-            IIdentityUserFinder captchaUserGetter)
+        public ShashlikCaptchaValidator(ShashlikUserManager userManager,
+            IIdentityUserFinder userFinder)
         {
-            Captcha = captcha;
             UserManager = userManager;
-            CaptchaUserGetter = captchaUserGetter;
+            IdentityUserFinder = userFinder;
         }
 
-        private ICaptcha Captcha { get; }
         private ShashlikUserManager UserManager { get; }
-        private IIdentityUserFinder CaptchaUserGetter { get; }
+        private IIdentityUserFinder IdentityUserFinder { get; }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
@@ -43,18 +42,20 @@ namespace Shashlik.Ids4.Identity
             if (identity.IsNullOrWhiteSpace())
                 errorCode = ErrorCodes.IdentityError;
 
-            if (!await Captcha.IsValid(ShashlikIds4IdentityConsts.LoginPurpose, identity, captcha))
-                errorCode = ErrorCodes.TokenError;
-
-            Users user = await CaptchaUserGetter.FindByUnifierAsync(identity, UserManager, context.Request.Raw);
+            Users user = await IdentityUserFinder.FindByUnifierAsync(identity, UserManager, context.Request.Raw);
             if (user == null)
                 errorCode = ErrorCodes.UserNotFound;
 
             if (user != null)
             {
                 var sub = await UserManager.GetUserIdAsync(user);
-                context.Result = new GrantValidationResult(sub, GrantType);
-                return;
+                if (await UserManager.IsValidLoginCaptcha(user, captcha))
+                {
+                    context.Result = new GrantValidationResult(sub, GrantType);
+                    return;
+                }
+                else
+                    errorCode = ErrorCodes.TokenError;
             }
 
             context.Result = new GrantValidationResult

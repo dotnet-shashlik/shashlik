@@ -56,12 +56,12 @@ namespace Shashlik.Identity.Entities
 
     public class UsersConfig : IEntityTypeConfiguration<Users>
     {
-        public UsersConfig(IOptions<IdentityOptionsExtends> options)
+        public UsersConfig(IOptions<IdentityUserExtendsOptions> options)
         {
             Options = options.Value;
         }
 
-        private IdentityOptionsExtends Options { get; }
+        private IdentityUserExtendsOptions Options { get; }
 
         public void Configure(EntityTypeBuilder<Users> builder)
         {
@@ -70,8 +70,8 @@ namespace Shashlik.Identity.Entities
             builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.RequireNickName);
             builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.RequireAvatar);
             builder.Property(r => r.Birthday).IsRequired(Options.RequireBirthday);
-            builder.HasIndex(r => r.IdCard).IsUnique(Options.IdCardUnique);
-            builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.PhoneNumberUnique);
+            builder.HasIndex(r => r.IdCard).IsUnique(Options.RequireUniqueIdCard);
+            builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.RequireUniquePhoneNumber);
         }
     }
 }

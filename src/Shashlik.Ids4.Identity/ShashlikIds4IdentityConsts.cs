@@ -23,11 +23,6 @@ namespace Shashlik.Ids4.Identity //ShashlikIds4Identity
         public const string PasswordGrantType = GrantType.ResourceOwnerPassword;
 
         /// <summary>
-        /// 登录purpose
-        /// </summary>
-        public const string LoginPurpose = "login";
-
-        /// <summary>
         /// 用户名登录源
         /// </summary>
         public const string UsernameSource = "username";

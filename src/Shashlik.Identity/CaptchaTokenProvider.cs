@@ -17,7 +17,8 @@ namespace Shashlik.Identity
     {
         public CaptchaTokenProvider(ICaptcha captcha, IOptions<ShashlikIdentityOptions> options)
         {
-            Captcha = captcha;
+            Captcha = captcha ??
+                      throw new ArgumentException($"{typeof(CaptchaTokenProvider)} require service {typeof(ICaptcha)}");
             Options = options;
         }
 
@@ -58,7 +59,7 @@ namespace Shashlik.Identity
         }
 
         /// <summary>
-        /// 能否作为两步验证,这里永远返回true,这里值负责创建以及验证,至于验证码使用什么传输手段,这里并不关心,所以永远支持两步验证
+        /// 能否作为两步验证,这里永远返回true,这里只负责创建以及验证,至于验证码使用什么传输手段,这里并不关心,所以永远支持两步验证
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="user"></param>
@@ -71,12 +72,12 @@ namespace Shashlik.Identity
         /// <summary>
         /// 计算验证码目标,userid+securityStamp,即用户有更换securityStamp的操作,验证码将无效
         /// </summary>
-        /// <param name="unifier"></param>
+        /// <param name="id"></param>
         /// <param name="securityStamp"></param>
         /// <returns></returns>
-        private static string GetTarget(string unifier, string securityStamp)
+        private static string GetTarget(string id, string securityStamp)
         {
-            return $"{unifier}:{securityStamp}";
+            return $"{id}:{securityStamp}";
         }
     }
 }
