@@ -36,8 +36,8 @@ namespace Shashlik.Sms
                 kernelService.Services.TryAddSingleton<ISmsLimit, MemorySmsLimit>();
             }
 
-            kernelService.Services.AddTransient<ISmsDomain, AliSms>();
-            kernelService.Services.AddTransient<ISmsDomain, TencentSms>();
+            kernelService.Services.AddSingleton<ISmsDomain, AliSms>();
+            kernelService.Services.AddSingleton<ISmsDomain, TencentSms>();
         }
     }
 }

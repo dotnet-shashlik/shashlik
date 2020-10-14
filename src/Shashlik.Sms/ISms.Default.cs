@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
+using Shashlik.Kernel.Dependency;
+using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Inner;
 using Shashlik.Sms.Options;
@@ -14,7 +16,8 @@ namespace Shashlik.Sms
     /// <summary>
     /// 手机短信
     /// </summary>
-    class DefaultSms : ISms
+    [ConditionOnProperty("Shashlik.Sms.UseEmptySms", "true", NotEquals = false)]
+    class DefaultSms : ISms, ISingleton
     {
         public DefaultSms(IOptionsMonitor<SmsOptions> smsOptions, IServiceProvider serviceProvider,
             ILogger<DefaultSms> logger, ISmsLimit smsLimit)

@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Logging;
+using Shashlik.Kernel.Dependency;
+using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Inner;
 using Shashlik.Sms.Options;
@@ -13,7 +15,8 @@ namespace Shashlik.Sms
     /// <summary>
     /// 手机短信
     /// </summary>
-    class EmptySms : ISms
+    [ConditionOnProperty("Shashlik.Sms.UseEmptySms", "true")]
+    class EmptySms : ISms, ISingleton
     {
         public EmptySms(IOptionsMonitor<SmsOptions> smsOptions, IServiceProvider serviceProvider,
             ILogger<DefaultSms> logger, ISmsLimit smsLimit)

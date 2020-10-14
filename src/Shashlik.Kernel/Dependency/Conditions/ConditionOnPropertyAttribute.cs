@@ -47,6 +47,11 @@ namespace Shashlik.Kernel.Dependency.Conditions
         public string Value { get; set; }
 
         /// <summary>
+        /// 值匹配方式是不是不等于,默认是false
+        /// </summary>
+        public bool NotEquals { get; set; }
+
+        /// <summary>
         /// 不存在该配置项时,条件是否成立
         /// </summary>
         public bool MatchIfMissing { get; set; } = false;
@@ -64,7 +69,10 @@ namespace Shashlik.Kernel.Dependency.Conditions
             {
                 null when MatchIfMissing => true,
                 null => false,
-                _ => IgnoreCase ? value.EqualsIgnoreCase(Value) : value.Equals(Value)
+                // 不等于
+                _ when NotEquals => IgnoreCase ? !value.EqualsIgnoreCase(Value) : !value.Equals(Value),
+                // 等于
+                _ => IgnoreCase ? value.EqualsIgnoreCase(Value) : value.Equals(Value),
             };
         }
     }

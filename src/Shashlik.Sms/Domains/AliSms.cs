@@ -6,6 +6,7 @@ using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
@@ -15,7 +16,7 @@ namespace Shashlik.Sms.Domains
     /// <summary>
     /// 模板参数规则请使用 ${p1}/${p2},配置模板时按参数顺序来定义.
     /// </summary>
-    public class AliSms : ISmsDomain
+    public class AliSms : ISmsDomain, ISingleton
     {
         public AliSms(ILogger<AliSms> logger)
         {
