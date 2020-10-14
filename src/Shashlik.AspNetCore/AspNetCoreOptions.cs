@@ -5,7 +5,6 @@ namespace Shashlik.AspNetCore
     [AutoOptions("Shashlik.AspNetCore")]
     public class AspNetCoreOptions
     {
-
         /// <summary>
         /// 是否输出debug信息
         /// </summary>

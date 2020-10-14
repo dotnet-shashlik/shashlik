@@ -9,11 +9,12 @@ namespace Shashlik.JsonPatch.AspNetCore
 {
     public class PatchUpdateBinder : IModelBinder
     {
+
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var str = bindingContext.HttpContext.Request.BodyReader.AsStream().ReadToString();
-            var jObject = JsonConvert.DeserializeObject<JObject>(str);
-            var instance = Activator.CreateInstance(bindingContext.ModelType, jObject);
+            var jobject = JsonConvert.DeserializeObject<JObject>(str);
+            var instance = Activator.CreateInstance(bindingContext.ModelType, jobject);
             bindingContext.Result = ModelBindingResult.Success(instance);
             return Task.CompletedTask;
         }

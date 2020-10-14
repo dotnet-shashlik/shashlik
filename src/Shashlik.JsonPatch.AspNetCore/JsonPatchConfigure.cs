@@ -8,7 +8,11 @@ namespace Shashlik.JsonPatch.AspNetCore
     {
         public void ConfigureServices(IKernelServices kernelService)
         {
-            var builder = kernelService.Services.AddControllers()
+            kernelService.Services.AddControllers(options =>
+                {
+                    options.ModelBinderProviders.Insert(0, new PatchUpdateBinderProvider());
+                })
+                // 必须使用NewtonsoftJson
                 .AddNewtonsoftJson();
         }
     }

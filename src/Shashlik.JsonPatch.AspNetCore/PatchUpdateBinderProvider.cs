@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Shashlik.Utils.Extensions;
 
-// ReSharper disable ConvertIfStatementToReturnStatement
-
 namespace Shashlik.JsonPatch.AspNetCore
 {
     public class PatchUpdateBinderProvider : IModelBinderProvider
