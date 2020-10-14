@@ -81,6 +81,7 @@ namespace Shashlik.AspNetCore
         /// 状态枚举转换位响应状态码
         /// </summary>
         /// <param name="status"></param>
+        /// <param name="otherErrorCode"></param>
         /// <returns></returns>
         public int GetCode(Response.ResponseStatus status, int otherErrorCode)
         {

@@ -21,11 +21,6 @@ namespace Shashlik.AspNetCore
         public bool ResponseAllModelError { get; set; } = false;
 
         /// <summary>
-        /// NewtonsoftJson,默认true
-        /// </summary>
-        public bool UseNewtonsoftJson { get; set; } = true;
-
-        /// <summary>
         /// 返回状态码配置
         /// </summary>
         public ResponseCode ResponseCode { get; set; } = new ResponseCode();
