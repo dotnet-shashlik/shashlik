@@ -9,9 +9,6 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtector.PostgreSql
 {
-    /// <summary>
-    /// 使用CSRedisCore共享DataProtector的密钥存储,解决集群缓存密钥存储问题
-    /// </summary>
     public class PostgreSqlDataProtectorConfigure : IAutowiredConfigureServices
     {
         public PostgreSqlDataProtectorConfigure(IOptions<PostgreSqlDataProtectorOptions> options)
@@ -27,7 +24,7 @@ namespace Shashlik.DataProtector.PostgreSql
                 return;
 
             if (Options.ConnectionString.IsNullOrWhiteSpace())
-                throw  new InvalidOperationException($"ConnectionString can not be empty.");
+                throw new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称

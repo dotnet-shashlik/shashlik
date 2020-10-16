@@ -7,18 +7,11 @@ using MySqlConnector;
 
 namespace Shashlik.DataProtector.MySql
 {
-    /// <summary>
-    /// An XML repository backed by a Redis list entry.
-    /// </summary>
     public class MySqlXmlRepository : IXmlRepository
     {
         private MySqlDataProtectorOptions Option { get; }
         private string ConnectionString { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
         public MySqlXmlRepository(MySqlDataProtectorOptions option)
         {
             Option = option;
@@ -26,7 +19,6 @@ namespace Shashlik.DataProtector.MySql
             InitDb();
         }
 
-        /// <inheritdoc />
         public IReadOnlyCollection<XElement> GetAllElements()
         {
             return GetAllElementsCore().ToList().AsReadOnly();
@@ -49,7 +41,6 @@ namespace Shashlik.DataProtector.MySql
             }
         }
 
-        /// <inheritdoc />
         public void StoreElement(XElement element, string friendlyName)
         {
             using var conn = new MySqlConnection(ConnectionString);
@@ -63,10 +54,6 @@ namespace Shashlik.DataProtector.MySql
             cmd.ExecuteNonQuery();
         }
 
-        /// <summary>
-        /// 初始化数据库
-        /// </summary>
-        /// <param name="connString"></param>
         private void InitDb()
         {
             using var conn = new MySqlConnection(ConnectionString);
