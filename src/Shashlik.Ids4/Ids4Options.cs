@@ -46,43 +46,42 @@ namespace Shashlik.Ids4
         public class _SignOptions
         {
             /// <summary>
-            /// 签名证书类型,不区分大小写,dev/rsa/x509
+            /// 签名证书类型,不区分大小写,dev/rsa/x509,默认dev,dev配置存在集群问题,最好使用rsa或者x509
             /// </summary>
             public CredentialType CredentialType { get; set; } = CredentialType.dev;
 
             /// <summary>
-            /// 签名算法,默认RsaSha256,dev无效
+            /// 签名算法,RS256,rsa/x509证书配置有效
             /// </summary>
-            public string SigningAlgorithm { get; set; } = "RsaSha256";
+            public string? SigningAlgorithm { get; set; } = "RS256";
 
             /// <summary>
-            /// rsa私钥(JWT token签名用), 优先使用该配置, 配置后UseDevSigningCredential无效,公钥自动导出
+            /// rsa: rsa私钥(JWT token签名用),  配置后UseDevSigningCredential无效,公钥自动导出
             /// </summary>
             public string? RsaPrivateKey { get; set; }
 
             /// <summary>
-            /// 私钥类型,默认PKCS8,支持PKCS1/PKCS8/XML
+            /// rsa: 私钥类型,默认PKCS8,支持PKCS1/PKCS8/XML
             /// </summary>
             public RSAKeyType RsaKeyType { get; set; } = RSAKeyType.Pkcs8;
 
             /// <summary>
-            /// 私钥是不是pem格式,默认true
+            /// rsa: 私钥是不是pem格式,默认true
             /// </summary>
             public bool RsaIsPem { get; set; } = true;
 
-
             /// <summary>
-            /// x509证书内容,文件base64后
+            /// x509: x509证书内容,文件base64后,一般pfx格式,和<see cref="X509CertificateFilePath"/>选择配置一个就可以,优先使用此配置
             /// </summary>
-            public string? X509CertificateContent { get; set; }
+            public string? X509CertificateFileContent { get; set; }
 
             /// <summary>
-            /// 证书文件地址
+            /// x509: 证书文件地址,和<see cref="X509CertificateFileContent"/>选择配置一个就可以
             /// </summary>
-            public string? X509CertificateFile { get; set; }
+            public string? X509CertificateFilePath { get; set; }
 
             /// <summary>
-            /// 证书密码
+            /// x509: 证书密码
             /// </summary>
             public string? X509CertificatePassword { get; set; }
         }

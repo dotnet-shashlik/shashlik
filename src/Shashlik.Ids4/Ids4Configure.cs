@@ -48,6 +48,7 @@ namespace Shashlik.Ids4
 
             #region 签名证书
 
+            // 使用开发证书,自动创建tempkey.rsa
             if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.dev)
                 builder.AddDeveloperSigningCredential();
             else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.rsa)
@@ -62,18 +63,21 @@ namespace Shashlik.Ids4
             else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.x509)
             {
                 X509Certificate2 certificate;
-                if (!Options.SignOptions.X509CertificateContent.IsNullOrEmpty())
+                if (!Options.SignOptions.X509CertificateFileContent.IsNullOrEmpty())
                 {
-                    var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateContent!);
-                    certificate = new X509Certificate2(bytes, Options.SignOptions.X509CertificatePassword);
+                    var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateFileContent!);
+                    if (Options.SignOptions.X509CertificatePassword.IsNullOrEmpty())
+                        certificate = new X509Certificate2(bytes);
+                    else
+                        certificate = new X509Certificate2(bytes, Options.SignOptions.X509CertificatePassword);
                 }
-                else if (!Options.SignOptions.X509CertificateFile.IsNullOrEmpty())
+                else if (!Options.SignOptions.X509CertificateFilePath.IsNullOrEmpty())
                 {
-                    if (!File.Exists(Options.SignOptions.X509CertificateFile))
+                    if (!File.Exists(Options.SignOptions.X509CertificateFilePath))
                         throw new FileNotFoundException($"Cannot found certificate file.",
-                            Options.SignOptions.X509CertificateFile);
+                            Options.SignOptions.X509CertificateFilePath);
 
-                    certificate = new X509Certificate2(Options.SignOptions.X509CertificateFile!,
+                    certificate = new X509Certificate2(Options.SignOptions.X509CertificateFilePath!,
                         Options.SignOptions.X509CertificatePassword);
                 }
                 else
