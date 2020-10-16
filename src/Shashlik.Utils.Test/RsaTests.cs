@@ -3,11 +3,9 @@ using Shouldly;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using Org.BouncyCastle.Asn1.Pkcs;
 using Shashlik.Utils.Helpers;
-using Shashlik.Utils.Rsa;
 using Xunit;
+using RSAKeyType = RSAExtensions.RSAKeyType;
 
 namespace Shashlik.Utils.Test
 {

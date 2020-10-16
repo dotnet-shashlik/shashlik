@@ -5,8 +5,9 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using RSAExtensions;
 
-namespace Shashlik.Utils.Rsa
+namespace Shashlik.Utils.Helpers
 {
     /**
      *     # openssl 生成RSA/X509等命令
@@ -89,7 +90,6 @@ namespace Shashlik.Utils.Rsa
             return new X509Certificate2(Encoding.UTF8.GetBytes(certificateContent));
         }
 
-
         /// <summary>
         /// RSA公钥加密,未分块
         /// </summary>
@@ -112,7 +112,7 @@ namespace Shashlik.Utils.Rsa
         /// <param name="rsa"></param>
         /// <param name="dataStr">待加密字符串</param>
         /// <param name="padding">填充算法</param>
-        /// <param name="encoding"></param>
+        /// <param name="encoding">明文编码方式,默认utf8</param>
         /// <param name="connChar">块数据连接字符</param>
         /// <returns></returns>
         public static string EncryptBigDataWithSplit(this RSA rsa, string dataStr, RSAEncryptionPadding padding,

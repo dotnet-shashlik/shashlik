@@ -13,6 +13,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NPOI" Version="2.5.1" />
     <PackageReference Include="RestSharp" Version="106.11.4" />
+    <PackageReference Include="RSAExtensions" Version="1.0.3" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.1" />

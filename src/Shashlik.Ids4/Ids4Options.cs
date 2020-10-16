@@ -2,8 +2,8 @@
 using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
+using RSAExtensions;
 using Shashlik.Kernel.Autowired.Attributes;
-using Shashlik.Utils.Rsa;
 
 namespace Shashlik.Ids4
 {

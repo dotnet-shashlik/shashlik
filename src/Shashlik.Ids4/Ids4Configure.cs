@@ -9,12 +9,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using RSAExtensions;
 using Shashlik.AspNetCore;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
-using Shashlik.Utils.Rsa;
 
 namespace Shashlik.Ids4
 {
