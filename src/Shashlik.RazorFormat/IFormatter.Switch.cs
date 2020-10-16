@@ -1,10 +1,8 @@
-﻿using Shashlik.Utils.Extensions;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.RazorFormat
+namespace Shashlik.RazorFormat
 {
 
     /**

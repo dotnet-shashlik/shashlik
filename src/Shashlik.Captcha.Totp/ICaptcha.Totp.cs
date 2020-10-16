@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
@@ -18,14 +19,16 @@ namespace Shashlik.Captcha.Totp
     internal class TotpCatpcha : ICaptcha, ISingleton
     {
         public TotpCatpcha(IOptionsMonitor<CaptchaOptions> options,
-            IKeyRingProvider keyRingProvider)
+            IKeyRingProvider keyRingProvider, IDataProtectionProvider dataProtectionProvider)
         {
             Options = options;
             KeyRingProvider = keyRingProvider;
+            DataProtectionProvider = dataProtectionProvider;
             Rfc6238AuthenticationService.SetTimeStep(TimeSpan.FromSeconds(options.CurrentValue.LifeTimeSecond));
         }
 
         private IKeyRingProvider KeyRingProvider { get; }
+        private  IDataProtectionProvider DataProtectionProvider { get; }
         private IOptionsMonitor<CaptchaOptions> Options { get; }
 
         /// <summary>

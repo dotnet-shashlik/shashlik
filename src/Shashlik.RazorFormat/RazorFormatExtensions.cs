@@ -1,15 +1,14 @@
-﻿using Shashlik.Utils.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
+using Shashlik.Utils.Extensions;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeTypeMemberModifiers
 // ReSharper disable UseDeconstruction
 // ReSharper disable InvertIf
 
-namespace Shashlik.Utils.RazorFormat
+namespace Shashlik.RazorFormat
 {
     public static class RazorFormatExtensions
     {
@@ -97,7 +96,8 @@ namespace Shashlik.Utils.RazorFormat
                         var formater = formatters.GetOrDefault(action);
                         if (formater != null)
                         {
-                            var expression = formatExp.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(').TrimEnd(')').Trim();
+                            var expression = formatExp.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
+                                .TrimEnd(')').Trim();
                             var valueStr = v?.ToString();
                             var s = formater.Format(valueStr, expression);
                             value = value.Replace(item.Value, s ?? "");
@@ -116,6 +116,5 @@ namespace Shashlik.Utils.RazorFormat
 
             return value;
         }
-
     }
 }

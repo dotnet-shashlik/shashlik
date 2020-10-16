@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.EfCore.Transaction
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Pager", "Shashlik.Pager\Shashlik.Pager.csproj", "{A8735F96-4B93-4420-A0AA-586A570DB4AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.RazorFormat", "Shashlik.RazorFormat\Shashlik.RazorFormat.csproj", "{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -252,6 +254,12 @@ Global
 		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

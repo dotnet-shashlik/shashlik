@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Text;
 using Xunit;
 using Shouldly;
 using Shashlik.Utils.Extensions;
-using System.Threading;
-using Newtonsoft.Json.Linq;
-using Shashlik.Utils.RazorFormat;
-using Newtonsoft.Json;
+using Shashlik.RazorFormat;
 using Shashlik.Utils.Helpers.Encrypt;
 using Xunit.Abstractions;
 using JsonSerializer = System.Text.Json.JsonSerializer;

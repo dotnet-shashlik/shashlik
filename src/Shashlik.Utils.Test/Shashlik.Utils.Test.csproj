@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shashlik.RazorFormat\Shashlik.RazorFormat.csproj" />
     <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
 
