@@ -53,7 +53,8 @@ namespace Shashlik.Utils.Helpers
         /// <param name="table">数据表</param>
         /// <param name="beginRowNumber">从第几行开始写,索引从0开始</param>
         /// <param name="colRowNumber">从第几列开始,索引从0开始</param>
-        public static void WriteTo(Stream template, Stream outputStream, DataTable table, int beginRowNumber = 0, int colRowNumber = 0)
+        public static void WriteTo(Stream template, Stream outputStream, DataTable table, int beginRowNumber = 0,
+            int colRowNumber = 0)
         {
             var workbook = new XSSFWorkbook(template);
             var sheet = workbook.GetSheetAt(0);
@@ -68,6 +69,7 @@ namespace Shashlik.Utils.Helpers
                     var value = rowData[j] == null || rowData[j] == DBNull.Value ? "" : rowData[j].ToString();
                     row.CreateCell(j + colRowNumber).SetCellValue(value);
                 }
+
                 rowNumber++;
             }
 
@@ -82,7 +84,6 @@ namespace Shashlik.Utils.Helpers
         /// <param name="containsTitle">是否包含标题(列名)</param>
         public static void WriteTo(Stream outputStream, DataTable table, bool containsTitle)
         {
-
             var workbook = new XSSFWorkbook();
             var sheet = workbook.CreateSheet(table.TableName.IsNullOrWhiteSpace() ? "Sheet1" : table.TableName);
 
@@ -105,6 +106,7 @@ namespace Shashlik.Utils.Helpers
                     var value = rowData[j] == null || rowData[j] == DBNull.Value ? "" : rowData[j].ToString();
                     row.CreateCell(j).SetCellValue(value);
                 }
+
                 rowNumber++;
             }
 
