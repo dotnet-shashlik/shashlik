@@ -23,23 +23,21 @@ namespace Shashlik.Captcha.DistributedCache
         }
 
         private IDistributedCache Cache { get; }
-
         private IOptionsMonitor<CaptchaOptions> Options { get; }
 
-        // 0:subject,1:target
-        private const string CachePrefix = "CAPTCHA:{0}:{1}";
-
         /// <summary>
-        /// 验证code是否正确
+        /// 验证码是否正确
         /// </summary>
-        /// <param name="purpose">验证码类型</param>
-        /// <param name="target">验证目标</param>
-        /// <param name="code">验证码</param>
-        /// <param name="isDeleteOnSucceed"></param>
+        /// <param name="purpose">验证类型,区分大小写</param>
+        /// <param name="target">验证对象,target可以是邮件/手机等 都可以,区分大小写</param>
+        /// <param name="code"></param>
+        /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
+        /// <param name="isDeleteOnSucceed">验证成功后是否删除,totp无效</param>
         /// <returns></returns>
-        public async Task<bool> IsValid(string purpose, string target, string code, bool isDeleteOnSucceed = true)
+        public async Task<bool> IsValid(string purpose, string target, string code, string securityStamp = null,
+            bool isDeleteOnSucceed = true)
         {
-            var key = CachePrefix.Format(purpose, target);
+            var key = GetKey(purpose, target, securityStamp);
 
             var codeModel = await Cache.GetObjectAsync<CodeModel>(key);
             if (codeModel == null)
@@ -63,19 +61,22 @@ namespace Shashlik.Captcha.DistributedCache
             return false;
         }
 
+
         /// <summary>
         /// 生成验证码
         /// </summary>
-        /// <param name="purpose">验证类型</param>
-        /// <param name="target">验证目标</param>
-        /// <param name="codeLength"></param>
+        /// <param name="purpose">验证类型,区分大小写</param>
+        /// <param name="target">验证对象,target可以是邮件/手机等 都可以,区分大小写</param>
+        /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
+        /// <param name="codeLength">验证码长度,totp无效</param>
         /// <returns></returns>
-        public async Task<CodeModel> Build(string purpose, string target, int codeLength = 6)
+        public async Task<CodeModel> Build(string purpose, string target, string securityStamp = null,
+            int codeLength = 6)
         {
             if (purpose == null) throw new ArgumentNullException(nameof(purpose));
             if (target == null) throw new ArgumentNullException(nameof(target));
 
-            var key = CachePrefix.Format(purpose, target);
+            var key = GetKey(purpose, target, securityStamp);
             var now = DateTime.Now;
 
             var codeModel = new CodeModel
@@ -90,6 +91,13 @@ namespace Shashlik.Captcha.DistributedCache
 
             await Cache.SetObjectAsync(key, codeModel, codeModel.ExpiresAt);
             return codeModel;
+        }
+
+        private string GetKey(string purpose, string target, string securityStamp = null)
+        {
+            if (securityStamp.IsNullOrWhiteSpace())
+                return "CAPTCHA:{0}:{1}".Format(purpose, target);
+            return "CAPTCHA:{0}:{1}:{2}".Format(purpose, target, securityStamp);
         }
     }
 }

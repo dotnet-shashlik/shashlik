@@ -5,14 +5,14 @@ using Xunit;
 
 namespace Shashlik.Kernel.Test
 {
-    public abstract class TestBase : IClassFixture<TestWebApplicationFactory<TestStartup>>, IDisposable
+    public abstract class KernelTestBase : IClassFixture<TestWebApplicationFactory<TestStartup>>, IDisposable
     {
         protected TestWebApplicationFactory<TestStartup> Factory { get; }
         protected HttpClient HttpClient { get; }
         protected IServiceScope ServiceScope { get; }
 
 
-        public TestBase(TestWebApplicationFactory<TestStartup> factory)
+        public KernelTestBase(TestWebApplicationFactory<TestStartup> factory)
         {
             Factory = factory;
             HttpClient = factory.CreateClient();

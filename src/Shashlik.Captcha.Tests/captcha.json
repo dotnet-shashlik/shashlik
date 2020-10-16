@@ -1,0 +1,9 @@
+﻿{
+  "Shashlik": {
+    "Captcha": {
+      "Enable": true,
+      "LifeTimeSecond": 120,
+      "MaxErrorCount": 3
+    }
+  }
+}

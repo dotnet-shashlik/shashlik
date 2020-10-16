@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Shashlik.Kernel.Test
 {
-    public class IntegrationTest : TestBase
+    public class IntegrationTest : KernelTestBase
     {
         public IntegrationTest(TestWebApplicationFactory<TestStartup> factory) : base(factory)
         {

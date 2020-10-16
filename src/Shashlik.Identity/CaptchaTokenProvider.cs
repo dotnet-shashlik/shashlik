@@ -36,8 +36,8 @@ namespace Shashlik.Identity
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
             if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
-            var target = GetTarget(await manager.GetUserIdAsync(user), securityStamp);
-            var code = await Captcha.Build(purpose, target, Options.Value.CaptchaLength);
+            var target = GetTarget(await manager.GetUserIdAsync(user));
+            var code = await Captcha.Build(purpose, target, securityStamp, Options.Value.CaptchaLength);
             return code.Code;
         }
 
@@ -54,8 +54,8 @@ namespace Shashlik.Identity
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
             if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
-            var target = GetTarget(await manager.GetUserIdAsync(user), securityStamp);
-            return await Captcha.IsValid(purpose, target, token);
+            var target = GetTarget(await manager.GetUserIdAsync(user));
+            return await Captcha.IsValid(purpose, target, token, securityStamp);
         }
 
         /// <summary>
@@ -69,15 +69,9 @@ namespace Shashlik.Identity
             return Task.FromResult(true);
         }
 
-        /// <summary>
-        /// 计算验证码目标,userid+securityStamp,即用户有更换securityStamp的操作,验证码将无效
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="securityStamp"></param>
-        /// <returns></returns>
-        private static string GetTarget(string id, string securityStamp)
+        private static string GetTarget(string id)
         {
-            return $"{id}:{securityStamp}";
+            return id.ToString();
         }
     }
 }

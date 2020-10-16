@@ -1,10 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using AspectCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Test
 {
@@ -16,19 +19,19 @@ namespace Shashlik.Kernel.Test
                 Host.CreateDefaultBuilder()
                     .UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
                     .UseEnvironment("Development")
-                    .ConfigureAppConfiguration((host, config) =>
+                    .ConfigureAppConfiguration((host, builder) =>
                     {
-                        config
-                            .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "settings"))
-                            // .AddJsonFile("TestOption1.json")
-                            // .AddJsonFile("TestOption2.json")
-                            .AddEnvironmentVariables();
+                        var list = AssemblyHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
+
+                        foreach (var typeInfo in list)
+                        {
+                            (Activator.CreateInstance(typeInfo) as ITestConfigurationBuilder)
+                                !.Build(builder);
+                        }
+
+                        builder.AddEnvironmentVariables();
                     })
-                    
-                    .ConfigureWebHostDefaults(x =>
-                    {
-                        x.UseStartup<TStartup>().UseTestServer();
-                    });
+                    .ConfigureWebHostDefaults(x => { x.UseStartup<TStartup>().UseTestServer(); });
         }
     }
 }
