@@ -1,0 +1,9 @@
+﻿{
+  "Shashlik": {
+    "DataProtector": {
+      "MySql": {
+        "ConnectionString": "server=192.168.50.178;database=sbt;user=root;password=jizhen.cool.0416;Pooling=True;Min Pool Size=3;Max Pool Size=5;"
+      }
+    }
+  }
+}

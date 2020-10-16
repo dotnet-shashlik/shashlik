@@ -62,7 +62,7 @@ namespace Shashlik.DataProtector.PostgreSql
 
             using var cmd = conn.CreateCommand();
             var batchSql = $@"
-CREATE TABLE IF NOT EXISTS ""public.{Options.TableName}""(
+CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 	""Id"" SERIAL PRIMARY KEY,
 	""Xml"" VARCHAR(4000) NOT NULL,
 	""CreateTime"" TIMESTAMP NOT NULL
