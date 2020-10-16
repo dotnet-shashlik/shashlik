@@ -30,13 +30,13 @@ namespace Shashlik.DataProtector.MySql
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM {Option.TableName};";
+            cmd.CommandText = $"SELECT * FROM `{Option.TableName}`;";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
             foreach (DataRow row in table.Rows)
             {
-                var xml = row[0].ToString();
+                var xml = row["xml"].ToString();
                 yield return XElement.Parse(xml);
             }
         }
@@ -47,7 +47,7 @@ namespace Shashlik.DataProtector.MySql
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $@"insert into `{Option.TableName}`(xml,createtime) values(@xml,now());";
+            var sql = $@"insert into `{Option.TableName}`(`xml`,`createtime`) values(@xml,now());";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new MySqlParameter("@xml", MySqlDbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});

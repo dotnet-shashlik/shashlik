@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Xml.Linq;
@@ -30,13 +31,13 @@ namespace Shashlik.DataProtector.PostgreSql
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM {Options.TableName};";
+            cmd.CommandText = $"SELECT * FROM \"{Options.TableName}\";";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
             foreach (DataRow row in table.Rows)
             {
-                var xml = row[0].ToString();
+                var xml = row["Xml"].ToString();
                 yield return XElement.Parse(xml);
             }
         }
@@ -47,10 +48,12 @@ namespace Shashlik.DataProtector.PostgreSql
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $@"insert into `{Options.TableName}`(xml,createtime) values(@xml,now());";
+            var sql = $"insert into \"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new NpgsqlParameter("@xml", DbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
+            cmd.Parameters.Add(new NpgsqlParameter("@now", DbType.DateTime)
+                {Value = DateTime.Now});
             cmd.ExecuteNonQuery();
         }
 

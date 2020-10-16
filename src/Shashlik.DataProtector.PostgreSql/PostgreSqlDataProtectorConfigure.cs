@@ -28,7 +28,8 @@ namespace Shashlik.DataProtector.PostgreSql
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
-                .SetApplicationName(Options.ApplicationName);
+                .SetApplicationName(Options.ApplicationName)
+                ;
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {
