@@ -1,10 +1,9 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
+using MySqlConnector;
 
 namespace Shashlik.DataProtector.MySql
 {
@@ -14,6 +13,7 @@ namespace Shashlik.DataProtector.MySql
     public class MySqlXmlRepository : IXmlRepository
     {
         private MySqlDataProtectorOptions Option { get; }
+        private string ConnectionString { get; }
 
         /// <summary>
         /// 
@@ -22,6 +22,8 @@ namespace Shashlik.DataProtector.MySql
         public MySqlXmlRepository(MySqlDataProtectorOptions option)
         {
             Option = option;
+            ConnectionString = option.ConnectionString;
+            InitDb();
         }
 
         /// <inheritdoc />
@@ -32,19 +34,57 @@ namespace Shashlik.DataProtector.MySql
 
         private IEnumerable<XElement> GetAllElementsCore()
         {
-            // Note: Inability to read any value is considered a fatal error (since the file may contain
-            // revocation information), and we'll fail the entire operation rather than return a partial
-            // set of elements. If a value contains well-formed XML but its contents are meaningless, we
-            // won't fail that operation here. The caller is responsible for failing as appropriate given
-            // that scenario.
-            return null;
+            using var conn = new MySqlConnection(ConnectionString);
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM {Option.TableName};";
+            var reader = cmd.ExecuteReader();
+            var table = new DataTable();
+            table.Load(reader);
+            foreach (DataRow row in table.Rows)
+            {
+                var xml = row[0].ToString();
+                yield return XElement.Parse(xml);
+            }
         }
 
         /// <inheritdoc />
         public void StoreElement(XElement element, string friendlyName)
         {
-            // var database = _databaseFactory();
-            // database.ListRightPush();
+            using var conn = new MySqlConnection(ConnectionString);
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
+            using var cmd = conn.CreateCommand();
+            var sql = $@"insert into `{Option.TableName}`(xml,createtime) values(@xml,now());";
+            cmd.CommandText = sql;
+            cmd.Parameters.Add(new MySqlParameter("@xml", MySqlDbType.String)
+                {Value = element.ToString(SaveOptions.DisableFormatting)});
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// 初始化数据库
+        /// </summary>
+        /// <param name="connString"></param>
+        private void InitDb()
+        {
+            using var conn = new MySqlConnection(ConnectionString);
+            if (conn.State == ConnectionState.Closed)
+                conn.Open();
+
+            using var cmd = conn.CreateCommand();
+            // 创建架构和数据表
+            var batchSql = $@"
+CREATE TABLE IF NOT EXISTS `{Option.TableName}`(
+	`id` INT AUTO_INCREMENT NOT NULL,
+    `xml` VARCHAR(4000) NOT NULL,
+	`createtime` DATETIME NOT NULL,
+    PRIMARY KEY (`id`)
+);
+";
+            cmd.CommandText = batchSql;
+            cmd.ExecuteNonQuery();
         }
     }
 }

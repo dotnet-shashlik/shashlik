@@ -13,12 +13,12 @@ namespace Shashlik.DataProtector.MySql
         /// <summary>
         /// 数据库连接字符串
         /// </summary>
-        public string ConnectionString { get; set; } 
-        
+        public string ConnectionString { get; set; }
+
         /// <summary>
         /// 表名
         /// </summary>
-        public string TableName { get; set; } = "ShashlikDataProtectionKeys";
+        public string TableName { get; set; } = "shashlik.data.protection.keys";
 
         /// <summary>
         /// 应用程序名称

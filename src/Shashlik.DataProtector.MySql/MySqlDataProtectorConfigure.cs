@@ -27,7 +27,7 @@ namespace Shashlik.DataProtector.MySql
                 return;
 
             if (Options.ConnectionString.IsNullOrWhiteSpace())
-                throw  new InvalidOperationException($"ConnectionString can not be empty.");
+                throw new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
