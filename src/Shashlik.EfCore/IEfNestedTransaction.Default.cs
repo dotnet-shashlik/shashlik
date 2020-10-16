@@ -12,12 +12,12 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransactionWrapper, TDbContext dbContext)
+        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransactionWrapper, TDbContext dbContext,
+            IEfNestedTransactionBeginTransaction<TDbContext> beginTransactionMethod)
         {
             EfTransactionWrapper = efTransactionWrapper;
             DbContext = dbContext;
-            // 从服务中获取开启事务的方式,没注册的话就是null
-            BeginTransactionMethod = dbContext.GetService<IEfNestedTransactionMethod<TDbContext>>();
+            BeginTransactionMethod = beginTransactionMethod;
         }
 
         /// <summary>
@@ -26,14 +26,14 @@ namespace Shashlik.EfCore
         private IEfNestedTransactionWrapper EfTransactionWrapper { get; }
 
         /// <summary>
+        /// 开启事务的方式
+        /// </summary>
+        private IEfNestedTransactionBeginTransaction<TDbContext> BeginTransactionMethod { get; }
+
+        /// <summary>
         /// 数据库上下文
         /// </summary>
         private TDbContext DbContext { get; }
-
-        /// <summary>
-        /// 开启事务的方式
-        /// </summary>
-        private IEfNestedTransactionMethod<TDbContext> BeginTransactionMethod { get; }
 
         /// <summary>
         /// 当前事务
