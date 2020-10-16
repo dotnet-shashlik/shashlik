@@ -30,10 +30,8 @@ namespace Shashlik.DataProtector.Redis
             if (!Options.Enable)
                 return;
 
-
             if (Options.Key.IsNullOrWhiteSpace())
                 throw new InvalidOperationException($"Certificate must be contains private key.");
-
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
