@@ -7,12 +7,10 @@ namespace Shashlik.Captcha
     /// </summary>
     public class CodeModel
     {
-        public long Id { get; set; }
-
         /// <summary>
         /// 验证码类型
         /// </summary>
-        public string Subject { get; set; }
+        public string Purpose { get; set; }
 
         /// <summary>
         /// 发送目标

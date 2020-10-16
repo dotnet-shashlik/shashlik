@@ -61,8 +61,7 @@ namespace Shashlik.Captcha.Totp
             var code = TotpGenerator.Generate(key);
             return Task.FromResult(new CodeModel
             {
-                Id = code,
-                Subject = purpose,
+                Purpose = purpose,
                 Target = target,
                 Code = code.ToString("D6"),
                 ErrorCount = 0,

@@ -61,7 +61,6 @@ namespace Shashlik.Captcha.DistributedCache
             return false;
         }
 
-
         /// <summary>
         /// 生成验证码
         /// </summary>
@@ -82,7 +81,7 @@ namespace Shashlik.Captcha.DistributedCache
             var codeModel = new CodeModel
             {
                 Code = RandomHelper.GetRandomCode(codeLength),
-                Subject = purpose,
+                Purpose = purpose,
                 Target = target,
                 ExpiresAt = now.AddSeconds(Options.CurrentValue.LifeTimeSecond),
                 SendTime = now,
