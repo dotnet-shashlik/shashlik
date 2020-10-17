@@ -1,20 +1,19 @@
 ﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.JsonPatch.AspNetCore
+namespace Shashlik.JsonPatch.ModelBinder
 {
     public class PatchUpdateBinder : IModelBinder
     {
-
         public Task BindModelAsync(ModelBindingContext bindingContext)
         {
             var str = bindingContext.HttpContext.Request.BodyReader.AsStream().ReadToString();
-            var jobject = JsonConvert.DeserializeObject<JObject>(str);
-            var instance = Activator.CreateInstance(bindingContext.ModelType, jobject);
+            var jsonElement = JsonConvert.DeserializeObject<JsonElement>(str);
+            var instance = Activator.CreateInstance(bindingContext.ModelType, jsonElement);
             bindingContext.Result = ModelBindingResult.Success(instance);
             return Task.CompletedTask;
         }

@@ -53,8 +53,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Response", "Shashl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.JsonPatch", "Shashlik.JsonPatch\Shashlik.JsonPatch.csproj", "{7F170155-2445-45B2-8977-B5A671696A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.JsonPatch.AspNetCore", "Shashlik.JsonPatch.AspNetCore\Shashlik.JsonPatch.AspNetCore.csproj", "{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtector.MySql", "Shashlik.DataProtector.MySql\Shashlik.DataProtector.MySql.csproj", "{EE3FBB28-BDC0-4589-91B9-DFBAABC674EA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtector.PostgreSql", "Shashlik.DataProtector.PostgreSql\Shashlik.DataProtector.PostgreSql.csproj", "{6920A36C-4D5F-4A00-A405-013F216909B2}"
@@ -72,6 +70,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.MySql.Tests", "Shashlik.DataProtection.MySql.Tests\Shashlik.DataProtection.MySql.Tests.csproj", "{B3D5219A-505C-4328-8C6B-D1C2E88D62F4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.PostgreSql.Tests", "Shashlik.DataProtection.PostgreSql.Tests\Shashlik.DataProtection.PostgreSql.Tests.csproj", "{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.JsonPatch.ModelBinder", "Shashlik.JsonPatch.ModelBinder\Shashlik.JsonPatch.ModelBinder.csproj", "{F2525FFB-D29E-4E57-B655-4F458517D7FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -224,12 +224,6 @@ Global
 		{7F170155-2445-45B2-8977-B5A671696A2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F170155-2445-45B2-8977-B5A671696A2C}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F170155-2445-45B2-8977-B5A671696A2C}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9D05CFF-7D27-437F-980E-04DE72C9D6C5}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{EE3FBB28-BDC0-4589-91B9-DFBAABC674EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE3FBB28-BDC0-4589-91B9-DFBAABC674EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE3FBB28-BDC0-4589-91B9-DFBAABC674EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -284,6 +278,12 @@ Global
 		{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2525FFB-D29E-4E57-B655-4F458517D7FF}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

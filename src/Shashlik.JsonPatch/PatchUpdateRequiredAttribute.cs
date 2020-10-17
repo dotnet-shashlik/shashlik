@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Shashlik.Utils.Extensions;
 
 // ReSharper disable InvertIf
 
@@ -15,16 +14,13 @@ namespace Shashlik.JsonPatch
             if (!(validationContext.ObjectInstance is PatchUpdateBase obj))
                 return ValidationResult.Success;
 
-            foreach (var item in obj.Origin)
+            if (obj.Values.ContainsKey(validationContext.MemberName))
             {
-                if (item.Key.EqualsIgnoreCase(validationContext.MemberName))
-                {
-                    var errorResult = new ValidationResult(this.FormatErrorMessage(validationContext.DisplayName),
-                        new string[] {validationContext.MemberName});
+                var errorResult = new ValidationResult(FormatErrorMessage(validationContext.DisplayName),
+                    new[] {validationContext.MemberName});
 
-                    // 存在该属性
-                    return !base.IsValid(value) ? errorResult : ValidationResult.Success;
-                }
+                // 存在该属性
+                return !base.IsValid(value) ? errorResult : ValidationResult.Success;
             }
 
             // 不存在该属性,不验证

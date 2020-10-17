@@ -5,19 +5,22 @@
 
 namespace Shashlik.JsonPatch
 {
+    /// <summary>
+    /// 自定义属性值转换器
+    /// </summary>
     public class PatchUpdateConverter
     {
-        public PatchUpdateConverter(string sourcePro, Func<object, (string targetPro, object targetValue)> convert)
+        public PatchUpdateConverter(string sourcePro, string targetPro, Func<object, object> convertFunction)
         {
-            if (string.IsNullOrWhiteSpace(sourcePro))
-                throw new ArgumentException("sourcePro can not be empty.", nameof(sourcePro));
-
             SourcePro = sourcePro;
-            Convert = convert ?? throw new ArgumentNullException(nameof(convert));
+            TargetPro = targetPro;
+            ConvertFunction = convertFunction;
         }
 
-        public string SourcePro { get; set; }
+        public string SourcePro { get; }
 
-        public Func<object, (string targetPro, object targetValue)> Convert { get; set; }
+        public string TargetPro { get; }
+
+        public Func<object, object> ConvertFunction { get; }
     }
 }
