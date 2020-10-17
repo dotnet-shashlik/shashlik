@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>netstandard2.1</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
     </ItemGroup>
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
         <PackageReference Include="CSRedisCore" Version="3.6.5" />
-        <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
-
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 
         <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
