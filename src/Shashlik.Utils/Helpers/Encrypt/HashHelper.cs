@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Shashlik.Utils.Helpers.Encrypt
+namespace Shashlik.Utils.Helpers
 {
     public static class HashHelper
     {
@@ -12,38 +12,23 @@ namespace Shashlik.Utils.Helpers.Encrypt
         /// <summary>
         /// MD5加密
         /// </summary>
-        public static string Md532(string value, Encoding encoding = null)
+        public static string MD5(string value, Encoding encoding = null)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             encoding ??= Encoding.UTF8;
-            using var md5 = MD5.Create();
+            using var md5 = System.Security.Cryptography.MD5.Create();
             return HashAlgorithmBase(md5, value, encoding);
         }
 
         /// <summary>
-        /// HmacSha256,默认 UTF8编码,原始字符串结果
+        /// HmacSha256,默认 UTF8编码,结果是base64后的
         /// </summary>
         /// <param name="value"></param>
         /// <param name="secret"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string HmacSha256(string value, string secret, Encoding encoding = null)
-        {
-            encoding ??= Encoding.UTF8;
-            var keyByte = encoding.GetBytes(secret);
-            using var hmacSha256 = new HMACSHA256(keyByte);
-            return HashAlgorithmBase(hmacSha256, value, encoding);
-        }
-
-        /// <summary>
-        /// HmacSha256,默认 UTF8编码,结果是base64后的,不同于直接不同于直接HmacSha256再转base64再转base64
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="secret"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string HmacSha256Base64(string value, string secret, Encoding encoding = null)
+        public static string HMACSHA256(string value, string secret, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyByte = encoding.GetBytes(secret);
@@ -54,28 +39,13 @@ namespace Shashlik.Utils.Helpers.Encrypt
         }
 
         /// <summary>
-        /// HmacSha1,默认 UTF8编码,原始字符串结果
+        /// HmacSha1,默认 UTF8编码,结果是base64后的
         /// </summary>
         /// <param name="value"></param>
         /// <param name="secret"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string HmacSha1(string value, string secret, Encoding encoding = null)
-        {
-            encoding ??= Encoding.UTF8;
-            var keyByte = encoding.GetBytes(secret);
-            using var hmacSha1 = new HMACSHA1(keyByte);
-            return HashAlgorithmBase(hmacSha1, value, encoding);
-        }
-
-        /// <summary>
-        /// HmacSha1,默认 UTF8编码,结果是base64后的,不同于直接HmacSha1再转base64
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="secret"></param>
-        /// <param name="encoding"></param>
-        /// <returns></returns>
-        public static string HmacSha1Base64(string value, string secret, Encoding encoding = null)
+        public static string HMACSHA1(string value, string secret, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyByte = encoding.GetBytes(secret);
@@ -88,17 +58,17 @@ namespace Shashlik.Utils.Helpers.Encrypt
         /// <summary>
         /// SHA1 
         /// </summary>
-        public static string Sha1(string value, Encoding encoding = null)
+        public static string SHA1(string value, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            using SHA1 sha1 = new SHA1CryptoServiceProvider();
+            using SHA1 sha1 = new SHA1Managed();
             return HashAlgorithmBase(sha1, value, encoding);
         }
 
         /// <summary>
         /// SHA256 
         /// </summary>
-        public static string Sha256(string value, Encoding encoding = null)
+        public static string SHA256(string value, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
             using SHA256 sha256 = new SHA256Managed();
@@ -106,9 +76,9 @@ namespace Shashlik.Utils.Helpers.Encrypt
         }
 
         /// <summary>
-        /// SHA512 加密
+        /// SHA512
         /// </summary>
-        public static string Sha512(string value, Encoding encoding = null)
+        public static string SHA512(string value, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
             using SHA512 sha512 = new SHA512Managed();

@@ -5,13 +5,23 @@ using System.Security.Cryptography;
 using System.Text;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Utils.Helpers.Encrypt
+namespace Shashlik.Utils.Helpers
 {
     /// <summary>
-    /// 3desc
+    /// 3des
     /// </summary>
     public class TripleDesHelper
     {
+        /// <summary>
+        ///  加密
+        /// </summary>
+        /// <param name="plainText">明文</param>
+        /// <param name="key">密钥</param>
+        /// <param name="mode">加密模式</param>
+        /// <param name="paddingMode">填充模式</param>
+        /// <param name="encoder">明文编码方式</param>
+        /// <param name="iv">加密向量</param>
+        /// <returns></returns>
         public static string Encrypt(string plainText, string key, CipherMode mode = CipherMode.ECB,
             PaddingMode paddingMode = PaddingMode.PKCS7, Encoding encoder = null, string iv = null)
         {
@@ -23,6 +33,16 @@ namespace Shashlik.Utils.Helpers.Encrypt
             return Convert.ToBase64String(output);
         }
 
+        /// <summary>
+        /// 解密
+        /// </summary>
+        /// <param name="cypherText">密文</param>
+        /// <param name="key">密钥</param>
+        /// <param name="mode">加密模式</param>
+        /// <param name="paddingMode">填充模式</param>
+        /// <param name="encoder">明文编码方式</param>
+        /// <param name="iv">加密向量</param>
+        /// <returns></returns>
         public static string Decrypt(string cypherText, string key, CipherMode mode = CipherMode.ECB,
             PaddingMode paddingMode = PaddingMode.PKCS7, Encoding encoder = null,
             string iv = null)

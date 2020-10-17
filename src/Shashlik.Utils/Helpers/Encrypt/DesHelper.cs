@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Shashlik.Utils.Helpers.Encrypt
+namespace Shashlik.Utils.Helpers
 {
     public static class DesHelper
     {

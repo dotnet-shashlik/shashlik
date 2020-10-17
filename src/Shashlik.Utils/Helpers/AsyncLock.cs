@@ -39,7 +39,8 @@ namespace Shashlik.Utils.Helpers
                 : waitTask.ContinueWith(
                     (_, state) => ((AsyncLock) state)._releaser,
                     this, CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously| TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
+                    TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion,
+                    TaskScheduler.Default);
         }
 
         /// <summary>

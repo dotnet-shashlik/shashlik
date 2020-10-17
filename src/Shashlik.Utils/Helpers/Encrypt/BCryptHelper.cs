@@ -1,4 +1,4 @@
-﻿namespace Shashlik.Utils.Helpers.Encrypt
+﻿namespace Shashlik.Utils.Helpers
 {
     public static class BCryptHelper
     {
