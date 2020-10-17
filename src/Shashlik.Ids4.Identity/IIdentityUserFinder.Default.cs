@@ -32,7 +32,7 @@ namespace Shashlik.Ids4.Identity
         public async Task<Users?> FindByUnifierAsync(string identity, ShashlikUserManager manager,
             NameValueCollection postData)
         {
-            Users user = null;
+            Users? user = null;
             // 手机号唯一才能使用手机号码登录
             if (IdentityOptionsExtends.Value.RequireUniquePhoneNumber &&
                 ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts.PhoneSource))

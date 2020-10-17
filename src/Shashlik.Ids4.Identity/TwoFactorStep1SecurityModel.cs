@@ -5,7 +5,7 @@
         /// <summary>
         /// userid
         /// </summary>
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         /// <summary>
         /// 过期时间

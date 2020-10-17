@@ -23,7 +23,6 @@ namespace Shashlik.Kernel.Test
                var c= GetService<ICustomService>();
                c.Call1();
                c.Call2();
-               return;
             }
             
             

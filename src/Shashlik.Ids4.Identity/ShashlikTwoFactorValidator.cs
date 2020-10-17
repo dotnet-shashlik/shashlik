@@ -62,7 +62,7 @@ namespace Shashlik.Ids4.Identity
                         .Unprotect(security);
                     model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     errorCode = ErrorCodes.SecurityError;
                 }

@@ -28,7 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shashlik.AspNetCore\Shashlik.AspNetCore.csproj" />
-    <ProjectReference Include="..\Shashlik.Kernel.AspNetCore\Shashlik.Kernel.AspNetCore.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
   </ItemGroup>
