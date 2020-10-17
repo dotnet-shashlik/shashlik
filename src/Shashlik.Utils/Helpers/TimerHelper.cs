@@ -15,14 +15,16 @@ namespace Shashlik.Utils.Helpers
         /// <return>返回timer对象</return>
         public static void SetTimeout(Action action, TimeSpan expire, CancellationToken? cancellationToken = null)
         {
+            cancellationToken ??= CancellationToken.None;
+
             if (expire <= TimeSpan.Zero)
                 throw new ArgumentException("invalid expire.", nameof(expire));
             Task.Run(() =>
             {
-                Task.Delay((int) expire.TotalMilliseconds)
-                    .ContinueWith(task => action())
+                Task.Delay((int) expire.TotalMilliseconds, cancellationToken.Value)
+                    .ContinueWith(task => action(), cancellationToken.Value)
                     .ConfigureAwait(false);
-            }, cancellationToken ?? CancellationToken.None);
+            });
         }
 
         /// <summary>
@@ -35,19 +37,21 @@ namespace Shashlik.Utils.Helpers
         public static void SetTimeout(Action action, DateTimeOffset expireAt,
             CancellationToken? cancellationToken = null)
         {
+            cancellationToken ??= CancellationToken.None;
+
             if (expireAt <= DateTimeOffset.Now)
                 throw new ArgumentException("invalid expire.", nameof(expireAt));
 
             Task.Run(() =>
             {
-                Task.Delay((int) (expireAt - DateTimeOffset.Now).TotalMilliseconds)
-                    .ContinueWith(task => action())
+                Task.Delay((int) (expireAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
+                    .ContinueWith(task => action(), cancellationToken.Value)
                     .ConfigureAwait(false);
-            }, cancellationToken ?? CancellationToken.None);
+            });
         }
 
         /// <summary>
-        /// 定时执行任务
+        /// 定时执行任务,不会立即执行
         /// </summary>
         /// <param name="action">要执行的表达式</param>
         /// <param name="interval">间隔时间</param>
@@ -55,15 +59,16 @@ namespace Shashlik.Utils.Helpers
         /// <return>返回timer对象</return>
         public static void SetInterval(Action action, TimeSpan interval, CancellationToken? cancellationToken = null)
         {
+            cancellationToken ??= CancellationToken.None;
             if (interval <= TimeSpan.Zero)
                 throw new ArgumentException("invalid interval.", nameof(interval));
             Task.Run(() =>
             {
-                Task.Delay((int) interval.TotalMilliseconds)
-                    .ContinueWith(task => SetInterval(action, interval, cancellationToken))
-                    .ContinueWith(task => action())
+                Task.Delay((int) interval.TotalMilliseconds, cancellationToken.Value)
+                    .ContinueWith(task => SetInterval(action, interval, cancellationToken.Value))
+                    .ContinueWith(task => action(), cancellationToken.Value)
                     .ConfigureAwait(false);
-            }, cancellationToken ?? CancellationToken.None);
+            }, cancellationToken.Value);
         }
     }
 }

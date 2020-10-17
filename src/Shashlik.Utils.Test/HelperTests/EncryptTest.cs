@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Shashlik.Utils.Helpers.Encrypt;
+using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;

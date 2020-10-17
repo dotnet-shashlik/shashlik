@@ -5,7 +5,7 @@ using Xunit;
 using Shouldly;
 using Shashlik.Utils.Extensions;
 using Shashlik.RazorFormat;
-using Shashlik.Utils.Helpers.Encrypt;
+using Shashlik.Utils.Helpers;
 using Xunit.Abstractions;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -57,7 +57,7 @@ namespace Shashlik.Utils.Test
             _testOutputHelper.WriteLine("");
 
             // HmacSha256 hash
-            var hash = HashHelper.HmacSha256Base64(json, secret);
+            var hash = HashHelper.HMACSHA256(json, secret);
             _testOutputHelper.WriteLine(hash);
         }
 
