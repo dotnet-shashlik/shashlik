@@ -38,7 +38,7 @@ namespace Shashlik.Pager
             return
                 query
                     .OrderBy(order, input.SortField, input.SortType)
-                    .Paging(input.PageIndex, input.PageSize);
+                    .Page(input.PageIndex, input.PageSize);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Shashlik.Pager
         public static IQueryable<TEntity> DoPage<TEntity>(this IQueryable<TEntity> query,
             PageInput input)
         {
-            return query.Paging(input.PageIndex, input.PageSize);
+            return query.Page(input.PageIndex, input.PageSize);
         }
     }
 }

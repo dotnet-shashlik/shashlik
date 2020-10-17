@@ -1,5 +1,8 @@
 ﻿using System;
 
+// ReSharper disable ConvertIfStatementToReturnStatement
+// ReSharper disable RedundantIfElseBlock
+
 namespace Shashlik.Utils.Extensions
 {
     public static class DateTimeExtensions
@@ -8,7 +11,7 @@ namespace Shashlik.Utils.Extensions
         /// 获取本周第一天
         /// </summary>
         /// <param name="dt"></param>
-        /// <param name="whichFirst">哪一天的一周的开始</param>
+        /// <param name="whichFirst">哪一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetWeekFirstDay(this DateTime dt, DayOfWeek whichFirst = DayOfWeek.Monday)
         {
@@ -19,7 +22,7 @@ namespace Shashlik.Utils.Extensions
         /// 获取本周的最后一天
         /// </summary>
         /// <param name="dt"></param>
-        /// <param name="whichFirst">哪一天为一周的开始</param>
+        /// <param name="whichFirst">哪一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetWeekLastDay(this DateTime dt, DayOfWeek whichFirst = DayOfWeek.Monday)
         {
@@ -30,7 +33,7 @@ namespace Shashlik.Utils.Extensions
         /// 获取下周的最后一天
         /// </summary>
         /// <param name="dt"></param>
-        /// <param name="whichFirst">哪一天为一周的开始</param>
+        /// <param name="whichFirst">哪一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetNextWeekLastDay(this DateTime dt, DayOfWeek whichFirst = DayOfWeek.Monday)
         {
@@ -41,7 +44,7 @@ namespace Shashlik.Utils.Extensions
         /// 获取下周的第一天
         /// </summary>
         /// <param name="dt"></param>
-        /// <param name="whichFirst">哪一天为一周的开始</param>
+        /// <param name="whichFirst">哪一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetNextWeekFirstDay(this DateTime dt, DayOfWeek whichFirst = DayOfWeek.Monday)
         {
@@ -97,8 +100,6 @@ namespace Shashlik.Utils.Extensions
         public static DateTime GetNextSpecificDayOfWork(this DateTime dt, DayOfWeek dayOfWeek)
         {
             var offset = dayOfWeek - dt.DayOfWeek;
-            //if (offset == 0)
-            //    return dt;
             if (offset > 0)
                 return dt.AddDays(offset);
             else
@@ -106,27 +107,20 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取下一个指定的周几的日期,包含自身  
+        /// 获取下一个指定的周几的日期,包含输入的日期
         /// 如2016/12/27为周2, 获取下一个周2,2016/12/27,下一个周3就是2016/12/28
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static DateTime GetNextSpecificDayOfWorkContainSelf(this DateTime dt, DayOfWeek dayOfWeek)
+        public static DateTime GetCurrentOrNextSpecificDayOfWork(this DateTime dt, DayOfWeek dayOfWeek)
         {
             if (dt.DayOfWeek == dayOfWeek)
                 return dt;
-
-            var offset = dayOfWeek - dt.DayOfWeek;
-            //if (offset == 0)
-            //    return dt;
-            if (offset > 0)
-                return dt.AddDays(offset);
-            else
-                return dt.AddDays(7 + offset);
+            return dt.GetNextSpecificDayOfWork(dayOfWeek);
         }
 
         /// <summary>
-        /// 返回下一个指定的号
+        /// 返回下一个指定的日期
         /// 如2016/12/27 ,获取下一个20号:2017/1/20
         /// 2017/1/31 获取下一个31号:2017/3/31
         /// </summary>
@@ -135,8 +129,11 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static DateTime GetNextSpecificDayOfMonth(this DateTime dt, int dayOfMonth)
         {
-            if (dayOfMonth < 1 && dayOfMonth > 31)
-                throw new ArgumentException("dayofMonth 只能为1~31之前的整数");
+            if (dayOfMonth < 1 || dayOfMonth > 31)
+                throw new ArgumentOutOfRangeException(nameof(dayOfMonth));
+
+            if (dayOfMonth <= 28)
+                return dt.GetNextMonthFirstDay().AddDays(dayOfMonth);
 
             int offset = dayOfMonth - dt.Day;
 
@@ -158,7 +155,6 @@ namespace Shashlik.Utils.Extensions
                     }
                     catch (ArgumentOutOfRangeException)
                     {
-                        continue;
                     }
                 }
             }
@@ -182,48 +178,11 @@ namespace Shashlik.Utils.Extensions
         /// <param name="dt"></param>
         /// <param name="dayOfMonth"></param>
         /// <returns></returns>
-        public static DateTime GetNextSpecificDayOfMonthContainSelf(this DateTime dt, int dayOfMonth)
+        public static DateTime GetCurrentOrNextSpecificDayOfMonth(this DateTime dt, int dayOfMonth)
         {
-            if (dayOfMonth < 1 && dayOfMonth > 31)
-                throw new ArgumentException("dayofMonth 只能为1~31之前的整数");
-
             if (dt.Day == dayOfMonth)
                 return dt;
-
-            int offset = dayOfMonth - dt.Day;
-
-            var d = dt.AddDays(offset);
-
-            if (offset > 0)
-            {
-                if (d.Month == dt.Month)
-                    return d;
-
-                d = new DateTime(dt.Year, dt.Month, 1).AddMonths(1);
-                int i = 0;
-                while (true)
-                {
-                    try
-                    {
-                        var dd = d.AddDays(dayOfMonth).AddMonths(i++);
-                        return dd;
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                        continue;
-                    }
-                }
-            }
-            else
-            {
-                int i = 1;
-                while (true)
-                {
-                    var next = d.AddMonths(i++);
-                    if (next.Day == dayOfMonth)
-                        return next;
-                }
-            }
+            return dt.GetNextSpecificDayOfMonth(dayOfMonth);
         }
 
         public static string ToStringyyyyMMddHHmmss(this DateTime dt)
@@ -265,19 +224,6 @@ namespace Shashlik.Utils.Extensions
         public static long GetLongDate(this DateTime datetime)
         {
             return new DateTimeOffset(datetime).ToUnixTimeSeconds();
-        }
-
-        /// <summary>
-        /// 计算生日
-        /// </summary>
-        /// <param name="birthday"></param>
-        /// <returns></returns>
-        public static int? GetAge(this DateTime? birthday)
-        {
-            if (!birthday.HasValue)
-                return null;
-
-            return GetAge(birthday.Value);
         }
 
         /// <summary>
@@ -357,31 +303,36 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取当前所在季度的第一天
+        /// 获取所在季度的第一天
         /// </summary>
         /// <param name="today"></param>
         /// <returns></returns>
-        public static DateTime GetSeasonStartDate(this DateTime today)
+        public static DateTime GetQuarterFirstDay(this DateTime today)
         {
-            // 计算当前季度起始月
-            var seasonStartMonth = 1; // 1 2 3月为1月
-            if (DateTime.Today.Month >= 4 && DateTime.Today.Month < 7)
-            {
-                // 4 5 6月为4月
-                seasonStartMonth = 4;
-            }
-            else if (DateTime.Today.Month >= 7 && DateTime.Today.Month < 10)
-            {
-                // 7 8 9月为7月
-                seasonStartMonth = 7;
-            }
-            else if (DateTime.Today.Month >= 10)
-            {
-                // 10 11 12月为10月
-                seasonStartMonth = 10;
-            }
+            var quarter = today.GetQuarter();
+            return new DateTime(today.Year, (quarter - 1) * 3 + 1, 1);
+        }
 
-            return new DateTime(today.Year, seasonStartMonth, 1);
+        /// <summary>
+        /// 获取所在季度的最后一天
+        /// </summary>
+        /// <param name="today"></param>
+        /// <returns></returns>
+        public static DateTime GetQuarterLasyDay(this DateTime today)
+        {
+            var quarter = today.GetQuarter();
+            return new DateTime(today.Year, (quarter - 1) * 3 + 1, 1)
+                .AddMonths(3);
+        }
+
+        /// <summary>
+        /// 获取季度
+        /// </summary>
+        /// <param name="today"></param>
+        /// <returns></returns>
+        public static int GetQuarter(this DateTime today)
+        {
+            return (today.Month - 1) / 3 + 1;
         }
 
         /// <summary>

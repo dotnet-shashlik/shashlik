@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace Shashlik.Utils.Extensions
 {
-    public static class IEnumerableExtensions
+    public static class CollectionExtensions
     {
         /// <summary>
         /// 计算索引号
@@ -185,7 +185,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="pageIndex">当前页,索引从1开始</param>
         /// <param name="pageSize">每页大小</param>
         /// <returns></returns>
-        public static IQueryable<T> Paging<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
         {
             if (query == null)
             {
@@ -219,14 +219,23 @@ namespace Shashlik.Utils.Extensions
         /// 是否为空行
         /// </summary>
         /// <param name="row"></param>
+        /// <param name="whiteSpaceIs">空白字符串算不算空</param>
         /// <returns></returns>
-        public static bool IsEmptyRow(this DataRow row)
+        public static bool IsEmptyRow(this DataRow row, bool whiteSpaceIs = true)
         {
             for (int j = 0; j < row.Table.Columns.Count; j++)
             {
                 var value = row[j]?.ToString();
-                if (!value.IsNullOrWhiteSpace())
-                    return false;
+                if (whiteSpaceIs)
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return false;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value))
+                        return false;
+                }
             }
 
             return true;
@@ -256,15 +265,16 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 列表转DataTable
+        /// 列表转DataTable,将类型的<typeparamref name="T"/>属性作为列名
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
         /// <returns></returns>
-        public static DataTable ToDataTable<T>(this IList<T> data)
+        public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
             PropertyDescriptorCollection props =
                 TypeDescriptor.GetProperties(typeof(T));
+
             DataTable table = new DataTable();
             for (int i = 0; i < props.Count; i++)
             {
