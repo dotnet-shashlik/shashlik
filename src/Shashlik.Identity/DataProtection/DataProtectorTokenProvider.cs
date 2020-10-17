@@ -92,7 +92,7 @@ namespace Shashlik.Identity.DataProtection
                 writer.Write(DateTimeOffset.UtcNow);
                 writer.Write(userId);
                 writer.Write(purpose ?? "");
-                string stamp = null;
+                string? stamp = null;
                 if (manager.SupportsUserSecurityStamp)
                 {
                     stamp = await manager.GetSecurityStampAsync(user);

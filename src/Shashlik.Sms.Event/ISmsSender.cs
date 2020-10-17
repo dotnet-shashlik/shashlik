@@ -72,6 +72,7 @@ namespace Shashlik.Sms.Event
                 }
                 catch (SmsDomainException e)
                 {
+                    scope.ServiceProvider.GetService<ILogger<DefaultSmsSender>>().LogError(e, $"短信发送异常,phone:{list.Join(",")}");
                     var eventPublisher = scope.ServiceProvider.GetService<IEventPublisher>();
                     eventPublisher.Publish(new SendSmsEvent
                     {
@@ -90,7 +91,7 @@ namespace Shashlik.Sms.Event
 
         public void Send(string phone, string subject, params string[] args)
         {
-            Send(new[] {phone}, subject, args);
+            Send(new[] { phone }, subject, args);
         }
     }
 }

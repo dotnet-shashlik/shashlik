@@ -35,11 +35,11 @@ namespace Shashlik.Identity.Options
         /// <summary>
         /// 原生的identity options配置
         /// </summary>
-        public IdentityOptions IdentityOptions { get; set; }
+        public IdentityOptions IdentityOptions { get; set; } = new IdentityOptions();
 
         /// <summary>
         /// 数据保护token配置项
         /// </summary>
-        public DataProtectionTokenProviderOptions DataProtectionTokenProviderOptions { get; set; }
+        public DataProtectionTokenProviderOptions DataProtectionTokenProviderOptions { get; set; } = new DataProtectionTokenProviderOptions();
     }
 }
