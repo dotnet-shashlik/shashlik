@@ -38,8 +38,8 @@ namespace Shashlik.Sms.Domains
             try
             {
                 var list = phones.ToList();
-                var res = new SmsMultiSender(options.AppId.ConvertTo<int>(), options.AppKey)
-                    .sendWithParam("86", list.ToArray(), template.TemplateId.ConvertTo<int>(), args, template.Sign, "",
+                var res = new SmsMultiSender(options.AppId.ParseTo<int>(), options.AppKey)
+                    .sendWithParam("86", list.ToArray(), template.TemplateId.ParseTo<int>(), args, template.Sign, "",
                         "");
                 if (res.result != 0)
                     throw new SmsDomainException($"腾讯短信发送失败,{res.errMsg}:{list.Join(",")}");

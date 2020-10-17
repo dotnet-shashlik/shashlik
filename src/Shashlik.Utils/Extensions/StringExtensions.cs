@@ -54,7 +54,7 @@ namespace Shashlik.Utils.Extensions
             return
                 str
                     .Split(separators, StringSplitOptions.RemoveEmptyEntries)
-                    .Select(TypeExtensions.ConvertTo<T>).ToList();
+                    .Select(TypeExtensions.ParseTo<T>).ToList();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Shashlik.Utils.Extensions
             {
                 try
                 {
-                    result.Add(item.ConvertTo<T>());
+                    result.Add(item.ParseTo<T>());
                 }
                 catch
                 {

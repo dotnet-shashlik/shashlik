@@ -49,30 +49,9 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T ConvertTo<T>(this object value)
+        public static T ParseTo<T>(this object value)
         {
-            if (value == null)
-                return default(T);
-
-            if (value is T)
-                return (T) value;
-
-            var destinationType = typeof(T);
-            var sourceType = value.GetType();
-            if (destinationType == typeof(bool) || destinationType == typeof(bool?))
-                value = Convert.ToBoolean(value);
-
-            TypeConverter destinationConverter = TypeDescriptor.GetConverter(destinationType);
-            TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
-            if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
-                return (T) destinationConverter.ConvertFrom(value);
-            if (sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
-                return (T) sourceConverter.ConvertTo(value, destinationType);
-            if (destinationType.IsEnum && value is int)
-                return (T) Enum.ToObject(destinationType, (int) value);
-            if (!destinationType.IsInstanceOfType(value))
-                return (T) Convert.ChangeType(value, destinationType);
-            return (T) value;
+            return (T) ParseTo(value, typeof(T));
         }
 
         /// <summary>
@@ -81,7 +60,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="destinationType">目标类型</param>
         /// <returns></returns>
-        public static object ConvertTo(this object value, Type destinationType)
+        public static object ParseTo(this object value, Type destinationType)
         {
             if (value == null)
                 return null;
@@ -115,7 +94,7 @@ namespace Shashlik.Utils.Extensions
         {
             try
             {
-                result = value.ConvertTo(destinationType);
+                result = value.ParseTo(destinationType);
                 return true;
             }
             catch
@@ -135,7 +114,7 @@ namespace Shashlik.Utils.Extensions
         {
             try
             {
-                result = value.ConvertTo<T>();
+                result = value.ParseTo<T>();
                 return true;
             }
             catch
@@ -278,7 +257,8 @@ namespace Shashlik.Utils.Extensions
         /// 是否定义了特性
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
+        /// <param name="member"></param>
+        /// <param name="inherit"></param>
         /// <returns></returns>
         public static bool IsDefinedAttribute<T>(this MemberInfo member, bool inherit)
             where T : Attribute
@@ -289,7 +269,9 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// 是否定义了特性
         /// </summary>
+        /// <param name="member"></param>
         /// <param name="type"></param>
+        /// <param name="inherit"></param>
         /// <returns></returns>
         public static bool IsDefinedAttribute(this MemberInfo member, Type type, bool inherit)
         {
