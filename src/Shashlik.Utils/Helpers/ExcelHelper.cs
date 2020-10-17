@@ -4,6 +4,10 @@ using System.IO;
 using System.Text;
 using ExcelDataReader;
 using ExcelDataReader.Exceptions;
+using ICSharpCode.SharpZipLib.Zip;
+using NPOI.HSSF.UserModel;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.Streaming;
 using NPOI.XSSF.UserModel;
 using Shashlik.Utils.Extensions;
 
@@ -43,6 +47,79 @@ namespace Shashlik.Utils.Helpers
                 // 文件格式不正确
                 return null;
             }
+        }
+
+        /// <summary>
+        /// excel内容转换为dataset数据集,**NPOI读取效率太低效,建议使用<see cref="ToDataSet"/>  **
+        /// </summary>
+        /// <param name="excelStream">excel文件数据流</param>
+        /// <returns></returns>
+        public static DataSet ToDataSetWithNPOI(Stream excelStream)
+        {
+            var ds = new DataSet();
+            IWorkbook xssWorkbook;
+            try
+            {
+                if (excelStream.CanSeek && excelStream.Position != 0)
+                    excelStream.Seek(0, SeekOrigin.Begin);
+                xssWorkbook = new SXSSFWorkbook(new XSSFWorkbook(excelStream));
+            }
+            catch (ZipException)
+            {
+                if (excelStream.CanSeek && excelStream.Position != 0)
+                    excelStream.Seek(0, SeekOrigin.Begin);
+                xssWorkbook = new HSSFWorkbook(excelStream);
+            }
+            catch
+            {
+                return null;
+            }
+
+            for (int i = 0; i < xssWorkbook.NumberOfSheets; i++)
+            {
+                var sheet = xssWorkbook.GetSheetAt(i);
+
+                var table = new DataTable(sheet.SheetName);
+                if (sheet.LastRowNum == 0)
+                {
+                    ds.Tables.Add(table);
+                    continue;
+                }
+
+                for (int j = 0; j <= sheet.LastRowNum; j++)
+                {
+                    var row = sheet.GetRow(j);
+                    if (row == null)
+                    {
+                        table.Rows.Add();
+                        continue;
+                    }
+
+                    if (table.Columns.Count < row.LastCellNum)
+                    {
+                        for (int k = table.Columns.Count; k <= row.LastCellNum - 1; k++)
+                        {
+                            table.Columns.Add($"Column{k}");
+                        }
+                    }
+
+                    var values = new object[row.LastCellNum];
+                    for (int k = 0; k < row.LastCellNum; k++)
+                    {
+                        var cell = row.GetCell(k);
+                        if (cell == null)
+                            continue;
+
+                        values[k] = cell.ToString();
+                    }
+
+                    table.Rows.Add(values);
+                }
+
+                ds.Tables.Add(table);
+            }
+
+            return ds;
         }
 
         /// <summary>

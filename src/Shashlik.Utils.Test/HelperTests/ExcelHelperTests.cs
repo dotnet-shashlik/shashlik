@@ -7,22 +7,29 @@ using Shashlik.Utils.Extensions;
 using System.IO;
 using System.Data;
 using Shashlik.Utils.Helpers;
+using Xunit.Abstractions;
 
 namespace Shashlik.Utils.Test
 {
     public class ExcelHelperTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public ExcelHelperTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void WriteTo_noTitle_test()
         {
             string fileName = "1111.xlsx";
             var col = RandomHelper.GetRandomCode(6);
             var col1 = RandomHelper.GetRandomCode(6);
-            var row = new object[] { Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n") };
-            var row1 = new object[] { Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n") };
+            var row = new object[] {Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n")};
+            var row1 = new object[] {Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n")};
             using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-
                 DataTable table = new DataTable("test");
                 table.Columns.Add(col);
                 table.Columns.Add(col1);
@@ -46,11 +53,10 @@ namespace Shashlik.Utils.Test
             string fileName = "2222.xlsx";
             var col = RandomHelper.GetRandomCode(6);
             var col1 = RandomHelper.GetRandomCode(6);
-            var row = new object[] { Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n") };
-            var row1 = new object[] { Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n") };
+            var row = new object[] {Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n")};
+            var row1 = new object[] {Guid.NewGuid().ToString("n"), Guid.NewGuid().ToString("n")};
             using (var fs = new FileStream(fileName, FileMode.Create, FileAccess.Write))
             {
-
                 DataTable table = new DataTable("test");
                 table.Columns.Add(col);
                 table.Columns.Add(col1);
@@ -87,8 +93,9 @@ namespace Shashlik.Utils.Test
                 table.Rows.Add(col1, col2, col3);
                 ExcelHelper.WriteTo(File.OpenRead("HelperTests/test_template.xlsx"), fs, table, 2);
             }
+
             var ds = ExcelHelper.ToDataSet(File.OpenRead(fileName));
-            
+
             ds.Tables[0].Rows[0][0].ShouldBe("A");
             ds.Tables[0].Rows[0][1].ShouldBe("B");
             ds.Tables[0].Rows[0][2].ShouldBe("C");
@@ -105,6 +112,53 @@ namespace Shashlik.Utils.Test
             using var ms = new MemoryStream();
             var ds = ExcelHelper.ToDataSet(ms);
             ds.ShouldBeNull();
+        }
+
+
+        [Fact]
+        public void ReadSuccessStream()
+        {
+            using var ms = new FileStream("./HelperTests/test_template.xls", FileMode.Open);
+            var ds = ExcelHelper.ToDataSet(ms);
+
+            foreach (DataTable table in ds.Tables)
+            {
+                table.AsEnumerable()
+                    .ForEachItem(row =>
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        foreach (DataColumn col in table.Columns)
+                        {
+                            sb.Append(row[col]?.ToString());
+                            sb.Append("\t|");
+                        }
+
+                        _testOutputHelper.WriteLine(sb.ToString());
+                    });
+            }
+        }
+
+        [Fact]
+        public void ReadSuccessStream2()
+        {
+            using var ms = new FileStream("./HelperTests/test_template.xls", FileMode.Open);
+            var ds = ExcelHelper.ToDataSetWithNPOI(ms);
+
+            foreach (DataTable table in ds.Tables)
+            {
+                table.AsEnumerable()
+                    .ForEachItem(row =>
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        foreach (DataColumn col in table.Columns)
+                        {
+                            sb.Append(row[col]?.ToString());
+                            sb.Append("\t|");
+                        }
+
+                        _testOutputHelper.WriteLine(sb.ToString());
+                    });
+            }
         }
     }
 }
