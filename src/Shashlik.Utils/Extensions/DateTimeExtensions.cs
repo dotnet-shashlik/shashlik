@@ -12,7 +12,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static DateTime GetWeekFirstDay(this DateTime dt, DayOfWeek whichFirst = DayOfWeek.Monday)
         {
-            return dt.AddDays((int)whichFirst - (int)dt.DayOfWeek);
+            return dt.AddDays((int) whichFirst - (int) dt.DayOfWeek);
         }
 
         /// <summary>
@@ -96,7 +96,6 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static DateTime GetNextSpecificDayOfWork(this DateTime dt, DayOfWeek dayOfWeek)
         {
-
             var offset = dayOfWeek - dt.DayOfWeek;
             //if (offset == 0)
             //    return dt;
@@ -231,6 +230,7 @@ namespace Shashlik.Utils.Extensions
         {
             return dt.ToString("yyyy-MM-dd HH:mm:ss");
         }
+
         public static string ToStringyyyyMMddHHmm(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd HH:mm");
@@ -254,7 +254,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static int GetIntDate(this DateTime datetime)
         {
-            return (int)new DateTimeOffset(datetime).ToUnixTimeSeconds();
+            return (int) new DateTimeOffset(datetime).ToUnixTimeSeconds();
         }
 
         /// <summary>
@@ -340,6 +340,7 @@ namespace Shashlik.Utils.Extensions
                 day += System.DateTime.DaysInMonth(birthday.Year, birthday.Month);
                 birthday = birthday.AddMonths(1);
             }
+
             //计算：月
             month = now.Month - birthday.Month;
             if (month < 0)
@@ -347,6 +348,7 @@ namespace Shashlik.Utils.Extensions
                 month += 12;
                 birthday = birthday.AddYears(1);
             }
+
             //计算：年
             year = now.Year - birthday.Year;
 
@@ -362,7 +364,7 @@ namespace Shashlik.Utils.Extensions
         public static DateTime GetSeasonStartDate(this DateTime today)
         {
             // 计算当前季度起始月
-            var seasonStartMonth = 1;// 1 2 3月为1月
+            var seasonStartMonth = 1; // 1 2 3月为1月
             if (DateTime.Today.Month >= 4 && DateTime.Today.Month < 7)
             {
                 // 4 5 6月为4月
@@ -403,6 +405,5 @@ namespace Shashlik.Utils.Extensions
             DateTime startTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             return startTime.AddSeconds(value).ToLocalTime();
         }
-
     }
 }

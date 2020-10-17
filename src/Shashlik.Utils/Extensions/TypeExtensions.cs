@@ -370,21 +370,17 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// json序列化,默认Indented/ReferenceLoopHandling.Ignore
+        /// json序列化
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="jsonSerializerSettings"></param>
+        /// <param name="options">序列化设置</param>
         /// <returns></returns>
-        public static string ToJson<T>(this T obj, JsonSerializerSettings jsonSerializerSettings = null)
+        public static string ToJson<T>(this T obj, JsonSerializerOptions options = null)
             where T : class
         {
-            return obj == null
-                ? null
-                : JsonConvert.SerializeObject(obj, jsonSerializerSettings ?? new JsonSerializerSettings
-                {
-                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                    Formatting = Formatting.Indented
-                });
+            if (obj == null)
+                return null;
+            return System.Text.Json.JsonSerializer.Serialize(obj, options);
         }
 
         /// <summary>
@@ -395,26 +391,12 @@ namespace Shashlik.Utils.Extensions
         public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
             where T : class
         {
-            return obj == null
-                ? null
-                : JsonConvert.SerializeObject(obj,
-                    new JsonSerializerSettings
-                    {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                        Formatting = Formatting.Indented,
-                        // 默认小驼峰用法
-                        ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-                    });
-        }
-
-        /// <summary>
-        /// 时间戳转换位DateTime,本地时间
-        /// </summary>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        public static DateTime ToDateTime(this long time)
-        {
-            return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToLocalTime().AddSeconds(time);
+            if (obj == null)
+                return null;
+            return System.Text.Json.JsonSerializer.Serialize(obj, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
         }
 
         /// <summary>
