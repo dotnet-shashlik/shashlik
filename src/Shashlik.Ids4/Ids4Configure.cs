@@ -49,9 +49,9 @@ namespace Shashlik.Ids4
             #region 签名证书
 
             // 使用开发证书,自动创建tempkey.rsa
-            if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.dev)
+            if (Options.SignOptions.CredentialType == CredentialType.Dev)
                 builder.AddDeveloperSigningCredential();
-            else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.rsa)
+            else if (Options.SignOptions.CredentialType == CredentialType.Rsa)
             {
                 if (Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
                     throw new ArgumentException($"Invalid rsa private key");
@@ -60,7 +60,7 @@ namespace Shashlik.Ids4
                     Options.SignOptions.RsaIsPem);
                 builder.AddSigningCredential(new RsaSecurityKey(rsa), Options.SignOptions.SigningAlgorithm);
             }
-            else if (Options.SignOptions.CredentialType == Ids4Options.CredentialType.x509)
+            else if (Options.SignOptions.CredentialType == CredentialType.X509)
             {
                 X509Certificate2 certificate;
                 if (!Options.SignOptions.X509CertificateFileContent.IsNullOrEmpty())
