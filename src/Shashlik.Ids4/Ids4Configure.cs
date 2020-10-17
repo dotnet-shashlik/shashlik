@@ -7,6 +7,7 @@ using IdentityServer4.Services;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using RSAExtensions;
@@ -94,7 +95,7 @@ namespace Shashlik.Ids4
             #region grant type
 
             // 注册自定义grantType
-            var validators = AssemblyHelper.GetFinalSubTypes<IExtensionGrantValidator>();
+            var validators = AssemblyHelper.GetFinalSubTypes<IShashlikExtensionGrantValidator>();
             if (!validators.IsNullOrEmpty())
                 validators.ForEach(r =>
                 {
@@ -120,13 +121,13 @@ namespace Shashlik.Ids4
 
             #region profile
 
-            var profiles = AssemblyHelper.GetFinalSubTypes<IProfileService>();
+            var profiles = AssemblyHelper.GetFinalSubTypes<IShashlikProfileService>();
             if (!profiles.IsNullOrEmpty())
             {
                 // 等于 builder.AddProfileService<>()
                 var des = ServiceDescriptor.Describe(typeof(IProfileService), profiles.Single(),
                     ServiceLifetime.Transient);
-                kernelService.Services.Add(des);
+                kernelService.Services.TryAdd(des);
             }
 
             #endregion

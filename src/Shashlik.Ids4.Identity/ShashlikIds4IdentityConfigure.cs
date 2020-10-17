@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Shashlik.Identity.Entities;
 using Shashlik.Identity.Options;
 
 namespace Shashlik.Ids4.Identity
@@ -88,6 +89,7 @@ namespace Shashlik.Ids4.Identity
                     });
 
 
+            builder.AddAspNetIdentity<Users>();
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
                 .Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
