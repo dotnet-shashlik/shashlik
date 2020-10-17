@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
@@ -31,14 +30,11 @@ namespace Shashlik.DataProtector.Redis
                 return;
 
             if (Options.Key.IsNullOrWhiteSpace())
-                throw new InvalidOperationException($"Certificate must be contains private key.");
+                throw new InvalidOperationException($"Redis key can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName);
-
-            kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-                o.TokenLifespan = TimeSpan.FromMinutes(Options.TokenLifespan));
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {

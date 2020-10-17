@@ -5,6 +5,7 @@
     <ItemGroup>
     </ItemGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.1.8" />
         <PackageReference Include="CSRedisCore" Version="3.6.5" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 
