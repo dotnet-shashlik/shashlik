@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedMember.Global
 
@@ -20,69 +19,62 @@ namespace Shashlik.Utils.Extensions
         {
             try
             {
-                using System.Security.Cryptography.MD5 md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+                using System.Security.Cryptography.MD5
+                    md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
                 var retVal = md5.ComputeHash(stream);
                 var sb = new StringBuilder();
                 foreach (var t in retVal)
                 {
                     sb.Append(t.ToString("x2"));
                 }
+
                 return sb.ToString();
             }
             catch (Exception ex)
             {
-                throw new Exception("GetMD5Hash() fail, error:" + ex.Message);
+                throw new Exception("GetMD5Hash() fail, error:", ex);
             }
         }
 
-        public static string ReadToString(this Stream stream)
+        /// <summary>
+        /// 读取到字符串
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="encoding">编码方式</param>
+        /// <returns></returns>
+        public static string ReadToString(this Stream stream, Encoding encoding = null)
         {
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);
-            using var ms = new MemoryStream();
-            stream.CopyToAsync(ms).Wait();
-            if (stream.CanSeek)
-                stream.Seek(0, SeekOrigin.Begin);
-            var data = ms.ToArray();
-            return Encoding.UTF8.GetString(data, 0, data.Length);
+
+            encoding ??= Encoding.UTF8;
+
+            var streamReader = new StreamReader(stream, encoding, true, 1024, true);
+            return streamReader.ReadToEnd();
         }
 
-        public static string ReadToString(this Stream stream, Encoding encoding)
+        /// <summary>
+        /// 读取到字符串
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="encoding">编码方式</param>
+        /// <returns></returns>
+        public static async Task<string> ReadToStringAsync(this Stream stream, Encoding encoding = null)
         {
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);
-            using var ms = new MemoryStream();
-            stream.CopyToAsync(ms).Wait();
-            if (stream.CanSeek)
-                stream.Seek(0, SeekOrigin.Begin);
-            var data = ms.ToArray();
-            return encoding.GetString(data, 0, data.Length);
+
+            encoding ??= Encoding.UTF8;
+
+            var streamReader = new StreamReader(stream, encoding, true, 1024, true);
+            return await streamReader.ReadToEndAsync();
         }
 
-        public static async Task<string> ReadToStringAsync(this Stream stream)
-        {
-            if (stream.CanSeek && stream.Position != 0)
-                stream.Seek(0, SeekOrigin.Begin);
-            await using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            if (stream.CanSeek)
-                stream.Seek(0, SeekOrigin.Begin);
-            var data = ms.ToArray();
-            return Encoding.UTF8.GetString(data, 0, data.Length);
-        }
-
-        public static async Task<string> ReadToStringAsync(this Stream stream, Encoding encoding)
-        {
-            if (stream.CanSeek && stream.Position != 0)
-                stream.Seek(0, SeekOrigin.Begin);
-            await using var ms = new MemoryStream();
-            await stream.CopyToAsync(ms);
-            if (stream.CanSeek)
-                stream.Seek(0, SeekOrigin.Begin);
-            var data = ms.ToArray();
-            return encoding.GetString(data, 0, data.Length);
-        }
-
+        /// <summary>
+        /// 读取所有的字节数组
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static byte[] ReadAll(this Stream stream)
         {
             if (stream.CanSeek && stream.Position != 0)
@@ -92,6 +84,11 @@ namespace Shashlik.Utils.Extensions
             return data;
         }
 
+        /// <summary>
+        /// 读取所有的字节数组
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static async Task<byte[]> ReadAllAsync(this Stream stream)
         {
             if (stream.CanSeek && stream.Position != 0)
