@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -9,8 +11,10 @@ namespace Shashlik.Utils.Helpers
     /// <summary>
     /// 随机函数
     /// </summary>
-    public class RandomHelper
+    public static class RandomHelper
     {
+        public static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
+
         /// <summary>
         /// 生成随机数
         /// </summary>
@@ -18,56 +22,53 @@ namespace Shashlik.Utils.Helpers
         /// <returns>随机数</returns>
         public static string GetRandomCode(int length)
         {
-            var byteLength = 1;
-            byteLength *= (length / 3 + 1);
-            // Create a byte array to hold the random value.  
-            var randomNumber = new byte[byteLength];
-            // Create a new instance of the RNGCryptoServiceProvider.  
-            var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
-            // Fill the array with a random value.  
-            rng.GetBytes(randomNumber);
-            // Convert the byte to an uint value to make the modulus operation easier.  
-            uint randomResult = 0x0;
-            for (var i = 0; i < byteLength; i++)
+            int min = 1, max = 1;
+            var ml = length > 9 ? 9 : length;
+            for (var i = 1; i <= ml; i++)
             {
-                randomResult |= ((uint) randomNumber[i] << ((byteLength - 1 - i) * 8));
+                max *= 10;
+                if (i <= ml - 2)
+                    min *= 10;
             }
 
-            var s = randomResult.ToString();
-            if (s.Length > length)
-                s = s.Substring(0, length);
-            while (s.Length < length)
+            min -= 1;
+            max -= 1;
+
+            if (length <= 9)
+                return Next(min, max).ToString($"D{length}").AsSpan()[0..length].ToString();
+
+            var sb = new StringBuilder();
+            int l;
+            for (var i = 0; i < length; i += 9)
             {
-                s = "0" + s;
+                l = length - i;
+                l = l > 9 ? 9 : l;
+                sb.Append(Next(min, max).ToString($"D{l}").AsSpan()[0..l].ToString());
             }
 
-            return s;
+            return sb.ToString();
         }
 
-        /// <summary>
-        /// 在区间[minValue,maxValue]取出num个互不相同的随机数，返回数组。
-        /// </summary>
-        /// <param name="num"></param>
-        /// <param name="minValue"></param>
-        /// <param name="maxValue"></param>
-        /// <returns></returns>
-        public static List<int> GetRandomNum(int num, int minValue, int maxValue)
+        public static int Next(int minValue, int maxValue)
         {
-            if (maxValue - minValue < num)
+            if (minValue > maxValue)
+                throw new ArgumentOutOfRangeException(nameof(minValue));
+            
+            if (minValue == maxValue) return minValue;
+            long diff = maxValue - minValue;
+            var bytes = new byte[4];
+            while (true)
             {
-                throw new ArgumentException("no enough number to generate");
-            }
+                Rng.GetBytes(bytes);
+                var rand = BitConverter.ToUInt32(bytes, 0);
 
-            var ra = new Random(unchecked((int) DateTime.Now.Ticks)); //保证产生的数字的随机性
-            var numberList = new List<int>();
-            while (numberList.Count < num)
-            {
-                var number = ra.Next(minValue, maxValue);
-                if (numberList.Contains(number)) continue;
-                numberList.Add(number);
+                var max = 1 + (long) uint.MaxValue;
+                var remainder = max % diff;
+                if (rand < max - remainder)
+                {
+                    return (int) (minValue + rand % diff);
+                }
             }
-
-            return numberList;
         }
     }
 }
