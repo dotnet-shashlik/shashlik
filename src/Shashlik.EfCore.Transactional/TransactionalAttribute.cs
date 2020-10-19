@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Threading.Tasks;
 using AspectCore.DynamicProxy;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace Shashlik.EfCore.Transactional
             if (DefaultDbContextType == null)
                 throw new InvalidOperationException(
                     $"Must define DefaultTransactionalAttribute on your DbContext Type.");
+
+            DbContextType = DefaultDbContextType;
         }
 
         /// <summary>
@@ -39,13 +42,18 @@ namespace Shashlik.EfCore.Transactional
 
         public Type DbContextType { get; set; }
 
+        /// <summary>
+        /// 事务隔离级别,null默认隔离级别
+        /// </summary>
+        public IsolationLevel? IsolationLevel { get; set; } = null;
+
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
             var efNestedTransactionType = typeof(IEfNestedTransaction<>).MakeGenericType(DbContextType);
             var efNestedTransaction =
                 context.ServiceProvider.GetService(efNestedTransactionType) as IEfNestedTransaction;
 
-            await using var tran = efNestedTransaction!.Begin();
+            await using var tran = efNestedTransaction!.Begin(IsolationLevel);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Shashlik.EfCore
@@ -16,8 +17,9 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 开始事务
         /// </summary>
+        /// <param name="isolationLevel">事务隔离级别,null使用默认的级别</param>
         /// <returns></returns>
-        IDbContextTransaction Begin();
+        IDbContextTransaction Begin(IsolationLevel? isolationLevel = null);
     }
 
     /// <summary>

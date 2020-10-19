@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Collections.Concurrent;
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 
 // ReSharper disable UnusedType.Global
@@ -29,11 +30,13 @@ namespace Shashlik.EfCore
         /// 开启事务
         /// </summary>
         /// <param name="dbContext"></param>
+        /// <param name="isolationLevel"></param>
         /// <param name="beginTransactionMethod"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public virtual IDbContextTransaction Begin<TDbContext>(TDbContext dbContext,
-            Func<TDbContext, IDbContextTransaction> beginTransactionMethod) where TDbContext : DbContext
+            IsolationLevel? isolationLevel = null,
+            Func<TDbContext, IDbContextTransaction> beginTransactionMethod = null) where TDbContext : DbContext
         {
             if (Trans.TryGetValue(dbContext, out var list))
             {
@@ -55,7 +58,9 @@ namespace Shashlik.EfCore
 
             {
                 var tran = beginTransactionMethod == null
-                    ? dbContext.Database.BeginTransaction()
+                    ? (isolationLevel.HasValue
+                        ? dbContext.Database.BeginTransaction(isolationLevel.Value)
+                        : dbContext.Database.BeginTransaction())
                     : beginTransactionMethod(dbContext);
 
                 var top = new InnerEfDbContextTransaction(tran, true);

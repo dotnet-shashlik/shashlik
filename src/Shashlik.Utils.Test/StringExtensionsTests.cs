@@ -23,7 +23,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void test()
         {
-            var api = "http://api.test.yusuinet.com/openapi/test";
+            // var api = "http://api.test.yusuinet.com/openapi/test";
             // appId
             var appId = "12ae01c0d6fc4d8aa34dab379a3f5dcb";
             // 密钥
@@ -33,7 +33,7 @@ namespace Shashlik.Utils.Test
             // 使用guid生成32位随机字符
             var nonce = "742b0467aa364ff491d163d400a17209";
             // 使用guid生成32位请求id
-            var requestId = "e28ccc72720c4b599ef84ac7100d96fd";
+            // var requestId = "e28ccc72720c4b599ef84ac7100d96fd";
             // 创建接口调用对象
             var obj = new
             {

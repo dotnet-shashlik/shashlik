@@ -1,14 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
-using Shashlik.Kernel.Dependency;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using Microsoft.Extensions.DependencyInjection;
-using System.Transactions;
+using System.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace Shashlik.EfCore
 {
@@ -28,9 +21,11 @@ namespace Shashlik.EfCore
         /// 开始事务,自定义开启方式
         /// </summary>
         /// <param name="dbContext">上下文对象</param>
+        /// <param name="isolationLevel">事务隔离级别</param>
         /// <param name="beginTransactionMethod">自定义开始事务的方法</param>
         /// <returns></returns>
         IDbContextTransaction Begin<TDbContext>(TDbContext dbContext,
+            IsolationLevel? isolationLevel = null,
             Func<TDbContext, IDbContextTransaction> beginTransactionMethod = null) where TDbContext : DbContext;
     }
 }

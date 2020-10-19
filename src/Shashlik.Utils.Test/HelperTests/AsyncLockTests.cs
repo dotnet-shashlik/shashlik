@@ -40,22 +40,19 @@ namespace Shashlik.Utils.Test.HelperTests
         }
 
         [Fact]
-        public async Task CancelAsyncTest()
+        public void CancelAsyncTest()
         {
             var locker = new AsyncLock();
             var number = 1;
             var cancelToken = new CancellationTokenSource();
-            await locker.LockAsync();
+             locker.LockAsync().Wait();
             Task.Run(async () =>
             {
                 await Task.Delay(1000);
                 number = 2;
                 cancelToken.Cancel();
             });
-            Should.Throw<Exception>(() =>
-            {
-                locker.LockAsync(cancelToken.Token).Wait();
-            });
+            Should.Throw<Exception>(() => { locker.LockAsync(cancelToken.Token).Wait(); });
             number.ShouldBe(2);
         }
 
@@ -72,10 +69,7 @@ namespace Shashlik.Utils.Test.HelperTests
                 number = 2;
                 cancelToken.Cancel();
             });
-            Should.Throw<Exception>(() =>
-            {
-                locker.Lock(cancelToken.Token);
-            });
+            Should.Throw<Exception>(() => { locker.Lock(cancelToken.Token); });
             number.ShouldBe(2);
         }
     }
