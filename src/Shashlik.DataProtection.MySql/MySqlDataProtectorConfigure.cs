@@ -5,32 +5,26 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
-using Shashlik.Kernel.Autowired.Attributes;
-using Shashlik.Redis;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.DataProtector.Redis
+namespace Shashlik.DataProtection
 {
-    /// <summary>
-    /// 使用CSRedisCore共享DataProtector的密钥存储,解决集群缓存密钥存储问题
-    /// </summary>
-    [AfterAt(typeof(RedisConfigure))]
-    public class RedisDataProtectorConfigure : IAutowiredConfigureServices
+    public class MySqlDataProtectorConfigure : IAutowiredConfigureServices
     {
-        public RedisDataProtectorConfigure(IOptions<RedisDataProtectorOptions> options)
+        public MySqlDataProtectorConfigure(IOptions<MySqlDataProtectorOptions> options)
         {
             Options = options.Value;
         }
 
-        private RedisDataProtectorOptions Options { get; }
+        private MySqlDataProtectorOptions Options { get; }
 
         public void ConfigureServices(IKernelServices kernelService)
         {
             if (!Options.Enable)
                 return;
 
-            if (Options.Key.IsNullOrWhiteSpace())
-                throw new InvalidOperationException($"Redis key can not be empty.");
+            if (Options.ConnectionString.IsNullOrWhiteSpace())
+                throw new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
@@ -38,7 +32,7 @@ namespace Shashlik.DataProtector.Redis
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {
-                options.XmlRepository = new RedisXmlRepository(RedisHelper.Instance, Options.Key);
+                options.XmlRepository = new MySqlXmlRepository(Options);
             });
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Shashlik.Kernel.Autowired.Attributes;
 
-namespace Shashlik.DataProtector.MySql
+namespace Shashlik.DataProtection
 {
     [AutoOptions("Shashlik.DataProtector.MySql")]
     public class MySqlDataProtectorOptions

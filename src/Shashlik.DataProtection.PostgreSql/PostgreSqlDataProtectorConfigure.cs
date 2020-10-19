@@ -7,7 +7,7 @@ using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.DataProtector.PostgreSql
+namespace Shashlik.DataProtection
 {
     public class PostgreSqlDataProtectorConfigure : IAutowiredConfigureServices
     {

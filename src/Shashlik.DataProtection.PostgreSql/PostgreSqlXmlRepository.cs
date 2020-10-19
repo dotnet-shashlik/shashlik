@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Npgsql;
 
-namespace Shashlik.DataProtector.PostgreSql
+namespace Shashlik.DataProtection
 {
     public class PostgreSqlXmlRepository : IXmlRepository
     {

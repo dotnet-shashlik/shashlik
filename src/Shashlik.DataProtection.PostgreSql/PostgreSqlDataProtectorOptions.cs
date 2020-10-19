@@ -1,6 +1,6 @@
 ﻿using Shashlik.Kernel.Autowired.Attributes;
 
-namespace Shashlik.DataProtector.PostgreSql
+namespace Shashlik.DataProtection
 {
     [AutoOptions("Shashlik.DataProtector.PostgreSql")]
     public class PostgreSqlDataProtectorOptions

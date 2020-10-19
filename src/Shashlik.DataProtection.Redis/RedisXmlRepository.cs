@@ -7,7 +7,7 @@ using System.Xml.Linq;
 using CSRedis;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 
-namespace Shashlik.DataProtector.Redis
+namespace Shashlik.DataProtection
 {
     /// <summary>
     /// An XML repository backed by a Redis list entry.

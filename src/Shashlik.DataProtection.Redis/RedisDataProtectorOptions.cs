@@ -1,6 +1,6 @@
 ﻿using Shashlik.Kernel.Autowired.Attributes;
 
-namespace Shashlik.DataProtector.Redis
+namespace Shashlik.DataProtection
 {
     [AutoOptions("Shashlik.DataProtector.Redis")]
     public class RedisDataProtectorOptions

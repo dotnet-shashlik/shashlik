@@ -40,6 +40,7 @@ namespace Shashlik.Identity.Options
         /// <summary>
         /// 数据保护token配置项
         /// </summary>
-        public DataProtectionTokenProviderOptions DataProtectionTokenProviderOptions { get; set; } = new DataProtectionTokenProviderOptions();
+        public DataProtectionTokenProviderOptions DataProtectionTokenProviderOptions { get; set; } =
+            new DataProtectionTokenProviderOptions();
     }
 }

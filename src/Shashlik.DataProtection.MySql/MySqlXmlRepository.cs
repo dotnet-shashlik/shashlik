@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using MySqlConnector;
 
-namespace Shashlik.DataProtector.MySql
+namespace Shashlik.DataProtection
 {
     public class MySqlXmlRepository : IXmlRepository
     {
