@@ -2,7 +2,7 @@
   "Shashlik": {
     "DataProtector": {
       "PostgreSql": {
-        "ConnectionString": "server=192.168.50.178;user id=postgres;password=VwaAafdCT3QNa2fX;persistsecurityinfo=true;database=health_shizhu;Pooling=True;Minimum Pool Size=3;Maximum Pool Size=5;"
+        "ConnectionString": "."
       }
     }
   }
