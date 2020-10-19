@@ -11,6 +11,8 @@ using System.Text.Json;
 using System.Threading;
 using JsonSerializer = RestSharp.Serialization.Json.JsonSerializer;
 
+// ReSharper disable ConvertIfStatementToReturnStatement
+
 namespace Shashlik.Utils.Extensions
 {
     public static class TypeExtensions
@@ -37,7 +39,7 @@ namespace Shashlik.Utils.Extensions
             if (childType.IsGenericType && childType.GetGenericTypeDefinition() == genericType)
                 return true;
 
-            Type baseType = childType.BaseType;
+            var baseType = childType.BaseType;
             if (baseType == null) return false;
 
             return IsSubTypeOfGenericType(baseType, genericType);
@@ -424,12 +426,57 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        public static T JsonTo<T>(this JsonElement obj)
+        /// <summary>
+        /// 获取json对象属性值
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="propertyName"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static T GetValue<T>(this JsonElement obj, string propertyName)
         {
-            return (T) JsonTo(obj, typeof(T));
+            if (obj.ValueKind != JsonValueKind.Object)
+                throw new ArgumentException($"Json value kind must be JsonValueKind.Object.");
+            if (obj.TryGetProperty(propertyName, out var value))
+            {
+                switch (value.ValueKind)
+                {
+                    case JsonValueKind.Null:
+                    case JsonValueKind.Undefined:
+                        return default;
+                }
+
+                return (T) GetValue(value, typeof(T));
+            }
+
+            throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
 
-        public static object JsonTo(this JsonElement obj, Type type)
+        public static object GetValue(this JsonElement obj, Type type, string propertyName)
+        {
+            if (obj.ValueKind != JsonValueKind.Object)
+                throw new ArgumentException($"Json value kind must be JsonValueKind.Object.");
+            if (obj.TryGetProperty(propertyName, out var value))
+                return GetValue(value, type);
+
+            throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
+        }
+
+
+        public static T GetValue<T>(this JsonElement obj)
+        {
+            switch (obj.ValueKind)
+            {
+                case JsonValueKind.Null:
+                case JsonValueKind.Undefined:
+                    return default;
+            }
+
+            return (T) GetValue(obj, typeof(T));
+        }
+
+        public static object GetValue(this JsonElement obj, Type type)
         {
             if (type == typeof(object))
                 return obj;
@@ -469,6 +516,30 @@ namespace Shashlik.Utils.Extensions
                             return value;
                         else
                             throw GetInvalidCastException(type, obj);
+                    }
+
+                    #endregion
+
+                    #region ->Enum
+
+                    {
+                        Type enumType = null;
+                        if (type.IsEnum)
+                            enumType = type;
+                        else if (type.IsSubTypeOfGenericType(typeof(Nullable<>))
+                                 && type.GetGenericArguments().First().IsEnum)
+                            enumType = type.GetGenericArguments().First();
+
+                        if (enumType != null)
+                        {
+                            if (obj.TryGetInt32(out var intValue))
+                            {
+                                if (Enum.TryParse(enumType, intValue.ToString(), true, out var result))
+                                    return result;
+                            }
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
                     }
 
                     #endregion
@@ -587,30 +658,23 @@ namespace Shashlik.Utils.Extensions
                 {
                     #region ->DateTime
 
-                    if ((type == typeof(DateTime)
-                         || type == typeof(DateTime?)
-                        )
-                    )
+                    if (type == typeof(DateTime) || type == typeof(DateTime?))
                     {
                         if (obj.TryGetDateTime(out var datetime))
                             return datetime;
-                        else
-                            return default;
+                        throw GetInvalidCastException(type, obj);
                     }
 
                     #endregion
 
                     #region ->DateTimeOffset
 
-                    if ((type == typeof(DateTimeOffset)
-                         || type == typeof(DateTimeOffset?)
-                        )
+                    if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?)
                     )
                     {
                         if (obj.TryGetDateTimeOffset(out var datetime))
                             return datetime;
-                        else
-                            return default;
+                        throw GetInvalidCastException(type, obj);
                     }
 
                     #endregion
@@ -632,14 +696,12 @@ namespace Shashlik.Utils.Extensions
                     {
                         var str = obj.GetString();
                         if (str.IsNullOrWhiteSpace())
-                            return default;
+                            throw GetInvalidCastException(type, obj);
 
                         if (Enum.TryParse(enumType, obj.GetString(), true, out var result))
-                        {
                             return result;
-                        }
 
-                        return default;
+                        throw GetInvalidCastException(type, obj);
                     }
 
                     #endregion
@@ -649,22 +711,17 @@ namespace Shashlik.Utils.Extensions
                     if (type == typeof(string))
                         return obj.GetString();
 
-                    if ((type == typeof(Guid)
-                         || type == typeof(Guid?)
-                        )
-                    )
+                    if (type == typeof(Guid) || type == typeof(Guid?))
                     {
                         if (obj.TryGetGuid(out var guid))
                             return guid;
-                        else
-                            return default;
+                        throw GetInvalidCastException(type, obj);
                     }
 
                     #endregion
 
                     throw GetInvalidCastException(type, obj);
                 }
-
                 case JsonValueKind.Object:
                 case JsonValueKind.Array:
                 {

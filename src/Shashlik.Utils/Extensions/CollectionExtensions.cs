@@ -6,7 +6,6 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 
-// ReSharper disable InconsistentNaming
 
 namespace Shashlik.Utils.Extensions
 {
@@ -46,7 +45,7 @@ namespace Shashlik.Utils.Extensions
                 throw new ArgumentNullException(nameof(separator));
             }
 
-            return string.Join<T>(separator, source);
+            return string.Join(separator, source);
         }
 
         /// <summary>
@@ -119,13 +118,13 @@ namespace Shashlik.Utils.Extensions
         /// 判断集合是否存在重复的属性
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <typeparam name="P"></typeparam>
+        /// <typeparam name="TP"></typeparam>
         /// <param name="list"></param>
         /// <param name="selectProperty"></param>
         /// <param name="keyComparer"></param>
         /// <returns></returns>
-        public static bool HasRepeat<T, P>(this IEnumerable<T> list, Func<T, P> selectProperty,
-            IEqualityComparer<P> keyComparer = null)
+        public static bool HasRepeat<T, TP>(this IEnumerable<T> list, Func<T, TP> selectProperty,
+            IEqualityComparer<TP> keyComparer = null)
         {
             if (list == null)
             {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -107,12 +106,13 @@ namespace Shashlik.Utils.Extensions
         /// 字符串截取,null时,返回"",不足长度时,返回字符串本身
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="length"></param>
+        /// <param name="length">保留长度</param>
+        /// <param name="suffix">后缀字符</param>
         /// <returns></returns>
         public static string SubStringIfTooLong(this string str, int length, string suffix = "...")
         {
             if (string.IsNullOrWhiteSpace(str))
-                return "";
+                return string.Empty;
 
             var span = str.AsSpan().Trim();
             if (span.Length <= length)
@@ -128,8 +128,8 @@ namespace Shashlik.Utils.Extensions
         /// 字符串替换,忽略大小写,使用的是正则,注意正则中的特殊字符
         /// </summary>
         /// <param name="str"></param>
-        /// <param name="pattern"></param>
-        /// <param name="replaceString"></param>
+        /// <param name="pattern">正则</param>
+        /// <param name="replaceString">替换字符串</param>
         /// <returns></returns>
         public static string ReplaceIgnoreCase(this string str, string pattern, string replaceString)
         {
@@ -235,7 +235,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
         {
-            if (url.IsNullOrWhiteSpace() || values.IsNullOrEmpty())
+            var keyValuePairs = values.ToList();
+            if (url.IsNullOrWhiteSpace() || keyValuePairs.IsNullOrEmpty())
                 return url;
 
             var sb = new StringBuilder();
@@ -246,10 +247,10 @@ namespace Shashlik.Utils.Extensions
             else if (!span.EndsWith(new[] {'&'}, StringComparison.OrdinalIgnoreCase))
                 sb.Append('&');
 
-            var count = values.Count();
+            var count = keyValuePairs.Count();
             for (var i = 0; i < count; i++)
             {
-                var item = values.ElementAt(i);
+                var item = keyValuePairs.ElementAt(i);
                 if (item.Value == null)
                     continue;
 
@@ -357,9 +358,8 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="content">解密内容</param>
         /// <returns></returns>
-        public static byte[] Base64DecodeToBytes(this string content, Encoding encoding = null)
+        public static byte[] Base64DecodeToBytes(this string content)
         {
-            encoding ??= Encoding.UTF8;
             return Convert.FromBase64String(content);
         }
 
