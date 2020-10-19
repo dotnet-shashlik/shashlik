@@ -9,9 +9,6 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtector.MySql
 {
-    /// <summary>
-    /// 使用CSRedisCore共享DataProtector的密钥存储,解决集群缓存密钥存储问题
-    /// </summary>
     public class MySqlDataProtectorConfigure : IAutowiredConfigureServices
     {
         public MySqlDataProtectorConfigure(IOptions<MySqlDataProtectorOptions> options)
