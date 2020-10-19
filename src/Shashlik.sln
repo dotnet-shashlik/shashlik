@@ -47,31 +47,37 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.MySql", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.PostgreSql", "Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj", "{4FCD1BF4-FD92-436F-BDB7-32853B28D054}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Response", "Shashlik.Response\Shashlik.Response.csproj", "{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Response", "Shashlik.Response\Shashlik.Response.csproj", "{D23DA6B8-8104-4940-BCCF-09E45F1C9AB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.JsonPatch", "Shashlik.JsonPatch\Shashlik.JsonPatch.csproj", "{7F170155-2445-45B2-8977-B5A671696A2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.JsonPatch", "Shashlik.JsonPatch\Shashlik.JsonPatch.csproj", "{7F170155-2445-45B2-8977-B5A671696A2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Totp", "Shashlik.Captcha.Totp\Shashlik.Captcha.Totp.csproj", "{4E706D5F-AB9A-4FC2-BDB2-7B1E99729189}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha.Totp", "Shashlik.Captcha.Totp\Shashlik.Captcha.Totp.csproj", "{4E706D5F-AB9A-4FC2-BDB2-7B1E99729189}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.EfCore.Transactional", "Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj", "{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Transactional", "Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj", "{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Pager", "Shashlik.Pager\Shashlik.Pager.csproj", "{A8735F96-4B93-4420-A0AA-586A570DB4AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Pager", "Shashlik.Pager\Shashlik.Pager.csproj", "{A8735F96-4B93-4420-A0AA-586A570DB4AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.RazorFormat", "Shashlik.RazorFormat\Shashlik.RazorFormat.csproj", "{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.RazorFormat", "Shashlik.RazorFormat\Shashlik.RazorFormat.csproj", "{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Tests", "Shashlik.Captcha.Tests\Shashlik.Captcha.Tests.csproj", "{78ED1A5A-8539-402F-93F2-0254D0746888}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha.Tests", "Shashlik.Captcha.Tests\Shashlik.Captcha.Tests.csproj", "{78ED1A5A-8539-402F-93F2-0254D0746888}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.MySql.Tests", "Shashlik.DataProtection.MySql.Tests\Shashlik.DataProtection.MySql.Tests.csproj", "{B3D5219A-505C-4328-8C6B-D1C2E88D62F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.MySql.Tests", "Shashlik.DataProtection.MySql.Tests\Shashlik.DataProtection.MySql.Tests.csproj", "{B3D5219A-505C-4328-8C6B-D1C2E88D62F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.PostgreSql.Tests", "Shashlik.DataProtection.PostgreSql.Tests\Shashlik.DataProtection.PostgreSql.Tests.csproj", "{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.PostgreSql.Tests", "Shashlik.DataProtection.PostgreSql.Tests\Shashlik.DataProtection.PostgreSql.Tests.csproj", "{CCECB0D3-0ADC-44F4-84DD-80A1EF200449}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.JsonPatch.ModelBinder", "Shashlik.JsonPatch.ModelBinder\Shashlik.JsonPatch.ModelBinder.csproj", "{F2525FFB-D29E-4E57-B655-4F458517D7FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.JsonPatch.ModelBinder", "Shashlik.JsonPatch.ModelBinder\Shashlik.JsonPatch.ModelBinder.csproj", "{F2525FFB-D29E-4E57-B655-4F458517D7FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.MySql", "Shashlik.DataProtection.MySql\Shashlik.DataProtection.MySql.csproj", "{BAA25C5A-F4BB-4C88-B071-C820EA1C696E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.MySql", "Shashlik.DataProtection.MySql\Shashlik.DataProtection.MySql.csproj", "{BAA25C5A-F4BB-4C88-B071-C820EA1C696E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.PostgreSql", "Shashlik.DataProtection.PostgreSql\Shashlik.DataProtection.PostgreSql.csproj", "{74877BBA-41B7-45CC-ADEB-D2A2F0BC44D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.PostgreSql", "Shashlik.DataProtection.PostgreSql\Shashlik.DataProtection.PostgreSql.csproj", "{74877BBA-41B7-45CC-ADEB-D2A2F0BC44D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.Redis", "Shashlik.DataProtection.Redis\Shashlik.DataProtection.Redis.csproj", "{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.Redis", "Shashlik.DataProtection.Redis\Shashlik.DataProtection.Redis.csproj", "{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildMySqlMigration.Entry", "BuildMySqlMigration.Entry\BuildMySqlMigration.Entry.csproj", "{CCE20F11-6657-47AF-9E62-6668A27FCEB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildPostgreSqlMigration.Entry", "BuildPostgreSqlMigration.Entry\BuildPostgreSqlMigration.Entry.csproj", "{C8F1AF92-B6C5-459D-96A7-E9264099AD25}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migration", "migration", "{A559005E-5CB2-4CBD-894F-224376E44BA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -284,6 +290,18 @@ Global
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -294,6 +312,8 @@ Global
 		{78ED1A5A-8539-402F-93F2-0254D0746888} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{B3D5219A-505C-4328-8C6B-D1C2E88D62F4} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{CCECB0D3-0ADC-44F4-84DD-80A1EF200449} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{CCE20F11-6657-47AF-9E62-6668A27FCEB9} = {A559005E-5CB2-4CBD-894F-224376E44BA1}
+		{C8F1AF92-B6C5-459D-96A7-E9264099AD25} = {A559005E-5CB2-4CBD-894F-224376E44BA1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

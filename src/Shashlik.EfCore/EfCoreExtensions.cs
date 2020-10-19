@@ -9,6 +9,7 @@ using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shashlik.Kernel.Locker;
 using Shashlik.Utils.Helpers;
 
@@ -20,6 +21,29 @@ namespace Shashlik.EfCore
     public static class EfCoreExtensions
     {
         public const string MigrationLockKey = "EFCORE_MIGRATION";
+
+        public static IKernelServices AddNestedTransaction(IKernelServices kernelService)
+        {
+            kernelService.AddEfEntityMappings();
+            kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
+
+            var dbContextTypes =
+                AssemblyHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
+            if (dbContextTypes.IsNullOrEmpty())
+                return kernelService;
+
+            // 自动注册所有的DbContext嵌套事务
+            foreach (var item in dbContextTypes)
+            {
+                kernelService.Services.TryAddScoped(
+                    typeof(IEfNestedTransaction<>).MakeGenericType(item),
+                    typeof(DefaultEfNestedTransaction<>).MakeGenericType(item)
+                );
+            }
+
+            return kernelService;
+        }
+
 
         /// <summary>
         /// 增加EF配置映射,注册所有的IEntityTypeConfiguration>实现类

@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shashlik.DataProtection.PostgreSql\Shashlik.DataProtection.PostgreSql.csproj" />
+    <ProjectReference Include="..\Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj" />
+    <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
+
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9" />
+    <ProjectReference Include="..\Shashlik.Ids4.PostgreSqlStore\Shashlik.Ids4.PostgreSqlStore.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+  </ItemGroup>
+
+</Project>

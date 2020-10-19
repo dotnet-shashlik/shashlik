@@ -5,15 +5,16 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Npgsql;
+// ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection
 {
     public class PostgreSqlXmlRepository : IXmlRepository
     {
-        private PostgreSqlDataProtectorOptions Options { get; }
+        private PostgreSqlDataProtectionOptions Options { get; }
         private string ConnectionString { get; }
 
-        public PostgreSqlXmlRepository(PostgreSqlDataProtectorOptions options)
+        public PostgreSqlXmlRepository(PostgreSqlDataProtectionOptions options)
         {
             Options = options;
             ConnectionString = options.ConnectionString;

@@ -1,22 +1,26 @@
 ﻿using System;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 
+// ReSharper disable UnusedType.Global
+// ReSharper disable CheckNamespace
+
 namespace Shashlik.DataProtection
 {
-    public class PostgreSqlDataProtectorConfigure : IAutowiredConfigureServices
+    public class MySqlDataProtectionConfigure : IAutowiredConfigureServices
     {
-        public PostgreSqlDataProtectorConfigure(IOptions<PostgreSqlDataProtectorOptions> options)
+        public MySqlDataProtectionConfigure(IOptions<MySqlDataProtectionOptions> options)
         {
             Options = options.Value;
         }
 
-        private PostgreSqlDataProtectorOptions Options { get; }
+        private MySqlDataProtectionOptions Options { get; }
 
         public void ConfigureServices(IKernelServices kernelService)
         {
@@ -24,16 +28,24 @@ namespace Shashlik.DataProtection
                 return;
 
             if (Options.ConnectionString.IsNullOrWhiteSpace())
+            {
+                Options.ConnectionString = kernelService.RootConfiguration.GetConnectionString("Default");
+                kernelService.Services.Configure<MySqlDataProtectionOptions>(r =>
+                {
+                    r.ConnectionString = Options.ConnectionString;
+                });
+            }
+
+            if (Options.ConnectionString.IsNullOrWhiteSpace())
                 throw new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
-                .SetApplicationName(Options.ApplicationName)
-                ;
+                .SetApplicationName(Options.ApplicationName);
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {
-                options.XmlRepository = new PostgreSqlXmlRepository(Options);
+                options.XmlRepository = new MySqlXmlRepository(Options);
             });
         }
     }

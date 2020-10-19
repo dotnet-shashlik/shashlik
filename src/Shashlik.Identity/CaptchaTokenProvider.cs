@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
-using Shashlik.Identity.Entities;
 using Shashlik.Identity.Options;
 
 // ReSharper disable ClassNeverInstantiated.Global
@@ -13,12 +12,14 @@ namespace Shashlik.Identity
     /// <summary>
     /// ICaptcha通用验证码token提供类,可用于手机/邮件等验证码场景
     /// </summary>
-    public class CaptchaTokenProvider : IUserTwoFactorTokenProvider<Users>
+    public class CaptchaTokenProvider<TUser> : IUserTwoFactorTokenProvider<TUser>
+        where TUser : class
     {
         public CaptchaTokenProvider(ICaptcha captcha, IOptions<ShashlikIdentityOptions> options)
         {
             Captcha = captcha ??
-                      throw new ArgumentException($"{typeof(CaptchaTokenProvider)} require service {typeof(ICaptcha)}");
+                      throw new ArgumentException(
+                          $"{typeof(CaptchaTokenProvider<TUser>)} require service {typeof(ICaptcha)}");
             Options = options;
         }
 
@@ -32,7 +33,7 @@ namespace Shashlik.Identity
         /// <param name="manager"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<string> GenerateAsync(string purpose, UserManager<Users> manager, Users user)
+        public async Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
             if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
@@ -49,8 +50,8 @@ namespace Shashlik.Identity
         /// <param name="manager"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<bool> ValidateAsync(string purpose, string token, UserManager<Users> manager,
-            Users user)
+        public async Task<bool> ValidateAsync(string purpose, string token, UserManager<TUser> manager,
+            TUser user)
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
             if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
@@ -64,7 +65,7 @@ namespace Shashlik.Identity
         /// <param name="manager"></param>
         /// <param name="user"></param>
         /// <returns></returns>
-        public Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<Users> manager, Users user)
+        public Task<bool> CanGenerateTwoFactorTokenAsync(UserManager<TUser> manager, TUser user)
         {
             return Task.FromResult(true);
         }

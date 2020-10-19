@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="aliyun-net-sdk-vod" Version="2.15.9" />
-    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.10.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.7" />
+    <PackageReference Include="aliyun-net-sdk-vod" Version="2.15.12" />
+    <PackageReference Include="Aliyun.OSS.SDK.NetCore" Version="2.12.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.9" />
   </ItemGroup>
 
   <ItemGroup>
