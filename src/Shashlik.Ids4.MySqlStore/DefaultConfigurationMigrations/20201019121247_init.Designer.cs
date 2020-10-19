@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Shashlik.Ids4.MySqlStore.DefaultConfigurationMigrations
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20201019075136_init")]
+    [Migration("20201019121247_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
