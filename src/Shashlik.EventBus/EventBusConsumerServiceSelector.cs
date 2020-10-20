@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
+#pragma warning disable 8618
 
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable MemberCanBeMadeStatic.Local
@@ -193,7 +194,7 @@ namespace Shashlik.EventBus
                 }
             }
 
-            return null;
+            return null!;
         }
 
         private ConsumerExecutorDescriptor MatchPoundUsingRegex(string key,
@@ -220,7 +221,7 @@ namespace Shashlik.EventBus
                 }
             }
 
-            return null;
+            return null!;
         }
 
 

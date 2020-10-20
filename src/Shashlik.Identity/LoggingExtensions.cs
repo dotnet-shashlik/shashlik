@@ -3,6 +3,7 @@
 // copy from https://github.com/dotnet/aspnetcore/blob/release/3.1/src/Identity/Core/src/LoggingExtensions.cs
 using System;
 using Microsoft.Extensions.Logging;
+#pragma warning disable 8625
 
 namespace Shashlik.Identity
 { 
