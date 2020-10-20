@@ -46,6 +46,55 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
+        /// 是否为可空类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsNullableType(this Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+
+            return !typeInfo.IsValueType
+                   || (typeInfo.IsGenericType
+                       && typeInfo.GetGenericTypeDefinition() == typeof(Nullable<>));
+        }
+
+        /// <summary>
+        /// 获取指定的构造函数
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="types"></param>
+        /// <returns></returns>
+        public static ConstructorInfo GetDeclaredConstructor(this Type type, Type[] types)
+        {
+            types = types ?? Array.Empty<Type>();
+
+            return type.GetTypeInfo().DeclaredConstructors
+                .SingleOrDefault(
+                    c => !c.IsStatic && c.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
+        }
+
+        /// <summary>
+        /// 获取类型默认值
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static object GetDefaultValue(this Type type)
+        {
+            if (!type.GetTypeInfo().IsValueType)
+            {
+                return null;
+            }
+
+            // A bit of perf code to avoid calling Activator.CreateInstance for common types and
+            // to avoid boxing on every call. This is about 50% faster than just calling CreateInstance
+            // for all value types.
+            return _commonTypeDictionary.TryGetValue(type, out var value)
+                ? value
+                : Activator.CreateInstance(type);
+        }
+
+        /// <summary>
         /// 类型转换
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -463,7 +512,6 @@ namespace Shashlik.Utils.Extensions
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
 
-
         public static T GetValue<T>(this JsonElement obj)
         {
             switch (obj.ValueKind)
@@ -526,8 +574,7 @@ namespace Shashlik.Utils.Extensions
                         Type enumType = null;
                         if (type.IsEnum)
                             enumType = type;
-                        else if (type.IsSubTypeOfGenericType(typeof(Nullable<>))
-                                 && type.GetGenericArguments().First().IsEnum)
+                        else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
                             enumType = type.GetGenericArguments().First();
 
                         if (enumType != null)
@@ -652,6 +699,27 @@ namespace Shashlik.Utils.Extensions
 
                     #endregion
 
+                    #region ->char
+
+                    if (type == typeof(char) || type == typeof(char?))
+                    {
+                        if (obj.TryGetUInt16(out var value))
+                        {
+                            try
+                            {
+                                return (char) value;
+                            }
+                            catch
+                            {
+                                throw GetInvalidCastException(type, obj);
+                            }
+                        }
+                        else
+                            throw GetInvalidCastException(type, obj);
+                    }
+
+                    #endregion
+
                     throw GetInvalidCastException(type, obj);
                 }
                 case JsonValueKind.String:
@@ -686,8 +754,7 @@ namespace Shashlik.Utils.Extensions
                     {
                         enumType = type;
                     }
-                    else if (type.IsSubTypeOfGenericType(typeof(Nullable<>))
-                             && type.GetGenericArguments().First().IsEnum)
+                    else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
                     {
                         enumType = type.GetGenericArguments().First();
                     }
@@ -720,6 +787,22 @@ namespace Shashlik.Utils.Extensions
 
                     #endregion
 
+                    #region ->char
+
+                    if (type == typeof(char) || type == typeof(char?))
+                    {
+                        var str = obj.GetString();
+                        if (str.Length == 0)
+                            return GetDefaultValue(type);
+                        if (str.Length == 1)
+                            return str[0];
+
+                        throw GetInvalidCastException(type, obj);
+                    }
+
+                    #endregion
+
+
                     throw GetInvalidCastException(type, obj);
                 }
                 case JsonValueKind.Object:
@@ -739,6 +822,27 @@ namespace Shashlik.Utils.Extensions
         }
 
         #region private
+
+        private static readonly Dictionary<Type, object> _commonTypeDictionary = new Dictionary<Type, object>
+        {
+#pragma warning disable IDE0034 // Simplify 'default' expression - default causes default(object)
+            {typeof(int), default(int)},
+            {typeof(Guid), default(Guid)},
+            {typeof(DateTime), default(DateTime)},
+            {typeof(DateTimeOffset), default(DateTimeOffset)},
+            {typeof(long), default(long)},
+            {typeof(bool), default(bool)},
+            {typeof(double), default(double)},
+            {typeof(short), default(short)},
+            {typeof(float), default(float)},
+            {typeof(byte), default(byte)},
+            {typeof(char), default(char)},
+            {typeof(uint), default(uint)},
+            {typeof(ushort), default(ushort)},
+            {typeof(ulong), default(ulong)},
+            {typeof(sbyte), default(sbyte)}
+#pragma warning restore IDE0034 // Simplify 'default' expression
+        };
 
         private static object JToken2Object(JToken token)
         {
@@ -868,7 +972,7 @@ namespace Shashlik.Utils.Extensions
                 {
                     if (obj.TryGetDateTime(out var datetime))
                         return datetime;
-                    else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                    if (obj.TryGetDateTimeOffset(out var datetimeOffset))
                         return datetimeOffset;
                     return obj.GetString();
                 }
@@ -877,14 +981,12 @@ namespace Shashlik.Utils.Extensions
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
                 {
+                    if (obj.TryGetInt32(out var value1))
+                        return value1;
                     if (obj.TryGetInt64(out var value2))
-                    {
                         return value2;
-                    }
-                    else if (obj.TryGetDecimal(out var value3))
-                    {
+                    if (obj.TryGetDecimal(out var value3))
                         return value3;
-                    }
 
                     return null;
                 }
