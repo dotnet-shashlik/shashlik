@@ -13,11 +13,11 @@ namespace Shashlik.EfCore
         where TDbContext : DbContext
     {
         public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransactionWrapper, TDbContext dbContext,
-            IEfNestedTransactionBeginTransaction<TDbContext> beginTransactionMethod)
+            IEfNestedTransactionBeginFunction<TDbContext> beginFunction)
         {
             EfTransactionWrapper = efTransactionWrapper;
             DbContext = dbContext;
-            BeginTransactionMethod = beginTransactionMethod;
+            BeginFunction = beginFunction;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 开启事务的方式
         /// </summary>
-        private IEfNestedTransactionBeginTransaction<TDbContext> BeginTransactionMethod { get; }
+        private IEfNestedTransactionBeginFunction<TDbContext> BeginFunction { get; }
 
         /// <summary>
         /// 数据库上下文
@@ -46,9 +46,9 @@ namespace Shashlik.EfCore
         /// <returns></returns>
         public virtual IDbContextTransaction Begin(IsolationLevel? isolationLevel = null)
         {
-            return BeginTransactionMethod == null
-                ? EfTransactionWrapper.Begin(DbContext,isolationLevel)
-                : EfTransactionWrapper.Begin(DbContext, isolationLevel, BeginTransactionMethod.BeginTransaction);
+            return BeginFunction == null
+                ? EfTransactionWrapper.Begin(DbContext, isolationLevel)
+                : EfTransactionWrapper.Begin(DbContext, isolationLevel, BeginFunction.BeginTransaction);
         }
     }
 }
