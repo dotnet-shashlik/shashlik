@@ -27,16 +27,16 @@ namespace Shashlik.Sms.Options
         /// <summary>
         /// 批量发送最大手机数量
         /// </summary>
-        public int Max { get; set; } = 1000;
+        public int PatchMax { get; set; } = 1000;
 
         /// <summary>
         /// 短信发送限制
         /// </summary>
-        public List<SmsLimitConfig> Limits { get; set; }
+        public List<SmsLimitConfig> Limits { get; set; } = new List<SmsLimitConfig>();
 
         /// <summary>
         /// 短信配置
         /// </summary>
-        public List<SmsDomainConfig> DomainConfigs { get; set; }
+        public List<SmsDomainConfig> DomainConfigs { get; set; } = new List<SmsDomainConfig>();
     }
 }

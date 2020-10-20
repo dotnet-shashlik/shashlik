@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.xml" />
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="3.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shashlik.EventBus\Shashlik.EventBus.csproj" />
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+  </ItemGroup>
+
+</Project>

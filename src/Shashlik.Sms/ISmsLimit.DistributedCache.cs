@@ -32,7 +32,7 @@ namespace Shashlik.Sms
 
         public bool LimitCheck(string phone, string subject)
         {
-            var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
+            var limit = Options.CurrentValue.Limits.FirstOrDefault(r => r.Subject == subject);
             var key = CachePrefix.Format(subject, phone);
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
@@ -71,7 +71,7 @@ namespace Shashlik.Sms
 
         public void UpdateLimit(string phone, string subject)
         {
-            var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
+            var limit = Options.CurrentValue.Limits.FirstOrDefault(r => r.Subject == subject);
             if (limit == null)
                 return;
             var key = CachePrefix.Format(subject, phone);

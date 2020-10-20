@@ -61,6 +61,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.Pos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.Redis", "Shashlik.DataProtection.Redis\Shashlik.DataProtection.Redis.csproj", "{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EventBus.Rabbit", "Shashlik.EventBus.Rabbit\Shashlik.EventBus.Rabbit.csproj", "{0FC44516-BE92-47C6-8602-4BDBD848281C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,6 +244,12 @@ Global
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{94ACEEEA-AFF2-44DC-84FF-397657BA9AF8}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{0FC44516-BE92-47C6-8602-4BDBD848281C}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using AspNetCore.Totp;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
@@ -13,7 +11,6 @@ namespace Shashlik.Captcha.Totp
     /// <summary>
     /// totp验证码,使用 DataProtection的当前密钥keyId作为secret混淆,需要依赖DataProtection
     /// </summary>
-    [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty(typeof(bool?), "Shashlik:Captcha.Enable", true, null)]
     internal class TotpCatpcha : ICaptcha, ISingleton
     {
