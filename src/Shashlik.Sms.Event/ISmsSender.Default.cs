@@ -14,7 +14,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Sms.Event
 {
-    [ConditionOnProperty("Shashlik.Sms.Enable", "true")]
+    [ConditionDependsOn(typeof(ISms))]
     public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ISingleton
     {
         public DefaultSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options

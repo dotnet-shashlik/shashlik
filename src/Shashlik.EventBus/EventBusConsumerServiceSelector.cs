@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
+
 #pragma warning disable 8618
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -19,7 +20,7 @@ using Shashlik.Kernel.Dependency.Conditions;
 
 namespace Shashlik.EventBus
 {
-    [ConditionOnProperty("Shashlik.EventBus.Enable", "true")]
+    [ConditionOnProperty(typeof(bool?), "Shashlik:EventBus.Enable", true, null)]
     internal class EventBusConsumerServiceSelector : IConsumerServiceSelector, ISingleton
     {
         private readonly CapOptions _capOptions;

@@ -14,7 +14,7 @@ namespace Shashlik.Captcha.Totp
     /// totp验证码,使用 DataProtection的当前密钥keyId作为secret混淆,需要依赖DataProtection
     /// </summary>
     [ConditionDependsOn(typeof(IDistributedCache))]
-    [ConditionOnProperty("Shashlik:Captcha.Enable", "true")]
+    [ConditionOnProperty(typeof(bool?), "Shashlik:Captcha.Enable", true, null)]
     internal class TotpCatpcha : ICaptcha, ISingleton
     {
         public TotpCatpcha(IOptionsMonitor<CaptchaOptions> options)

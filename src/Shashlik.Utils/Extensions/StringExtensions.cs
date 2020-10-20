@@ -36,7 +36,7 @@ namespace Shashlik.Utils.Extensions
         {
             if (source == null || target == null)
                 return false;
-            return source.Equals(target, StringComparison.OrdinalIgnoreCase);
+            return source.Equals(target, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>

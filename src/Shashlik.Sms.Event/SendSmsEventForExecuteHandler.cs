@@ -8,7 +8,7 @@ namespace Shashlik.Sms.Event
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
-    [ConditionOnProperty("Shashlik.Sms.Enable", "true")]
+    [ConditionDependsOn(typeof(ISms))]
     public class SendSmsEventForExecuteHandler : EventBus.IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
