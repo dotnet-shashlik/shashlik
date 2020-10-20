@@ -70,13 +70,6 @@ namespace Shashlik.Captcha.Totp
             });
         }
 
-        private byte[] BuildToken(string purpose, string target, string securityStamp = null)
-        {
-            if (securityStamp.IsNullOrWhiteSpace())
-                return Encoding.UTF8.GetBytes($"{purpose}:{target}");
-            return Encoding.UTF8.GetBytes($"{purpose}:{target}:{securityStamp}");
-        }
-
         private string BuildTokenString(string purpose, string target, string securityStamp = null)
         {
             if (securityStamp.IsNullOrWhiteSpace())
