@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿﻿using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -52,26 +52,5 @@ namespace Shashlik.Identity.Entities
         public bool IsDeleted { get; set; }
 
         public long? DeleteTime { get; set; }
-    }
-
-    public class UsersConfig : IEntityTypeConfiguration<Users>
-    {
-        public UsersConfig(IOptions<IdentityUserExtendsOptions> options)
-        {
-            Options = options.Value;
-        }
-
-        private IdentityUserExtendsOptions Options { get; }
-
-        public void Configure(EntityTypeBuilder<Users> builder)
-        {
-            builder.Property(r => r.IdCard).HasMaxLength(32).IsRequired(Options.RequireIdCard);
-            builder.Property(r => r.RealName).HasMaxLength(32).IsRequired(Options.RequireRealName);
-            builder.Property(r => r.NickName).HasMaxLength(255).IsRequired(Options.RequireNickName);
-            builder.Property(r => r.Avatar).HasMaxLength(255).IsRequired(Options.RequireAvatar);
-            builder.Property(r => r.Birthday).IsRequired(Options.RequireBirthday);
-            builder.HasIndex(r => r.IdCard).IsUnique(Options.RequireUniqueIdCard);
-            builder.HasIndex(r => r.PhoneNumber).IsUnique(Options.RequireUniquePhoneNumber);
-        }
     }
 }

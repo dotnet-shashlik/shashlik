@@ -18,7 +18,7 @@ namespace Shashlik.Utils
             /// <summary>
             /// 邮件地址
             /// </summary>
-            [EmailAddress]public const string Email = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
+            [EmailAddress] public const string Email = @"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$";
             /// <summary>
             /// 国内手机号码
             /// </summary>

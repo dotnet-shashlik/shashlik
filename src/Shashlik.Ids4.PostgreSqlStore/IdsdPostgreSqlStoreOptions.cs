@@ -2,7 +2,7 @@
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {
-    [AutoOptions("Shashlik:Ids4:PostgreSql")]
+    [AutoOptions("Shashlik.Ids4.PostgreSql")]
     public class Ids4PostgreSqlStoreOptions
     {
         /// <summary>

@@ -28,19 +28,18 @@ namespace Shashlik.Identity
             if (!Options.Value.Enable)
                 return;
 
+            kernelService.Services.AddDataProtection();
             var builder = kernelService.Services.AddIdentityCore<Users>(options =>
                 {
                     Options.Value.IdentityOptions.CopyTo(options);
                 })
                 .AddRoles<Roles>()
                 .AddEntityFrameworkStores<ShashlikIdentityDbContext>()
-                .AddRoleValidator<RoleValidator<Roles>>()
                 .AddPersonalDataProtection<DefaultLookupProtector, DefaultLookupProtectorKeyRing>()
                 .AddDefaultTokenProviders();
 
             if (CaptchaOptions.Value.Enable)
-                builder.AddTokenProvider<CaptchaTokenProvider>(ShashlikIdentityConsts.CaptchaTokenProvider);
-
+                builder.AddTokenProvider<CaptchaTokenProvider<Users>>(ShashlikIdentityConsts.CaptchaTokenProvider);
             kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
                 {
                     Options.Value.DataProtectionTokenProviderOptions.CopyTo(o);

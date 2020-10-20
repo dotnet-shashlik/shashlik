@@ -1,19 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-  </PropertyGroup>
+    <Import Project="..\..\common.xml"/>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Caching.CSRedis" Version="3.6.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.7" />
-    <PackageReference Include="CSRedisCore" Version="3.6.5" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Caching.CSRedis" Version="3.6.5"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.9"/>
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.9"/>
+        <PackageReference Include="CSRedisCore" Version="3.6.5"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
+        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj"/>
+    </ItemGroup>
 
 </Project>

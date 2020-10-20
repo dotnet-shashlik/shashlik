@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
@@ -20,13 +22,26 @@ namespace Shashlik.Identity.MySql
 
         public void ConfigureServices(IKernelServices kernelService)
         {
+            if (!Options.Enable)
+                return;
+
+            var conn = Options.ConnectionString;
+            if (conn.IsNullOrWhiteSpace())
+            {
+                conn = kernelService.RootConfiguration.GetConnectionString("Default");
+                kernelService.Services.Configure<ShashlikIdentityOptions>(r => { r.ConnectionString = conn; });
+            }
+
+            if (conn.IsNullOrWhiteSpace())
+                throw new InvalidOperationException($"ConnectionString can not be empty.");
+
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
             {
-                options.UseMySql(Options.ConnectionString!,
+                options.UseMySql(conn!,
                     db =>
                     {
                         db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??
-                                              this.GetType().Assembly.FullName);
+                                              typeof(IdentityMySqlConfigure).Assembly.FullName);
                     });
             });
 

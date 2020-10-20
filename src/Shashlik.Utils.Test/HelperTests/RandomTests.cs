@@ -4,11 +4,19 @@ using System.Linq;
 using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Shashlik.Utils.Test.HelperTests
 {
     public class RandomHelperTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
+        public RandomHelperTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
+        }
+
         [Fact]
         public void getId_test()
         {
@@ -27,27 +35,27 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void GetRandomCodeTest()
         {
-            for (var i = 0; i < 1000; i++)
+            for (int length = 1; length <= 32; length++)
             {
-                var code = RandomHelper.GetRandomCode(10);
-                code.ShouldNotBeEmpty();
-                code.Length.ShouldBe(10);
+                for (var i = 0; i < 10; i++)
+                {
+                    var code = RandomHelper.GetRandomCode(length);
+                    _testOutputHelper.WriteLine(code);
+                    code.ShouldNotBeEmpty();
+                    code.Length.ShouldBe(length);
+                }
             }
         }
 
         [Fact]
-        public void GetRandomNumberTest()
+        public void NextTest()
         {
-            Should.Throw<ArgumentException>(() =>
+            for (var i = 0; i < 100; i++)
             {
-                var codes = RandomHelper.GetRandomNum(50, 1, 2);
-            });
-            for (var i = 0; i < 1000; i++)
-            {
-                var codes = RandomHelper.GetRandomNum(50, 1, 300);
-                codes.ShouldNotBeEmpty();
-                codes.Count.ShouldBe(50);
-                codes.Distinct().Count().ShouldBe(50);
+                var code = RandomHelper.Next(10, 100);
+                code.ShouldBeGreaterThanOrEqualTo(10);
+                code.ShouldBeLessThan(100);
+                _testOutputHelper.WriteLine(code.ToString());
             }
         }
     }

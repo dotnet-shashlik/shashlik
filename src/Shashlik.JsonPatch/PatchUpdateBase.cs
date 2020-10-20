@@ -57,7 +57,7 @@ namespace Shashlik.JsonPatch
                     throw new ArgumentException($"Can not find property {name} in {type}.");
 
                 var sourceType = sourcePropertyInfo.PropertyType;
-                var sourceValue = jsonElement.JsonTo(sourceType);
+                var sourceValue = jsonElement.GetValue(sourceType);
                 sourcePropertyInfo.SetValue(this, sourceValue);
                 Values.Add(name, sourceValue);
             }

@@ -7,9 +7,9 @@ using DotNetCore.CAP;
 namespace Shashlik.EventBus
 {
     /// <summary>
-    /// 事件订阅处理, 事件的TypeName将作为队列名称
+    /// 事件订阅处理
     /// </summary>
-    public interface IEventHandler<in TEvent> : ICapSubscribe, Shashlik.Kernel.Dependency.ITransient
+    public interface IEventHandler<in TEvent> : ICapSubscribe, Kernel.Dependency.ITransient
         where TEvent : class, IEvent
     {
         /// <summary>

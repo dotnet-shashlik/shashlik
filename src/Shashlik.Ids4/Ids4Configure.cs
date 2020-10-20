@@ -36,16 +36,12 @@ namespace Shashlik.Ids4
             if (!Options.Enable)
                 return;
 
-            #region options
-
             var builder = kernelService.Services
                 .AddIdentityServer(options =>
                 {
                     // 属性值复制
                     Options.IdentityServerOptions.CopyTo(options);
                 });
-
-            #endregion
 
             #region 签名证书
 

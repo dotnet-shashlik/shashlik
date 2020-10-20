@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <Import Project="..\..\common.xml"/>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DotNetCore.CAP" Version="3.1.0" />
+    <ItemGroup>
+        <PackageReference Include="DotNetCore.CAP" Version="3.0.4"/>
 
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-  </ItemGroup>
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
+    </ItemGroup>
 
 </Project>

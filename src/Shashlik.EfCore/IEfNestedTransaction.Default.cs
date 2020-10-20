@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
@@ -44,11 +44,11 @@ namespace Shashlik.EfCore
         /// 开启事务
         /// </summary>
         /// <returns></returns>
-        public virtual IDbContextTransaction Begin()
+        public virtual IDbContextTransaction Begin(IsolationLevel? isolationLevel = null)
         {
             return BeginTransactionMethod == null
-                ? EfTransactionWrapper.Begin(DbContext)
-                : EfTransactionWrapper.Begin(DbContext, BeginTransactionMethod.BeginTransaction);
+                ? EfTransactionWrapper.Begin(DbContext,isolationLevel)
+                : EfTransactionWrapper.Begin(DbContext, isolationLevel, BeginTransactionMethod.BeginTransaction);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void test()
         {
-            var api = "http://api.test.yusuinet.com/openapi/test";
+            // var api = "http://api.test.yusuinet.com/openapi/test";
             // appId
             var appId = "12ae01c0d6fc4d8aa34dab379a3f5dcb";
             // 密钥
@@ -33,7 +33,7 @@ namespace Shashlik.Utils.Test
             // 使用guid生成32位随机字符
             var nonce = "742b0467aa364ff491d163d400a17209";
             // 使用guid生成32位请求id
-            var requestId = "e28ccc72720c4b599ef84ac7100d96fd";
+            // var requestId = "e28ccc72720c4b599ef84ac7100d96fd";
             // 创建接口调用对象
             var obj = new
             {
@@ -136,7 +136,7 @@ namespace Shashlik.Utils.Test
                 Company = new UserTestModel._Company
                 {
                     CompanyName = "test company",
-                    Address = new UserTestModel._Company._Address {Code = 1}
+                    Address = new UserTestModel._Company._Address { Code = 1 }
                 }
             };
 
@@ -146,9 +146,9 @@ namespace Shashlik.Utils.Test
                 .ShouldBe(
                     $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}{model.Company.CompanyName}{model.Company.Address.Code:d6}@{{NotMatch}}");
 
-            ((string) null).RazorFormat(model).ShouldBeNull();
+            ((string)null).RazorFormat(model).ShouldBeNull();
             "".RazorFormat(model).ShouldBeNullOrWhiteSpace();
-            "@{Age}@{Birthday}@{Money}".RazorFormat((UserTestModel) null).ShouldBe("@{Age}@{Birthday}@{Money}");
+            "@{Age}@{Birthday}@{Money}".RazorFormat((UserTestModel)null).ShouldBe("@{Age}@{Birthday}@{Money}");
 
             "@{age}".RazorFormat(model).ShouldBe("@{age}");
             "@empty".RazorFormat(model).ShouldBe("@empty");
@@ -169,14 +169,14 @@ namespace Shashlik.Utils.Test
                 .ShouldBe(
                     $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}{model.Company.CompanyName}{model.Company.Address.Code:d6}");
             var switchFormatString = "@{Gender|switch(0:未知|1:男性|2:女性|null:不男不女|empty:空|default:未知)}";
-            switchFormatString.RazorFormat(new {Gender = 2}).ShouldBe("女性");
+            switchFormatString.RazorFormat(new { Gender = 2 }).ShouldBe("女性");
             //switchFormatString.RazorFormat(new {}).ShouldBe("不男不女");
-            switchFormatString.RazorFormat(new {Gender = ""}).ShouldBe("空");
-            switchFormatString.RazorFormat(new {Gender = 7}).ShouldBe("未知");
-            "@{Gender|switch(0:未知)}".RazorFormat(new {Gender = 7}).ShouldBe("7");
+            switchFormatString.RazorFormat(new { Gender = "" }).ShouldBe("空");
+            switchFormatString.RazorFormat(new { Gender = 7 }).ShouldBe("未知");
+            "@{Gender|switch(0:未知)}".RazorFormat(new { Gender = 7 }).ShouldBe("7");
             try
             {
-                "@{Gender|switch(0未知)}".RazorFormat(new {Gender = 7});
+                "@{Gender|switch(0未知)}".RazorFormat(new { Gender = 7 });
             }
             catch (Exception e)
             {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shashlik.Kernel;
 using System;
+using System.Data;
 
 namespace Shashlik.EfCore
 {
@@ -19,6 +20,8 @@ namespace Shashlik.EfCore
         /// <exception cref="ArgumentException"></exception>
         protected ShashlikDbContext(DbContextOptions<TDbContext> options) : base(options)
         {
+            this.Database.BeginTransaction();
+            this.Database.BeginTransaction(IsolationLevel.Chaos);
             if (typeof(TDbContext) != this.GetType())
                 throw new ArgumentException($"Generic type {typeof(TDbContext)} must be {this.GetType()}.");
         }

@@ -7,12 +7,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
 using Shashlik.Identity.Entities;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 using StringExtensions = RestSharp.Extensions.StringExtensions;
 
 namespace Shashlik.Identity
 {
-    public class ShashlikUserManager : UserManager<Users>
+    public class ShashlikUserManager : UserManager<Users>, IScoped
     {
         protected ShashlikIdentityDbContext DbContext { get; }
 
