@@ -44,7 +44,7 @@ namespace Shashlik.EventBus
                     .Build(descriptor => { (descriptor.ServiceInstance as IEventBusConfigure)!.Configure(r); });
             });
             kernelService.Services.Replace(ServiceDescriptor.Describe(typeof(IConsumerServiceSelector),
-                typeof(ShashlikConsumerServiceSelector), ServiceLifetime.Singleton));
+                typeof(EventBusConsumerServiceSelector), ServiceLifetime.Singleton));
         }
     }
 }

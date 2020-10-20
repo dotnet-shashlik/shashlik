@@ -9,14 +9,17 @@ using DotNetCore.CAP;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Dependency.Conditions;
+
 // ReSharper disable LoopCanBeConvertedToQuery
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 
 namespace Shashlik.EventBus
 {
-    internal class ShashlikConsumerServiceSelector : IConsumerServiceSelector, Shashlik.Kernel.Dependency.ISingleton
+    [ConditionOnProperty("Shashlik.EventBus.Enable", "true")]
+    internal class EventBusConsumerServiceSelector : IConsumerServiceSelector, ISingleton
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
@@ -31,9 +34,9 @@ namespace Shashlik.EventBus
             _poundList;
 
         /// <summary>
-        /// Creates a new <see cref="ShashlikConsumerServiceSelector" />.
+        /// Creates a new <see cref="EventBusConsumerServiceSelector" />.
         /// </summary>
-        public ShashlikConsumerServiceSelector(IServiceProvider serviceProvider)
+        public EventBusConsumerServiceSelector(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _capOptions = serviceProvider.GetService<IOptions<CapOptions>>().Value;
@@ -88,7 +91,6 @@ namespace Shashlik.EventBus
                 if (!typeInfo.IsClass || typeInfo.IsAbstract)
                     continue;
 
-                // 继承自IEventHandler<>
                 if (!typeInfo.IsSubTypeOfGenericType(typeof(IEventHandler<>)))
                     continue;
 
@@ -98,10 +100,16 @@ namespace Shashlik.EventBus
             return executorDescriptorList;
         }
 
-        private List<string> GetEventNamesFromTypeInfo(TypeInfo typeInfo)
+        (TypeInfo serviceType, TypeInfo eventType, string groupName, string eventName) GetEventHandlerInfo(
+            TypeInfo type)
         {
-            List<string> names = new List<string>();
-            foreach (var item in typeInfo.ImplementedInterfaces)
+            string groupName = $"{type.Name}.{_capOptions.Version}";
+            var groupNameAttribute = type.GetCustomAttribute<NameAttribute>(true);
+            if (groupNameAttribute != null)
+                groupName = groupNameAttribute.Name;
+
+            var types = new List<(TypeInfo serviceType, TypeInfo eventType, string groupName, string eventName)>();
+            foreach (var item in type.ImplementedInterfaces)
             {
                 var @interface = item.GetTypeInfo();
                 if (!@interface.IsGenericType)
@@ -113,45 +121,45 @@ namespace Shashlik.EventBus
                 if (!eventType.IsSubTypeOf<IEvent>())
                     continue;
 
-                names.Add(eventType.Name);
+                string eventName = $"{eventType.Name}.{_capOptions.Version}";
+                var eventNameAttribute = type.GetCustomAttribute<NameAttribute>(true);
+                if (eventNameAttribute != null)
+                    eventName = eventNameAttribute.Name;
+
+                types.Add((typeof(IEventHandler<>).MakeGenericType(eventType).GetTypeInfo(), eventType, groupName,
+                    eventName));
             }
 
-            return names;
+            if (types.Count == 0)
+                throw new InvalidOperationException($"Can not find interface of IEventHandler<> on {type}.");
+            if (types.Count > 1)
+                throw new InvalidOperationException($"Find more interface of IEventHandler<> on {type}.");
+            return types[0];
         }
 
         private IEnumerable<ConsumerExecutorDescriptor> GetTopicAttributesDescription(TypeInfo typeInfo)
         {
-            var names = GetEventNamesFromTypeInfo(typeInfo);
-            if (names.IsNullOrEmpty())
-                return new ConsumerExecutorDescriptor[] { };
+            var (serviceType, eventType, groupName, eventName) = GetEventHandlerInfo(typeInfo);
 
             List<ConsumerExecutorDescriptor> results = new List<ConsumerExecutorDescriptor>();
-            var methods = typeInfo.GetMethods();
-            foreach (var eventName in names)
-            {
-                var method = methods.FirstOrDefault(r => r.Name == "Execute"
-                                                         && r.GetParameters().Length == 1
-                                                         && r.GetParameters()[0].ParameterType.Name == eventName
-                                                         && r.GetParameters()[0].ParameterType.IsSubTypeOf<IEvent>());
-                if (method == null)
-                    throw new Exception($"{typeInfo} event handler definetion error!");
 
-                results.Add(new ConsumerExecutorDescriptor
-                {
-                    Attribute =
-                        new CapSubscribeAttribute(eventName) {Group = typeInfo.Name + "." + _capOptions.Version},
-                    ImplTypeInfo = typeInfo,
-                    MethodInfo = method,
-                    ServiceTypeInfo = typeInfo,
-                    Parameters = method.GetParameters()
-                        .Select(parameter => new ParameterDescriptor
-                        {
-                            Name = parameter.Name,
-                            ParameterType = parameter.ParameterType,
-                            IsFromCap = parameter.GetCustomAttributes(typeof(FromCapAttribute)).Any()
-                        }).ToList()
-                });
-            }
+            var method = serviceType.GetMethod("Execute", new Type[] {eventType})!;
+
+            results.Add(new ConsumerExecutorDescriptor
+            {
+                Attribute =
+                    new CapSubscribeAttribute(eventName) {Group = groupName},
+                ImplTypeInfo = typeInfo,
+                MethodInfo = method,
+                ServiceTypeInfo = serviceType,
+                Parameters = method.GetParameters()
+                    .Select(parameter => new ParameterDescriptor
+                    {
+                        Name = parameter.Name,
+                        ParameterType = parameter.ParameterType,
+                        IsFromCap = parameter.GetCustomAttributes(typeof(FromCapAttribute)).Any()
+                    }).ToList()
+            });
 
             return results;
         }
