@@ -142,6 +142,15 @@ namespace Shashlik.Utils.Extensions
                 return list.GroupBy(selectProperty, keyComparer).Any(g => g.Count() > 1);
         }
 
+        /// <summary>
+        /// where id
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="condition">条件值</param>
+        /// <param name="where">where</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> list, bool condition, Func<T, bool> where)
         {
             if (list == null)
@@ -159,6 +168,15 @@ namespace Shashlik.Utils.Extensions
             return list;
         }
 
+        /// <summary>
+        /// where if
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="condition">条件之</param>
+        /// <param name="where">where</param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> list, bool condition, Expression<Func<T, bool>> where)
         {
             if (list == null)
