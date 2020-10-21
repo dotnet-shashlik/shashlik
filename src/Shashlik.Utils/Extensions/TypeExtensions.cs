@@ -821,6 +821,26 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
+        /// <summary>
+        /// 获取枚举值描述
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string GetEnumDescription(this Enum value)
+        {
+            var name = value.ToString();
+            var fieldInfo = value.GetType().GetField(name);
+            if (fieldInfo == null)
+                throw new ArgumentException($"Can not find enum value:{value}");
+            if (fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() is
+                DescriptionAttribute descriptionAttribute)
+            {
+                return descriptionAttribute.Description;
+            }
+
+            return string.Empty;
+        }
+
         #region private
 
         private static readonly Dictionary<Type, object> _commonTypeDictionary = new Dictionary<Type, object>

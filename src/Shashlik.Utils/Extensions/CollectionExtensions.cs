@@ -176,6 +176,25 @@ namespace Shashlik.Utils.Extensions
             return list;
         }
 
+        /// <summary>
+        /// 分页查询
+        /// </summary>
+        /// <param name="query">查询源</param>
+        /// <param name="pageIndex">当前页,索引从1开始</param>
+        /// <param name="pageSize">每页大小</param>
+        /// <returns></returns>
+        public static IQueryable<T> DoPage<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
+            return
+                query
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize);
+        }
 
         /// <summary>
         /// 分页查询
@@ -184,7 +203,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="pageIndex">当前页,索引从1开始</param>
         /// <param name="pageSize">每页大小</param>
         /// <returns></returns>
-        public static IQueryable<T> Page<T>(this IQueryable<T> query, int pageIndex, int pageSize)
+        public static IEnumerable<T> DoPage<T>(this IEnumerable<T> query, int pageIndex, int pageSize)
         {
             if (query == null)
             {
