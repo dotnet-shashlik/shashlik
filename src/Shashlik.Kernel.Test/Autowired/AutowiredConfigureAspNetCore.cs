@@ -8,7 +8,7 @@ namespace Shashlik.Kernel.Test.Autowired
     {
         public static bool Inited { get; private set; } = false;
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IKernelConfigure _)
         {
             Inited = true;
         }

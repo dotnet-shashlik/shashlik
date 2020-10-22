@@ -134,7 +134,7 @@ namespace Shashlik.Ids4
                 .Build(r => (r.ServiceInstance as IIdentityServerBuilderConfigure)!.ConfigureIds4(builder));
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IKernelConfigure _)
         {
             app.UseIdentityServer();
         }

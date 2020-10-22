@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Autowired;
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.AspNetCore
@@ -40,14 +41,15 @@ namespace Shashlik.AspNetCore
         /// <param name="builder"></param>
         /// <param name="app"></param>
         /// <returns></returns>
-        public static IKernelConfigure BuildAutowiredAspNetConfigure(this IAutowiredConfigureBuilder builder, IApplicationBuilder app)
+        public static IKernelConfigure BuildAutowiredAspNetConfigure(this IAutowiredConfigureBuilder builder,
+            IApplicationBuilder app)
         {
             if (builder.AutowiredBaseType != typeof(IAutowiredConfigureAspNetCore))
                 throw new Exception($"error auto configure type, must be {typeof(IAutowiredConfigureAspNetCore)}.");
             return builder.Build(r =>
-           {
-               (r.ServiceInstance as IAutowiredConfigureAspNetCore)?.Configure(app);
-           });
+            {
+                (r.ServiceInstance as IAutowiredConfigureAspNetCore)?.Configure(app, builder.KernelConfigure);
+            });
         }
     }
 }
