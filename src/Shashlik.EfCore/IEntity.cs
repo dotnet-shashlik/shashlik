@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shashlik.EfCore
+﻿namespace Shashlik.EfCore
 {
     public interface IEntity
     {

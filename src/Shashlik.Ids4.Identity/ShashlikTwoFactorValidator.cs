@@ -4,14 +4,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
-using Shashlik.Identity.Options;
 using Shashlik.Utils.Extensions;
 
-#pragma warning disable 8600
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Shashlik.Ids4.Identity
 {
@@ -22,19 +19,11 @@ namespace Shashlik.Ids4.Identity
     {
         private ShashlikUserManager UserManager { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
-        private IOptions<ShashlikIdentityOptions> ShashlikIdentityOptions { get; }
-        private IOptions<IdentityOptions> IdentityOptions { get; }
-        private IOptions<ShashlikIds4IdentityOptions> Ids4IdentityOptions { get; }
 
         public ShashlikTwoFactorValidator(ShashlikUserManager userManager,
-            IOptions<ShashlikIds4IdentityOptions> ids4IdentityOptions,
-            IOptions<ShashlikIdentityOptions> shashlikIdentityOptions, IOptions<IdentityOptions> identityOptions,
             IDataProtectionProvider dataProtectionProvider)
         {
             UserManager = userManager;
-            Ids4IdentityOptions = ids4IdentityOptions;
-            ShashlikIdentityOptions = shashlikIdentityOptions;
-            IdentityOptions = identityOptions;
             DataProtectionProvider = dataProtectionProvider;
         }
 
@@ -51,28 +40,34 @@ namespace Shashlik.Ids4.Identity
                 errorCode = ErrorCodes.TokenError;
             if (provider.IsNullOrWhiteSpace())
                 errorCode = ErrorCodes.ProviderError;
+            if (security.IsNullOrWhiteSpace())
+                errorCode = ErrorCodes.SecurityError;
 
-            TwoFactorStep1SecurityModel model = null;
+            TwoFactorStep1SecurityModel? model = null;
             if (errorCode == 0)
             {
                 try
                 {
                     var json = DataProtectionProvider
                         .CreateProtector(ShashlikIds4IdentityConsts.TwoFactorTokenProviderPurpose)
-                        .Unprotect(security);
-                    model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
+                        .ToTimeLimitedDataProtector()
+                        .Unprotect(security, out var expiration);
+
+                    if (DateTimeOffset.Now > expiration)
+                        errorCode = ErrorCodes.SecurityError;
+                    else
+                        model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
                 }
                 catch (Exception)
                 {
                     errorCode = ErrorCodes.SecurityError;
                 }
 
-                if (model == null || model.Expiration <=
-                    DateTime.Now.AddSeconds(Ids4IdentityOptions.Value.TwoFactorExpiration).GetLongDate())
+                if (model == null)
                     errorCode = ErrorCodes.SecurityTimeout;
             }
 
-            Users user = null;
+            Users? user = null;
             if (errorCode == 0 && model != null)
             {
                 user = await UserManager.FindByIdAsync(model.UserId);

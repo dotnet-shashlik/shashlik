@@ -5,11 +5,16 @@
         /// <summary>
         /// userid
         /// </summary>
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
+
+        /// <summary>
+        /// 随机值
+        /// </summary>
+        public string Nonce { get; set; }
 
         /// <summary>
         /// 过期时间
         /// </summary>
-        public long Expiration { get; set; }
+        public long CreateTime { get; set; }
     }
 }

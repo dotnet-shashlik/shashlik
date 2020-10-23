@@ -32,7 +32,7 @@ namespace Shashlik.DataProtection
                 return;
 
             if (Options.Key.IsNullOrWhiteSpace())
-                throw new InvalidOperationException($"Redis key can not be empty.");
+                throw new InvalidOperationException("Redis key can not be empty.");
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称

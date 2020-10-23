@@ -100,7 +100,7 @@ namespace Shashlik.Identity
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
         public async Task<string> GenerateLoginCaptcha(Users user)
         {
@@ -111,7 +111,7 @@ namespace Shashlik.Identity
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="user"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
         public async Task<bool> IsValidLoginCaptcha(Users user, string catpcha)

@@ -3,6 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using AspectCore.DynamicProxy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.EfCore.Transactional
@@ -40,18 +41,18 @@ namespace Shashlik.EfCore.Transactional
             DbContextType = dbContextType;
         }
 
-        public Type DbContextType { get; set; }
+        public Type DbContextType { get; }
 
         /// <summary>
         /// 事务隔离级别,null默认隔离级别
         /// </summary>
-        public IsolationLevel? IsolationLevel { get; set; } = null;
+        public IsolationLevel? IsolationLevel { get; set; }
 
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
             var efNestedTransactionType = typeof(IEfNestedTransaction<>).MakeGenericType(DbContextType);
             var efNestedTransaction =
-                context.ServiceProvider.GetService(efNestedTransactionType) as IEfNestedTransaction;
+                context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
 
             await using var tran = efNestedTransaction!.Begin(IsolationLevel);
         }
