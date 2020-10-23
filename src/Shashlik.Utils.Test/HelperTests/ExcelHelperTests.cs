@@ -96,13 +96,13 @@ namespace Shashlik.Utils.Test
 
             var ds = ExcelHelper.ToDataSet(File.OpenRead(fileName));
 
-            ds.Tables[0].Rows[0][0].ShouldBe("A");
-            ds.Tables[0].Rows[0][1].ShouldBe("B");
-            ds.Tables[0].Rows[0][2].ShouldBe("C");
+            ds.Tables[0].Rows[2][0].ShouldBe("A");
+            ds.Tables[0].Rows[2][1].ShouldBe("B");
+            ds.Tables[0].Rows[2][2].ShouldBe("C");
 
-            ds.Tables[0].Rows[2][0].ShouldBe(col1);
-            ds.Tables[0].Rows[2][1].ShouldBe(col2);
-            ds.Tables[0].Rows[2][2].ShouldBe(col3);
+            ds.Tables[0].Rows[3][0].ShouldBe(col1);
+            ds.Tables[0].Rows[3][1].ShouldBe(col2);
+            ds.Tables[0].Rows[3][2].ShouldBe(col3);
             File.Delete(fileName);
         }
 
