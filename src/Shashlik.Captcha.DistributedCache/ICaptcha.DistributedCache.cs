@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
-using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
@@ -13,7 +13,8 @@ namespace Shashlik.Captcha.DistributedCache
     /// 验证码
     /// </summary>
     [ConditionDependsOn(typeof(IDistributedCache))]
-    [ConditionOnProperty(typeof(bool?), "Shashlik:Captcha.Enable", true, null)]
+    [ConditionDependsOnMissing(typeof(ICaptcha))]
+    [ConditionOnProperty(typeof(bool?), "Shashlik.Captcha.Enable", true, null)]
     internal class DistributedCacheCatpcha : ICaptcha, ISingleton
     {
         public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)

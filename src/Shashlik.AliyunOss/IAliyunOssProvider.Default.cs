@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Aliyun.OSS;
 using Shashlik.Kernel.Dependency;
-using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable IdentifierTypo

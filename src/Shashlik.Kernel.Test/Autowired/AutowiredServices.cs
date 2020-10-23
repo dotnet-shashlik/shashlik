@@ -4,11 +4,11 @@ using Shashlik.Kernel.Test.Options;
 
 namespace Shashlik.Kernel.Test.Autowired
 {
-    public class AutowiredServices : IAutowiredConfigureServices
+    public class AutowiredServices : IServiceAutowire
     {
-        public void ConfigureServices(IKernelServices kernelService)
+        public void Configure(IKernelServices kernelServices)
         {
-            kernelService.Services.Configure<TestOptions3>(r => { r.Name = "张三"; });
+            kernelServices.Services.Configure<TestOptions3>(r => { r.Name = "张三"; });
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shashlik.Identity.DataProtection;
-using Shashlik.Kernel.Autowired.Attributes;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Identity.Options
 {

@@ -1,4 +1,6 @@
-﻿namespace Shashlik.Utils.Helpers
+﻿// ReSharper disable CheckNamespace
+
+namespace Shashlik.Utils.Helpers
 {
     public static class BCryptHelper
     {

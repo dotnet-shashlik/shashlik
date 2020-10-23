@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Kernel.Dependency.Conditions;
 using Shashlik.Utils.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Dependency
 {
@@ -73,7 +73,7 @@ namespace Shashlik.Kernel.Dependency
             return type.GetCustomAttributes()
                 .Where(r => r is IConditionBase)
                 .Select(r => (r as IConditionBase,
-                    r.GetType().GetCustomAttribute<ConditionOrderAttribute>()?.Order ?? int.MaxValue))
+                    r.GetType().GetCustomAttribute<OrderAttribute>()?.Order ?? int.MaxValue))
                 .ToList();
         }
 

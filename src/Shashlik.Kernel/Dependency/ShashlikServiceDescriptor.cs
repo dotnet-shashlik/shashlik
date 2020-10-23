@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Kernel.Dependency.Conditions;
 using System.Collections.Generic;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Dependency
 {

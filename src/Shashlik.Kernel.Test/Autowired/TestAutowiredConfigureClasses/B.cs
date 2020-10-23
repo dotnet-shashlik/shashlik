@@ -1,5 +1,5 @@
 ﻿using System;
-using Shashlik.Kernel.Autowired.Attributes;
+using Shashlik.Kernel.Attributes;
 using  Shouldly;
 
 namespace Shashlik.Kernel.Test.Autowired.TestAutowiredConfigureClasses

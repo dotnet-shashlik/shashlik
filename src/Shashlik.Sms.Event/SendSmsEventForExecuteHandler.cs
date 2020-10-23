@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Shashlik.Kernel.Dependency.Conditions;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
 
 namespace Shashlik.Sms.Event

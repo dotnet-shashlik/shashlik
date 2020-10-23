@@ -17,7 +17,7 @@ namespace Shashlik.Kernel.Test
         {
             return
                 Host.CreateDefaultBuilder()
-                    .UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
+                    //.UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
                     .UseEnvironment("Development")
                     .ConfigureAppConfiguration((host, builder) =>
                     {

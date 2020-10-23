@@ -1,4 +1,4 @@
-﻿using Shashlik.Kernel.Dependency.Conditions;
+﻿using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {

@@ -2,7 +2,8 @@
 using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
-using Shashlik.Kernel.Autowired.Attributes;
+using Shashlik.Kernel.Attributes;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.Ids4

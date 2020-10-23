@@ -29,10 +29,10 @@ namespace Shashlik.Kernel.Test
             services.Configure<TestOptions2>(r => r.Enable = false);
 
             services.AddShashlik(Configuration)
-                .AutowiredOptions()
-                .AutowiredServices()
-                .BeginAutowired<ITestAutowiredServices>()
-                .Build(r => (r.ServiceInstance as ITestAutowiredServices)!.ConfigureServices(services))
+                .AutowireOptions()
+                .Initialize()
+                .AutowireServices()
+                .Autowire<ITestAutowiredServices>(r => r.ConfigureServices(services))
                 .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton);
 
             services.ConfigureDynamicProxy(r =>
@@ -40,7 +40,7 @@ namespace Shashlik.Kernel.Test
                 r.Interceptors.AddTyped<CustomInterceptorAttribute>(
                     p => p.GetCustomAttributes(typeof(CustomInterceptorAttribute), true).Any()
                 );
-                
+
                 r.Interceptors.AddTyped<CustomInterceptor2Attribute>(
                     p => p.GetCustomAttributes(typeof(CustomInterceptor2Attribute), true).Any()
                 );
@@ -50,10 +50,10 @@ namespace Shashlik.Kernel.Test
         public void Configure(IApplicationBuilder app)
         {
             app.ApplicationServices.UseShashlik()
-                .AutowiredConfigure()
-                .AutowiredAspNetConfigure(app)
-                .BeginAutowired<ITestAutowiredConfigure>()
-                .Build(r => (r.ServiceInstance as ITestAutowiredConfigure)!.Configure(app.ApplicationServices));
+                .AutowireServiceProvider()
+                .AutowireAspNet(app)
+                .Autowire<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
+                ;
         }
     }
 }

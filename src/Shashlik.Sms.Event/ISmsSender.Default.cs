@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.EventBus;
-using Shashlik.Kernel.Dependency.Conditions;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils;
@@ -41,7 +41,7 @@ namespace Shashlik.Sms.Event
             // 先用异步直接发送一次短信,如果收到主机异常,再发布事件进行重试
             Task.Run(() =>
             {
-                using var scope = Kernel.KernelServiceProvider.ServiceProvider.CreateScope();
+                using var scope = Kernel.GlobalKernelServiceProvider.KernelServiceProvider.CreateScope();
                 try
                 {
                     var sms = scope.ServiceProvider.GetService<ISms>();

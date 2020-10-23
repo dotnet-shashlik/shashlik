@@ -5,8 +5,8 @@ using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
 using Shashlik.Identity.Options;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
-using Shashlik.Kernel.Dependency.Conditions;
 
 namespace Shashlik.Ids4.Identity
 {
