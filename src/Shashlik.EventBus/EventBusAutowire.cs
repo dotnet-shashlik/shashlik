@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using RestSharp.Extensions;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.EventBus
@@ -40,7 +41,7 @@ namespace Shashlik.EventBus
                 if (EventBusOptions.SucceedMessageExpiredAfter.HasValue)
                     r.SucceedMessageExpiredAfter = EventBusOptions.SucceedMessageExpiredAfter.Value;
 
-                kernelService.Autowire<IEventBusConfigure>(a => a.Configure(r));
+                kernelService.Autowire<IEventBusAutowire>(a => a.Configure(r));
             });
 
             kernelService.Services.Replace(ServiceDescriptor.Describe(typeof(IConsumerServiceSelector),

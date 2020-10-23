@@ -8,13 +8,13 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 条件依赖,服务存在时
+    /// 条件依赖,服务存在时,优先级200
     /// </summary>
     [Order(200)]
     public class ConditionDependsOnAttribute : Attribute, IConditionBase
     {
         /// <summary>
-        /// 条件依赖,服务存在时
+        /// 条件依赖,服务存在时,优先级200
         /// </summary>
         /// <param name="types">依赖的服务类型</param>
         public ConditionDependsOnAttribute(params Type[] types)
@@ -25,7 +25,7 @@ namespace Shashlik.Kernel.Attributes
         /// <summary>
         /// 依赖的服务类型
         /// </summary>
-        public Type[] Types { get; set; }
+        public Type[] Types { get; }
 
         /// <summary>
         /// 默认为ALL

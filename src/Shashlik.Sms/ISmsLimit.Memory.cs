@@ -12,8 +12,6 @@ namespace Shashlik.Sms
     /// <summary>
     /// 内存缓存短信发送限制
     /// </summary>
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.EnableDistributedCacheLimit", false)]
-    [ConditionDependsOnMissing(typeof(ISmsLimit))]
     public class MemorySmsLimit : ISmsLimit
     {
         public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options)

@@ -25,13 +25,17 @@ namespace Shashlik.Sms
             if (!Options.Value.Enable)
                 return;
 
-            if (Options.Value.UseEmptySms) kernelService.Services.TryAddSingleton<ISms, EmptySms>();
+            if (Options.Value.UseEmptySms)
+                kernelService.Services.TryAddSingleton<ISms, EmptySms>();
             else kernelService.Services.TryAddSingleton<ISms, DefaultSms>();
 
             if (Options.Value.EnableDistributedCacheLimit)
                 kernelService.Services.TryAddSingleton<ISmsLimit, DistributedCacheSmsLimit>();
             else
+            {
                 kernelService.Services.AddMemoryCache();
+                kernelService.Services.TryAddSingleton<ISmsLimit, MemorySmsLimit>();
+            }
 
             kernelService.Services.AddSingleton<ISmsDomain, AliSms>();
             kernelService.Services.AddSingleton<ISmsDomain, TencentSms>();

@@ -13,8 +13,6 @@ namespace Shashlik.Sms
     /// <summary>
     /// 分布式缓存短信发送限制
     /// </summary>
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.EnableDistributedCacheLimit", true)]
-    [ConditionDependsOn(typeof(IDistributedCache))]
     public class DistributedCacheSmsLimit : ISmsLimit
     {
         public DistributedCacheSmsLimit(IDistributedCache cache, IOptionsMonitor<SmsOptions> options)

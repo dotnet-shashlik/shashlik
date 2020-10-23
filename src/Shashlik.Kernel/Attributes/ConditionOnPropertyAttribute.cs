@@ -7,13 +7,13 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 属性值条件
+    /// 属性值条件,优先级20
     /// </summary>
     [Order(20)]
     public class ConditionOnPropertyAttribute : Attribute, IConditionBase
     {
         /// <summary>
-        /// 
+        /// 属性值条件,优先级20
         /// </summary>
         /// <param name="valueType"><paramref name="values"/>值的类型</param>
         /// <param name="property">属性名称</param>

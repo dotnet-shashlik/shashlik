@@ -31,12 +31,14 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
+        /// <param name="stringComparison"></param>
         /// <returns></returns>
-        public static bool EqualsIgnoreCase(this string source, string target)
+        public static bool EqualsIgnoreCase(this string source, string target,
+            StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
             if (source == null || target == null)
                 return false;
-            return source.Equals(target, StringComparison.InvariantCultureIgnoreCase);
+            return source.Equals(target, stringComparison);
         }
 
         /// <summary>

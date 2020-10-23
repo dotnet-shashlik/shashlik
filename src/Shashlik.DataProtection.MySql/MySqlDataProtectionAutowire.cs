@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable UnusedType.Global
@@ -25,7 +26,6 @@ namespace Shashlik.DataProtection
         {
             if (!Options.Enable)
                 return;
-
             if (Options.ConnectionString.IsNullOrWhiteSpace())
             {
                 Options.ConnectionString = kernelService.RootConfiguration.GetConnectionString("Default");

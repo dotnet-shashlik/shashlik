@@ -7,11 +7,16 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 环境名称判断
+    /// 环境名称判断,优先级0
     /// </summary>
     [Order(0)]
     public class ConditionOnHostEnvironmentAttribute : Attribute, IConditionBase
     {
+        /// <summary>
+        /// 环境名称判断,优先级0
+        /// </summary>
+        /// <param name="envName"></param>
+        /// <exception cref="ArgumentException"></exception>
         public ConditionOnHostEnvironmentAttribute(string envName)
         {
             if (string.IsNullOrWhiteSpace(envName))
@@ -22,15 +27,16 @@ namespace Shashlik.Kernel.Attributes
             EnvName = envName;
         }
 
-        public string EnvName { get; set; }
+        public string EnvName { get; }
 
         public bool IgnoreCase { get; set; } = true;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
+        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+            IHostEnvironment hostEnvironment)
         {
-            if (IgnoreCase)
-                return hostEnvironment.EnvironmentName.EqualsIgnoreCase(EnvName);
-            return hostEnvironment.EnvironmentName.Equals(EnvName);
+            return IgnoreCase
+                ? hostEnvironment.EnvironmentName.EqualsIgnoreCase(EnvName)
+                : hostEnvironment.EnvironmentName.Equals(EnvName);
         }
     }
 }

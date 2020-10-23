@@ -5,9 +5,9 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.EventBus.Rabbit
 {
-    public class RabbitEventBusConfigure : IEventBusConfigure
+    public class RabbitEventBusAutowire : IEventBusAutowire
     {
-        public RabbitEventBusConfigure(IOptions<RabbitEventBusOptions> options)
+        public RabbitEventBusAutowire(IOptions<RabbitEventBusOptions> options)
         {
             Options = options.Value;
         }

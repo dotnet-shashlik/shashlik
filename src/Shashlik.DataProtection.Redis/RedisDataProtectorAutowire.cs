@@ -8,6 +8,7 @@ using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Redis;
 using Shashlik.Utils.Extensions;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection
