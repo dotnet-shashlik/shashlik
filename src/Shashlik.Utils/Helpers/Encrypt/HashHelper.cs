@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 // ReSharper disable UnusedMember.Global
+// ReSharper disable CheckNamespace
 
 namespace Shashlik.Utils.Helpers
 {

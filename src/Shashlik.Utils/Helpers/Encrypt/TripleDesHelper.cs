@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Shashlik.Utils.Extensions;
+// ReSharper disable CheckNamespace
 
 namespace Shashlik.Utils.Helpers
 {
