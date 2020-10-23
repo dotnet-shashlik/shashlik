@@ -26,14 +26,9 @@ namespace Shashlik.AliyunOss
         }
 
         public AliyunOssPostPolicy BuildSingleFilePolicy(string fileKey, int expireSeconds = 60,
-            int maxSize = 8 * 1024 * 1024, IEnumerable<string> policyFileExtLimit = null)
+            int maxSize = 8 * 1024 * 1024)
         {
             fileKey = fileKey.TrimStart('/');
-
-            var ext = Path.GetExtension(fileKey).TrimStart('.');
-            if (!policyFileExtLimit.IsNullOrEmpty() &&
-                !policyFileExtLimit.Any(r => r.EqualsIgnoreCase(ext)))
-                throw new ArgumentException("错误的文件类型", nameof(ext));
 
             var expiration = DateTime.Now.AddSeconds(expireSeconds);
             var policyConditions = new PolicyConditions();
