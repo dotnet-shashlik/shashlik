@@ -1,8 +1,5 @@
-﻿using Shashlik.Utils.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Shashlik.Kernel.Dependency
@@ -12,6 +9,7 @@ namespace Shashlik.Kernel.Dependency
     /// </summary>
     public interface IBasedOnServiceDescriptorProvider
     {
-        IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly, TypeInfo baseType, ServiceLifetime serviceLifetime);
+        IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly, TypeInfo baseType,
+            ServiceLifetime serviceLifetime);
     }
 }

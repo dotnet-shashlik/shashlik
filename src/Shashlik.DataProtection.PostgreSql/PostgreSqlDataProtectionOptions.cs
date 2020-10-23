@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel.Autowired.Attributes;
+﻿using Shashlik.Kernel.Attributes;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection

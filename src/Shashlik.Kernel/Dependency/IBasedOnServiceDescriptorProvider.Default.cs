@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Shashlik.Utils.Helpers;
 
@@ -11,10 +10,10 @@ namespace Shashlik.Kernel.Dependency
     /// <summary>
     /// 默认使用的约定服务查找器,只会注册接口以及自身为服务
     /// </summary>
-    class DefaultBasedOnServiceDescriptorProvider : IBasedOnServiceDescriptorProvider
+    internal class DefaultBasedOnServiceDescriptorProvider : IBasedOnServiceDescriptorProvider
     {
-
-        public IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly, TypeInfo baseType, ServiceLifetime serviceLifetime)
+        public IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly, TypeInfo baseType,
+            ServiceLifetime serviceLifetime)
         {
             if (assembly == null)
             {

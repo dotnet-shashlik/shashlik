@@ -8,7 +8,7 @@ using Shashlik.Identity.Options;
 
 namespace Shashlik.Ids4.Identity
 {
-    public class ShashlikIds4IdentityConfigure : IIdentityServerBuilderConfigure
+    public class ShashlikIds4IdentityConfigure : IIds4ExtensionAutowire
     {
         public ShashlikIds4IdentityConfigure(IOptions<IdentityOptions> identityOptions,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,

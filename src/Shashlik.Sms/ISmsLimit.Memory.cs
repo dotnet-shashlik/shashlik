@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Shashlik.Kernel.Dependency.Conditions;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
 

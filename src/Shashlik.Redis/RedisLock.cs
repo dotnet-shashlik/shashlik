@@ -1,5 +1,6 @@
 ﻿using System;
 using CSRedis;
+using Shashlik.Kernel;
 using Shashlik.Kernel.Locker;
 
 namespace Shashlik.Redis

@@ -2,11 +2,11 @@
 
 namespace Shashlik.Kernel.Test.Autowired
 {
-    public class AutowiredConfigure : IAutowiredConfigure
+    public class AutowiredConfigure : IServiceProviderAutowire
     {
         public static bool Inited { get; private set; } = false;
 
-        public void Configure(IKernelConfigure kernelConfigure)
+        public void Configure(IKernelServiceProvider kernelConfigure)
         {
             Inited = true;
         }

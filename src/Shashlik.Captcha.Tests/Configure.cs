@@ -1,14 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Autowired;
 
 namespace Shashlik.Captcha.Tests
 {
-    public class Configure :IAutowiredConfigureServices
+    public class TestConfigure : IServiceAutowire
     {
-        public void ConfigureServices(IKernelServices kernelService)
+        public void Configure(IKernelServices kernelServices)
         {
-            kernelService.Services.AddDataProtection();
+            kernelServices.Services.AddDataProtection();
         }
     }
 }

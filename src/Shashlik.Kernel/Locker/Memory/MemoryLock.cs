@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Locker.Memory
 {
-    public class MemoryLock : ILock
+    [ConditionDependsOnMissing(typeof(ILock))]
+    public class MemoryLock : ILock, ISingleton
     {
         private static readonly ConcurrentDictionary<string, AsyncLock> Lockers =
             new ConcurrentDictionary<string, AsyncLock>();
@@ -14,7 +17,6 @@ namespace Shashlik.Kernel.Locker.Memory
         {
             key = $"ShashlikMemoryLock:{key}";
             var value = Guid.NewGuid().ToString("n");
-
             using var source = new CancellationTokenSource(TimeSpan.FromSeconds(waitTimeout));
             var asyncLock = Lockers.GetOrAdd(key, new AsyncLock());
             var releaser = asyncLock.Lock(source.Token);

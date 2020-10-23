@@ -9,8 +9,8 @@ using DotNetCore.CAP;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
-using Shashlik.Kernel.Dependency.Conditions;
 
 #pragma warning disable 8618
 
