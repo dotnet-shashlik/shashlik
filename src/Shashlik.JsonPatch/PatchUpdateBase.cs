@@ -26,13 +26,13 @@ namespace Shashlik.JsonPatch
         /// <summary>
         /// 属性转换器
         /// </summary>
-        private IDictionary<string, PatchUpdateConverter> Converters { get; set; } =
+        private IDictionary<string, PatchUpdateConverter> Converters { get; } =
             new Dictionary<string, PatchUpdateConverter>();
 
         /// <summary>
         /// 排除更新
         /// </summary>
-        private List<string> SourceExcludes { get; set; } = new List<string>();
+        private List<string> SourceExcludes { get; } = new List<string>();
 
         /// <summary>
         /// 有效值
@@ -40,9 +40,9 @@ namespace Shashlik.JsonPatch
         public Dictionary<string, object> Values { get; } =
             new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
 
-        public PatchUpdateBase(JsonElement jobject)
+        public PatchUpdateBase(JsonElement jObject)
         {
-            Origin = jobject;
+            Origin = jObject;
             var type = GetType();
 
             var enumerateObject = Origin.EnumerateObject();
@@ -51,7 +51,7 @@ namespace Shashlik.JsonPatch
                 var name = enumerateObject.Current.Name;
                 var jsonElement = enumerateObject.Current.Value;
 
-                var sourcePropertyInfo = this.GetType().GetProperty(name,
+                var sourcePropertyInfo = GetType().GetProperty(name,
                     BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Instance | BindingFlags.SetProperty);
                 if (sourcePropertyInfo == null || !sourcePropertyInfo.GetIndexParameters().IsNullOrEmpty())
                     throw new ArgumentException($"Can not find property {name} in {type}.");
