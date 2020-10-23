@@ -129,22 +129,29 @@ namespace Shashlik.Utils.Helpers
         /// <param name="outputStream">导出到的数据流</param>
         /// <param name="table">数据表</param>
         /// <param name="beginRowNumber">从第几行开始写,索引从0开始</param>
-        /// <param name="colRowNumber">从第几列开始,索引从0开始</param>
+        /// <param name="beginColNumber">从第几列开始,索引从0开始</param>
         public static void WriteTo(Stream template, Stream outputStream, DataTable table, int beginRowNumber = 0,
-            int colRowNumber = 0)
+            int beginColNumber = 0)
         {
             var workbook = new XSSFWorkbook(template);
             var sheet = workbook.GetSheetAt(0);
 
-            int rowNumber = beginRowNumber;
-            for (int i = 0; i < table.Rows.Count; i++)
+            var rowNumber = beginRowNumber;
+            var row = sheet.CreateRow(rowNumber);
+            for (var i = 0; i < table.Columns.Count; i++)
             {
-                var row = sheet.CreateRow(rowNumber);
+                var col = table.Columns[i];
+                row.CreateCell(i + beginColNumber).SetCellValue(col.ColumnName);
+            }
+            rowNumber++;
+            for (var i = 0; i < table.Rows.Count; i++)
+            {
+                row = sheet.CreateRow(rowNumber);
                 var rowData = table.Rows[i];
-                for (int j = 0; j < table.Columns.Count; j++)
+                for (var j = 0; j < table.Columns.Count; j++)
                 {
                     var value = rowData[j] == null || rowData[j] == DBNull.Value ? "" : rowData[j].ToString();
-                    row.CreateCell(j + colRowNumber).SetCellValue(value);
+                    row.CreateCell(j + beginColNumber).SetCellValue(value);
                 }
 
                 rowNumber++;
