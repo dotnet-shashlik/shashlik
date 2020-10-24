@@ -43,7 +43,7 @@ namespace Shashlik.Kernel
                     kernelServices.RootConfiguration, hostEnvironment);
             }
 
-            return new DefaultInitializedKernelService(kernelServices);
+            return new InnerInitializedKernelService(kernelServices);
         }
 
 

@@ -17,10 +17,10 @@ namespace Shashlik.Kernel.Autowire
         public IKernelServices ConfigureAll(IKernelServices kernelServices)
         {
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
-                .GetMethod("Configure", new Type[] {typeof(IServiceCollection), typeof(IConfiguration)});
+                .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(IConfiguration)});
             if (method == null)
-                throw new KernelException(
-                    $"cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
+                throw new InvalidOperationException(
+                    $"Cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
 
             var services = kernelServices.Services;
             services.AddOptions();

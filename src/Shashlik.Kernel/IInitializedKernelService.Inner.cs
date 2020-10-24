@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyModel;
 
 namespace Shashlik.Kernel
 {
-    internal class DefaultInitializedKernelService : IInitializedKernelService
+    internal class InnerInitializedKernelService : IInitializedKernelService
     {
-        public DefaultInitializedKernelService(IKernelServices kernelServices)
+        public InnerInitializedKernelService(IKernelServices kernelServices)
         {
             KernelServices = kernelServices;
         }
