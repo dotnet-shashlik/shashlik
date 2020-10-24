@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Test
                     .UseEnvironment("Development")
                     .ConfigureAppConfiguration((host, builder) =>
                     {
-                        var list = AssemblyHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
+                        var list = ReflectHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
 
                         foreach (var typeInfo in list)
                         {

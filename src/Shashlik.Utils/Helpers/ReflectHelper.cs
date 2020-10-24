@@ -7,7 +7,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Utils.Helpers
 {
-    public class AssemblyHelper
+    public class ReflectHelper
     {
         /// <summary>
         /// 获取引用了<paramref name="assembly"/>程序集的所有的程序集
@@ -18,11 +18,14 @@ namespace Shashlik.Utils.Helpers
         public static List<Assembly> GetReferredAssemblies(Assembly assembly,
             DependencyContext dependencyContext = null)
         {
-            var allLib = (dependencyContext ?? DependencyContext.Default).RuntimeLibraries.OrderBy(r => r.Name)
+            var allLib = (dependencyContext ?? DependencyContext.Default)
+                .RuntimeLibraries
+                .OrderBy(r => r.Name)
                 .ToList();
+
             var name = assembly.GetName().Name;
 
-            HashSet<string> excludes = new HashSet<string>();
+            //HashSet<string> excludes = new HashSet<string>();
             Dictionary<string, HashSet<string>> allDependencies = new Dictionary<string, HashSet<string>>();
             foreach (var item in allLib)
             {
@@ -30,7 +33,9 @@ namespace Shashlik.Utils.Helpers
                 LoadAllDependency(allLib, item.Name, new HashSet<string>(), item, allDependencies);
             }
 
-            var list = allDependencies.Where(r => r.Value.Contains(name)).Select(r =>
+            var list = allDependencies
+                .Where(r => r.Value.Contains(name))
+                .Select(r =>
                 {
                     try
                     {
@@ -45,6 +50,7 @@ namespace Shashlik.Utils.Helpers
 
             return list.ToList();
         }
+
 
         /// <summary>
         /// 获取引用了<typeparamref name="TType"/>的程序集

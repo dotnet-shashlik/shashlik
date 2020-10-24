@@ -20,7 +20,7 @@ namespace Shashlik.Kernel.Dependency
                 throw new ArgumentNullException(nameof(assembly));
             }
 
-            var types = AssemblyHelper.GetFinalSubTypes(baseType, assembly);
+            var types = ReflectHelper.GetFinalSubTypes(baseType, assembly);
 
             List<ShashlikServiceDescriptor> result = new List<ShashlikServiceDescriptor>();
             types.ForEachItem(type =>

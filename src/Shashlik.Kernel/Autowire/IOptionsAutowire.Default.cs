@@ -26,7 +26,7 @@ namespace Shashlik.Kernel.Autowire
             services.AddOptions();
 
             var dic =
-                AssemblyHelper.GetTypesAndAttribute<AutoOptionsAttribute>(kernelServices.ScanFromDependencyContext);
+                ReflectHelper.GetTypesAndAttribute<AutoOptionsAttribute>(kernelServices.ScanFromDependencyContext);
 
             foreach (var (key, value) in dic)
             {
