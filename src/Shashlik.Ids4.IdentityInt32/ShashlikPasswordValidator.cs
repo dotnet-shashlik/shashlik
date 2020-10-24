@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,12 +9,11 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
-using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Ids4.Identity
+namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
@@ -21,7 +21,8 @@ namespace Shashlik.Ids4.Identity
     /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
     public class ShashlikPasswordValidator : IResourceOwnerPasswordValidator
     {
-        public ShashlikPasswordValidator(SignInManager<Users> signInManager, ShashlikUserManager userManager,
+        public ShashlikPasswordValidator(SignInManager<Users> signInManager,
+            ShashlikUserManager<Users, int> userManager,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
             IDataProtectionProvider dataProtectionProvider)
         {
@@ -32,7 +33,7 @@ namespace Shashlik.Ids4.Identity
         }
 
         private SignInManager<Users> SignInManager { get; }
-        private ShashlikUserManager UserManager { get; }
+        private ShashlikUserManager<Users, int> UserManager { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
 
@@ -96,7 +97,6 @@ namespace Shashlik.Ids4.Identity
                     var data = new TwoFactorStep1SecurityModel
                     {
                         UserId = user.Id.ToString(),
-                        CreateTime = DateTime.Now.GetLongDate(),
                         Nonce = Guid.NewGuid().ToString("n")
                     };
 

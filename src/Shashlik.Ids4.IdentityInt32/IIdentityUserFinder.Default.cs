@@ -1,14 +1,14 @@
-﻿using System.Collections.Specialized;
+﻿#nullable enable
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
-using Shashlik.Identity.Entities;
 using Shashlik.Identity.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 
-namespace Shashlik.Ids4.Identity
+namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// 默认的用户查找类,依次根据手机号码/邮件地址/身份证号码/用户名查找用户
@@ -29,7 +29,7 @@ namespace Shashlik.Ids4.Identity
         private IOptions<IdentityUserExtendsOptions> IdentityOptionsExtends { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
 
-        public async Task<Users?> FindByUnifierAsync(string identity, ShashlikUserManager manager,
+        public async Task<Users?> FindByIdentityAsync(string identity, ShashlikUserManager<Users, int> manager,
             NameValueCollection postData)
         {
             Users? user = null;

@@ -7,7 +7,8 @@ namespace Shashlik.Identity.Entities
     /// <summary>
     /// 用户
     /// </summary>
-    public class Users : IdentityUser<int>, IEntity<int>, ISoftDeleted<long>
+    public class IdentityUserBase<TKey> : IdentityUser<TKey>, ISoftDeleted<long>
+        where TKey : IEquatable<TKey>
     {
         private string? _idCard;
 

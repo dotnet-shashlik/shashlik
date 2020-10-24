@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
-using Shashlik.Identity.Entities;
 using Shashlik.Identity.Options;
+// ReSharper disable CheckNamespace
 
 namespace Shashlik.Identity
 {

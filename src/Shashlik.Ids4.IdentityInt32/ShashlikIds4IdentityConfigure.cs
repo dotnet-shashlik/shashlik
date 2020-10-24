@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Shashlik.Identity.Entities;
+using Shashlik.Identity;
 using Shashlik.Identity.Options;
 
-namespace Shashlik.Ids4.Identity
+namespace Shashlik.Ids4.IdentityInt32
 {
     public class ShashlikIds4IdentityConfigure : IIds4ExtensionAutowire
     {

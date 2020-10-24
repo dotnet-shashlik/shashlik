@@ -1,4 +1,11 @@
 ﻿using System;
+using Shashlik.Utils.Extensions;
+
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable ConvertIfStatementToConditionalTernaryExpression
+// ReSharper disable RedundantExplicitArrayCreation
+// ReSharper disable UselessBinaryOperation
+// ReSharper disable SuggestVarOrType_BuiltInTypes
 
 namespace Shashlik.Utils.Helpers
 {
@@ -21,11 +28,14 @@ namespace Shashlik.Utils.Helpers
             bool result;
             try
             {
-                if (!long.TryParse(idCard.Remove(17), out var num) || num < Math.Pow(10.0, 16.0) || !long.TryParse(idCard.Replace('x', '0').Replace('X', '0'), out num))
+                if (!long.TryParse(idCard.Remove(17), out var num) || num < Math.Pow(10.0, 16.0) ||
+                    !long.TryParse(idCard.Replace('x', '0').Replace('X', '0'), out num))
                 {
                     result = false;
                 }
-                else if ("11x22x35x44x53x12x23x36x45x54x13x31x37x46x61x14x32x41x50x62x15x33x42x51x63x21x34x43x52x64x65x71x81x82x91".IndexOf(idCard.Remove(2)) == -1)
+                else if (
+                    "11x22x35x44x53x12x23x36x45x54x13x31x37x46x61x14x32x41x50x62x15x33x42x51x63x21x34x43x52x64x65x71x81x82x91"
+                        .IndexOf(idCard.Remove(2), StringComparison.Ordinal) == -1)
                 {
                     result = false;
                 }
@@ -52,8 +62,8 @@ namespace Shashlik.Utils.Helpers
                         {
                             num2 += int.Parse(array2[i]) * int.Parse(array3[i].ToString());
                         }
-                        int num3 = -1;
-                        Math.DivRem(num2, 11, out num3);
+
+                        Math.DivRem(num2, 11, out var num3);
                         if (array[num3] != idCard.Substring(17, 1).ToLower())
                         {
                             result = false;
@@ -69,6 +79,7 @@ namespace Shashlik.Utils.Helpers
             {
                 result = false;
             }
+
             return result;
         }
 
@@ -82,7 +93,6 @@ namespace Shashlik.Utils.Helpers
             if (!IsIdCard(idCard))
                 return null;
 
-            IdCardModel result;
             try
             {
                 var cardIdModel = new IdCardModel
@@ -92,23 +102,16 @@ namespace Shashlik.Utils.Helpers
                 };
                 Math.DivRem(int.Parse(idCard.Substring(idCard.Length - 4, 3)), 2, out var num);
                 cardIdModel.Sex = sbyte.Parse(num.ToString());
-                DateTime now = DateTime.Now;
-                int num2 = now.Year - cardIdModel.Birthday.Year;
-                if (now.Month < cardIdModel.Birthday.Month || (now.Month == cardIdModel.Birthday.Month && now.Day < cardIdModel.Birthday.Day))
-                {
-                    num2--;
-                }
-                cardIdModel.Age = ((num2 < 0) ? 0 : num2);
-                result = cardIdModel;
+                cardIdModel.Age = cardIdModel.Birthday.GetAge();
+                return cardIdModel;
             }
             catch
             {
-                result = null;
+                return null;
             }
-            return result;
         }
-
     }
+
     /// <summary>
     /// 身份证模型
     /// </summary>

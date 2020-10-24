@@ -1,5 +1,8 @@
-﻿namespace Shashlik.Ids4.Identity
+﻿namespace Shashlik.Ids4.IdentityInt32
 {
+    /// <summary>
+    /// 登录错误代码
+    /// </summary>
     public enum ErrorCodes
     {
         /// <summary>
@@ -36,7 +39,7 @@
         /// 验证码错误
         /// </summary>
         TokenError = 405,
-        
+
         /// <summary>
         /// IdentityError
         /// </summary>
@@ -46,12 +49,12 @@
         /// SecurityError
         /// </summary>
         SecurityError = 407,
-        
+
         /// <summary>
         /// SecurityTimeout
         /// </summary>
         SecurityTimeout = 408,
-        
+
         /// <summary>
         /// 其他错误
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
+
+// ReSharper disable SwitchExpressionHandlesSomeKnownEnumValuesWithExceptionInDefault
 
 namespace Shashlik.Utils.Extensions
 {
@@ -9,15 +9,12 @@ namespace Shashlik.Utils.Extensions
     {
         private static string GetPropertyInner(Expression expression)
         {
-            switch (expression.NodeType)
+            return expression.NodeType switch
             {
-                case ExpressionType.MemberAccess:
-                    return ((MemberExpression)expression).Member.Name;
-                case ExpressionType.Convert:
-                    return GetPropertyInner(((UnaryExpression)expression).Operand);
-                default:
-                    throw new NotSupportedException(expression.NodeType.ToString());
-            }
+                ExpressionType.MemberAccess => ((MemberExpression) expression).Member.Name,
+                ExpressionType.Convert => GetPropertyInner(((UnaryExpression) expression).Operand),
+                _ => throw new NotSupportedException(expression.NodeType.ToString())
+            };
         }
 
         /// <summary>
@@ -31,6 +28,7 @@ namespace Shashlik.Utils.Extensions
             {
                 return GetPropertyInner(lambda.Body);
             }
+
             throw new NotSupportedException(expression.NodeType.ToString());
         }
     }

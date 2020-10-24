@@ -411,43 +411,13 @@ namespace Shashlik.Utils.Extensions
         /// 获取实现的接口
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="includeInherited">是否包含继承父类的接口</param>
+        /// <param name="includeBaseTypeInherited">是否包含父类实现的接口</param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeInherited)
+        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeBaseTypeInherited)
         {
-            if (includeInherited || type.BaseType == null)
+            if (includeBaseTypeInherited || type.BaseType == null)
                 return type.GetInterfaces();
             return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
-        }
-
-        /// <summary>
-        /// json序列化
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="options">序列化设置</param>
-        /// <returns></returns>
-        public static string ToJson<T>(this T obj, JsonSerializerOptions options = null)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return System.Text.Json.JsonSerializer.Serialize(obj, options);
-        }
-
-        /// <summary>
-        /// json序列化,小驼峰命名
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return System.Text.Json.JsonSerializer.Serialize(obj, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            });
         }
 
         /// <summary>
