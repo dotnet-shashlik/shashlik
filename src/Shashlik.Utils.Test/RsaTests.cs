@@ -48,14 +48,23 @@ namespace Shashlik.Utils.Test
                     .GetRSAPublicKey().EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
                 var a2 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
                     .EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                var a3 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                    .Encrypt(data, RSAEncryptionPadding.Pkcs1);
+                var a4 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                    .EncryptBigDataWithSplit(data, RSAEncryptionPadding.Pkcs1);
                 var d1 = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
                     .DecryptBigData(a1, RSAEncryptionPadding.OaepSHA256);
-                var d2 = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
+                var d28 = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
                     .DecryptBigData(a2, RSAEncryptionPadding.OaepSHA256);
-                var d3 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                var d21 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
                     .DecryptBigData(a1, RSAEncryptionPadding.OaepSHA256);
+                var d3 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                    .Decrypt(a3, RSAEncryptionPadding.Pkcs1);
+                var d4 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                    .DecryptBigDataWithSplit(a4, RSAEncryptionPadding.Pkcs1);
 
-                d1.ShouldBe(d2);
+                d1.ShouldBe(d28);
+                d1.ShouldBe(d21);
                 d1.ShouldBe(d3);
 
                 var signature = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
@@ -80,6 +89,16 @@ namespace Shashlik.Utils.Test
                     .VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
             }
+        }
+
+        [Fact]
+        public void ErrorTest()
+        {
+            RSA rsa = null;
+            Should.Throw<Exception>(() =>
+                rsa.VerifySignData("a", "b", HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1));
+            Should.Throw<Exception>(() =>
+                rsa.SignDataGetBytes("a", HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1));
         }
     }
 }

@@ -34,6 +34,13 @@ namespace Shashlik.Utils.Test
             Thread.Sleep(2 * 1000);
 
             i.ShouldBe(origin + 1);
+            
+            var runAt = new DateTimeOffset(DateTime.Now + TimeSpan.FromSeconds(1));
+            TimerHelper.SetTimeout(() => { i++; }, runAt);
+            
+            Thread.Sleep(2 * 1000);
+
+            i.ShouldBe(origin + 2);
         }
 
         [Fact]
@@ -55,6 +62,27 @@ namespace Shashlik.Utils.Test
             }
 
             counter.ShouldBe(10);
+        }
+
+        [Fact]
+        public void TimerErrorTest()
+        {
+            var counter = 0;
+            Should.Throw<Exception>(() =>
+            {
+                TimerHelper.SetInterval(() => { counter++; }, TimeSpan.FromSeconds(-1));
+            });
+            
+            Should.Throw<Exception>(() =>
+            {
+                TimerHelper.SetTimeout(() => { counter++; }, TimeSpan.FromSeconds(-1));
+            });
+            Should.Throw<Exception>(() =>
+            {
+                TimerHelper.SetTimeout(() => { counter++; }, new DateTimeOffset(2009, 1, 1, 1, 1, 1, TimeSpan.Zero));
+            });
+            
+            counter.ShouldBe(0);
         }
     }
 }
