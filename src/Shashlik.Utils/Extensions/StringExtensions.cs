@@ -239,6 +239,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
         {
+            if (values == null) return url;
             var keyValuePairs = values.ToList();
             if (url.IsNullOrWhiteSpace() || keyValuePairs.IsNullOrEmpty())
                 return url;
