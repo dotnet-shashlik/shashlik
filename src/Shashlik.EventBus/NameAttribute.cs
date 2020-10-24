@@ -16,6 +16,6 @@ namespace Shashlik.EventBus
         /// <summary>
         /// 事件名称/事件处理组名
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; }
     }
 }

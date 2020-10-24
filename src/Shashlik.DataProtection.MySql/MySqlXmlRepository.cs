@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using MySql.Data.MySqlClient;
 using MySqlConnector;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection
@@ -52,7 +53,7 @@ namespace Shashlik.DataProtection
             var sql = $@"insert into `{Option.TableName}`(`xml`,`createtime`) values(@xml,now());";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new MySqlParameter("@xml", MySqlDbType.String)
-            { Value = element.ToString(SaveOptions.DisableFormatting) });
+                {Value = element.ToString(SaveOptions.DisableFormatting)});
             cmd.ExecuteNonQuery();
         }
 

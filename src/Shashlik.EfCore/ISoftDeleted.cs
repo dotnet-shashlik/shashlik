@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Shashlik.EfCore
+﻿namespace Shashlik.EfCore
 {
     /// <summary>
     /// 软删除标记

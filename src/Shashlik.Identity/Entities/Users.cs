@@ -1,10 +1,6 @@
-﻿﻿﻿using System;
+﻿using System;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
-using Shashlik.Identity.Options;
 
 namespace Shashlik.Identity.Entities
 {

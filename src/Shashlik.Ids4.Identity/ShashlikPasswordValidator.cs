@@ -10,9 +10,6 @@ using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
-using DateTimeExtensions = IdentityModel.DateTimeExtensions;
-
-#pragma warning disable 8600
 
 // ReSharper disable ClassNeverInstantiated.Global
 
@@ -56,7 +53,7 @@ namespace Shashlik.Ids4.Identity
             if (password.IsNullOrWhiteSpace())
                 errorCode = ErrorCodes.UsernameOrPasswordError;
 
-            Users user = null;
+            Users? user = null;
             if (errorCode != 0)
             {
                 // 根据用户名和邮件地址查找用户
@@ -99,13 +96,15 @@ namespace Shashlik.Ids4.Identity
                     var data = new TwoFactorStep1SecurityModel
                     {
                         UserId = user.Id.ToString(),
-                        Expiration = DateTime.Now.AddSeconds(ShashlikIds4IdentityOptions.Value.TwoFactorExpiration)
-                            .GetLongDate()
+                        CreateTime = DateTime.Now.GetLongDate(),
+                        Nonce = Guid.NewGuid().ToString("n")
                     };
+
                     var json = JsonSerializer.Serialize(data);
                     var security = DataProtectionProvider
                         .CreateProtector(ShashlikIds4IdentityConsts.TwoFactorTokenProviderPurpose)
-                        .Protect(json);
+                        .ToTimeLimitedDataProtector()
+                        .Protect(json, TimeSpan.FromSeconds(ShashlikIds4IdentityOptions.Value.TwoFactorExpiration));
 
                     customResponse.Add("security", security);
                 }
