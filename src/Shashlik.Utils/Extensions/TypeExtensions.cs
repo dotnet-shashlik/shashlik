@@ -997,7 +997,7 @@ namespace Shashlik.Utils.Extensions
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
                     var jsonArr = jToken.Value<JArray>();
-                    if (jsonArr.Count() > index)
+                    if (jsonArr.Count() < index)
                         return (false, null);
                     json = jsonArr.ElementAt(index);
                 }
@@ -1043,10 +1043,11 @@ namespace Shashlik.Utils.Extensions
                 JsonElement? json = null;
                 if (jsonObj.ValueKind == JsonValueKind.Array && int.TryParse(proName, out var index))
                 {
-                    var jsonArr = jsonObj.EnumerateArray();
-                    if (jsonArr.Count() > index)
+                    if (index >= jsonObj.GetArrayLength())
+                    {
                         return (false, null);
-                    json = jsonObj.EnumerateArray().ElementAt(index);
+                    }
+                    json = jsonObj[index];
                 }
                 else if (jsonObj.ValueKind == JsonValueKind.Object)
                 {
@@ -1066,7 +1067,7 @@ namespace Shashlik.Utils.Extensions
                     return (true, JsonElementValue(json.Value));
                 return (false, null);
             }
-            else if (objType is IEnumerable list && int.TryParse(proName, out var index))
+            else if (obj is IEnumerable list && int.TryParse(proName, out var index))
             {
                 var i = 0;
                 foreach (var item in list)
