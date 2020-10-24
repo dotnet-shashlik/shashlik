@@ -46,7 +46,6 @@ namespace Shashlik.Kernel
             return new InnerInitializedKernelService(kernelServices);
         }
 
-
         /// <summary>
         /// AddShashlik
         /// </summary>
