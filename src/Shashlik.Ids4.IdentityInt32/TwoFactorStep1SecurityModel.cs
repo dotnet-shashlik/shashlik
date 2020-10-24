@@ -1,5 +1,8 @@
-﻿namespace Shashlik.Ids4.Identity
+﻿namespace Shashlik.Ids4.IdentityInt32
 {
+    /// <summary>
+    /// 两步验证,第一步加密数据模型
+    /// </summary>
     public class TwoFactorStep1SecurityModel
     {
         /// <summary>
@@ -11,10 +14,5 @@
         /// 随机值
         /// </summary>
         public string Nonce { get; set; }
-
-        /// <summary>
-        /// 过期时间
-        /// </summary>
-        public long CreateTime { get; set; }
     }
 }

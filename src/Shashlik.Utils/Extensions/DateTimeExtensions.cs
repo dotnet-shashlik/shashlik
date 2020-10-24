@@ -227,7 +227,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 计算生日,虚岁,+1
+        /// 计算生日
         /// </summary>
         /// <param name="birthday"></param>
         /// <returns></returns>
@@ -259,19 +259,17 @@ namespace Shashlik.Utils.Extensions
         /// 默认返回：xx岁xx月xx天
         /// </summary>
         /// <param name="birthday">第1个日期参数</param>
-        /// <param name="p_SecondDateTime">第2个日期参数</param>
-        /// <param name="p_Format">返回字符串的格式，默认为：{0}岁{1}月{2}天</param>
         private static (int year, int month, int day) GetAgeData(DateTime birthday)
         {
             if (birthday > DateTime.Now)
                 return (0, 0, 0);
 
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
 
             //判断时间段是否为正。若为负，调换两个时间点的位置。
-            if (System.DateTime.Compare(birthday, now) > 0)
+            if (DateTime.Compare(birthday, now) > 0)
             {
-                System.DateTime dateTime = birthday;
+                var dateTime = birthday;
                 birthday = now;
                 now = dateTime;
             }
@@ -283,7 +281,7 @@ namespace Shashlik.Utils.Extensions
             day = now.Day - birthday.Day;
             if (day < 0)
             {
-                day += System.DateTime.DaysInMonth(birthday.Year, birthday.Month);
+                day += DateTime.DaysInMonth(birthday.Year, birthday.Month);
                 birthday = birthday.AddMonths(1);
             }
 

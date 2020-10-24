@@ -1,35 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
-using Microsoft.Extensions.Options;
-using Shashlik.Captcha;
 using Shashlik.Identity;
-using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
 
-// ReSharper disable ClassNeverInstantiated.Global
-
-// ReSharper disable AssignNullToNotNullAttribute
-
-#pragma warning disable 8600
-
-// ReSharper disable ConditionIsAlwaysTrueOrFalse
-
-namespace Shashlik.Ids4.Identity
+namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// 通用的验证码登录,手机号码唯一有效,要求用户必须存在
     /// </summary>
     public class ShashlikCaptchaValidator : IExtensionGrantValidator
     {
-        public ShashlikCaptchaValidator(ShashlikUserManager userManager,
+        public ShashlikCaptchaValidator(ShashlikUserManager<Users, int> userManager,
             IIdentityUserFinder userFinder)
         {
             UserManager = userManager;
             IdentityUserFinder = userFinder;
         }
 
-        private ShashlikUserManager UserManager { get; }
+        private ShashlikUserManager<Users, int> UserManager { get; }
         private IIdentityUserFinder IdentityUserFinder { get; }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
@@ -42,7 +31,7 @@ namespace Shashlik.Ids4.Identity
             if (identity.IsNullOrWhiteSpace())
                 errorCode = ErrorCodes.IdentityError;
 
-            Users user = await IdentityUserFinder.FindByUnifierAsync(identity, UserManager, context.Request.Raw);
+            var user = await IdentityUserFinder.FindByIdentityAsync(identity, UserManager, context.Request.Raw);
             if (user == null)
                 errorCode = ErrorCodes.UserNotFound;
 
@@ -54,8 +43,8 @@ namespace Shashlik.Ids4.Identity
                     context.Result = new GrantValidationResult(sub, GrantType);
                     return;
                 }
-                else
-                    errorCode = ErrorCodes.TokenError;
+
+                errorCode = ErrorCodes.TokenError;
             }
 
             context.Result = new GrantValidationResult

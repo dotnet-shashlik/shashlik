@@ -1,26 +1,25 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
 using Shashlik.Identity;
-using Shashlik.Identity.Entities;
 using Shashlik.Utils.Extensions;
 
-// ReSharper disable ClassNeverInstantiated.Global
-
-namespace Shashlik.Ids4.Identity
+namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// 两步验证第二步
     /// </summary>
     public class ShashlikTwoFactorValidator : IExtensionGrantValidator
     {
-        private ShashlikUserManager UserManager { get; }
+        private ShashlikUserManager<Users, int> UserManager { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
 
-        public ShashlikTwoFactorValidator(ShashlikUserManager userManager,
+        public ShashlikTwoFactorValidator(
+            ShashlikUserManager<Users, int> userManager,
             IDataProtectionProvider dataProtectionProvider)
         {
             UserManager = userManager;
