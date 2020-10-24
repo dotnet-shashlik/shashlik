@@ -30,6 +30,9 @@ namespace Shashlik.Utils.Test.HelperTests
             }
 
             ids.Count.ShouldBe(1000000);
+
+            Should.Throw<Exception>((() => new SnowflakeId(-54, 1)));
+            Should.Throw<Exception>((() => new SnowflakeId(1, -6)));
         }
 
         [Fact]
