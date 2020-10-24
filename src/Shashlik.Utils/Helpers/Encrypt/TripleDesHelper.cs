@@ -27,7 +27,7 @@ namespace Shashlik.Utils.Helpers
             PaddingMode paddingMode = PaddingMode.PKCS7, Encoding encoder = null, string iv = null)
         {
             encoder ??= Encoding.UTF8;
-            using var des = CreateDes(key);
+            using var des = CreateDes(key, mode, paddingMode, iv);
             using var ct = des.CreateEncryptor();
             var input = encoder.GetBytes(plainText);
             var output = ct.TransformFinalBlock(input, 0, input.Length);
@@ -49,7 +49,7 @@ namespace Shashlik.Utils.Helpers
             string iv = null)
         {
             encoder ??= Encoding.UTF8;
-            using var des = CreateDes(key);
+            using var des = CreateDes(key, mode, paddingMode, iv);
             using var ct = des.CreateDecryptor();
             var input = Convert.FromBase64String(cypherText);
             var output = ct.TransformFinalBlock(input, 0, input.Length);
