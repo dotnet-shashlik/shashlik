@@ -57,6 +57,9 @@ namespace Shashlik.Utils.Test.HelperTests
                 code.ShouldBeLessThan(100);
                 _testOutputHelper.WriteLine(code.ToString());
             }
+
+            Should.Throw<Exception>(() => RandomHelper.Next(10, 1));
+            RandomHelper.Next(10, 10).ShouldBe(10);
         }
     }
 }

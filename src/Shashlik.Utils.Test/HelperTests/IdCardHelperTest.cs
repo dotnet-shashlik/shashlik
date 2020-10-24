@@ -1,4 +1,5 @@
-﻿using Shashlik.Utils.Helpers;
+﻿using System;
+using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -27,6 +28,8 @@ namespace Shashlik.Utils.Test.HelperTests
             var model = IdCardHelper.GetIdCardModel("230606198812310574");
             model.ShouldNotBeNull();
             model.Sex.ShouldBe((sbyte)1);
+            model.Birthday.AddYears(model.Age).ShouldBeLessThanOrEqualTo(DateTime.Today);
+            model.IdCard.ShouldBe("230606198812310574");
             model = IdCardHelper.GetIdCardModel("341321199808080383");
             model.ShouldBeNull();
         }

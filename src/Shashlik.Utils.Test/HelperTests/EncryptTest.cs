@@ -35,6 +35,27 @@ namespace Shashlik.Utils.Test.HelperTests
         }
 
         [Fact]
+        public void DesErrorTest()
+        {
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Encrypt("DES加密", "123", "12345678");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Encrypt("DES加密", "12345678", "123");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Decrypt("lkXACZz387lOk9xiKpCOeg==", "123", "12345678");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Decrypt("lkXACZz387lOk9xiKpCOeg==", "12345678", "123");
+            });
+        }
+
+        [Fact]
         public void AesEncrypt()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -51,6 +72,27 @@ namespace Shashlik.Utils.Test.HelperTests
             var iv = "1234567890123456";
             var data = AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", key, iv);
             data.ShouldBe("AES加密");
+        }
+
+        [Fact]
+        public void AesErrorTest()
+        {
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Encrypt("AES加密", "123", "1234567890123456");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Encrypt("AES加密", "1234567890123456", "123");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "123", "1234567890123456");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "1234567890123456", "123");
+            });
         }
 
         [Fact]
