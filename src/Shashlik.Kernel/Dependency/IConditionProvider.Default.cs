@@ -11,14 +11,15 @@ namespace Shashlik.Kernel.Dependency
 {
     public class DefaultConditionFilterAddProvider : IConditionProvider
     {
-        public void FilterAndRegistryService(IEnumerable<ShashlikServiceDescriptor> serviceDescriptors, IServiceCollection services,
+        public void FilterAndRegistryService(IEnumerable<ShashlikServiceDescriptor> serviceDescriptors,
+            IServiceCollection services,
             IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
         {
             // 先全部注册一遍,再根据条件进行删除
             var list = serviceDescriptors.ToList();
             foreach (var item in list)
                 services.Add(item.ServiceDescriptor);
- 
+
             // 查询有哪些条件序号
             var orders = list
                 .SelectMany(r => r.Conditions.Select(c => c.order))
