@@ -41,7 +41,7 @@ namespace Shashlik.Kernel.Attributes
                     return Types.All(r => !services.AnyService(r));
                 case ConditionType.ANY:
                     return Types.Any(r => !services.AnyService(r));
-                default: throw new Exception($"error condition type: {ConditionType}");
+                default: throw new InvalidOperationException($"error condition type: {ConditionType}");
             }
         }
     }

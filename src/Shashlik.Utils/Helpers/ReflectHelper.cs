@@ -51,7 +51,6 @@ namespace Shashlik.Utils.Helpers
             return list.ToList();
         }
 
-
         /// <summary>
         /// 获取引用了<typeparamref name="TType"/>的程序集
         /// </summary>
@@ -306,6 +305,8 @@ namespace Shashlik.Utils.Helpers
             return dic;
         }
 
+        #region private
+
         /// <summary>
         /// 加载所有的依赖
         /// </summary>
@@ -333,5 +334,7 @@ namespace Shashlik.Utils.Helpers
                 LoadAllDependency(runtimeLibraries, key, handled, next, allDependencies);
             }
         }
+
+        #endregion
     }
 }

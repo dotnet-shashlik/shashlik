@@ -30,20 +30,20 @@ namespace Shashlik.Kernel.Attributes
         /// <summary>
         /// 属性名称,例:Logging:Enable
         /// </summary>
-        public string Property { get; set; }
+        public string Property { get; }
 
         /// <summary>
         /// 值类型
         /// </summary>
-        public Type ValueType { get; set; }
+        public Type ValueType { get; }
 
         /// <summary>
         /// 值
         /// </summary>
-        public object[] Values { get; set; }
+        public object[] Values { get; }
 
         /// <summary>
-        /// 是否区分大小写,string类型比较时用,bool值的话,到程序中会变成首字母大写,默认不区分true
+        /// 是否区分大小写,string类型比较时用
         /// </summary>
         public bool IgnoreCase { get; set; } = true;
 

@@ -44,12 +44,18 @@ namespace Shashlik.Kernel.Test
             {
                 GetService<NeedTestOption1True>().ShouldNotBeNull();
                 GetService<NeedTestOption2Miss>().ShouldNotBeNull();
+                GetService<NeedTestOption4ZhangSan1>().ShouldBeNull();
+                GetService<NeedTestOption4ZhangSan2>().ShouldBeNull();
+                GetService<NeedTestOption4ZhangSan3>().ShouldNotBeNull();
+
                 GetService<EnvConditionProd>().ShouldBeNull();
                 GetService<EnvConditionDev>().ShouldNotBeNull();
                 GetService<DependsOnNeedTestOption1True>().ShouldNotBeNull();
                 GetService<DependsOnEnvConditionProd>().ShouldBeNull();
                 GetService<DependsOnAny>().ShouldNotBeNull();
+                GetService<DependsOnAnyShouldBeNull>().ShouldBeNull();
                 GetService<DependsOnAll>().ShouldBeNull();
+                GetService<DependsOnAllShouldBeNotNull>().ShouldNotBeNull();
                 GetService<TestCondition>().ShouldBeNull();
                 GetService<BasedOn>().ShouldNotBeNull();
             }
