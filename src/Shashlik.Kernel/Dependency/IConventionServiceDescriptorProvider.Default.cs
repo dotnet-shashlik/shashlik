@@ -76,10 +76,7 @@ namespace Shashlik.Kernel.Dependency
                 services.Add(type);
                 services.ForEach(service =>
                 {
-                    var serviceDescriptor = ServiceImplementationFactoryContainer
-                        .Container.TryGetValue(service, out var implementationFactory)
-                        ? ServiceDescriptor.Describe(service, implementationFactory, serviceLifetime)
-                        : ServiceDescriptor.Describe(service, type, serviceLifetime);
+                    var serviceDescriptor = ServiceDescriptor.Describe(service, type, serviceLifetime);
 
                     result.Add(new ShashlikServiceDescriptor
                     {
