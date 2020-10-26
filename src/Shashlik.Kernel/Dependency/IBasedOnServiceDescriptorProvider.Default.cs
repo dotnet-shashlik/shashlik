@@ -44,23 +44,27 @@ namespace Shashlik.Kernel.Dependency
                         services.Add(interfaceType);
                 }
 
-                foreach (var baseType in type.GetAllBaseTypes())
+                foreach (var baseTypeItem in type.GetAllBaseTypes())
                 {
                     if (type.IsGenericTypeDefinition)
                     {
-                        var arg2 = baseType.GetGenericArguments();
+                        var arg2 = baseTypeItem.GetGenericArguments();
 
                         if (Utils.GenericArgumentsIsMatch(arg1, arg2))
-                            services.Add(baseType.GetGenericTypeDefinition());
+                            services.Add(baseTypeItem.GetGenericTypeDefinition());
                     }
                     else
-                        services.Add(baseType);
+                        services.Add(baseTypeItem);
                 }
 
                 services.Add(type);
                 services.ForEach(service =>
                 {
-                    var serviceDescriptor = ServiceDescriptor.Describe(service, type, serviceLifetime);
+                    var serviceDescriptor = ServiceImplementationFactoryContainer
+                        .Container.TryGetValue(service, out var implementationFactory)
+                        ? ServiceDescriptor.Describe(service, implementationFactory, serviceLifetime)
+                        : ServiceDescriptor.Describe(service, type, serviceLifetime);
+
                     result.Add(new ShashlikServiceDescriptor
                     {
                         ServiceDescriptor = serviceDescriptor,

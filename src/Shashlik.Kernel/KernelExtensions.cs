@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -203,6 +204,23 @@ namespace Shashlik.Kernel
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
             autowireProvider.Autowire(dic, r => { autowireAction(r.ServiceInstance); });
             return kernelServiceProvider;
+        }
+
+        /// <summary>
+        /// 注册服务实例resolve方法
+        /// </summary>
+        /// <param name="kernelServices"></param>
+        /// <param name="implementationFactory">实例工厂方法</param>
+        /// <typeparam name="TService"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IKernelServices AddServiceImplementationFactory<TService>(this IKernelServices kernelServices,
+            Func<IServiceProvider, object> implementationFactory)
+        {
+            if (implementationFactory == null) throw new ArgumentNullException(nameof(implementationFactory));
+            var type = typeof(TService);
+            ServiceImplementationFactoryContainer.Container.TryAdd(type, implementationFactory);
+            return kernelServices;
         }
     }
 }

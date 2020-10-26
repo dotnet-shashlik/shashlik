@@ -21,9 +21,9 @@ namespace Shashlik.Kernel.Dependency
             }
 
             var types = assembly
-                            .DefinedTypes
-                            .Where(r => !r.IsAbstract && r.IsClass && r.BaseType != null)
-                            .Where(r => !r.ImplementedInterfaces.IsNullOrEmpty());
+                .DefinedTypes
+                .Where(r => !r.IsAbstract && r.IsClass && r.BaseType != null)
+                .Where(r => !r.ImplementedInterfaces.IsNullOrEmpty());
 
             List<ShashlikServiceDescriptor> result = new List<ShashlikServiceDescriptor>();
             types.ForEachItem(type =>
@@ -76,7 +76,11 @@ namespace Shashlik.Kernel.Dependency
                 services.Add(type);
                 services.ForEach(service =>
                 {
-                    var serviceDescriptor = ServiceDescriptor.Describe(service, type, serviceLifetime);
+                    var serviceDescriptor = ServiceImplementationFactoryContainer
+                        .Container.TryGetValue(service, out var implementationFactory)
+                        ? ServiceDescriptor.Describe(service, implementationFactory, serviceLifetime)
+                        : ServiceDescriptor.Describe(service, type, serviceLifetime);
+
                     result.Add(new ShashlikServiceDescriptor
                     {
                         ServiceDescriptor = serviceDescriptor,
