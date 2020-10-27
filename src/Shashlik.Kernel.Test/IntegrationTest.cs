@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
@@ -66,6 +68,23 @@ namespace Shashlik.Kernel.Test
                 AutowiredConfigure.Inited.ShouldBeTrue();
                 AutowiredConfigureAspNetCore.Inited.ShouldBeTrue();
             }
+        }
+
+        [Fact]
+        public void MemoryLockTest()
+        {
+            var locker = GetService<ILock>();
+            var key = "lock_test";
+
+            Task.Run(() =>
+            {
+                using var _ = locker.Lock(key, 10, true, 60);
+            });
+
+            Should.Throw<Exception>(() => locker.Lock(key, 3, true, 1));
+
+            Thread.Sleep(10_000);
+            using var @lock = locker.Lock(key, 1, true, 1);
         }
     }
 }

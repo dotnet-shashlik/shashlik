@@ -4,60 +4,24 @@ using System.Threading.Tasks;
 
 namespace Shashlik.Utils.Helpers
 {
-    /// <summary>
-    ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-    ///     directly from your code. This API may change or be removed in future releases.
-    ///     copy from https://github.com/aspnet/EntityFrameworkCore/blob/master/src/EFCore/Internal/AsyncLock.cs
-    /// </summary>
     public sealed class AsyncLock
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
-        private readonly Releaser _releaser;
-        private readonly Task<Releaser> _releaserTask;
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public AsyncLock()
+        public async Task<Releaser> LockAsync(CancellationToken waitTimeoutCancellationToken = default)
         {
-            _releaser = new Releaser(this);
-            _releaserTask = Task.FromResult(_releaser);
+            waitTimeoutCancellationToken.ThrowIfCancellationRequested();
+            await _semaphore.WaitAsync(waitTimeoutCancellationToken);
+            return new Releaser(this);
         }
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public Task<Releaser> LockAsync(CancellationToken cancellationToken = default)
+        public Releaser Lock(CancellationToken waitTimeoutCancellationToken = default)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            var waitTask = _semaphore.WaitAsync(cancellationToken);
-
-            return waitTask.IsCompleted
-                ? _releaserTask
-                : waitTask.ContinueWith(
-                    (_, state) => ((AsyncLock) state)._releaser,
-                    this, CancellationToken.None,
-                    TaskContinuationOptions.ExecuteSynchronously | TaskContinuationOptions.OnlyOnRanToCompletion,
-                    TaskScheduler.Default);
+            waitTimeoutCancellationToken.ThrowIfCancellationRequested();
+            _semaphore.Wait(waitTimeoutCancellationToken);
+            return new Releaser(this);
         }
 
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
-        public Releaser Lock(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            _semaphore.Wait(token);
-            return _releaser;
-        }
-
-        /// <summary>
-        ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public struct Releaser : IDisposable
         {
             private readonly AsyncLock _toRelease;
@@ -67,10 +31,6 @@ namespace Shashlik.Utils.Helpers
                 _toRelease = toRelease;
             }
 
-            /// <summary>
-            ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             public void Dispose()
                 => _toRelease._semaphore.Release();
         }
