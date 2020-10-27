@@ -14,7 +14,7 @@ namespace Shashlik.Captcha.DistributedCache
     /// </summary>
     [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionDependsOnMissing(typeof(ICaptcha))]
-    [ConditionOnProperty(typeof(bool?), "Shashlik.Captcha.Enable", true, null)]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]
     internal class DistributedCacheCatpcha : ICaptcha, ISingleton
     {
         public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)

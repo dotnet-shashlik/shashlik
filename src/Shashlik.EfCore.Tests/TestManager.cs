@@ -16,7 +16,7 @@ namespace Shashlik.EfCore.Tests
 
         private TestDbContext DbContext { get; }
 
-        [Transactional]
+        // [Transactional]
         public async Task CreateUser(string name, IEnumerable<string> roles)
         {
             var user = new Users
