@@ -1,5 +1,4 @@
 ﻿using System;
-using NPOI.SS.Formula.Functions;
 
 // ReSharper disable ConvertIfStatementToReturnStatement
 // ReSharper disable RedundantIfElseBlock
