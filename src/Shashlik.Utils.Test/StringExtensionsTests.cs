@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Text;
 using Xunit;
 using Shouldly;
 using Shashlik.Utils.Extensions;
@@ -67,6 +68,8 @@ namespace Shashlik.Utils.Test
         {
             string phone = "13628452323";
             phone.ConfidentialData(3, 3).ShouldBe("136****323");
+            "".ConfidentialData(3,3).ShouldBe("");
+            "abc".ConfidentialData(4,4).ShouldBe("abc");
         }
 
         [Fact]
@@ -118,6 +121,11 @@ namespace Shashlik.Utils.Test
                 string url = "http://www.baidu.com";
                 var res1 = url.UrlArgsCombine(null);
                 res1.ShouldBe($"http://www.baidu.com");
+            }
+
+            {
+                var str = "!@#$%^&*()-=_+123abc中文";
+                str.UrlEncode().UrlDecode().ShouldBe(str);
             }
         }
 
@@ -185,18 +193,124 @@ namespace Shashlik.Utils.Test
         }
 
         [Fact]
-        public void UriTest()
+        public void EqualsTest()
         {
-            var uri1 = new Uri("https://www.baidu.com/a");
-            var uri2 = new Uri("https://www.baidu.com:5000/b");
-            var uri3 = new Uri("http://www.baidu.com/a");
-            var uri4 = new Uri("http://www.baidu.com:5000/b");
+            "abc".EqualsIgnoreCase("ABC").ShouldBeTrue();
+            "abcd".EqualsIgnoreCase("Abc").ShouldBeFalse();
+            "abc".EqualsIgnoreCase(null).ShouldBeFalse();
         }
 
         [Fact]
-        public void Encoding()
+        public void SplitTest()
         {
-            var en = System.Text.Encoding.GetEncoding("UTF-8");
+            "".Split<int>().ShouldBeEmpty();
+            "".SplitSkipError<int>().ShouldBeEmpty();
+            "1,3,4|5_7,".Split<int>(",", "|", "_").Count.ShouldBe(5);
+            "1,3,4|a_7,".SplitSkipError<int>(",", "|", "_").Count.ShouldBe(4);
+        }
+
+        [Fact]
+        public void ContainsTest()
+        {
+            string test = null;
+            StringExtensions.Contains(test, "Ab", StringComparison.CurrentCultureIgnoreCase).ShouldBeFalse();
+            StringExtensions.Contains("test", "Ab", StringComparison.CurrentCultureIgnoreCase).ShouldBeFalse();
+            StringExtensions.Contains("ABC", "Ab", StringComparison.CurrentCultureIgnoreCase).ShouldBeTrue();
+            StringExtensions.Contains("ABC", "", StringComparison.CurrentCultureIgnoreCase).ShouldBeTrue();
+        }
+
+        [Fact]
+        public void SubLongStringTest()
+        {
+            var str = "longString123";
+            str.SubStringIfTooLong(1).ShouldBe("l...");
+            str.SubStringIfTooLong(100).ShouldBe(str);
+            string.Empty.SubStringIfTooLong(1).ShouldBe(string.Empty);
+        }
+
+        [Fact]
+        public void ReplaceTest()
+        {
+            "AbCd".ReplaceIgnoreCase("ab", "").ShouldBe("Cd");
+        }
+
+        [Fact]
+        public void MatchTest()
+        {
+            string str = null;
+            str.IsMatch(".*").ShouldBeFalse();
+            "abc".IsMatch(".*").ShouldBeTrue();
+            "abc".IsMatch("\\d+").ShouldBeFalse();
+        }
+
+        [Fact]
+        public void EmptyToNullTest()
+        {
+            "   ".EmptyToNull().ShouldBeNull();
+            "\t".EmptyToNull().ShouldBeNull();
+            "\n".EmptyToNull().ShouldBeNull();
+            "a\t\r\n".EmptyToNull().ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void FormatTest()
+        {
+            var str = "str,{0}";
+            var formatted = string.Format(str, 1);
+            str.Format(1).ShouldBe(formatted);
+        }
+
+        [Fact]
+        public void StartsAndEndsTests()
+        {
+            var str = "aBcdEf";
+            str.StartsWithIgnoreCase("ab").ShouldBeTrue();
+            str.StartsWithIgnoreCase("aC").ShouldBeFalse();
+            str.EndsWithIgnoreCase("ef").ShouldBeTrue();
+            str.EndsWithIgnoreCase("df").ShouldBeFalse();
+        }
+
+        [Fact]
+        public void Base64Tests()
+        {
+            var str = "!@#$%^&*()-=_+123abc中文";
+            var base64 = str.Base64Encode(Encoding.UTF8, true);
+            base64.Base64Decode(Encoding.UTF8, true).ShouldBe(str);
+            base64 = str.Base64Encode(Encoding.UTF8);
+            base64.Base64DecodeToBytes().ShouldBe(Encoding.UTF8.GetBytes(str));
+        }
+
+        [Fact]
+        public void HtmlCodingTest()
+        {
+            var str = "!@#$%^&*()-=_+123abc中文";
+            str.HtmlEncode().HtmlDecode().ShouldBe(str);
+        }
+
+        [Fact]
+        public void RemoveHtmlTest()
+        {
+            var html = "<a href=\"https://www.google.com/\">中文（繁體）</a>";
+            html.RemoveHtml().ShouldBe("中文（繁體）");
+        }
+
+        [Fact]
+        public void FirstCaseTest()
+        {
+            "".UpperFirstCase().ShouldBe("");
+            "".LowerFirstCase().ShouldBe("");
+            "abc".UpperFirstCase().ShouldBe("Abc");
+            "abc".LowerFirstCase().ShouldBe("abc");
+            "ABC".UpperFirstCase().ShouldBe("ABC");
+            "ABC".LowerFirstCase().ShouldBe("aBC");
+        }
+
+        [Fact]
+        public void SubStringByTextElementsTest()
+        {
+            var str = "😉✌✌😉😉😉😉😉😉";
+            str.SubStringByTextElements(1, 2).ShouldBe("✌✌");
+            str.SubStringByTextElements(0, str.Length + 2).ShouldBe(str);
         }
 
         public class UserTestModel
