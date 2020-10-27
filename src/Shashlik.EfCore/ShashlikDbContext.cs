@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shashlik.Kernel;
 using System;
-using System.Data;
 
 namespace Shashlik.EfCore
 {
@@ -29,8 +27,8 @@ namespace Shashlik.EfCore
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.RegisterEntities<IEntity>(
-                entityTypeConfigurationServiceProvider: this.GetService<IServiceProvider>(),
-                dependencyContext: this.GetService<IKernelServices>().ScanFromDependencyContext);
+                this.GetService<IServiceProvider>(),
+                this.GetService<IKernelServices>().ScanFromDependencyContext);
         }
     }
 }

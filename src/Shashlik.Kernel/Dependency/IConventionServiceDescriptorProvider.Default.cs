@@ -11,7 +11,7 @@ namespace Shashlik.Kernel.Dependency
     /// <summary>
     /// 默认使用的约定服务查找器,只会注册接口以及自身为服务
     /// </summary>
-    internal class DefaultConventionServiceDescriptorProvider : IConventionServiceDescriptorProvider
+    public class DefaultConventionServiceDescriptorProvider : IConventionServiceDescriptorProvider
     {
         public IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly)
         {
@@ -21,9 +21,9 @@ namespace Shashlik.Kernel.Dependency
             }
 
             var types = assembly
-                            .DefinedTypes
-                            .Where(r => !r.IsAbstract && r.IsClass && r.BaseType != null)
-                            .Where(r => !r.ImplementedInterfaces.IsNullOrEmpty());
+                .DefinedTypes
+                .Where(r => !r.IsAbstract && r.IsClass && r.BaseType != null)
+                .Where(r => !r.ImplementedInterfaces.IsNullOrEmpty());
 
             List<ShashlikServiceDescriptor> result = new List<ShashlikServiceDescriptor>();
             types.ForEachItem(type =>
@@ -77,6 +77,7 @@ namespace Shashlik.Kernel.Dependency
                 services.ForEach(service =>
                 {
                     var serviceDescriptor = ServiceDescriptor.Describe(service, type, serviceLifetime);
+
                     result.Add(new ShashlikServiceDescriptor
                     {
                         ServiceDescriptor = serviceDescriptor,

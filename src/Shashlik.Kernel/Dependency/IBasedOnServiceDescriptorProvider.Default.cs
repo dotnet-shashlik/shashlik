@@ -10,7 +10,7 @@ namespace Shashlik.Kernel.Dependency
     /// <summary>
     /// 默认使用的约定服务查找器,只会注册接口以及自身为服务
     /// </summary>
-    internal class DefaultBasedOnServiceDescriptorProvider : IBasedOnServiceDescriptorProvider
+    public class DefaultBasedOnServiceDescriptorProvider : IBasedOnServiceDescriptorProvider
     {
         public IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly, TypeInfo baseType,
             ServiceLifetime serviceLifetime)
@@ -44,23 +44,24 @@ namespace Shashlik.Kernel.Dependency
                         services.Add(interfaceType);
                 }
 
-                foreach (var baseType in type.GetAllBaseTypes())
+                foreach (var baseTypeItem in type.GetAllBaseTypes())
                 {
                     if (type.IsGenericTypeDefinition)
                     {
-                        var arg2 = baseType.GetGenericArguments();
+                        var arg2 = baseTypeItem.GetGenericArguments();
 
                         if (Utils.GenericArgumentsIsMatch(arg1, arg2))
-                            services.Add(baseType.GetGenericTypeDefinition());
+                            services.Add(baseTypeItem.GetGenericTypeDefinition());
                     }
                     else
-                        services.Add(baseType);
+                        services.Add(baseTypeItem);
                 }
 
                 services.Add(type);
                 services.ForEach(service =>
                 {
                     var serviceDescriptor = ServiceDescriptor.Describe(service, type, serviceLifetime);
+
                     result.Add(new ShashlikServiceDescriptor
                     {
                         ServiceDescriptor = serviceDescriptor,

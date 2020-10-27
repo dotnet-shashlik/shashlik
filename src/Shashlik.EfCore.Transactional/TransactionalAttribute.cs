@@ -55,6 +55,16 @@ namespace Shashlik.EfCore.Transactional
                 context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
 
             await using var tran = efNestedTransaction!.Begin(IsolationLevel);
+            try
+            {
+                await next(context);
+                await tran.CommitAsync();
+            }
+            catch
+            {
+                await tran.RollbackAsync();
+                throw;
+            }
         }
     }
 }

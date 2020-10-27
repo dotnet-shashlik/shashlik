@@ -15,16 +15,16 @@ namespace Shashlik.Kernel.Attributes
         /// <summary>
         /// 属性值条件,优先级20
         /// </summary>
-        /// <param name="valueType"><paramref name="values"/>值的类型</param>
+        /// <param name="valueType"><paramref name="value"/>值的类型</param>
         /// <param name="property">属性名称</param>
-        /// <param name="values">属性值数组,包含关系,只要有一个值相等即认为符合条件</param>
+        /// <param name="value">属性值</param>
         /// <exception cref="ArgumentException"></exception>
-        public ConditionOnPropertyAttribute(Type valueType, string property, params object[] values)
+        public ConditionOnPropertyAttribute(Type valueType, string property, object value)
         {
             if (property == null) throw new ArgumentNullException(nameof(property));
             ValueType = valueType ?? throw new ArgumentNullException(nameof(valueType));
             Property = property.Replace(".", ":");
-            Values = values;
+            Value = value;
         }
 
         /// <summary>
@@ -38,9 +38,14 @@ namespace Shashlik.Kernel.Attributes
         public Type ValueType { get; }
 
         /// <summary>
+        /// 默认值,当不存在该属性值时
+        /// </summary>
+        public object DefaultValue { get; set; }
+
+        /// <summary>
         /// 值
         /// </summary>
-        public object[] Values { get; }
+        public object Value { get; }
 
         /// <summary>
         /// 是否区分大小写,string类型比较时用
@@ -50,27 +55,21 @@ namespace Shashlik.Kernel.Attributes
         public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
-            var value = rootConfiguration.GetValue(ValueType, Property);
+            var value = rootConfiguration.GetValue(ValueType, Property, DefaultValue);
 
             var isString = ValueType == typeof(string);
-            foreach (var item in Values)
-            {
-                if (item != null && item.Equals(value))
-                    return true;
-                if (item == null && value == null)
-                    return true;
-                if (item == null || value == null)
-                    continue;
+            if (Value != null && Value.Equals(value))
+                return true;
+            if (Value == null && value == null)
+                return true;
+            if (Value == null || value == null)
+                return false;
 
-                if (isString && (
-                    IgnoreCase
-                        ? item.ToString().EqualsIgnoreCase(value.ToString())
-                        : item.ToString().Equals(value.ToString())
-                ))
-                    return true;
-            }
-
-            return false;
+            return isString && (
+                IgnoreCase
+                    ? Value.ToString().EqualsIgnoreCase(value.ToString())
+                    : Value.ToString().Equals(value.ToString())
+            );
         }
     }
 }

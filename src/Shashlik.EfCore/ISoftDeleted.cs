@@ -1,4 +1,5 @@
-﻿namespace Shashlik.EfCore
+﻿// ReSharper disable UnusedMemberInSuper.Global
+namespace Shashlik.EfCore
 {
     /// <summary>
     /// 软删除标记
