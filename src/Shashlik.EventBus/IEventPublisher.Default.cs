@@ -2,9 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DotNetCore.CAP;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.EventBus
 {
+    [ConditionDependsOnMissing(typeof(IEventPublisher))]
     internal class DefaultEventPublisher : IEventPublisher
     {
         public DefaultEventPublisher(ICapPublisher publisher)
@@ -22,7 +24,8 @@ namespace Shashlik.EventBus
             CapPublisher.Publish(typeof(T).Name, eventModel, callbackName);
         }
 
-        public Task PublishAsync<T>(T eventModel, string? callbackName = null, CancellationToken cancellationToken = default)
+        public Task PublishAsync<T>(T eventModel, string? callbackName = null,
+            CancellationToken cancellationToken = default)
             where T : class, IEvent
         {
             if (eventModel == null)

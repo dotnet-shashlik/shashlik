@@ -12,36 +12,36 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void GetReferredAssembliesTest()
         {
-            var list = AssemblyHelper.GetReferredAssemblies<AssemblyHelper>();
+            var list = ReflectHelper.GetReferredAssemblies<ReflectHelper>();
             list.ShouldNotBeEmpty();
-            var listByType = AssemblyHelper.GetReferredAssemblies(typeof(AssemblyHelper));
+            var listByType = ReflectHelper.GetReferredAssemblies(typeof(ReflectHelper));
             listByType.ShouldNotBeEmpty();
         }
 
         [Fact]
         public void GetFinalSubTest()
         {
-            var list = AssemblyHelper.GetFinalSubTypes<AssemblyHelper>();
+            var list = ReflectHelper.GetFinalSubTypes<ReflectHelper>();
             list.ShouldNotBeEmpty();
-            var listByAssembly = AssemblyHelper.GetFinalSubTypes<AssemblyHelper>(Assembly.GetExecutingAssembly());
+            var listByAssembly = ReflectHelper.GetFinalSubTypes<ReflectHelper>(Assembly.GetExecutingAssembly());
             listByAssembly.ShouldBeEmpty();
         }
 
         [Fact]
         public void GetTypesByAttributesTest()
         {
-            var result = AssemblyHelper.GetTypesByAttributes<DisplayAttribute>();
+            var result = ReflectHelper.GetTypesByAttributes<DisplayAttribute>();
             result.ShouldNotBeEmpty();
-            var result2 = AssemblyHelper.GetTypesByAttributes(typeof(DisplayAttribute));
+            var result2 = ReflectHelper.GetTypesByAttributes(typeof(DisplayAttribute));
             result2.ShouldNotBeEmpty();
         }
 
         [Fact]
         public void GetTypesAndAttributeTest()
         {
-            var result = AssemblyHelper.GetTypesAndAttribute<DisplayAttribute>();
+            var result = ReflectHelper.GetTypesAndAttribute<DisplayAttribute>();
             result.ShouldNotBeEmpty();
-            var result2 = AssemblyHelper.GetTypesAndAttribute(typeof(DisplayAttribute));
+            var result2 = ReflectHelper.GetTypesAndAttribute(typeof(DisplayAttribute));
             result2.ShouldNotBeEmpty();
         }
     }

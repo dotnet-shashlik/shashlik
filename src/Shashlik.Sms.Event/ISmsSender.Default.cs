@@ -30,12 +30,12 @@ namespace Shashlik.Sms.Event
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
         {
             if (phones == null) throw new ArgumentNullException(nameof(phones));
-            var list = phones?.ToList();
-            if (list.Count() > Options.CurrentValue.PatchMax)
+            var list = phones.ToList();
+            if (list.Count > Options.CurrentValue.PatchMax)
                 throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.PatchMax}个号码");
             if (list.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Consts.Regexs.MobilePhoneNumber)))
                 throw new SmsArgException($"{list.Join(",")} 存在手机号码格式错误");
-            if (list.Count() == 1 && !SmsLimit.LimitCheck(list.First(), subject))
+            if (list.Count == 1 && !SmsLimit.LimitCheck(list.First(), subject))
                 throw new SmsArgException("短信发送过于频繁");
 
             // 先用异步直接发送一次短信,如果收到主机异常,再发布事件进行重试

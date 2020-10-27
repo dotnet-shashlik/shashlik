@@ -89,7 +89,7 @@ namespace Shashlik.Utils.Extensions
             // A bit of perf code to avoid calling Activator.CreateInstance for common types and
             // to avoid boxing on every call. This is about 50% faster than just calling CreateInstance
             // for all value types.
-            return _commonTypeDictionary.TryGetValue(type, out var value)
+            return CommonTypeDictionary.TryGetValue(type, out var value)
                 ? value
                 : Activator.CreateInstance(type);
         }
@@ -411,43 +411,13 @@ namespace Shashlik.Utils.Extensions
         /// 获取实现的接口
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="includeInherited">是否包含继承父类的接口</param>
+        /// <param name="includeBaseTypeInherited">是否包含父类实现的接口</param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeInherited)
+        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeBaseTypeInherited)
         {
-            if (includeInherited || type.BaseType == null)
+            if (includeBaseTypeInherited || type.BaseType == null)
                 return type.GetInterfaces();
             return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
-        }
-
-        /// <summary>
-        /// json序列化
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="options">序列化设置</param>
-        /// <returns></returns>
-        public static string ToJson<T>(this T obj, JsonSerializerOptions options = null)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return System.Text.Json.JsonSerializer.Serialize(obj, options);
-        }
-
-        /// <summary>
-        /// json序列化,小驼峰命名
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ToJsonWithCamelCasePropertyNames<T>(this T obj)
-            where T : class
-        {
-            if (obj == null)
-                return null;
-            return System.Text.Json.JsonSerializer.Serialize(obj, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            });
         }
 
         /// <summary>
@@ -455,8 +425,9 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="dest">目标对象</param>
+        /// <param name="skipNullValue">是否跳过Null</param>
         /// <typeparam name="T"></typeparam>
-        public static void CopyTo<T>(this T source, T dest)
+        public static void CopyTo<T>(this T source, T dest, bool skipNullValue = false)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (dest == null) throw new ArgumentNullException(nameof(dest));
@@ -467,10 +438,10 @@ namespace Shashlik.Utils.Extensions
                                                             BindingFlags.GetProperty))
             {
                 if (propertyInfo.GetIndexParameters().Any())
-                    return;
+                    continue;
                 var value = propertyInfo.GetValue(source);
-                if (value == null)
-                    return;
+                if (value == null && skipNullValue)
+                    continue;
                 propertyInfo.SetValue(dest, value);
             }
         }
@@ -843,7 +814,7 @@ namespace Shashlik.Utils.Extensions
 
         #region private
 
-        private static readonly Dictionary<Type, object> _commonTypeDictionary = new Dictionary<Type, object>
+        private static readonly Dictionary<Type, object> CommonTypeDictionary = new Dictionary<Type, object>
         {
 #pragma warning disable IDE0034 // Simplify 'default' expression - default causes default(object)
             {typeof(int), default(int)},
@@ -1027,7 +998,7 @@ namespace Shashlik.Utils.Extensions
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
                     var jsonArr = jToken.Value<JArray>();
-                    if (jsonArr.Count() > index)
+                    if (jsonArr.Count < index + 1)
                         return (false, null);
                     json = jsonArr.ElementAt(index);
                 }
@@ -1073,10 +1044,12 @@ namespace Shashlik.Utils.Extensions
                 JsonElement? json = null;
                 if (jsonObj.ValueKind == JsonValueKind.Array && int.TryParse(proName, out var index))
                 {
-                    var jsonArr = jsonObj.EnumerateArray();
-                    if (jsonArr.Count() > index)
+                    if (jsonObj.GetArrayLength() < index + 1)
+                    {
                         return (false, null);
-                    json = jsonObj.EnumerateArray().ElementAt(index);
+                    }
+
+                    json = jsonObj[index];
                 }
                 else if (jsonObj.ValueKind == JsonValueKind.Object)
                 {
@@ -1096,7 +1069,7 @@ namespace Shashlik.Utils.Extensions
                     return (true, JsonElementValue(json.Value));
                 return (false, null);
             }
-            else if (objType is IEnumerable list && int.TryParse(proName, out var index))
+            else if (obj is IEnumerable list && int.TryParse(proName, out var index))
             {
                 var i = 0;
                 foreach (var item in list)

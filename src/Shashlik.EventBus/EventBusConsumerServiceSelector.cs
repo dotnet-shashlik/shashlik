@@ -9,8 +9,6 @@ using DotNetCore.CAP;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
-using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Dependency;
 
 #pragma warning disable 8618
 
@@ -20,8 +18,7 @@ using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.EventBus
 {
-    [ConditionOnProperty(typeof(bool?), "Shashlik:EventBus.Enable", true, null)]
-    internal class EventBusConsumerServiceSelector : IConsumerServiceSelector, ISingleton
+    internal class EventBusConsumerServiceSelector : IConsumerServiceSelector
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
@@ -166,13 +163,13 @@ namespace Shashlik.EventBus
             return results;
         }
 
-        private ConsumerExecutorDescriptor MatchUsingName(string key,
+        private ConsumerExecutorDescriptor? MatchUsingName(string key,
             IEnumerable<ConsumerExecutorDescriptor> executeDescriptor)
         {
             return executeDescriptor.FirstOrDefault(x => x.Attribute.Name == key);
         }
 
-        private ConsumerExecutorDescriptor MatchAsteriskUsingRegex(string key,
+        private ConsumerExecutorDescriptor? MatchAsteriskUsingRegex(string key,
             IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             var group = executeDescriptor.First().Attribute.Group;
@@ -195,7 +192,7 @@ namespace Shashlik.EventBus
                 }
             }
 
-            return null!;
+            return null;
         }
 
         private ConsumerExecutorDescriptor MatchPoundUsingRegex(string key,

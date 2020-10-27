@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
@@ -44,12 +46,18 @@ namespace Shashlik.Kernel.Test
             {
                 GetService<NeedTestOption1True>().ShouldNotBeNull();
                 GetService<NeedTestOption2Miss>().ShouldNotBeNull();
+                GetService<NeedTestOption4ZhangSan1>().ShouldBeNull();
+                GetService<NeedTestOption4ZhangSan2>().ShouldBeNull();
+                GetService<NeedTestOption4ZhangSan3>().ShouldNotBeNull();
+
                 GetService<EnvConditionProd>().ShouldBeNull();
                 GetService<EnvConditionDev>().ShouldNotBeNull();
                 GetService<DependsOnNeedTestOption1True>().ShouldNotBeNull();
                 GetService<DependsOnEnvConditionProd>().ShouldBeNull();
                 GetService<DependsOnAny>().ShouldNotBeNull();
+                GetService<DependsOnAnyShouldBeNull>().ShouldBeNull();
                 GetService<DependsOnAll>().ShouldBeNull();
+                GetService<DependsOnAllShouldBeNotNull>().ShouldNotBeNull();
                 GetService<TestCondition>().ShouldBeNull();
                 GetService<BasedOn>().ShouldNotBeNull();
             }
@@ -60,6 +68,22 @@ namespace Shashlik.Kernel.Test
                 AutowiredConfigure.Inited.ShouldBeTrue();
                 AutowiredConfigureAspNetCore.Inited.ShouldBeTrue();
             }
+        }
+
+        [Fact]
+        public void MemoryLockTest()
+        {
+            var locker = GetService<ILock>();
+            var key = "lock_test";
+
+            // 第一次直接锁没问题
+            using var _ = locker.Lock(key, 3, false, 60);
+
+            // 同步再来锁,异常
+            Should.Throw<OperationCanceledException>(() => locker.Lock(key, 3, false, 1));
+
+            // 3秒后可以锁
+            using var @lock = locker.Lock(key, 1, false, 3);
         }
     }
 }

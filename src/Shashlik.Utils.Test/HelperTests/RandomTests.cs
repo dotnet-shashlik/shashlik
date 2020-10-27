@@ -30,6 +30,9 @@ namespace Shashlik.Utils.Test.HelperTests
             }
 
             ids.Count.ShouldBe(1000000);
+
+            Should.Throw<Exception>((() => new SnowflakeId(-54, 1)));
+            Should.Throw<Exception>((() => new SnowflakeId(1, -6)));
         }
 
         [Fact]
@@ -57,6 +60,9 @@ namespace Shashlik.Utils.Test.HelperTests
                 code.ShouldBeLessThan(100);
                 _testOutputHelper.WriteLine(code.ToString());
             }
+
+            Should.Throw<Exception>(() => RandomHelper.Next(10, 1));
+            RandomHelper.Next(10, 10).ShouldBe(10);
         }
     }
 }

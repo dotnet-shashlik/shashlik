@@ -17,23 +17,14 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string GetMD5Hash(this Stream stream)
         {
-            try
-            {
-                using System.Security.Cryptography.MD5
-                    md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
-                var retVal = md5.ComputeHash(stream);
-                var sb = new StringBuilder();
-                foreach (var t in retVal)
-                {
-                    sb.Append(t.ToString("x2"));
-                }
+            using System.Security.Cryptography.MD5
+                md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            var retVal = md5.ComputeHash(stream);
+            var sb = new StringBuilder();
+            foreach (var t in retVal)
+                sb.Append(t.ToString("x2"));
 
-                return sb.ToString();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("GetMD5Hash() fail, error:", ex);
-            }
+            return sb.ToString();
         }
 
         /// <summary>
@@ -49,7 +40,7 @@ namespace Shashlik.Utils.Extensions
 
             encoding ??= Encoding.UTF8;
 
-            var streamReader = new StreamReader(stream, encoding, true, 1024, true);
+            using var streamReader = new StreamReader(stream, encoding, true, 1024, true);
             return streamReader.ReadToEnd();
         }
 
@@ -66,7 +57,7 @@ namespace Shashlik.Utils.Extensions
 
             encoding ??= Encoding.UTF8;
 
-            var streamReader = new StreamReader(stream, encoding, true, 1024, true);
+            using var streamReader = new StreamReader(stream, encoding, true, 1024, true);
             return await streamReader.ReadToEndAsync();
         }
 

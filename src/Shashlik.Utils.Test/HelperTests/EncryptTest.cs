@@ -35,6 +35,27 @@ namespace Shashlik.Utils.Test.HelperTests
         }
 
         [Fact]
+        public void DesErrorTest()
+        {
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Encrypt("DES加密", "123", "12345678");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Encrypt("DES加密", "12345678", "123");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Decrypt("lkXACZz387lOk9xiKpCOeg==", "123", "12345678");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                DesHelper.Decrypt("lkXACZz387lOk9xiKpCOeg==", "12345678", "123");
+            });
+        }
+
+        [Fact]
         public void AesEncrypt()
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -54,6 +75,27 @@ namespace Shashlik.Utils.Test.HelperTests
         }
 
         [Fact]
+        public void AesErrorTest()
+        {
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Encrypt("AES加密", "123", "1234567890123456");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Encrypt("AES加密", "1234567890123456", "123");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "123", "1234567890123456");
+            });
+            Should.Throw<Exception>(() =>
+            {
+                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "1234567890123456", "123");
+            });
+        }
+
+        [Fact]
         public void BCryptTest()
         {
             var password = "password";
@@ -67,12 +109,13 @@ namespace Shashlik.Utils.Test.HelperTests
         {
             var str = "123123";
             var password = "698ac4d6b9be40a180d65849";
+            var iv = "12345678";
             password.Length.ShouldBe(24);
             _testOutputHelper.WriteLine(password);
 
-            var encoded = TripleDesHelper.Encrypt(str, password);
+            var encoded = TripleDesHelper.Encrypt(str, password, iv:iv);
             _testOutputHelper.WriteLine(encoded);
-            var decoded = TripleDesHelper.Decrypt(encoded, password);
+            var decoded = TripleDesHelper.Decrypt(encoded, password, iv:iv);
             decoded.ShouldBe(str);
         }
     }

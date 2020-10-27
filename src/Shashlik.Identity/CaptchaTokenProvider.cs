@@ -72,7 +72,7 @@ namespace Shashlik.Identity
 
         private static string GetTarget(string id)
         {
-            return id.ToString();
+            return id;
         }
     }
 }

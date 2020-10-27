@@ -5,31 +5,30 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shashlik.Captcha;
 using Shashlik.Identity.Entities;
-using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 using StringExtensions = RestSharp.Extensions.StringExtensions;
 
+// ReSharper disable ClassNeverInstantiated.Global
+
 namespace Shashlik.Identity
 {
-    public class ShashlikUserManager : UserManager<Users>, IScoped
+    public class ShashlikUserManager<TUsers, TKey> : UserManager<TUsers>
+        where TKey : IEquatable<TKey>
+        where TUsers : IdentityUserBase<TKey>
     {
-        protected ShashlikIdentityDbContext DbContext { get; }
-
-        public ShashlikUserManager(IUserStore<Users> store,
+        public ShashlikUserManager(IUserStore<TUsers> store,
             IOptions<IdentityOptions> optionsAccessor,
-            IPasswordHasher<Users> passwordHasher,
-            IEnumerable<IUserValidator<Users>> userValidators,
-            IEnumerable<IPasswordValidator<Users>> passwordValidators,
+            IPasswordHasher<TUsers> passwordHasher,
+            IEnumerable<IUserValidator<TUsers>> userValidators,
+            IEnumerable<IPasswordValidator<TUsers>> passwordValidators,
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<Users>> logger, ShashlikIdentityDbContext identityDbContext)
+            ILogger<UserManager<TUsers>> logger)
             : base(store, optionsAccessor, passwordHasher, userValidators,
                 passwordValidators, keyNormalizer, errors, services, logger)
         {
-            DbContext = identityDbContext;
         }
 
         /// <summary>
@@ -37,9 +36,9 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<Users> FindByPhoneNumberAsync(string phoneNumber)
+        public async Task<TUsers> FindByPhoneNumberAsync(string phoneNumber)
         {
-            return await DbContext.Users.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            return await Users.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
         }
 
         /// <summary>
@@ -47,10 +46,10 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="idCard"></param>
         /// <returns></returns>
-        public async Task<Users> FindByIdCardAsync(string idCard)
+        public async Task<TUsers> FindByIdCardAsync(string idCard)
         {
             idCard = idCard.ToUpperInvariant();
-            return await DbContext.Users.SingleOrDefaultAsync(u => u.IdCard == idCard);
+            return await Users.SingleOrDefaultAsync(u => u.IdCard == idCard);
         }
 
         /// <summary>
@@ -100,9 +99,9 @@ namespace Shashlik.Identity
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<string> GenerateLoginCaptcha(Users user)
+        public async Task<string> GenerateLoginCaptcha(TUsers user)
         {
             return await this.GenerateUserTokenAsync(user, ShashlikIdentityConsts.CaptchaTokenProvider,
                 ShashlikIdentityConsts.LoginPurpose);
@@ -111,10 +110,10 @@ namespace Shashlik.Identity
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
-        /// <param name="userId"></param>
+        /// <param name="user"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
-        public async Task<bool> IsValidLoginCaptcha(Users user, string catpcha)
+        public async Task<bool> IsValidLoginCaptcha(TUsers user, string catpcha)
         {
             return await this.VerifyUserTokenAsync(user, ShashlikIdentityConsts.CaptchaTokenProvider,
                 ShashlikIdentityConsts.LoginPurpose, catpcha);

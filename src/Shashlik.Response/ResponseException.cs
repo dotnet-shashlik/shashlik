@@ -27,10 +27,10 @@ namespace Shashlik.Response
         /// <summary>
         /// 响应状态枚举,ResponseStatus和ErrorCode必有一个有值
         /// </summary>
-        public ResponseStatus ResponseStatus { get; } = ResponseStatus.Other;
+        public ResponseStatus ResponseStatus { get; }
 
         /// <summary>
-        /// 自定义错误代码,ResponseStatus和ErrorCode必有一个有值
+        /// 自定义错误代码,ResponseStatus.Other时有效
         /// </summary>
         public int ErrorCode { get; }
 
@@ -51,8 +51,9 @@ namespace Shashlik.Response
         /// <param name="writeLog">是否记录日志</param>
         /// <param name="writeLogMessage">日志记录内容</param>
         /// <param name="debug">调试信息</param>
-        public ResponseException(string message, ResponseStatus responseStatus, bool writeLog, string writeLogMessage,
-            string debug) :
+        public ResponseException(string message, ResponseStatus responseStatus, bool writeLog = false,
+            string writeLogMessage = null,
+            string debug = null) :
             this(message, writeLog, writeLogMessage, debug)
         {
             ResponseStatus = responseStatus;
@@ -66,8 +67,8 @@ namespace Shashlik.Response
         /// <param name="writeLog">是否记录日志</param>
         /// <param name="writeLogMessage">日志记录内容</param>
         /// <param name="debug">调试信息</param>
-        public ResponseException(string message, int errorCode, bool writeLog, string writeLogMessage,
-            string debug) :
+        public ResponseException(string message, int errorCode, bool writeLog = false, string writeLogMessage = null,
+            string debug = null) :
             this(message, writeLog, writeLogMessage, debug)
         {
             ErrorCode = errorCode;

@@ -4,10 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace Shashlik.Utils.Extensions
 {
@@ -237,6 +239,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
         {
+            if (values == null) return url;
             var keyValuePairs = values.ToList();
             if (url.IsNullOrWhiteSpace() || keyValuePairs.IsNullOrEmpty())
                 return url;
@@ -292,22 +295,6 @@ namespace Shashlik.Utils.Extensions
             }
 
             return stringInfo.SubstringByTextElements(start, length);
-        }
-
-        /// <summary>
-        /// XML字符串反序列化
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="xml"></param>
-        /// <returns></returns>
-        public static T DeserializeXml<T>(this string xml)
-        {
-            if (string.IsNullOrEmpty(xml)) throw new NotSupportedException("Empty string!!");
-
-            var xmlSerializer = new XmlSerializer(typeof(T));
-            using var stringReader = new StringReader(xml);
-            using var reader = XmlReader.Create(stringReader);
-            return (T) xmlSerializer.Deserialize(reader);
         }
 
         #region Base64位加密解密

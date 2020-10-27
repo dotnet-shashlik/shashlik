@@ -15,23 +15,28 @@ namespace Shashlik.Kernel.Test
     {
         protected override IHostBuilder CreateHostBuilder()
         {
-            return
-                Host.CreateDefaultBuilder()
-                    //.UseServiceProviderFactory(new DynamicProxyServiceProviderFactory())
-                    .UseEnvironment("Development")
-                    .ConfigureAppConfiguration((host, builder) =>
+            var builder = Host.CreateDefaultBuilder();
+
+            ReflectHelper.GetFinalSubTypes<IHostBuilderConfigure>().ForEach(typeInfo =>
+            {
+                (Activator.CreateInstance(typeInfo) as IHostBuilderConfigure)
+                    !.Configure(builder);
+            });
+
+            return builder.UseEnvironment("Development")
+                .ConfigureAppConfiguration((host, builder) =>
+                {
+                    var list = ReflectHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
+
+                    foreach (var typeInfo in list)
                     {
-                        var list = AssemblyHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
+                        (Activator.CreateInstance(typeInfo) as ITestConfigurationBuilder)
+                            !.Build(builder);
+                    }
 
-                        foreach (var typeInfo in list)
-                        {
-                            (Activator.CreateInstance(typeInfo) as ITestConfigurationBuilder)
-                                !.Build(builder);
-                        }
-
-                        builder.AddEnvironmentVariables();
-                    })
-                    .ConfigureWebHostDefaults(x => { x.UseStartup<TStartup>().UseTestServer(); });
+                    builder.AddEnvironmentVariables();
+                })
+                .ConfigureWebHostDefaults(x => { x.UseStartup<TStartup>().UseTestServer(); });
         }
     }
 }

@@ -31,20 +31,20 @@ namespace Shashlik.Utils.Helpers
         /// 在指定时间执行指定的表达式
         /// </summary>
         /// <param name="action">要执行的表达式</param>
-        /// <param name="expireAt">过期时间</param>
+        /// <param name="runAt">过期时间</param>
         /// <param name="cancellationToken">撤销</param>
         /// <return>返回timer对象</return>
-        public static void SetTimeout(Action action, DateTimeOffset expireAt,
+        public static void SetTimeout(Action action, DateTimeOffset runAt,
             CancellationToken? cancellationToken = null)
         {
             cancellationToken ??= CancellationToken.None;
 
-            if (expireAt <= DateTimeOffset.Now)
-                throw new ArgumentException("invalid expire.", nameof(expireAt));
+            if (runAt <= DateTimeOffset.Now)
+                throw new ArgumentException("invalid run time.", nameof(runAt));
 
             Task.Run(() =>
             {
-                Task.Delay((int) (expireAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
+                Task.Delay((int) (runAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
                     .ContinueWith(task => action(), cancellationToken.Value)
                     .ConfigureAwait(false);
             });

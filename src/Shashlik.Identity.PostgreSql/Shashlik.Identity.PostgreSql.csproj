@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <!--<FrameworkReference Include="Microsoft.AspNetCore.App" />-->
+        <ProjectReference Include="..\Shashlik.Identity.Int32\Shashlik.Identity.Int32.csproj" />
         <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     </ItemGroup>

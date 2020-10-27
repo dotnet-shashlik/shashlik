@@ -36,9 +36,6 @@
     <None Update="rsatest.demokey\x509_public.cer">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="rsatest.demokey\test.pfx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="rsatest.demokey\rsa_public_key.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -51,6 +48,10 @@
     <None Remove="HelperTests\test_template.xlsx" />
     <Content Include="HelperTests\test_template.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="rsatest.demokey\test.pfx" />
+    <Content Include="rsatest.demokey\test.pfx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 

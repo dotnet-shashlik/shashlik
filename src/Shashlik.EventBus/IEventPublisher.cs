@@ -7,7 +7,7 @@ namespace Shashlik.EventBus
     /// <summary>
     /// 事件发布,事件类型的TypeName将作为事件名称Name
     /// </summary>
-    public interface IEventPublisher : Shashlik.Kernel.Dependency.ISingleton
+    public interface IEventPublisher : Kernel.Dependency.ISingleton
     {
         /// <summary>
         /// cap事件发布对象

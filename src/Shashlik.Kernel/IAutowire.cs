@@ -5,7 +5,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// 自动装配基类
     /// </summary>
-    public interface IAutowire : ISingleton
+    public interface IAutowire : ITransient
     {
     }
 

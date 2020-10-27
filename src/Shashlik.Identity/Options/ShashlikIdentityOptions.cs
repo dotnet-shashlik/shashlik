@@ -5,7 +5,7 @@ using Shashlik.Kernel.Attributes;
 namespace Shashlik.Identity.Options
 {
     [AutoOptions("Shashlik.Identity")]
-    public partial class ShashlikIdentityOptions
+    public class ShashlikIdentityOptions
     {
         /// <summary>
         /// 是否启用
