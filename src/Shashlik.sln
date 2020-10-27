@@ -75,13 +75,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migration", "migration", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EventBus.Rabbit", "Shashlik.EventBus.Rabbit\Shashlik.EventBus.Rabbit.csproj", "{328F8627-C679-4864-81C2-33305953B1C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.Int32", "Shashlik.Identity.Int32\Shashlik.Identity.Int32.csproj", "{9C8B75D8-CE35-4FF7-B694-B946B4476516}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Identity.Int32", "Shashlik.Identity.Int32\Shashlik.Identity.Int32.csproj", "{9C8B75D8-CE35-4FF7-B694-B946B4476516}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.IdentityInt32", "Shashlik.Ids4.IdentityInt32\Shashlik.Ids4.IdentityInt32.csproj", "{EF4313DA-864E-48F5-9327-5F47CA4E01D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Ids4.IdentityInt32", "Shashlik.Ids4.IdentityInt32\Shashlik.Ids4.IdentityInt32.csproj", "{EF4313DA-864E-48F5-9327-5F47CA4E01D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.EfCore.Tests", "Shashlik.EfCore.Tests\Shashlik.EfCore.Tests.csproj", "{C96E51D2-0A6A-4D69-BF1C-A8F19B453356}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Tests", "Shashlik.EfCore.Tests\Shashlik.EfCore.Tests.csproj", "{C96E51D2-0A6A-4D69-BF1C-A8F19B453356}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AutoMapper", "Shashlik.AutoMapper\Shashlik.AutoMapper.csproj", "{B56DAE1D-F6C5-4CFC-AE18-1B619A603C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AutoMapper", "Shashlik.AutoMapper\Shashlik.AutoMapper.csproj", "{B56DAE1D-F6C5-4CFC-AE18-1B619A603C50}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "solution items", "solution items", "{22AD2C2A-A465-447E-B665-2EBB16FF0F7D}"
+	ProjectSection(SolutionItems) = preProject
+		..\common.xml = ..\common.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
