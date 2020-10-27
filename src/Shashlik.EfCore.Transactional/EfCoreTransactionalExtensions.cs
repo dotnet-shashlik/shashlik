@@ -3,6 +3,8 @@ using AspectCore.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Utils.Extensions;
+// ReSharper disable UnusedMethodReturnValue.Global
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.EfCore.Transactional
 {
@@ -17,7 +19,7 @@ namespace Shashlik.EfCore.Transactional
         public static IHostBuilder UseEfCoreTransactional(this IHostBuilder builder, Type defaultDbContextType)
         {
             if (!defaultDbContextType.IsSubTypeOf<DbContext>())
-                throw new ArgumentException($"Default dbContext type must inherit from DbContext.",
+                throw new ArgumentException("Default dbContext type must inherit from DbContext.",
                     nameof(defaultDbContextType));
             TransactionalAttribute.DefaultDbContextType = defaultDbContextType;
             return builder.UseEfCoreTransactional();
