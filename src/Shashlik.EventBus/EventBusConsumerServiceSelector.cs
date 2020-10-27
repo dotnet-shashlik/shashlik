@@ -163,13 +163,13 @@ namespace Shashlik.EventBus
             return results;
         }
 
-        private ConsumerExecutorDescriptor MatchUsingName(string key,
+        private ConsumerExecutorDescriptor? MatchUsingName(string key,
             IEnumerable<ConsumerExecutorDescriptor> executeDescriptor)
         {
             return executeDescriptor.FirstOrDefault(x => x.Attribute.Name == key);
         }
 
-        private ConsumerExecutorDescriptor MatchAsteriskUsingRegex(string key,
+        private ConsumerExecutorDescriptor? MatchAsteriskUsingRegex(string key,
             IReadOnlyList<ConsumerExecutorDescriptor> executeDescriptor)
         {
             var group = executeDescriptor.First().Attribute.Group;
@@ -192,7 +192,7 @@ namespace Shashlik.EventBus
                 }
             }
 
-            return null!;
+            return null;
         }
 
         private ConsumerExecutorDescriptor MatchPoundUsingRegex(string key,
