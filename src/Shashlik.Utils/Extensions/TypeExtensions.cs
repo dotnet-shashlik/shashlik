@@ -425,8 +425,9 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="source">源对象</param>
         /// <param name="dest">目标对象</param>
+        /// <param name="skipNullValue">是否跳过Null</param>
         /// <typeparam name="T"></typeparam>
-        public static void CopyTo<T>(this T source, T dest)
+        public static void CopyTo<T>(this T source, T dest, bool skipNullValue = false)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (dest == null) throw new ArgumentNullException(nameof(dest));
@@ -437,10 +438,10 @@ namespace Shashlik.Utils.Extensions
                                                             BindingFlags.GetProperty))
             {
                 if (propertyInfo.GetIndexParameters().Any())
-                    return;
+                    continue;
                 var value = propertyInfo.GetValue(source);
-                if (value == null)
-                    return;
+                if (value == null && skipNullValue)
+                    continue;
                 propertyInfo.SetValue(dest, value);
             }
         }
