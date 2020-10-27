@@ -22,7 +22,7 @@ namespace Shashlik.Utils.Helpers
             return new Releaser(this);
         }
 
-        public struct Releaser : IDisposable
+        public readonly struct Releaser : IDisposable
         {
             private readonly AsyncLock _toRelease;
 
