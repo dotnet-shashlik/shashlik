@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace Shashlik.Mapper
+namespace Shashlik.AutoMapper
 {
     /// <summary>
     /// 单向 ,默认配置(直接继承接口有效,注意继承时的查询bug)

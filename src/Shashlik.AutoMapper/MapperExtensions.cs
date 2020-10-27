@@ -10,7 +10,7 @@ using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.Mapper
+namespace Shashlik.AutoMapper
 {
     public static class MapperExtensions
     {
@@ -187,7 +187,7 @@ namespace Shashlik.Mapper
             });
 
             configuration.AssertConfigurationIsValid();
-            var mapper = new AutoMapper.Mapper(configuration);
+            var mapper = new global::AutoMapper.Mapper(configuration);
             ShashlikAutoMapper.Instance = mapper;
 
             kernelService.Services.AddSingleton<IMapper>(mapper);
@@ -202,7 +202,7 @@ namespace Shashlik.Mapper
         /// <returns></returns>
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
-            if(ShashlikAutoMapper.Instance==null)
+            if (ShashlikAutoMapper.Instance == null)
                 throw new InvalidOperationException($"shashlik mapper has been uninitialized.");
             return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }
