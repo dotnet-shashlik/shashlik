@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
+// ReSharper disable UnusedTypeParameter
+
 namespace Shashlik.EfCore
 {
     /// <summary>

@@ -58,11 +58,12 @@ namespace Shashlik.EfCore.Transactional
             try
             {
                 await next(context);
-                tran.Commit();
+                await tran.CommitAsync();
             }
             catch
             {
-                tran.Rollback();
+                await tran.RollbackAsync();
+                throw;
             }
         }
     }

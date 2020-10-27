@@ -72,8 +72,10 @@ namespace Shashlik.EfCore
                     ScopedTransaction = top
                 };
 
-                if (!Trans.TryAdd(dbContext, new ConcurrentBag<TransactionModel> {tranModel}))
+                if (list == null && !Trans.TryAdd(dbContext, new ConcurrentBag<TransactionModel> {tranModel}))
                     throw new Exception($"begin transaction error.");
+                if (list != null)
+                    list!.Add(tranModel);
                 return tranModel.ScopedTransaction;
             }
         }

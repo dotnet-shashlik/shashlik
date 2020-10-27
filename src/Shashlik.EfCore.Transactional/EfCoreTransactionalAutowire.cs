@@ -25,15 +25,6 @@ namespace Shashlik.EfCore.Transactional
                     p => p.GetCustomAttributes(typeof(TransactionalAttribute), true).Any()
                 );
             });
-
-            var dic = ReflectHelper.GetTypesByAttributes<DefaultTransactionalAttribute>();
-            if (dic.Count > 1)
-                throw new InvalidOperationException($"Find more {typeof(DefaultTransactionalAttribute)}. ");
-            if (dic.Count == 1 && dic.First().Key.IsAbstract)
-                throw new InvalidOperationException(
-                    $"{typeof(DefaultTransactionalAttribute)} can not be used on abstract class. ");
-            if (dic.Count == 1)
-                TransactionalAttribute.DefaultDbContextType = dic.First().Key;
         }
     }
 }

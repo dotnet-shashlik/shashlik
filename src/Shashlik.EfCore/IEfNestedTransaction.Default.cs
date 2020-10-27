@@ -1,6 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
@@ -12,12 +14,14 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(IEfNestedTransactionWrapper efTransactionWrapper, TDbContext dbContext,
-            IEfNestedTransactionBeginFunction<TDbContext> beginFunction)
+        public DefaultEfNestedTransaction(
+            IEfNestedTransactionWrapper efTransactionWrapper,
+            IServiceProvider serviceProvider
+        )
         {
             EfTransactionWrapper = efTransactionWrapper;
-            DbContext = dbContext;
-            BeginFunction = beginFunction;
+            DbContext = serviceProvider.GetRequiredService<TDbContext>();
+            BeginFunction = serviceProvider.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
         }
 
         /// <summary>

@@ -232,7 +232,7 @@ namespace Shashlik.EfCore
             using var @lock = locker.Lock(MigrationLockKey, 60 * 3, true, 60);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
-            dbContext.Database.Migrate();
+            dbContext!.Database.Migrate();
         }
     }
 }
