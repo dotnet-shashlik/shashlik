@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -14,25 +15,19 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(
-            IEfNestedTransactionWrapper efTransactionWrapper,
-            IServiceProvider serviceProvider
-        )
+        private ConcurrentStack<ShashlikDbContextTransaction<TDbContext>> Transactions { get; } =
+            new ConcurrentStack<ShashlikDbContextTransaction<TDbContext>>();
+
+        public DefaultEfNestedTransaction(IServiceProvider serviceProvider)
         {
-            EfTransactionWrapper = efTransactionWrapper;
             DbContext = serviceProvider.GetRequiredService<TDbContext>();
             BeginFunction = serviceProvider.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
         }
 
         /// <summary>
-        /// 嵌套事务包装类
-        /// </summary>
-        private IEfNestedTransactionWrapper EfTransactionWrapper { get; }
-
-        /// <summary>
         /// 开启事务的方式
         /// </summary>
-        private IEfNestedTransactionBeginFunction<TDbContext> BeginFunction { get; }
+        private IEfNestedTransactionBeginFunction<TDbContext>? BeginFunction { get; }
 
         /// <summary>
         /// 数据库上下文
@@ -42,7 +37,15 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 当前事务
         /// </summary>
-        public virtual IDbContextTransaction Current => EfTransactionWrapper.GetCurrent(DbContext);
+        public virtual IDbContextTransaction? Current
+        {
+            get
+            {
+                if (Transactions.TryPeek(out var tran) && !tran.IsDone)
+                    return tran;
+                return null;
+            }
+        }
 
         /// <summary>
         /// 开启事务
@@ -50,9 +53,21 @@ namespace Shashlik.EfCore
         /// <returns></returns>
         public virtual IDbContextTransaction Begin(IsolationLevel? isolationLevel = null)
         {
-            return BeginFunction == null
-                ? EfTransactionWrapper.Begin(DbContext, isolationLevel)
-                : EfTransactionWrapper.Begin(DbContext, isolationLevel, BeginFunction.BeginTransaction);
+            if (Transactions.TryPeek(out var existsTran)
+                && !existsTran.IsDone)
+                return existsTran;
+
+            IDbContextTransaction tran;
+            if (BeginFunction == null)
+                tran = isolationLevel.HasValue
+                    ? DbContext.Database.BeginTransaction(isolationLevel.Value)
+                    : DbContext.Database.BeginTransaction();
+            else
+                tran = BeginFunction.BeginTransaction(DbContext, isolationLevel);
+
+            var innerTran = new ShashlikDbContextTransaction<TDbContext>(DbContext, tran);
+            Transactions.Push(innerTran);
+            return innerTran;
         }
     }
 }

@@ -8,7 +8,7 @@ using Shashlik.EfCore.Tests;
 
 namespace Shashlik.EfCore.Tests.Migrations
 {
-    [DbContext(typeof(TestDbContext))]
+    [DbContext(typeof(TestDbContext1))]
     [Migration("20201027022932_init")]
     partial class init
     {

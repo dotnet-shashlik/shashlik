@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shashlik.Kernel;
 
 // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
@@ -16,7 +15,6 @@ namespace Shashlik.EfCore
         public void Configure(IKernelServices kernelService)
         {
             kernelService.AddEfEntityMappings();
-            kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
             kernelService.Services.TryAddScoped(typeof(IEfNestedTransaction<>), typeof(DefaultEfNestedTransaction<>));
         }
     }

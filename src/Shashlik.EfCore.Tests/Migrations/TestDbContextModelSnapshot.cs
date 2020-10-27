@@ -7,7 +7,7 @@ using Shashlik.EfCore.Tests;
 
 namespace Shashlik.EfCore.Tests.Migrations
 {
-    [DbContext(typeof(TestDbContext))]
+    [DbContext(typeof(TestDbContext1))]
     partial class TestDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

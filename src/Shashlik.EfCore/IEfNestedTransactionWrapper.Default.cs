@@ -22,7 +22,7 @@ namespace Shashlik.EfCore
             where TDbContext : DbContext
         {
             return Trans.TryGetValue(dbContext, out var list)
-                ? list.FirstOrDefault()?.ScopedTransaction
+                ? list.FirstOrDefault()?.NestTransaction
                 : null;
         }
 
@@ -41,7 +41,7 @@ namespace Shashlik.EfCore
             if (Trans.TryGetValue(dbContext, out var list))
             {
                 var last = list.LastOrDefault(r =>
-                    r.ScopedTransaction.IsTopTransaction && !r.ScopedTransaction.IsCompleted);
+                    r.NestTransaction.IsTopTransaction && !r.NestTransaction.IsCompleted);
                 if (last != null)
                 {
                     // 存在该类型的事务
@@ -49,10 +49,10 @@ namespace Shashlik.EfCore
                     {
                         DbContext = dbContext,
                         TopEfTransaction = last.TopEfTransaction,
-                        ScopedTransaction = new InnerEfDbContextTransaction(last.TopEfTransaction, false)
+                        NestTransaction = new InnerEfDbContextTransaction(last.TopEfTransaction, false)
                     };
                     list.Add(tranModel);
-                    return tranModel.ScopedTransaction;
+                    return tranModel.NestTransaction;
                 }
             }
 
@@ -69,14 +69,14 @@ namespace Shashlik.EfCore
                 {
                     DbContext = dbContext,
                     TopEfTransaction = top,
-                    ScopedTransaction = top
+                    NestTransaction = top
                 };
 
                 if (list == null && !Trans.TryAdd(dbContext, new ConcurrentBag<TransactionModel> {tranModel}))
                     throw new Exception($"begin transaction error.");
                 if (list != null)
                     list!.Add(tranModel);
-                return tranModel.ScopedTransaction;
+                return tranModel.NestTransaction;
             }
         }
 
@@ -87,7 +87,8 @@ namespace Shashlik.EfCore
         {
             foreach (var item in Trans)
             foreach (var transaction in item.Value)
-                transaction?.ScopedTransaction?.Dispose();
+                transaction?.NestTransaction?.Dispose();
+            Trans.Clear();
         }
     }
 }

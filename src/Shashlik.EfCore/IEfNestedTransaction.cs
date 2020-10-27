@@ -14,7 +14,7 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 当前事务
         /// </summary>
-        IDbContextTransaction Current { get; }
+        IDbContextTransaction? Current { get; }
 
         /// <summary>
         /// 开始事务

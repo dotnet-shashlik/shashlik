@@ -8,11 +8,10 @@ using System.Linq.Expressions;
 using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Shashlik.Kernel.Locker;
 using Shashlik.Utils.Helpers;
 
+// ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable InvertIf
 // ReSharper disable MemberCanBePrivate.Global
 
@@ -25,7 +24,6 @@ namespace Shashlik.EfCore
         public static IKernelServices AddNestedTransaction(IKernelServices kernelService)
         {
             kernelService.AddEfEntityMappings();
-            kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
 
             var dbContextTypes =
                 ReflectHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
@@ -81,8 +79,8 @@ namespace Shashlik.EfCore
         /// <param name="dependencyContext"></param>
         public static void RegisterEntities<TEntityBase>(
             this ModelBuilder modelBuilder,
-            IServiceProvider entityTypeConfigurationServiceProvider = null,
-            DependencyContext dependencyContext = null)
+            IServiceProvider? entityTypeConfigurationServiceProvider = null,
+            DependencyContext? dependencyContext = null)
             where TEntityBase : class
         {
             var assemblies = ReflectHelper.GetReferredAssemblies<TEntityBase>(dependencyContext);
@@ -103,7 +101,7 @@ namespace Shashlik.EfCore
         public static void RegisterEntitiesFromAssembly<TEntityBase>(
             this ModelBuilder modelBuilder,
             Assembly assembly,
-            IServiceProvider entityTypeConfigurationServiceProvider = null)
+            IServiceProvider? entityTypeConfigurationServiceProvider = null)
             where TEntityBase : class
         {
             modelBuilder.RegisterEntitiesFromAssembly(assembly,
@@ -122,7 +120,7 @@ namespace Shashlik.EfCore
             this ModelBuilder modelBuilder,
             Assembly assembly,
             Func<Type, bool> entityTypeFilter,
-            IServiceProvider entityTypeConfigurationServiceProvider = null)
+            IServiceProvider? entityTypeConfigurationServiceProvider = null)
         {
             if (assembly == null)
                 throw new ArgumentNullException(nameof(assembly));
@@ -157,7 +155,7 @@ namespace Shashlik.EfCore
                 if (map == null)
                     throw new InvalidOperationException($"can not create instance of: {mappingType}!");
                 applyConfigurationMethod.MakeGenericMethod(entityType)
-                    .Invoke(modelBuilder, new object[] {map});
+                    .Invoke(modelBuilder, new[] {map});
 
                 registeredTypes.Add(entityType);
             });
@@ -188,7 +186,7 @@ namespace Shashlik.EfCore
         /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void Migration<T>(this IServiceCollection services, ILock locker = null) where T : DbContext
+        public static void Migration<T>(this IServiceCollection services, ILock? locker = null) where T : DbContext
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
@@ -199,7 +197,7 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
-        public static void Migration(this IServiceCollection services, Type dbContextType, ILock locker = null)
+        public static void Migration(this IServiceCollection services, Type dbContextType, ILock? locker = null)
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
@@ -212,10 +210,10 @@ namespace Shashlik.EfCore
         /// 执行迁移,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void Migration<T>(this IServiceProvider provider, ILock locker = null) where T : DbContext
+        public static void Migration<T>(this IServiceProvider provider, ILock? locker = null) where T : DbContext
         {
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, 60 * 3, true, 60);
+            using var @lock = locker.Lock(MigrationLockKey, 60 * 3);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<T>();
             dbContext.Database.Migrate();
@@ -224,12 +222,12 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
-        public static void Migration(this IServiceProvider provider, Type dbContextType, ILock locker = null)
+        public static void Migration(this IServiceProvider provider, Type dbContextType, ILock? locker = null)
         {
             if (!dbContextType.IsSubTypeOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, 60 * 3, true, 60);
+            using var @lock = locker.Lock(MigrationLockKey, 60 * 3);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             dbContext!.Database.Migrate();

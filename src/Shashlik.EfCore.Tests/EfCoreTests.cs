@@ -21,7 +21,7 @@ namespace Shashlik.Captcha.Tests
             _testOutputHelper = testOutputHelper;
         }
 
-        private TestDbContext DbContext => GetService<TestDbContext>();
+        private TestDbContext1 DbContext => GetService<TestDbContext1>();
 
         [Fact]
         public async Task TransactionalSuccessTest()

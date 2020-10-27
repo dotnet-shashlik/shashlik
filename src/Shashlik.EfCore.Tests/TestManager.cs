@@ -9,14 +9,14 @@ namespace Shashlik.EfCore.Tests
 {
     public class TestManager : Kernel.Dependency.ITransient
     {
-        public TestManager(TestDbContext dbContext, IEfNestedTransaction<TestDbContext> transaction)
+        public TestManager(TestDbContext1 dbContext, IEfNestedTransaction<TestDbContext1> transaction)
         {
             DbContext = dbContext;
             Transaction = transaction;
         }
 
-        public TestDbContext DbContext { get; }
-        public IEfNestedTransaction<TestDbContext> Transaction { get; }
+        public TestDbContext1 DbContext { get; }
+        public IEfNestedTransaction<TestDbContext1> Transaction { get; }
 
         [Transactional]
         public virtual async Task CreateUser(string name, IEnumerable<string> roles, bool throwEx)

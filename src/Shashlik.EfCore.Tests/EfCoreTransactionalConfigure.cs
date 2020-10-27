@@ -8,7 +8,7 @@ namespace Shashlik.EfCore.Tests
     {
         public void Configure(IHostBuilder builder)
         {
-            builder.UseEfCoreTransactional<TestDbContext>();
+            builder.UseEfCoreTransactional<TestDbContext1>();
         }
     }
 }
