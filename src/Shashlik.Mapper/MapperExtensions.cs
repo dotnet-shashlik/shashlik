@@ -23,7 +23,7 @@ namespace Shashlik.Mapper
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
             DependencyContext dependencyContext = null)
         {
-            var assemblies = AssemblyHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
+            var assemblies = ReflectHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 

@@ -28,7 +28,7 @@ namespace Shashlik.EfCore
             kernelService.Services.TryAddScoped<IEfNestedTransactionWrapper, DefaultEfNestedTransactionWrapper>();
 
             var dbContextTypes =
-                AssemblyHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
+                ReflectHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
             if (dbContextTypes.IsNullOrEmpty())
                 return kernelService;
 
@@ -85,7 +85,7 @@ namespace Shashlik.EfCore
             DependencyContext dependencyContext = null)
             where TEntityBase : class
         {
-            var assemblies = AssemblyHelper.GetReferredAssemblies<TEntityBase>(dependencyContext);
+            var assemblies = ReflectHelper.GetReferredAssemblies<TEntityBase>(dependencyContext);
 
             foreach (var item in assemblies)
                 modelBuilder.RegisterEntitiesFromAssembly(item,

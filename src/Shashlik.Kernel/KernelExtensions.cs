@@ -33,7 +33,7 @@ namespace Shashlik.Kernel
 
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
             var conventionAssemblies =
-                AssemblyHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
+                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
             conventionAssemblies.Add(typeof(IKernelServices).Assembly);
 
             foreach (var item in conventionAssemblies)
@@ -43,9 +43,8 @@ namespace Shashlik.Kernel
                     kernelServices.RootConfiguration, hostEnvironment);
             }
 
-            return new DefaultInitializedKernelService(kernelServices);
+            return new InnerInitializedKernelService(kernelServices);
         }
-
 
         /// <summary>
         /// AddShashlik
@@ -101,7 +100,7 @@ namespace Shashlik.Kernel
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
             var assemblies =
-                AssemblyHelper.GetReferredAssemblies<IKernelServices>(kernelService.ScanFromDependencyContext);
+                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelService.ScanFromDependencyContext);
             assemblies.Add(typeof(IKernelServices).Assembly);
 
             foreach (var item in assemblies)

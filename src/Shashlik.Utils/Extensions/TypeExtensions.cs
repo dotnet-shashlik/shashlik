@@ -89,7 +89,7 @@ namespace Shashlik.Utils.Extensions
             // A bit of perf code to avoid calling Activator.CreateInstance for common types and
             // to avoid boxing on every call. This is about 50% faster than just calling CreateInstance
             // for all value types.
-            return _commonTypeDictionary.TryGetValue(type, out var value)
+            return CommonTypeDictionary.TryGetValue(type, out var value)
                 ? value
                 : Activator.CreateInstance(type);
         }
@@ -814,7 +814,7 @@ namespace Shashlik.Utils.Extensions
 
         #region private
 
-        private static readonly Dictionary<Type, object> _commonTypeDictionary = new Dictionary<Type, object>
+        private static readonly Dictionary<Type, object> CommonTypeDictionary = new Dictionary<Type, object>
         {
 #pragma warning disable IDE0034 // Simplify 'default' expression - default causes default(object)
             {typeof(int), default(int)},
@@ -998,7 +998,7 @@ namespace Shashlik.Utils.Extensions
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
                     var jsonArr = jToken.Value<JArray>();
-                    if (jsonArr.Count() < index)
+                    if (jsonArr.Count < index + 1)
                         return (false, null);
                     json = jsonArr.ElementAt(index);
                 }
@@ -1044,10 +1044,11 @@ namespace Shashlik.Utils.Extensions
                 JsonElement? json = null;
                 if (jsonObj.ValueKind == JsonValueKind.Array && int.TryParse(proName, out var index))
                 {
-                    if (index >= jsonObj.GetArrayLength())
+                    if (jsonObj.GetArrayLength() < index + 1)
                     {
                         return (false, null);
                     }
+
                     json = jsonObj[index];
                 }
                 else if (jsonObj.ValueKind == JsonValueKind.Object)

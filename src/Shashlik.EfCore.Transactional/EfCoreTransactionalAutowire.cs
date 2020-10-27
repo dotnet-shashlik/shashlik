@@ -26,7 +26,7 @@ namespace Shashlik.EfCore.Transactional
                 );
             });
 
-            var dic = AssemblyHelper.GetTypesByAttributes<DefaultTransactionalAttribute>();
+            var dic = ReflectHelper.GetTypesByAttributes<DefaultTransactionalAttribute>();
             if (dic.Count > 1)
                 throw new InvalidOperationException($"Find more {typeof(DefaultTransactionalAttribute)}. ");
             if (dic.Count == 1 && dic.First().Key.IsAbstract)
