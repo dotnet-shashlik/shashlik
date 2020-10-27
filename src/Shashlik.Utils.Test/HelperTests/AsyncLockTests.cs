@@ -43,17 +43,36 @@ namespace Shashlik.Utils.Test.HelperTests
         public void CancelAsyncTest()
         {
             var locker = new AsyncLock();
-            var number = 1;
-            var cancelToken = new CancellationTokenSource();
-             locker.LockAsync().Wait();
-            Task.Run(async () =>
+
+            // 首次上锁2秒
             {
-                await Task.Delay(1000);
-                number = 2;
-                cancelToken.Cancel();
-            });
-            Should.Throw<Exception>(() => { locker.LockAsync(cancelToken.Token).Wait(); });
-            number.ShouldBe(2);
+                using var cancelToken = new CancellationTokenSource();
+                cancelToken.CancelAfter(TimeSpan.FromSeconds(1));
+                var release = locker.LockAsync(cancelToken.Token).GetAwaiter().GetResult();
+
+                Task.Run(async () =>
+                {
+                    // 2秒后释放锁
+                    await Task.Delay(2000);
+                    release.Dispose();
+                });
+            }
+
+            // 再来锁,等待0.5秒,应该异常
+            {
+                using var cancelToken = new CancellationTokenSource();
+                cancelToken.CancelAfter(TimeSpan.FromSeconds(0.5));
+                // 锁不上,异常
+                Should.Throw<Exception>(() => { locker.LockAsync(cancelToken.Token).Wait(); });
+            }
+
+            // 2秒后可以锁上
+            {
+                Task.Delay(2000).Wait();
+                using var cancelToken = new CancellationTokenSource();
+                cancelToken.CancelAfter(TimeSpan.FromSeconds(0.5));
+                locker.LockAsync().Wait();
+            }
         }
 
         [Fact]

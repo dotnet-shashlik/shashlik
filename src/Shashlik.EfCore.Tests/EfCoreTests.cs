@@ -2,14 +2,13 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Shashlik.EfCore.Tests;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.Kernel.Test;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Shashlik.Captcha.Tests
+namespace Shashlik.EfCore.Tests
 {
     public class EfCoreTests : KernelTestBase
     {

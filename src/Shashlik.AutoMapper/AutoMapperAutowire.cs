@@ -1,6 +1,6 @@
 ﻿using Shashlik.Kernel;
 
-namespace Shashlik.Mapper
+namespace Shashlik.AutoMapper
 {
     public class AutoMapperAutowire : IServiceAutowire
     {

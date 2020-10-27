@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Utils.Extensions;
 
+// ReSharper disable MemberCanBePrivate.Global
+
 namespace Shashlik.EfCore.Transactional
 {
     /// <summary>

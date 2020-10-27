@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.Identity
@@ -8,6 +10,7 @@ namespace Shashlik.Identity
     {
         public void Configure(IdentityBuilder identityBuilder)
         {
+            identityBuilder.Services.TryAddScoped<ShashlikInt32UserManager>();
             identityBuilder.AddEntityFrameworkStores<ShashlikIdentityDbContext>();
         }
     }

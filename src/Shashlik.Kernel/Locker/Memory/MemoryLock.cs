@@ -16,7 +16,6 @@ namespace Shashlik.Kernel.Locker.Memory
         public IDisposable Lock(string key, int lockSecond, bool autoDelay = true, int waitTimeout = 60)
         {
             key = $"ShashlikMemoryLock:{key}";
-            var value = Guid.NewGuid().ToString("n");
             using var source = new CancellationTokenSource(TimeSpan.FromSeconds(waitTimeout));
             var asyncLock = Lockers.GetOrAdd(key, new AsyncLock());
             var releaser = asyncLock.Lock(source.Token);
