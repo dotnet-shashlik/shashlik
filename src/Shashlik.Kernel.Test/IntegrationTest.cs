@@ -76,15 +76,14 @@ namespace Shashlik.Kernel.Test
             var locker = GetService<ILock>();
             var key = "lock_test";
 
-            Task.Run(() =>
-            {
-                using var _ = locker.Lock(key, 10, true, 60);
-            });
+            // 第一次直接锁没问题
+            using var _ = locker.Lock(key, 3, false, 60);
 
-            Should.Throw<Exception>(() => locker.Lock(key, 3, true, 1));
+            // 同步再来锁,异常
+            Should.Throw<OperationCanceledException>(() => locker.Lock(key, 3, false, 1));
 
-            Thread.Sleep(10_000);
-            using var @lock = locker.Lock(key, 1, true, 1);
+            // 3秒后可以锁
+            using var @lock = locker.Lock(key, 1, false, 3);
         }
     }
 }

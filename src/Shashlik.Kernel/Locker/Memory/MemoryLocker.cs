@@ -12,7 +12,10 @@ namespace Shashlik.Kernel.Locker.Memory
             AutoDelay = autoDelay;
             Releaser = releaser;
 
-            TimerHelper.SetTimeout(this.Release, TimeSpan.FromSeconds(lockSecond));
+            if (!autoDelay)
+            {
+                TimerHelper.SetTimeout(Dispose, TimeSpan.FromSeconds(lockSecond));
+            }
         }
 
         private AsyncLock.Releaser Releaser { get; }
@@ -25,20 +28,15 @@ namespace Shashlik.Kernel.Locker.Memory
 
         public bool Disposed { get; private set; }
 
-        private void Release()
-        {
-            if (Disposed)
-                return;
-            if (!AutoDelay)
-                this.Dispose();
-        }
-
         public void Dispose()
         {
             try
             {
-                Disposed = true;
-                Releaser.Dispose();
+                if (!Disposed)
+                {
+                    Disposed = true;
+                    Releaser.Dispose();
+                }
             }
             catch
             {
