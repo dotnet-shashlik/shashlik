@@ -1,4 +1,5 @@
 ﻿using Shashlik.Identity.Entities;
+
 // ReSharper disable CheckNamespace
 // ReSharper disable ClassNeverInstantiated.Global
 
