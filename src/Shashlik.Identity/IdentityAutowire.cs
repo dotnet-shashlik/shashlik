@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -45,12 +44,12 @@ namespace Shashlik.Identity
             // reflect AddIdentityCore
             var addIdentityCoreMethodInfo = typeof(IdentityServiceCollectionExtensions)
                 .GetMethod(nameof(IdentityServiceCollectionExtensions.AddIdentityCore),
-                    new[] { typeof(IServiceCollection) });
+                    new[] {typeof(IServiceCollection)});
 
             // registry identity core: AddIdentityCore<TUser>()
             var builder =
                 addIdentityCoreMethodInfo!.MakeGenericMethod(userRoleDefinition.UserType)
-                    .Invoke(null, new object[] { kernelService.Services }) as IdentityBuilder;
+                    .Invoke(null, new object[] {kernelService.Services}) as IdentityBuilder;
 
             // registry role: AddRole<Role>()
             var addRoleMethodInfo = typeof(IdentityBuilder).GetMethod(nameof(IdentityBuilder.AddRoles), new Type[] { });
@@ -85,23 +84,32 @@ namespace Shashlik.Identity
             if (!userRoleDefinition.UserType.IsSubTypeOfGenericType(typeof(IdentityUserBase<>))
                 || userRoleDefinition.UserType.IsGenericTypeDefinition)
                 throw new InvalidOperationException(
-                    $"Error user type definition of {userRoleDefinition.UserType}, must implement from Users<>.");
+                    $"Error user type definition of {userRoleDefinition.UserType}, must implement from IdentityUsers<>.");
             if (!userRoleDefinition.RoleType.IsSubTypeOfGenericType(typeof(IdentityRoleBase<>))
                 || userRoleDefinition.RoleType.IsGenericTypeDefinition)
                 throw new InvalidOperationException(
-                    $"Error role type definition of {userRoleDefinition.RoleType}, must implement from Roles<>.");
+                    $"Error role type definition of {userRoleDefinition.RoleType}, must implement from IdentityRoles<>.");
 
-            var userKeyType = userRoleDefinition.UserType.GetTypeInfo()
-                    .GetAllBaseTypes()
-                    .First(r => r.GetGenericTypeDefinition() == typeof(IdentityUser<>))
-                    .GetGenericArguments()
-                    .First();
-
-            var roleKeyType = userRoleDefinition.RoleType.GetTypeInfo()
+            var userKeyType = userRoleDefinition.UserType
                 .GetAllBaseTypes()
-                .First(r => r.GetGenericTypeDefinition() == typeof(IdentityRole))
-                .GetGenericArguments()
-                .First();
+                .FirstOrDefault(r => r.GetGenericTypeDefinition() == typeof(IdentityUser<>))
+                ?.GetGenericArguments()
+                .FirstOrDefault();
+
+            if (userKeyType == null)
+                throw new InvalidOperationException(
+                    $"Error user type definition of {userRoleDefinition.UserType}, must implement from IdentityUsers<>.");
+
+            var roleKeyType = userRoleDefinition.RoleType
+                .GetAllBaseTypes()
+                .FirstOrDefault(r => r.GetGenericTypeDefinition() == typeof(IdentityRole<>))
+                ?.GetGenericArguments()
+                .FirstOrDefault();
+
+            if (roleKeyType == null)
+                throw new InvalidOperationException(
+                    $"Error role type definition of {userRoleDefinition.RoleType}, must implement from IdentityRoles<>.");
+
 
             if (userKeyType != roleKeyType)
                 throw new InvalidOperationException("User key type must equals role key type.");
