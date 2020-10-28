@@ -57,9 +57,10 @@ namespace Shashlik.Kernel.Dependency
         /// <param name="type"></param>
         public static void ValidInterfaces(TypeInfo type)
         {
-            var convectionInterfaces = type.ImplementedInterfaces.Where(r => IsConvectionInterfaceType(r)).ToList();
+            var convectionInterfaces =
+                type.ImplementedInterfaces.Where(IsConvectionInterfaceType).Distinct().ToList();
             if (convectionInterfaces.Count > 1)
-                throw new System.Exception(
+                throw new Exception(
                     $"convention type:{type} can't inherit from multiple interface:{Environment.NewLine}{convectionInterfaces.Select(r => r.FullName).Join(Environment.NewLine)}");
         }
 

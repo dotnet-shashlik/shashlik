@@ -97,13 +97,13 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static DateTime GetNextSpecificDayOfWork(this DateTime dt, DayOfWeek dayOfWeek)
+        public static DateTime GetNextSpecificDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek)
         {
             var offset = dayOfWeek - dt.DayOfWeek;
             if (offset > 0)
-                return dt.AddDays(offset);
+                return dt.AddDays(offset).Date;
             else
-                return dt.AddDays(7 + offset);
+                return dt.AddDays(7 + offset).Date;
         }
 
         /// <summary>
@@ -112,11 +112,11 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static DateTime GetCurrentOrNextSpecificDayOfWork(this DateTime dt, DayOfWeek dayOfWeek)
+        public static DateTime GetCurrentOrNextSpecificDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek)
         {
             if (dt.DayOfWeek == dayOfWeek)
-                return dt;
-            return dt.GetNextSpecificDayOfWork(dayOfWeek);
+                return dt.Date;
+            return dt.GetNextSpecificDayOfWeek(dayOfWeek);
         }
 
         /// <summary>
@@ -132,42 +132,16 @@ namespace Shashlik.Utils.Extensions
             if (dayOfMonth < 1 || dayOfMonth > 31)
                 throw new ArgumentOutOfRangeException(nameof(dayOfMonth));
 
-            if (dayOfMonth <= 28)
-                return dt.GetNextMonthFirstDay().AddDays(dayOfMonth);
+            int offset = dayOfMonth - 1;
 
-            int offset = dayOfMonth - dt.Day;
-
-            var d = dt.AddDays(offset);
-
-            if (offset > 0)
+            var nextMonth = dt.GetNextMonthFirstDay();
+            var day = nextMonth.AddDays(offset);
+            if (day.Month != nextMonth.Month)
             {
-                if (d.Month == dt.Month)
-                    return d;
+                throw new ArgumentOutOfRangeException(nameof(dayOfMonth));
+            }
 
-                d = new DateTime(dt.Year, dt.Month, 1).AddMonths(1);
-                int i = 0;
-                while (true)
-                {
-                    try
-                    {
-                        var dd = d.AddDays(dayOfMonth).AddMonths(i++);
-                        return dd;
-                    }
-                    catch (ArgumentOutOfRangeException)
-                    {
-                    }
-                }
-            }
-            else
-            {
-                int i = 1;
-                while (true)
-                {
-                    var next = d.AddMonths(i++);
-                    if (next.Day == dayOfMonth)
-                        return next;
-                }
-            }
+            return day;
         }
 
         /// <summary>
@@ -181,7 +155,7 @@ namespace Shashlik.Utils.Extensions
         public static DateTime GetCurrentOrNextSpecificDayOfMonth(this DateTime dt, int dayOfMonth)
         {
             if (dt.Day == dayOfMonth)
-                return dt;
+                return dt.Date;
             return dt.GetNextSpecificDayOfMonth(dayOfMonth);
         }
 
@@ -237,24 +211,6 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 计算年龄,字符串,1岁1月
-        /// </summary>
-        /// <param name="birthday"></param>
-        /// <returns></returns>
-        public static string GetAgeString(this DateTime birthday)
-        {
-            var res = GetAgeData(birthday);
-            if (res.year == 0 && res.month == 0)
-                return $"{res.day}天";
-            if (res.year == 0)
-                return $"{res.month}个月{res.day}天";
-            if (res.year < 14)
-                return $"{res.year}岁{res.month}个月";
-
-            return $"{res.year}岁";
-        }
-
-        /// <summary>
         /// 计算年龄字符串
         /// 默认返回：xx岁xx月xx天
         /// </summary>
@@ -265,14 +221,6 @@ namespace Shashlik.Utils.Extensions
                 return (0, 0, 0);
 
             var now = DateTime.Now;
-
-            //判断时间段是否为正。若为负，调换两个时间点的位置。
-            if (DateTime.Compare(birthday, now) > 0)
-            {
-                var dateTime = birthday;
-                birthday = now;
-                now = dateTime;
-            }
 
             //定义：年、月、日
             int year, month, day;
@@ -316,11 +264,11 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="today"></param>
         /// <returns></returns>
-        public static DateTime GetQuarterLasyDay(this DateTime today)
+        public static DateTime GetQuarterLastDay(this DateTime today)
         {
             var quarter = today.GetQuarter();
             return new DateTime(today.Year, (quarter - 1) * 3 + 1, 1)
-                .AddMonths(3);
+                .AddMonths(3).AddDays(-1);
         }
 
         /// <summary>
