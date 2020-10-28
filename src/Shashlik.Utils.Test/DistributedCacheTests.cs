@@ -69,8 +69,8 @@ namespace Shashlik.Utils.Test
         {
             var cache = new MemoryCache();
             var obj = new TestClass() {Str = "test"};
-            cache.SetObject("test", obj , DateTimeOffset.Now.AddSeconds(5));
-            var cacheObj = cache.GetObject<TestClass>("test");
+            cache.SetObjectWithJson("test", obj , DateTimeOffset.Now.AddSeconds(5));
+            var cacheObj = cache.GetObjectWithJson<TestClass>("test");
             cacheObj.ShouldNotBeNull();
             cacheObj.Str.ShouldBe(obj.Str);
         }
@@ -80,8 +80,8 @@ namespace Shashlik.Utils.Test
         {
             var cache = new MemoryCache();
             var obj = new TestClass() {Str = "test"};
-            await cache.SetObjectAsync("test", obj , DateTimeOffset.Now.AddSeconds(5));
-            var cacheObj = await cache.GetObjectAsync<TestClass>("test");
+            await cache.SetObjectWithJsonAsync("test", obj , DateTimeOffset.Now.AddSeconds(5));
+            var cacheObj = await cache.GetObjectWithJsonAsync<TestClass>("test");
             cacheObj.ShouldNotBeNull();
             cacheObj.Str.ShouldBe(obj.Str);
         }

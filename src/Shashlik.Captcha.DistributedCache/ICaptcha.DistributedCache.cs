@@ -40,7 +40,7 @@ namespace Shashlik.Captcha.DistributedCache
         {
             var key = GetKey(purpose, target, securityStamp);
 
-            var codeModel = await Cache.GetObjectAsync<CodeModel>(key);
+            var codeModel = await Cache.GetObjectWithJsonAsync<CodeModel>(key);
             if (codeModel == null)
                 return false;
 
@@ -58,7 +58,7 @@ namespace Shashlik.Captcha.DistributedCache
                 return false;
             }
 
-            await Cache.SetObjectAsync(key, codeModel, codeModel.ExpiresAt);
+            await Cache.SetObjectWithJsonAsync(key, codeModel, codeModel.ExpiresAt);
             return false;
         }
 
@@ -89,7 +89,7 @@ namespace Shashlik.Captcha.DistributedCache
                 ErrorCount = 0
             };
 
-            await Cache.SetObjectAsync(key, codeModel, codeModel.ExpiresAt);
+            await Cache.SetObjectWithJsonAsync(key, codeModel, codeModel.ExpiresAt);
             return codeModel;
         }
 
