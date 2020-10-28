@@ -45,12 +45,12 @@ namespace Shashlik.Identity
             // reflect AddIdentityCore
             var addIdentityCoreMethodInfo = typeof(IdentityServiceCollectionExtensions)
                 .GetMethod(nameof(IdentityServiceCollectionExtensions.AddIdentityCore),
-                    new[] {typeof(IServiceCollection)});
+                    new[] { typeof(IServiceCollection) });
 
             // registry identity core: AddIdentityCore<TUser>()
             var builder =
                 addIdentityCoreMethodInfo!.MakeGenericMethod(userRoleDefinition.UserType)
-                    .Invoke(null, new object[] {kernelService.Services}) as IdentityBuilder;
+                    .Invoke(null, new object[] { kernelService.Services }) as IdentityBuilder;
 
             // registry role: AddRole<Role>()
             var addRoleMethodInfo = typeof(IdentityBuilder).GetMethod(nameof(IdentityBuilder.AddRoles), new Type[] { });
@@ -92,14 +92,13 @@ namespace Shashlik.Identity
                     $"Error role type definition of {userRoleDefinition.RoleType}, must implement from Roles<>.");
 
             var userKeyType = userRoleDefinition.UserType.GetTypeInfo()
-                    .ImplementedInterfaces
+                    .GetAllBaseTypes()
                     .First(r => r.GetGenericTypeDefinition() == typeof(IdentityUser<>))
                     .GetGenericArguments()
-                    .First()
-                ;
+                    .First();
 
             var roleKeyType = userRoleDefinition.RoleType.GetTypeInfo()
-                .ImplementedInterfaces
+                .GetAllBaseTypes()
                 .First(r => r.GetGenericTypeDefinition() == typeof(IdentityRole))
                 .GetGenericArguments()
                 .First();
