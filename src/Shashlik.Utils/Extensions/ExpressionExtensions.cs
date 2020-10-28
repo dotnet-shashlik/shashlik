@@ -9,12 +9,15 @@ namespace Shashlik.Utils.Extensions
     {
         private static string GetPropertyInner(Expression expression)
         {
-            return expression.NodeType switch
+            switch (expression.NodeType)
             {
-                ExpressionType.MemberAccess => ((MemberExpression) expression).Member.Name,
-                ExpressionType.Convert => GetPropertyInner(((UnaryExpression) expression).Operand),
-                _ => throw new NotSupportedException(expression.NodeType.ToString())
-            };
+                case ExpressionType.MemberAccess:
+                    return ((MemberExpression) expression).Member.Name;
+                case ExpressionType.Convert:
+                    return GetPropertyInner(((UnaryExpression) expression).Operand);
+                default:
+                    throw new NotSupportedException(expression.NodeType.ToString());
+            }
         }
 
         /// <summary>

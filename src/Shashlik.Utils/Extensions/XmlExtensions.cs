@@ -15,30 +15,33 @@ namespace Shashlik.Utils.Extensions
             {
                 return string.Empty;
             }
-            try
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            var stringWriter = new StringWriter();
+            var settings = new XmlWriterSettings
             {
-                var xmlSerializer = new XmlSerializer(typeof(T));
-                var stringWriter = new StringWriter();
-                var settings = new XmlWriterSettings
-                {
-                    Indent = true,
-                    OmitXmlDeclaration = noHeader
-                };
-                using var writer = XmlWriter.Create(stringWriter, settings);
-                if (noNamespace)
-                {
-                    xmlSerializer.Serialize(writer, value, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
-                }
-                else
-                {
-                    xmlSerializer.Serialize(writer, value);
-                }
-                return stringWriter.ToString();
-            }
-            catch (Exception ex)
+                Indent = true,
+                OmitXmlDeclaration = noHeader
+            };
+            using var writer = XmlWriter.Create(stringWriter, settings);
+            if (noNamespace)
             {
-                throw new Exception("An error occurred", ex);
+                xmlSerializer.Serialize(writer, value, new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty }));
             }
+            else
+            {
+                xmlSerializer.Serialize(writer, value);
+            }
+            return stringWriter.ToString();
+        }
+        
+        public static T DeserializeXml<T>(this string xml)
+        {
+            if (string.IsNullOrEmpty(xml)) throw new NotSupportedException("Empty string!!");
+
+            var xmlSerializer = new XmlSerializer(typeof(T));
+            var stringReader = new StringReader(xml);
+            using var reader = XmlReader.Create(stringReader);
+            return (T)xmlSerializer.Deserialize(reader);
         }
     }
 }
