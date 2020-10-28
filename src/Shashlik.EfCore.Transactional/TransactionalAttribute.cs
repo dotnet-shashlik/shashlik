@@ -48,10 +48,13 @@ namespace Shashlik.EfCore.Transactional
         /// <summary>
         /// 事务隔离级别,null默认隔离级别
         /// </summary>
-        public IsolationLevel? IsolationLevel { get; set; }
+        public IsolationLevel? IsolationLevel { get; set; } = null;
 
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
+            if (!context.ProxyMethod.IsVirtual)
+                throw new InvalidOperationException(
+                    $"Transactional must used on virtual method, please check your method definition: {context.ProxyMethod}");
             var efNestedTransactionType = typeof(IEfNestedTransaction<>).MakeGenericType(DbContextType);
             var efNestedTransaction =
                 context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
