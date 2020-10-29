@@ -24,6 +24,6 @@ jobs:
       #- name: Test
       #  run: dotnet test src/Shashlik.sln --no-restore --verbosity normal
       - name: Pack
-        run: dotnet pack ./src/Shashlik.Package.sln --include-source --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack ./src/Shashlik.Package.sln  --include-symbols  --include-source --configuration Release --no-restore --output ./nugetPackages
       - name: Publish
-        run: dotnet nuget push "./nugetPackages/*.symbols.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
+        run: dotnet nuget push "./nugetPackages/*.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
