@@ -10,16 +10,6 @@ namespace Shashlik.Response
     public class ResponseException : Exception
     {
         /// <summary>
-        /// 是否写入日志
-        /// </summary>
-        public bool WriteLog { get; }
-
-        /// <summary>
-        /// 写入日志的内容
-        /// </summary>
-        public string WriteLogMessage { get; }
-
-        /// <summary>
         /// 调试信息
         /// </summary>
         public string Debug { get; }
@@ -34,11 +24,8 @@ namespace Shashlik.Response
         /// </summary>
         public int ErrorCode { get; }
 
-        private ResponseException(string message, bool writeLog, string writeLogMessage, string debug) :
-            base(writeLog ? writeLogMessage ?? message : message)
+        private ResponseException(string message, string debug) : base(message)
         {
-            WriteLog = writeLog;
-            WriteLogMessage = writeLogMessage;
             Debug = debug;
         }
 
@@ -48,13 +35,9 @@ namespace Shashlik.Response
         /// </summary>
         /// <param name="message">错误消息</param>
         /// <param name="responseStatus">错误状态</param>
-        /// <param name="writeLog">是否记录日志</param>
-        /// <param name="writeLogMessage">日志记录内容</param>
         /// <param name="debug">调试信息</param>
-        public ResponseException(string message, ResponseStatus responseStatus, bool writeLog = false,
-            string writeLogMessage = null,
-            string debug = null) :
-            this(message, writeLog, writeLogMessage, debug)
+        public ResponseException(string message, ResponseStatus responseStatus, string debug = null)
+            : this(message, debug)
         {
             ResponseStatus = responseStatus;
         }
@@ -64,12 +47,8 @@ namespace Shashlik.Response
         /// </summary>
         /// <param name="message">错误消息</param>
         /// <param name="errorCode">自定义的错误状态码</param>
-        /// <param name="writeLog">是否记录日志</param>
-        /// <param name="writeLogMessage">日志记录内容</param>
         /// <param name="debug">调试信息</param>
-        public ResponseException(string message, int errorCode, bool writeLog = false, string writeLogMessage = null,
-            string debug = null) :
-            this(message, writeLog, writeLogMessage, debug)
+        public ResponseException(string message, int errorCode, string debug = null) : this(message, debug)
         {
             ErrorCode = errorCode;
             ResponseStatus = ResponseStatus.Other;
@@ -83,7 +62,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException ArgError(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.ArgError, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.ArgError, debug);
         }
 
         /// <summary>
@@ -94,7 +73,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException LogicalError(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.LogicalError, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.LogicalError, debug);
         }
 
         /// <summary>
@@ -105,7 +84,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException SystemError(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.SystemError, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.SystemError, debug);
         }
 
         /// <summary>
@@ -116,7 +95,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException NotFound(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.NotFound, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.NotFound, debug);
         }
 
         /// <summary>
@@ -127,7 +106,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException Forbidden(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.Forbidden, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.Forbidden, debug);
         }
 
         /// <summary>
@@ -138,7 +117,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException Unauthorized(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.Unauthorized, false, null, debug);
+            return new ResponseException(msg, Response.ResponseStatus.Unauthorized, debug);
         }
 
         /// <summary>
@@ -150,7 +129,7 @@ namespace Shashlik.Response
         /// <returns></returns>
         public static ResponseException Other(int code, string msg = null, string debug = null)
         {
-            return new ResponseException(msg, code, false, null, debug);
+            return new ResponseException(msg, code, debug);
         }
     }
 }

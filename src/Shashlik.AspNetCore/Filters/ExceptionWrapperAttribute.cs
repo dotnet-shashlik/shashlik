@@ -53,9 +53,6 @@ namespace Shashlik.AspNetCore.Filters
                         httpCode = (int) ToHttpCode(responseException.ResponseStatus);
                     context.Result = new StatusCodeResult(httpCode);
                     context.Result = new JsonResult(responseResult);
-
-                    if (responseException.WriteLog)
-                        logger.LogError(responseException, responseException.WriteLogMessage);
                 }
                 else
                 {
@@ -77,7 +74,6 @@ namespace Shashlik.AspNetCore.Filters
         {
             return status switch
             {
-                ResponseStatus.Other => HttpStatusCode.BadRequest,
                 ResponseStatus.ArgError => HttpStatusCode.BadRequest,
                 ResponseStatus.LogicalError => HttpStatusCode.Conflict,
                 ResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
