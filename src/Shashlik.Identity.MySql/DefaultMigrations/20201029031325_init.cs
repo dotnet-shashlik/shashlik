@@ -1,8 +1,8 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Shashlik.Identity.PostgreSql.DefaultMigrations
+namespace Shashlik.Identity.MySql.DefaultMigrations
 {
     public partial class init : Migration
     {
@@ -13,7 +13,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(nullable: true)
@@ -28,7 +28,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
@@ -49,6 +49,8 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                     IdCard = table.Column<string>(maxLength: 32, nullable: true),
                     RealName = table.Column<string>(maxLength: 32, nullable: true),
                     Gender = table.Column<int>(nullable: false),
+                    CreateTime = table.Column<long>(nullable: false),
+                    LastTime = table.Column<long>(nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeleteTime = table.Column<long>(nullable: true)
                 },
@@ -62,7 +64,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -83,7 +85,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<int>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)

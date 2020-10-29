@@ -13,7 +13,7 @@ namespace BuildPostgreSqlMigration.Entry
     // dotnet ef migrations add init -c ShashlikIdentityDbContext  -o DefaultMigrations -p ./Shashlik.Identity.PostgreSql/Shashlik.Identity.PostgreSql.csproj -s ./BuildPostgreSqlMigration.Entry/BuildPostgreSqlMigration.Entry.csproj
     // dotnet ef migrations add init -c ConfigurationDbContext  -o DefaultConfigurationMigrations -p ./Shashlik.Ids4.PostgreSqlStore/Shashlik.Ids4.PostgreSqlStore.csproj -s ./BuildPostgreSqlMigration.Entry/BuildPostgreSqlMigration.Entry.csproj
     // dotnet ef migrations add init -c PersistedGrantDbContext  -o DefaultPersistedMigrations -p ./Shashlik.Ids4.PostgreSqlStore/Shashlik.Ids4.PostgreSqlStore.csproj -s ./BuildPostgreSqlMigration.Entry/BuildPostgreSqlMigration.Entry.csproj
-    
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,7 +27,10 @@ namespace BuildPostgreSqlMigration.Entry
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddShashlik(Configuration);
+            services.AddShashlik(Configuration)
+                    .AutowireOptions()
+                    .Initialize()
+                    .AutowireServices(); ;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

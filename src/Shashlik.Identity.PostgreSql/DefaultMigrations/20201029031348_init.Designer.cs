@@ -10,7 +10,7 @@ using Shashlik.Identity;
 namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 {
     [DbContext(typeof(ShashlikIdentityDbContext))]
-    [Migration("20201019074751_init")]
+    [Migration("20201029031348_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,7 +122,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Shashlik.Identity.Entities.Roles", b =>
+            modelBuilder.Entity("Shashlik.Identity.Roles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -150,7 +150,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Shashlik.Identity.Entities.Users", b =>
+            modelBuilder.Entity("Shashlik.Identity.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -171,6 +171,9 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
+                    b.Property<long>("CreateTime")
+                        .HasColumnType("bigint");
+
                     b.Property<long?>("DeleteTime")
                         .HasColumnType("bigint");
 
@@ -190,6 +193,9 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<long>("LastTime")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -252,7 +258,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Roles", null)
+                    b.HasOne("Shashlik.Identity.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -261,7 +267,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -270,7 +276,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,13 +285,13 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Roles", null)
+                    b.HasOne("Shashlik.Identity.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -294,7 +300,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

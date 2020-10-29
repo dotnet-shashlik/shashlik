@@ -2,38 +2,37 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Shashlik.Identity;
 
-namespace Shashlik.Identity.PostgreSql.DefaultMigrations
+namespace Shashlik.Identity.MySql.DefaultMigrations
 {
     [DbContext(typeof(ShashlikIdentityDbContext))]
-    partial class ShashlikIdentityDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201029031325_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.9")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -46,17 +45,16 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -68,16 +66,16 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -89,10 +87,10 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -104,39 +102,38 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<string>("Value")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Shashlik.Identity.Entities.Roles", b =>
+            modelBuilder.Entity("Shashlik.Identity.Roles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Name")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -148,86 +145,91 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
                     b.ToTable("AspNetRoles");
                 });
 
-            modelBuilder.Entity("Shashlik.Identity.Entities.Users", b =>
+            modelBuilder.Entity("Shashlik.Identity.Users", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("int");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("Avatar")
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
                         .HasMaxLength(255);
 
                     b.Property<DateTime?>("Birthday")
-                        .HasColumnType("timestamp without time zone");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<long>("CreateTime")
+                        .HasColumnType("bigint");
 
                     b.Property<long?>("DeleteTime")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Email")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("Gender")
-                        .HasColumnType("integer");
+                        .HasColumnType("int");
 
                     b.Property<string>("IdCard")
-                        .HasColumnType("character varying(32)")
+                        .HasColumnType("varchar(32) CHARACTER SET utf8mb4")
                         .HasMaxLength(32);
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<long>("LastTime")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NickName")
-                        .HasColumnType("character varying(255)")
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4")
                         .HasMaxLength(255);
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
+                        .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("RealName")
-                        .HasColumnType("character varying(32)")
+                        .HasColumnType("varchar(32) CHARACTER SET utf8mb4")
                         .HasMaxLength(32);
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("character varying(256)")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
@@ -250,7 +252,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Roles", null)
+                    b.HasOne("Shashlik.Identity.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -259,7 +261,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -268,7 +270,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -277,13 +279,13 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Roles", null)
+                    b.HasOne("Shashlik.Identity.Roles", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -292,7 +294,7 @@ namespace Shashlik.Identity.PostgreSql.DefaultMigrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("Shashlik.Identity.Entities.Users", null)
+                    b.HasOne("Shashlik.Identity.Users", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)

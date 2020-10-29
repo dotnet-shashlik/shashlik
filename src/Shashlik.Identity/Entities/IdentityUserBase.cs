@@ -46,6 +46,16 @@ namespace Shashlik.Identity.Entities
         /// </summary>
         public Gender Gender { get; set; }
 
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public long CreateTime { get; set; }
+
+        /// <summary>
+        /// 最后更新时间
+        /// </summary>
+        public long LastTime { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public long? DeleteTime { get; set; }
