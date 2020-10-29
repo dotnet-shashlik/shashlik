@@ -29,20 +29,16 @@ namespace Shashlik.Kernel.Autowire
                     throw new Exception($"exists circular dependencies on {descriptor.ImplementationType}.");
             }
 
-            // 在这个类型之前已经没有依赖了
-            if (descriptor.Prevs.IsNullOrEmpty())
-            {
-                initAction(descriptor);
-                descriptor.Status = AutowireStatus.Done;
-            }
-            else
+            // 在这个类型之前存在依赖项
+            if (!descriptor.Prevs.IsNullOrEmpty())
             {
                 descriptor.Status = AutowireStatus.Hangup;
                 foreach (var item in descriptor.Prevs)
                     Invoke(autoServices[item] as InnerAutowiredDescriptor<T>, autoServices, initAction);
-
-                descriptor.Status = AutowireStatus.Done;
             }
+
+            initAction(descriptor);
+            descriptor.Status = AutowireStatus.Done;
         }
 
         public void Autowire(IDictionary<Type, AutowireDescriptor<T>> autowiredService,
@@ -59,7 +55,7 @@ namespace Shashlik.Kernel.Autowire
         {
             var type = typeof(T);
             var serviceDescriptors
-                = kernelServices.Services.Where(r => r.ServiceType.Equals(type)).ToList();
+                = kernelServices.Services.Where(r => r.ServiceType == type).ToList();
 
             var dic = new Dictionary<Type, AutowireDescriptor<T>>();
             foreach (var serviceDescriptor in serviceDescriptors)

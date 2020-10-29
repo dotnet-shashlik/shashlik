@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Shashlik.Kernel;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Shashlik.EfCore
 {
@@ -25,10 +26,12 @@ namespace Shashlik.EfCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            
+            var kernelServices = this.GetService<IKernelServices>();
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             modelBuilder.RegisterEntities<IEntity>(
-                this.GetService<IServiceProvider>(),
-                this.GetService<IKernelServices>().ScanFromDependencyContext);
+                serviceProvider,
+                kernelServices.ScanFromDependencyContext);
         }
     }
 }
