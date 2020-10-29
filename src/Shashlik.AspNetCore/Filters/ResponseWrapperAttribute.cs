@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -18,12 +19,12 @@ namespace Shashlik.AspNetCore.Filters
     public class ResponseWrapperAttribute : ActionFilterAttribute
     {
         /// <summary>
-        /// 是否将<see cref="ResponseException"/>异常转换为对应的http状态码,默认false
+        /// 是否将模型验证错误转换位http 200 ,默认ture
         /// </summary>
-        public bool UseResponseExceptionToHttpCode { get; set; } = false;
+        public bool ModelError2HttpOk { get; set; } = true;
 
         /// <summary>
-        /// 是否输入所有的模型验证错误
+        /// 是否输出所有的模型验证错误
         /// </summary>
         public bool ResponseAllModelError { get; set; } = false;
 
@@ -67,7 +68,8 @@ namespace Shashlik.AspNetCore.Filters
 
             if (!context.ModelState.IsValid)
             {
-                context.HttpContext.Response.StatusCode = UseResponseExceptionToHttpCode ? 400 : 200;
+                context.HttpContext.Response.StatusCode =
+                    ModelError2HttpOk ? (int) HttpStatusCode.OK : (int) HttpStatusCode.BadRequest;
 
                 string error;
                 if (!ResponseAllModelError)

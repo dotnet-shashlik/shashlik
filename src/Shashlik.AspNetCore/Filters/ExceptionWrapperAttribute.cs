@@ -29,7 +29,7 @@ namespace Shashlik.AspNetCore.Filters
             {
                 if (actionDescriptor.MethodInfo.IsDefinedAttribute<ExceptionWrapperAttribute>(true))
                     return;
-                
+
                 base.OnException(context);
                 Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
 
@@ -77,6 +77,7 @@ namespace Shashlik.AspNetCore.Filters
         {
             return status switch
             {
+                ResponseStatus.Other => HttpStatusCode.BadRequest,
                 ResponseStatus.ArgError => HttpStatusCode.BadRequest,
                 ResponseStatus.LogicalError => HttpStatusCode.Conflict,
                 ResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
