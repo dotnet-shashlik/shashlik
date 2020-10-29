@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Buffers;
 using System.Collections;
@@ -8,8 +7,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using System.Threading;
-using JsonSerializer = RestSharp.Serialization.Json.JsonSerializer;
 
 // ReSharper disable ConvertIfStatementToReturnStatement
 
@@ -67,11 +64,12 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static ConstructorInfo GetDeclaredConstructor(this Type type, Type[] types)
         {
-            types = types ?? Array.Empty<Type>();
+            types ??= Array.Empty<Type>();
 
-            return type.GetTypeInfo().DeclaredConstructors
+            return type.GetTypeInfo()
+                .DeclaredConstructors
                 .SingleOrDefault(
-                    c => !c.IsStatic && c.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
+                    r => !r.IsStatic && r.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
         }
 
         /// <summary>
@@ -116,22 +114,23 @@ namespace Shashlik.Utils.Extensions
             if (value == null)
                 return null;
 
+            if (!destinationType.IsInstanceOfType(value))
+                return value;
+
             var sourceType = value.GetType();
             if (destinationType == typeof(bool) || destinationType == typeof(bool?))
                 return Convert.ToBoolean(value);
 
-            TypeConverter destinationConverter = TypeDescriptor.GetConverter(destinationType);
-            TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
-            if (destinationConverter != null && destinationConverter.CanConvertFrom(value.GetType()))
+            var destinationConverter = TypeDescriptor.GetConverter(destinationType);
+            var sourceConverter = TypeDescriptor.GetConverter(sourceType);
+            if (destinationConverter.CanConvertFrom(sourceType))
                 return destinationConverter.ConvertFrom(value);
-            if (sourceConverter != null && sourceConverter.CanConvertTo(destinationType))
+            if (sourceConverter.CanConvertTo(destinationType))
                 return sourceConverter.ConvertTo(value, destinationType);
-            if (destinationType.IsEnum && value is int)
-                return Enum.ToObject(destinationType, (int) value);
-            if (!destinationType.IsInstanceOfType(value))
-                return Convert.ChangeType(value, destinationType);
+            if (destinationType.IsEnum)
+                return Enum.Parse(destinationType, value.ToString());
 
-            throw new Exception($"[{value.GetType()}:{value}]转换为目标类型:[{destinationType}]无效!");
+            throw new InvalidCastException($"Invalid cast to type {destinationType} from {sourceType}.");
         }
 
         /// <summary>
@@ -160,6 +159,7 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
+        /// <param name="result">转换后的值</param>
         /// <returns></returns>
         public static bool TryParse<T>(this object value, out T result) where T : struct
         {
@@ -170,7 +170,7 @@ namespace Shashlik.Utils.Extensions
             }
             catch
             {
-                result = default(T);
+                result = default;
                 return false;
             }
         }
@@ -195,7 +195,7 @@ namespace Shashlik.Utils.Extensions
             else if (objType.IsSubTypeOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 return (obj as IEnumerable)
-                    .OfType<dynamic>()
+                    !.OfType<dynamic>()
                     .ToDictionary<dynamic, string, object>(
                         r => r.Key.ToString(),
                         r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
@@ -226,7 +226,7 @@ namespace Shashlik.Utils.Extensions
                     {
                         dic[r.Name] = list.OfType<object>().Select(r =>
                         {
-                            if (r == null || r.GetType().IsSimpleType()) return r;
+                            if (r.GetType().IsSimpleType()) return r;
                             else return MapToDictionary(r);
                         }).ToList();
                     }
@@ -785,7 +785,7 @@ namespace Shashlik.Utils.Extensions
                         obj.WriteTo(writer);
                     }
 
-                    return System.Text.Json.JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type, null);
+                    return System.Text.Json.JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type);
                 }
                 default:
                     throw GetInvalidCastException(type, obj);
