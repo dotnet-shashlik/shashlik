@@ -340,3 +340,4 @@ upload
 /xmls
 /src/Health.Api/internal-nlog.txt
 /src/Health.Api/nlog.config
+/nugetPackages

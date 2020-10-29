@@ -23,8 +23,6 @@ namespace Shashlik.EfCore
 
         public static IKernelServices AddNestedTransaction(IKernelServices kernelService)
         {
-            kernelService.AddEfEntityMappings();
-
             var dbContextTypes =
                 ReflectHelper.GetFinalSubTypes(typeof(DbContext), kernelService.ScanFromDependencyContext);
             if (dbContextTypes.IsNullOrEmpty())
@@ -40,19 +38,6 @@ namespace Shashlik.EfCore
             }
 
             return kernelService;
-        }
-
-
-        /// <summary>
-        /// 增加EF配置映射,注册所有的IEntityTypeConfiguration>实现类
-        /// </summary>
-        /// <param name="kernelBuilder"></param>
-        /// <returns></returns>
-        public static IKernelServices AddEfEntityMappings(this IKernelServices kernelBuilder)
-        {
-            kernelBuilder.AddServicesByBasedOn(typeof(IEntityTypeConfiguration<>).GetTypeInfo(),
-                ServiceLifetime.Transient);
-            return kernelBuilder;
         }
 
         /// <summary>
