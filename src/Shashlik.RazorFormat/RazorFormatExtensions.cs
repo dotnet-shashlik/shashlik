@@ -14,11 +14,13 @@ namespace Shashlik.RazorFormat
     public static class RazorFormatExtensions
     {
         // 已注册的格式化器
-        static readonly IDictionary<string, IFormatter> formatters = new Dictionary<string, IFormatter>();
+        private static readonly IDictionary<string, IFormatter> formatters = new Dictionary<string, IFormatter>();
+
         // 格式化表达式匹配正则
-        static readonly Regex formatExpressionReg = new Regex("^([a-zA-Z]{1}\\w{0,15})\\s*\\([\\s\\S]*\\)$");
+        private static readonly Regex formatExpressionReg = new Regex("^([a-zA-Z]{1}\\w{0,15})\\s*\\([\\s\\S]*\\)$");
+
         // action
-        static readonly Regex actionReg = new Regex("^[a-zA-Z]{1}\\w{0,15}$");
+        private static readonly Regex actionReg = new Regex("^[a-zA-Z]{1}\\w{0,15}$");
 
         /// <summary>
         /// 注册格式化器,不要多线程注册,非线程安全,默认已注册switch格式化器,注册时不会验证action的正确性!!!
@@ -90,7 +92,7 @@ namespace Shashlik.RazorFormat
                 {
                     var hasFormater = false; // 有没有格式化器
                     // 正则匹配,计算action
-                    var formatMatch = formatExpressionReg.Match(formatExp);
+                    var formatMatch = formatExpressionReg.Match(formatExp!);
                     if (formatMatch.Success && formatMatch.Groups.Count >= 2)
                     {
                         var action = formatMatch.Groups[1].Value;
