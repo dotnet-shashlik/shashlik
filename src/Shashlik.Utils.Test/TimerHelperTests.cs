@@ -34,10 +34,10 @@ namespace Shashlik.Utils.Test
             Thread.Sleep(2 * 1000);
 
             i.ShouldBe(origin + 1);
-            
+
             var runAt = new DateTimeOffset(DateTime.Now + TimeSpan.FromSeconds(1));
             TimerHelper.SetTimeout(() => { i++; }, runAt);
-            
+
             Thread.Sleep(2 * 1000);
 
             i.ShouldBe(origin + 2);
@@ -67,21 +67,25 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void TimerErrorTest()
         {
+            TimerHelper.SetInterval(() =>
+            {
+                _testOutputHelper.WriteLine(DateTime.Now.ToString());
+                throw new Exception("..");
+            }, TimeSpan.FromSeconds(3));
+
+            Thread.Sleep(20 * 1000);
+            return;
+
             var counter = 0;
+            Should.Throw<Exception>(() => { TimerHelper.SetInterval(() => { counter++; }, TimeSpan.FromSeconds(-1)); });
+
+            Should.Throw<Exception>(() => { TimerHelper.SetTimeout(() => { counter++; }, TimeSpan.FromSeconds(-1)); });
             Should.Throw<Exception>(() =>
             {
-                TimerHelper.SetInterval(() => { counter++; }, TimeSpan.FromSeconds(-1));
+                TimerHelper.SetTimeout(() => { counter++; },
+                    new DateTimeOffset(2009, 1, 1, 1, 1, 1, TimeSpan.Zero));
             });
-            
-            Should.Throw<Exception>(() =>
-            {
-                TimerHelper.SetTimeout(() => { counter++; }, TimeSpan.FromSeconds(-1));
-            });
-            Should.Throw<Exception>(() =>
-            {
-                TimerHelper.SetTimeout(() => { counter++; }, new DateTimeOffset(2009, 1, 1, 1, 1, 1, TimeSpan.Zero));
-            });
-            
+
             counter.ShouldBe(0);
         }
     }

@@ -25,10 +25,9 @@ namespace Shashlik.Utils.Test
         private struct TestStruct
         {
         }
-        
+
         internal class TestAttribute : Attribute
         {
-            
         }
 
         private interface ITest
@@ -45,20 +44,18 @@ namespace Shashlik.Utils.Test
         {
             public TestB()
             {
-                
             }
 
             public TestB(string str, int number)
             {
-                
             }
         }
-        
+
         internal class TestJsonToClass
         {
             public int Int1 { get; set; }
             public int? Int2 { get; set; }
-            
+
             public long Long { get; set; }
             public float Float { get; set; }
             public decimal Decimal { get; set; }
@@ -70,8 +67,7 @@ namespace Shashlik.Utils.Test
             public sbyte Sbyte { get; set; }
             public char Char { get; set; }
 
-            [Test]
-            public double D1 { get; set; }
+            [Test] public double D1 { get; set; }
             public double? D2 { get; set; }
 
             public DateTime Dt1 { get; set; }
@@ -85,17 +81,16 @@ namespace Shashlik.Utils.Test
 
             public TestJsonToEnum Enum1 { get; set; }
             public TestJsonToEnum? Enum2 { get; set; }
-            
+
             public List<string> StrList { get; set; }
 
             public enum TestJsonToEnum
             {
-                [Description("男")]
-                Male = 1,
+                [Description("男")] Male = 1,
                 Female = 2
             }
         }
-        
+
         private object _testObject = new
         {
             first = "用户11111，提交了新的实名认证申请。",
@@ -132,7 +127,7 @@ namespace Shashlik.Utils.Test
         }
 
         #endregion
-        
+
         [Fact]
         public void Clone_test()
         {
@@ -173,7 +168,6 @@ namespace Shashlik.Utils.Test
             jDic["test"].ShouldBe("test");
         }
 
-        
 
         [Fact]
         public void IsSimpleTypeTest()
@@ -215,7 +209,7 @@ namespace Shashlik.Utils.Test
                 Dto1 = DateTimeOffset.Now,
                 Dto2 = DateTimeOffset.Now,
                 Enum1 = TestJsonToClass.TestJsonToEnum.Male,
-                StrList = new List<string>{"str1", "str2"}
+                StrList = new List<string> {"str1", "str2"}
             };
 
             var json = model.ToJson();
@@ -255,9 +249,9 @@ namespace Shashlik.Utils.Test
                 (exists, value) = jsonElement.GetPropertyValue("StrList.1");
                 exists.ShouldBeTrue();
                 value.ShouldBe(model.StrList.Last());
-                
+
                 Should.Throw<Exception>(() => jsonElement.GetProperty("D1").GetValue<bool>());
-                
+
                 jsonElement.GetValue<long>("Long").ShouldBe(model.Long);
                 jsonElement.GetValue<float>("Float").ShouldBe(model.Float);
                 jsonElement.GetValue<decimal>("Decimal").ShouldBe(model.Decimal);
@@ -269,12 +263,12 @@ namespace Shashlik.Utils.Test
                 jsonElement.GetValue<sbyte>("Sbyte").ShouldBe(model.Sbyte);
                 jsonElement.GetValue<char>("Char").ShouldBe(model.Char);
                 jsonElement.GetValue<List<string>>("StrList").ShouldBe(model.StrList);
-                
+
                 jsonElement.GetProperty("Int1").GetValue<int>().ShouldBe(model.Int1);
                 jsonElement.GetValue<int>("Int1").ShouldBe(model.Int1);
                 jsonElement.GetProperty("Int1").GetValue(typeof(int)).ShouldBe(model.Int1);
                 jsonElement.GetValue(typeof(int), "Int1").ShouldBe(model.Int1);
-                
+
                 jsonElement.GetProperty("Int2").GetValue<int?>().ShouldBe(model.Int2);
                 jsonElement.GetProperty("Int2").GetValue(typeof(int?)).ShouldBe(model.Int2);
                 jsonElement.GetProperty("D1").GetValue<double>().ShouldBe(model.D1);
@@ -298,7 +292,8 @@ namespace Shashlik.Utils.Test
                 jsonElement.GetProperty("Enum1").GetValue<TestJsonToClass.TestJsonToEnum>().ShouldBe(model.Enum1);
                 jsonElement.GetProperty("Enum1").GetValue(typeof(TestJsonToClass.TestJsonToEnum)).ShouldBe(model.Enum1);
                 jsonElement.GetProperty("Enum2").GetValue<TestJsonToClass.TestJsonToEnum?>().ShouldBe(model.Enum2);
-                jsonElement.GetProperty("Enum2").GetValue(typeof(TestJsonToClass.TestJsonToEnum?)).ShouldBe(model.Enum2);
+                jsonElement.GetProperty("Enum2").GetValue(typeof(TestJsonToClass.TestJsonToEnum?))
+                    .ShouldBe(model.Enum2);
 
                 var dic = jsonElement.MapToDictionary();
                 dic.ShouldNotBeEmpty();
@@ -311,7 +306,7 @@ namespace Shashlik.Utils.Test
         public void ConstructorTests()
         {
             typeof(TestB).GetDeclaredConstructor(null).ShouldNotBeNull();
-            typeof(TestB).GetDeclaredConstructor(new []{typeof(string), typeof(int)}).ShouldNotBeNull();
+            typeof(TestB).GetDeclaredConstructor(new[] {typeof(string), typeof(int)}).ShouldNotBeNull();
         }
 
         [Fact]
@@ -328,7 +323,7 @@ namespace Shashlik.Utils.Test
             (exists, value) = _testObject.GetPropertyValue("friends.1");
             exists.ShouldBeTrue();
             value.ShouldBe("李四");
-            
+
             var dic = new Dictionary<string, string>()
             {
                 {"key1", "value1"},
@@ -337,13 +332,13 @@ namespace Shashlik.Utils.Test
             (exists, value) = dic.GetPropertyValue("key1");
             exists.ShouldBeTrue();
             value.ShouldBe(dic["key1"]);
-            
+
             JToken jt = new JObject();
             jt["key"] = "value";
             (exists, value) = jt.GetPropertyValue("key");
             exists.ShouldBeTrue();
             value.ShouldBe(jt["key"]);
-            
+
             var ja = new JArray();
             ja.Add(jt);
             (exists, value) = ja.GetPropertyValue("0.key");
@@ -367,7 +362,7 @@ namespace Shashlik.Utils.Test
             "0010".ParseTo<long>().ShouldBe(10);
             1.ParseTo<TestJsonToClass.TestJsonToEnum>().ShouldBe(TestJsonToClass.TestJsonToEnum.Male);
             "false".ParseTo<bool>().ShouldBeFalse();
-            
+
             "1".TryParse<int>(out var intValue).ShouldBeTrue();
             intValue.ShouldBe(1);
             "0010".TryParse<long>(out var longValue).ShouldBeTrue();
@@ -376,9 +371,9 @@ namespace Shashlik.Utils.Test
             enumValue.ShouldBe(TestJsonToClass.TestJsonToEnum.Male);
             "false".TryParse<bool>(out var boolValue).ShouldBeTrue();
             boolValue.ShouldBeFalse();
-            
+
             "".TryParse<bool>(out var errorValue).ShouldBeFalse();
-            
+
             "1".TryParse(typeof(int), out var intValue2).ShouldBeTrue();
             intValue2.ShouldBe(1);
             "0010".TryParse(typeof(long), out var longValue2).ShouldBeTrue();
@@ -387,8 +382,18 @@ namespace Shashlik.Utils.Test
             enumValue2.ShouldBe(TestJsonToClass.TestJsonToEnum.Male);
             "false".TryParse(typeof(bool), out var boolValue2).ShouldBeTrue();
             boolValue2.ShouldBe(false);
-            
+
             "".TryParse(typeof(bool), out var errorValue2).ShouldBeFalse();
+
+            {
+                object v = null;
+                v.ParseTo<int?>().ShouldBeNull();
+            }
+            
+            {
+                object v = 1;
+                v.ParseTo<int?>().ShouldBe(1);
+            }
         }
 
         [Fact]
@@ -397,19 +402,19 @@ namespace Shashlik.Utils.Test
             typeof(List<>).IsCollectionType().ShouldBeTrue();
             typeof(Dictionary<,>).IsCollectionType().ShouldBeTrue();
             typeof(HashSet<>).IsCollectionType().ShouldBeTrue();
-            
+
             typeof(string).IsCollectionType().ShouldBeTrue();
-            
+
             typeof(int).IsCollectionType().ShouldBeFalse();
             typeof(TestA).IsCollectionType().ShouldBeFalse();
-            
+
             typeof(List<>).IsDelegate().ShouldBeFalse();
             typeof(Dictionary<,>).IsDelegate().ShouldBeFalse();
             typeof(HashSet<>).IsDelegate().ShouldBeFalse();
             typeof(int).IsDelegate().ShouldBeFalse();
             typeof(string).IsDelegate().ShouldBeFalse();
             typeof(TestA).IsDelegate().ShouldBeFalse();
-            
+
             typeof(Action).IsDelegate().ShouldBeTrue();
             typeof(Func<>).IsDelegate().ShouldBeTrue();
 
@@ -417,7 +422,7 @@ namespace Shashlik.Utils.Test
             member.ShouldNotBeNull();
             member.IsDefinedAttribute<TestAttribute>(true).ShouldBeTrue();
             member.IsDefinedAttribute(typeof(TestAttribute), true).ShouldBeTrue();
-            
+
             typeof(TestB).GetInterfaces(true).ShouldNotBeEmpty();
             typeof(TestB).GetInterfaces(false).ShouldBeEmpty();
         }
@@ -434,7 +439,7 @@ namespace Shashlik.Utils.Test
             {
                 Str = "B2"
             };
-            
+
             a.CopyTo(b);
             a.Str.ShouldBe(b.Str);
             b2.CopyTo(b);

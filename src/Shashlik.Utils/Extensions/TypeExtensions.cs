@@ -114,7 +114,7 @@ namespace Shashlik.Utils.Extensions
             if (value == null)
                 return null;
 
-            if (!destinationType.IsInstanceOfType(value))
+            if (destinationType.IsInstanceOfType(value))
                 return value;
 
             var sourceType = value.GetType();
