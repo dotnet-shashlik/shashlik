@@ -2,12 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using RestSharp.Extensions;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowired;
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
     /// <summary>
     /// event bus自动装配

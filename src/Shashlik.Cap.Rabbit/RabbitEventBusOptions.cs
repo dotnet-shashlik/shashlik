@@ -1,9 +1,9 @@
 ﻿using DotNetCore.CAP;
 using Shashlik.Kernel.Attributes;
 
-namespace Shashlik.EventBus.Rabbit
+namespace Shashlik.Cap.Rabbit
 {
-    [AutoOptions("Shashlik.EventBus.Rabbit")]
+    [AutoOptions("Shashlik.Cap.Rabbit")]
     public class RabbitEventBusOptions : RabbitMQOptions
     {
     }

@@ -1,7 +1,7 @@
-﻿using Shashlik.EventBus;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Shashlik.Cap;
 
-namespace Shashlik.Sms.Event
+namespace Shashlik.Sms.Cap
 {
     public class SendSmsEvent : IEvent
     {

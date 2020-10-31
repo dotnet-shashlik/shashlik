@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Shashlik.EventBus;
+using Shashlik.Cap;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Sms.Event
+namespace Shashlik.Sms.Cap
 {
     [ConditionDependsOn(typeof(ISms))]
     public class DefaultSmsSender : ISmsSender, Kernel.Dependency.ISingleton

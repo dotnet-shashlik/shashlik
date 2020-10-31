@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
     /// <summary>
     /// 事件名称/组名定义

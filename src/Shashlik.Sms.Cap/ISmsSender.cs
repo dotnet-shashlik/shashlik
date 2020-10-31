@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using Shashlik.Utils;
 
-namespace Shashlik.Sms.Event
+namespace Shashlik.Sms.Cap
 {
     /// <summary>
     /// 短信发送器

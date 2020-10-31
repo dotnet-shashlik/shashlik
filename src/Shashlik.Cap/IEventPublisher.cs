@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DotNetCore.CAP;
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
     /// <summary>
     /// 事件发布,事件类型的TypeName将作为事件名称Name

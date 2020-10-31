@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using DotNetCore.CAP;
 using Shashlik.Kernel.Attributes;
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
     [ConditionDependsOnMissing(typeof(IEventPublisher))]
     internal class DefaultEventPublisher : IEventPublisher

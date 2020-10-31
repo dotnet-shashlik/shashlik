@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.EventBus.Rabbit
+namespace Shashlik.Cap.Rabbit
 {
     public class RabbitEventBusAutowire : IEventBusAutowire
     {

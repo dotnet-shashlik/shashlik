@@ -1,15 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Shashlik.Cap;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
 
-namespace Shashlik.Sms.Event
+namespace Shashlik.Sms.Cap
 {
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
     [ConditionDependsOn(typeof(ISms))]
-    public class SendSmsEventForExecuteHandler : EventBus.IEventHandler<SendSmsEvent>
+    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {

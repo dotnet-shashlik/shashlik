@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Concurrent;
 using DotNetCore.CAP;
-using Shashlik.Utils.Extensions;
-using Microsoft.Extensions.Options;
 using DotNetCore.CAP.Internal;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Shashlik.Utils.Extensions;
 
 #pragma warning disable 8618
 
@@ -16,7 +16,7 @@ using DotNetCore.CAP.Internal;
 // ReSharper disable MemberCanBeMadeStatic.Local
 // ReSharper disable ForeachCanBeConvertedToQueryUsingAnotherGetEnumerator
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
     internal class EventBusConsumerServiceSelector : IConsumerServiceSelector
     {

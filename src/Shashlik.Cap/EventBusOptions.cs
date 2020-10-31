@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Shashlik.Kernel.Attributes;
+﻿using Shashlik.Kernel.Attributes;
 
-namespace Shashlik.EventBus
+namespace Shashlik.Cap
 {
-    [AutoOptions("Shashlik.EventBus")]
+    [AutoOptions("Shashlik.Cap")]
     public class EventBusOptions
     {
         /// <summary>
