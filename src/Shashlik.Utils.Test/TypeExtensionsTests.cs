@@ -394,6 +394,15 @@ namespace Shashlik.Utils.Test
                 object v = 1;
                 v.ParseTo<int?>().ShouldBe(1);
             }
+
+            {
+                int v = 1;
+                v.ParseTo<int>().ShouldBe(v);
+            }
+            {
+                object v = 1;
+                v.ParseTo<int>().ShouldBe(1);
+            }
         }
 
         [Fact]
