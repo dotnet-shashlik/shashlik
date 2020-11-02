@@ -4,7 +4,7 @@ using Shashlik.Kernel.Attributes;
 namespace Shashlik.Cap.Rabbit
 {
     [AutoOptions("Shashlik.Cap.Rabbit")]
-    public class RabbitEventBusOptions : RabbitMQOptions
+    public class RabbitCapOptions : RabbitMQOptions
     {
     }
 }

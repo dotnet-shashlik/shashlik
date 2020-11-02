@@ -6,8 +6,7 @@ using Xunit;
 
 namespace Shashlik.Utils.Test.HelperTests
 {
-    [Display(Name = "AssemblyHelper Test")]
-    public class AssemblyHelperTest
+    public class ReflectHelperTest
     {
         [Fact]
         public void GetReferredAssembliesTest()

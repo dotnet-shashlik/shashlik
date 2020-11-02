@@ -5,23 +5,26 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Cap.Rabbit
 {
-    public class RabbitEventBusAutowire : ICapAutowire
+    public class RabbitCapAutowire : ICapAutowire
     {
-        public RabbitEventBusAutowire(IOptions<RabbitEventBusOptions> options,
+        public RabbitCapAutowire(IOptions<RabbitCapOptions> options,
             IOptions<ShashlikCapOptions> capOptions)
         {
             CapOptions = capOptions.Value;
             Options = options.Value;
         }
 
-        private RabbitEventBusOptions Options { get; }
+        private RabbitCapOptions Options { get; }
         private ShashlikCapOptions CapOptions { get; }
 
         public void Configure(CapOptions capOptions)
         {
             if (!CapOptions.Enable)
                 return;
-            capOptions.UseRabbitMQ(r => { Options.CopyTo(r); });
+            capOptions.UseRabbitMQ(r =>
+            {
+                Options.CopyTo(r);
+            });
         }
     }
 }
