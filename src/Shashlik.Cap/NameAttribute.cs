@@ -6,9 +6,9 @@ namespace Shashlik.Cap
     /// 事件名称/组名定义
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public abstract class NameAttribute : Attribute
+    public abstract class CapNameAttribute : Attribute
     {
-        public NameAttribute(string name)
+        public CapNameAttribute(string name)
         {
             Name = name;
         }

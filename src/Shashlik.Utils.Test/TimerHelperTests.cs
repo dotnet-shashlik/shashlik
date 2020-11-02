@@ -67,15 +67,6 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void TimerErrorTest()
         {
-            TimerHelper.SetInterval(() =>
-            {
-                _testOutputHelper.WriteLine(DateTime.Now.ToString());
-                throw new Exception("..");
-            }, TimeSpan.FromSeconds(3));
-
-            Thread.Sleep(20 * 1000);
-            return;
-
             var counter = 0;
             Should.Throw<Exception>(() => { TimerHelper.SetInterval(() => { counter++; }, TimeSpan.FromSeconds(-1)); });
 

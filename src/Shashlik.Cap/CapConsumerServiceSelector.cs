@@ -18,7 +18,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Cap
 {
-    internal class EventBusConsumerServiceSelector : IConsumerServiceSelector
+    internal class CapConsumerServiceSelector : IConsumerServiceSelector
     {
         private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
@@ -33,9 +33,9 @@ namespace Shashlik.Cap
             _poundList;
 
         /// <summary>
-        /// Creates a new <see cref="EventBusConsumerServiceSelector" />.
+        /// Creates a new <see cref="CapConsumerServiceSelector" />.
         /// </summary>
-        public EventBusConsumerServiceSelector(IServiceProvider serviceProvider)
+        public CapConsumerServiceSelector(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _capOptions = serviceProvider.GetService<IOptions<CapOptions>>().Value;
@@ -103,7 +103,7 @@ namespace Shashlik.Cap
             TypeInfo type)
         {
             string groupName = $"{type.Name}.{_capOptions.Version}";
-            var groupNameAttribute = type.GetCustomAttribute<NameAttribute>(true);
+            var groupNameAttribute = type.GetCustomAttribute<CapNameAttribute>(true);
             if (groupNameAttribute != null)
                 groupName = groupNameAttribute.Name;
 
@@ -121,7 +121,7 @@ namespace Shashlik.Cap
                     continue;
 
                 string eventName = $"{eventType.Name}.{_capOptions.Version}";
-                var eventNameAttribute = type.GetCustomAttribute<NameAttribute>(true);
+                var eventNameAttribute = type.GetCustomAttribute<CapNameAttribute>(true);
                 if (eventNameAttribute != null)
                     eventName = eventNameAttribute.Name;
 

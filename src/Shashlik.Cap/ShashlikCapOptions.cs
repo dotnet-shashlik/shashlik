@@ -3,7 +3,7 @@
 namespace Shashlik.Cap
 {
     [AutoOptions("Shashlik.Cap")]
-    public class EventBusOptions
+    public class ShashlikCapOptions
     {
         /// <summary>
         /// 是否启用
