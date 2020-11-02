@@ -7,7 +7,7 @@ namespace Shashlik.Cap
     /// <summary>
     /// 事件发布,事件类型的TypeName将作为事件名称Name
     /// </summary>
-    public interface IEventPublisher : Kernel.Dependency.ISingleton
+    public interface IEventPublisher
     {
         /// <summary>
         /// cap事件发布对象
@@ -30,6 +30,7 @@ namespace Shashlik.Cap
         /// <param name="callbackName"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task PublishAsync<T>(T eventModel, string? callbackName = null, CancellationToken cancellationToken = default) where T : class, IEvent;
+        Task PublishAsync<T>(T eventModel, string? callbackName = null, CancellationToken cancellationToken = default)
+            where T : class, IEvent;
     }
 }

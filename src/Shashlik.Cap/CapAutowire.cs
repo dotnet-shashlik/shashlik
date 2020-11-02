@@ -23,6 +23,9 @@ namespace Shashlik.Cap
             if (!CapOptions.Enable)
                 return;
 
+            kernelService.Services.TryAddSingleton<IEventPublisher, DefaultEventPublisher>();
+            kernelService.Services.TryAddSingleton<INameRuler, DefaultNameRuler>();
+
             kernelService.Services.AddCap(r =>
             {
                 if (CapOptions.Version != null)

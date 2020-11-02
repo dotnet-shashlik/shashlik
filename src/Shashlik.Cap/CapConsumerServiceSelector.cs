@@ -7,7 +7,6 @@ using System.Text.RegularExpressions;
 using DotNetCore.CAP;
 using DotNetCore.CAP.Internal;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
 
 #pragma warning disable 8618
@@ -20,8 +19,8 @@ namespace Shashlik.Cap
 {
     internal class CapConsumerServiceSelector : IConsumerServiceSelector
     {
-        private readonly CapOptions _capOptions;
         private readonly IServiceProvider _serviceProvider;
+        private readonly INameRuler _nameRuler;
 
         /// <summary>
         /// since this class be designed as a Singleton service,the following two list must be thread safe!!!
@@ -35,10 +34,10 @@ namespace Shashlik.Cap
         /// <summary>
         /// Creates a new <see cref="CapConsumerServiceSelector" />.
         /// </summary>
-        public CapConsumerServiceSelector(IServiceProvider serviceProvider)
+        public CapConsumerServiceSelector(IServiceProvider serviceProvider, INameRuler nameRuler)
         {
             _serviceProvider = serviceProvider;
-            _capOptions = serviceProvider.GetService<IOptions<CapOptions>>().Value;
+            _nameRuler = nameRuler;
 
             _asteriskList =
                 new ConcurrentDictionary<string, List<RegexExecuteDescriptor<ConsumerExecutorDescriptor>>>();
@@ -99,13 +98,10 @@ namespace Shashlik.Cap
             return executorDescriptorList;
         }
 
-        (TypeInfo serviceType, TypeInfo eventType, string groupName, string eventName) GetEventHandlerInfo(
+        private (TypeInfo serviceType, TypeInfo eventType, string groupName, string eventName) GetEventHandlerInfo(
             TypeInfo type)
         {
-            string groupName = $"{type.Name}.{_capOptions.Version}";
-            var groupNameAttribute = type.GetCustomAttribute<CapNameAttribute>(true);
-            if (groupNameAttribute != null)
-                groupName = groupNameAttribute.Name;
+            string groupName = _nameRuler.GetName(type);
 
             var types = new List<(TypeInfo serviceType, TypeInfo eventType, string groupName, string eventName)>();
             foreach (var item in type.ImplementedInterfaces)
@@ -120,11 +116,7 @@ namespace Shashlik.Cap
                 if (!eventType.IsSubTypeOf<IEvent>())
                     continue;
 
-                string eventName = $"{eventType.Name}.{_capOptions.Version}";
-                var eventNameAttribute = type.GetCustomAttribute<CapNameAttribute>(true);
-                if (eventNameAttribute != null)
-                    eventName = eventNameAttribute.Name;
-
+                string eventName = _nameRuler.GetName(eventType);
                 types.Add((typeof(IEventHandler<>).MakeGenericType(eventType).GetTypeInfo(), eventType, groupName,
                     eventName));
             }
@@ -147,7 +139,7 @@ namespace Shashlik.Cap
             results.Add(new ConsumerExecutorDescriptor
             {
                 Attribute =
-                    new CapSubscribeAttribute(eventName, false) {Group = groupName},
+                    new CapSubscribeAttribute(eventName) {Group = groupName},
                 ImplTypeInfo = typeInfo,
                 MethodInfo = method,
                 ServiceTypeInfo = serviceType,

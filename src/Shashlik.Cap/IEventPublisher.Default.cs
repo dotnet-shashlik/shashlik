@@ -6,22 +6,23 @@ using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Cap
 {
-    [ConditionDependsOnMissing(typeof(IEventPublisher))]
     internal class DefaultEventPublisher : IEventPublisher
     {
-        public DefaultEventPublisher(ICapPublisher publisher)
+        public DefaultEventPublisher(ICapPublisher publisher, INameRuler nameRuler)
         {
             CapPublisher = publisher;
+            NameRuler = nameRuler;
         }
 
         public ICapPublisher CapPublisher { get; }
+        private INameRuler NameRuler { get; }
 
         public void Publish<T>(T eventModel, string? callbackName = null)
             where T : class, IEvent
         {
             if (eventModel == null)
                 throw new ArgumentNullException(nameof(eventModel));
-            CapPublisher.Publish(typeof(T).Name, eventModel, callbackName);
+            CapPublisher.Publish(NameRuler.GetName(typeof(T)), eventModel, callbackName);
         }
 
         public Task PublishAsync<T>(T eventModel, string? callbackName = null,
@@ -30,7 +31,7 @@ namespace Shashlik.Cap
         {
             if (eventModel == null)
                 throw new ArgumentNullException(nameof(eventModel));
-            return CapPublisher.PublishAsync(typeof(T).Name, eventModel, callbackName, cancellationToken);
+            return CapPublisher.PublishAsync(NameRuler.GetName(typeof(T)), eventModel, callbackName, cancellationToken);
         }
     }
 }
