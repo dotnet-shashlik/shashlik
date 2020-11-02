@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
+using Shashlik.Kernel.Test.Autowired.Condition;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
 using Shouldly;
@@ -67,6 +68,8 @@ namespace Shashlik.Kernel.Test
                 GetService<IOptions<TestOptions3>>().Value.Name.ShouldBe("张三");
                 AutowiredConfigure.Inited.ShouldBeTrue();
                 AutowiredConfigureAspNetCore.Inited.ShouldBeTrue();
+
+                GetService<ConditionAutowireShouldBeNull>().ShouldBeNull();
             }
         }
 

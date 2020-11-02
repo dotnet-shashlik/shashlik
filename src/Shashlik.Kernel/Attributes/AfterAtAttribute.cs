@@ -3,6 +3,8 @@
 
 namespace Shashlik.Kernel.Attributes
 {
+    // TODO: AllowMultiple
+    
     /// <summary>
     /// 在指定类型之前进行装配
     /// </summary>

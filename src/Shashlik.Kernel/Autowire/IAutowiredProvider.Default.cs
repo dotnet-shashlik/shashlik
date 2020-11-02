@@ -73,13 +73,17 @@ namespace Shashlik.Kernel.Autowire
 
             foreach (var item in dic)
             {
-                if (item.Value.AfterAt != null)
+                if (item.Value.AfterAt != null
+                    && item.Value.AfterAt.IsSubTypeOf(type)
+                    && dic.ContainsKey(item.Value.AfterAt))
                 {
                     item.Value.Prevs.Add(item.Value.AfterAt);
                     dic[item.Value.AfterAt].Nexts.Add(item.Key);
                 }
 
-                if (item.Value.BeforeAt != null)
+                if (item.Value.BeforeAt != null
+                    && item.Value.BeforeAt.IsSubTypeOf(type)
+                    && dic.ContainsKey(item.Value.BeforeAt))
                 {
                     item.Value.Nexts.Add(item.Value.BeforeAt);
                     dic[item.Value.BeforeAt].Prevs.Add(item.Key);

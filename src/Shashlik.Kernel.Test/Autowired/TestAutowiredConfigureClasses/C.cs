@@ -11,7 +11,7 @@ namespace Shashlik.Kernel.Test.Autowired.TestAutowiredConfigureClasses
         public void Configure(IServiceProvider serviceProvider)
         {
             CurrentValue.Value.ShouldBe(nameof(B));
-            CurrentValue.Value = nameof(B);
+            CurrentValue.Value = nameof(C);
         }
     }
 }

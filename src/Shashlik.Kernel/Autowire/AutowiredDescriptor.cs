@@ -49,12 +49,12 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 在我之前有哪些依赖
         /// </summary>
-        public List<Type> Prevs { get; } = new List<Type>();
+        public HashSet<Type> Prevs { get; } = new HashSet<Type>();
 
         /// <summary>
         /// 在我之后有哪些依赖
         /// </summary>
-        public List<Type> Nexts { get; } = new List<Type>();
+        public HashSet<Type> Nexts { get; } = new HashSet<Type>();
 
         /// <summary>
         /// 自动装配服务类执行

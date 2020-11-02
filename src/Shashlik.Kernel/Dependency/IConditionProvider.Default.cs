@@ -11,9 +11,11 @@ namespace Shashlik.Kernel.Dependency
 {
     public class DefaultConditionFilterAddProvider : IConditionProvider
     {
-        public void FilterAndRegistryService(IEnumerable<ShashlikServiceDescriptor> serviceDescriptors,
+        public void FilterAndRegistryService(
+            IEnumerable<ShashlikServiceDescriptor> serviceDescriptors,
             IServiceCollection services,
-            IConfiguration rootConfiguration, IHostEnvironment hostEnvironment)
+            IConfiguration rootConfiguration,
+            IHostEnvironment hostEnvironment)
         {
             // 先全部注册一遍,再根据条件进行删除
             var list = serviceDescriptors.ToList();
@@ -36,7 +38,10 @@ namespace Shashlik.Kernel.Dependency
                         continue;
 
                     if (!condition.condition.ConditionOn(services, rootConfiguration, hostEnvironment))
-                        services.Remove(item.ServiceDescriptor);
+                    {
+                        services.RemoveByImplType(item.ServiceDescriptor.ImplementationType);
+                        services.RemoveByServiceType(item.ServiceDescriptor.ImplementationType);
+                    }
                 }
             }
         }

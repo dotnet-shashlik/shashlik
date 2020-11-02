@@ -120,5 +120,31 @@ namespace Shashlik.Kernel.Dependency
         {
             return services.Any(r => r.ServiceType == serviceType);
         }
+
+        /// <summary>
+        /// 删除所有实现类相关的服务
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="implType"></param>
+        public static void RemoveByImplType(this IServiceCollection services, Type implType)
+        {
+            var list = services.Where(r => r.ImplementationType == implType).ToList();
+
+            foreach (var serviceDescriptor in list)
+                services.Remove(serviceDescriptor);
+        }
+
+        /// <summary>
+        /// 删除所有服务类相关的服务
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceType"></param>
+        public static void RemoveByServiceType(this IServiceCollection services, Type serviceType)
+        {
+            var list = services.Where(r => r.ServiceType == serviceType).ToList();
+
+            foreach (var serviceDescriptor in list)
+                services.Remove(serviceDescriptor);
+        }
     }
 }
