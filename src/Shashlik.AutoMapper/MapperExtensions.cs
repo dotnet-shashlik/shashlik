@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿#nullable enable
+using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using System;
@@ -9,6 +10,12 @@ using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using Shashlik.Utils.Helpers;
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedMethodReturnValue.Global
+
+// ReSharper disable RedundantExplicitArrayCreation
+// ReSharper disable RedundantNameQualifier
+// ReSharper disable UnusedMember.Global
 
 namespace Shashlik.AutoMapper
 {
@@ -21,7 +28,7 @@ namespace Shashlik.AutoMapper
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
-            DependencyContext dependencyContext = null)
+            DependencyContext? dependencyContext = null)
         {
             var assemblies = ReflectHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
             return kernelService.AddAutoMapperByConvention(assemblies);
@@ -97,7 +104,7 @@ namespace Shashlik.AutoMapper
                                 r.Name == "Config" && r.GetParameters().Length == 1 &&
                                 r.GetParameters().First().ParameterType == expressionType);
 
-                            object obj = null;
+                            object obj;
                             try
                             {
                                 obj = Activator.CreateInstance(item);
@@ -158,7 +165,7 @@ namespace Shashlik.AutoMapper
                             var configMethod = item.GetMethods().First(r =>
                                 r.Name == "Config" && r.GetParameters().Length == 1 &&
                                 r.GetParameters().First().ParameterType == expressionType);
-                            object obj = null;
+                            object obj;
                             try
                             {
                                 obj = Activator.CreateInstance(item);
@@ -203,7 +210,7 @@ namespace Shashlik.AutoMapper
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
             if (ShashlikAutoMapper.Instance == null)
-                throw new InvalidOperationException($"shashlik mapper has been uninitialized.");
+                throw new InvalidOperationException("shashlik mapper has been uninitialized.");
             return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }
 

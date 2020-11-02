@@ -4,7 +4,7 @@ using CSRedis;
 
 namespace Shashlik.Redis
 {
-    public static class Extensions
+    public static class RedisExtensions
     {
         /// <summary>
         /// 分布式锁
