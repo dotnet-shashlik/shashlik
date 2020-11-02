@@ -147,7 +147,7 @@ namespace Shashlik.Cap
             results.Add(new ConsumerExecutorDescriptor
             {
                 Attribute =
-                    new CapSubscribeAttribute(eventName) {Group = groupName},
+                    new CapSubscribeAttribute(eventName, false) {Group = groupName},
                 ImplTypeInfo = typeInfo,
                 MethodInfo = method,
                 ServiceTypeInfo = serviceType,
