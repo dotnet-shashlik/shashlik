@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Shashlik.Utils.Extensions;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection;
@@ -168,14 +169,38 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
+        /// 执行迁移,服务注册阶段执行
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static async Task MigrationNoLock<T>(this IServiceCollection services) where T : DbContext
+        {
+            var rootServiceProvider = services.BuildServiceProvider();
+            using var scope = rootServiceProvider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<T>();
+            await dbContext!.Database.MigrateAsync();
+        }
+
+        /// <summary>
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// </summary>
+        public static async Task MigrationNoLock(this IServiceCollection services, Type dbContextType)
+        {
+            if (!dbContextType.IsSubTypeOf<DbContext>())
+                throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
+            var rootServiceProvider = services.BuildServiceProvider();
+            using var scope = rootServiceProvider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
+            await dbContext!.Database.MigrateAsync();
+        }
+
+        /// <summary>
         /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
         /// </summary>
         /// <typeparam name="T"></typeparam>
         public static void Migration<T>(this IServiceCollection services, ILock? locker = null) where T : DbContext
         {
             var rootServiceProvider = services.BuildServiceProvider();
-            var scope = rootServiceProvider.CreateScope();
-
+            using var scope = rootServiceProvider.CreateScope();
             Migration<T>(scope.ServiceProvider, locker);
         }
 
@@ -185,7 +210,7 @@ namespace Shashlik.EfCore
         public static void Migration(this IServiceCollection services, Type dbContextType, ILock? locker = null)
         {
             var rootServiceProvider = services.BuildServiceProvider();
-            var scope = rootServiceProvider.CreateScope();
+            using var scope = rootServiceProvider.CreateScope();
 
             Migration(scope.ServiceProvider, dbContextType, locker);
         }
@@ -216,6 +241,61 @@ namespace Shashlik.EfCore
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             dbContext!.Database.Migrate();
+        }
+
+        /// <summary>
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static async Task MigrationAsync<T>(this IServiceCollection services, ILock? locker = null)
+            where T : DbContext
+        {
+            var rootServiceProvider = services.BuildServiceProvider();
+            var scope = rootServiceProvider.CreateScope();
+
+            await MigrationAsync<T>(scope.ServiceProvider, locker);
+        }
+
+        /// <summary>
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// </summary>
+        public static async Task MigrationAsync(this IServiceCollection services, Type dbContextType,
+            ILock? locker = null)
+        {
+            var rootServiceProvider = services.BuildServiceProvider();
+            var scope = rootServiceProvider.CreateScope();
+
+            await MigrationAsync(scope.ServiceProvider, dbContextType, locker);
+        }
+
+
+        /// <summary>
+        /// 执行迁移,locker为空则需要注册<see cref="ILock"/>服务
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static async Task MigrationAsync<T>(this IServiceProvider provider, ILock? locker = null)
+            where T : DbContext
+        {
+            locker ??= provider.GetRequiredService<ILock>();
+            using var @lock = locker.Lock(MigrationLockKey, 60 * 3);
+            using var scope = provider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService<T>();
+            await dbContext.Database.MigrateAsync();
+        }
+
+        /// <summary>
+        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// </summary>
+        public static async Task MigrationAsync(this IServiceProvider provider, Type dbContextType,
+            ILock? locker = null)
+        {
+            if (!dbContextType.IsSubTypeOf<DbContext>())
+                throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
+            locker ??= provider.GetRequiredService<ILock>();
+            using var @lock = locker.Lock(MigrationLockKey, 60 * 3);
+            using var scope = provider.CreateScope();
+            await using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
+            await dbContext!.Database.MigrateAsync();
         }
     }
 }

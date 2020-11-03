@@ -2,11 +2,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
+using Shashlik.EfCore;
 using Shashlik.Identity.Options;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.Identity
 {
+    [AutoMigration(typeof(bool), "Shashlik.Identity.AutoMigration", true)]
     public class ShashlikIdentityDbContext : IdentityDbContext<Users, Roles, int>
     {
         public ShashlikIdentityDbContext(DbContextOptions<ShashlikIdentityDbContext> options) : base(options)

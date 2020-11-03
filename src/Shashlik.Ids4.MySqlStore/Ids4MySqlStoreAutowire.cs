@@ -53,10 +53,6 @@ namespace Shashlik.Ids4.MySqlStore
                             });
                     };
                 });
-
-                // 执行client store 数据库迁移
-                if (Options.AutoMigration)
-                    KernelServices.Services.Migration<ConfigurationDbContext>();
             }
 
             if (Options.EnableOperationalStore)
@@ -74,10 +70,6 @@ namespace Shashlik.Ids4.MySqlStore
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
-
-                // 执行operation store 数据库迁移
-                if (Options.AutoMigration)
-                    KernelServices.Services.Migration<PersistedGrantDbContext>();
             }
         }
     }

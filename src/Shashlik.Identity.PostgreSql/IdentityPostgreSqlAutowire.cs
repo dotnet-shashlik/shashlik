@@ -44,9 +44,6 @@ namespace Shashlik.Identity.PostgreSql
                                               typeof(IdentityPostgreSqlAutowire).Assembly.FullName);
                     });
             });
-
-            if (Options.AutoMigration)
-                kernelService.Services.Migration<ShashlikIdentityDbContext>();
         }
     }
 }

@@ -44,9 +44,6 @@ namespace Shashlik.Identity.MySql
                                               typeof(IdentityMySqlAutowire).Assembly.FullName);
                     });
             });
-
-            if (Options.AutoMigration)
-                kernelService.Services.Migration<ShashlikIdentityDbContext>();
         }
     }
 }
