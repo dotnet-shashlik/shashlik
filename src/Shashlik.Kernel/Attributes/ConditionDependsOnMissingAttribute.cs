@@ -8,7 +8,7 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 条件依赖,服务不存在时,优先级100
+    /// 条件依赖,服务不存在时,优先级100, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(100)]
     public class ConditionDependsOnMissingAttribute : Attribute, IConditionBase

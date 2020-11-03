@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Configuration;
@@ -20,17 +20,38 @@ namespace Shashlik.Kernel
     public static class KernelExtensions
     {
         /// <summary>
-        /// 执行初始化
+        /// 执行条件过滤
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
         /// <exception cref="InvalidCastException"></exception>
-        public static IInitializedKernelService Initialize(this IKernelServices kernelServices)
+        public static IServiceCollection DoFilter(this IKernelServices kernelServices)
+        {
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+            var filterProvider = serviceProvider.GetService<IFilterProvider>();
+            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
+
+            // 按条件过滤服务注册
+            filterProvider.DoFilter(
+                kernelServices.ShashlikServiceDescriptors,
+                kernelServices.Services,
+                kernelServices.RootConfiguration,
+                hostEnvironment);
+
+            return kernelServices.Services;
+        }
+
+        /// <summary>
+        /// 注册约定的服务
+        /// </summary>
+        /// <param name="kernelServices"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"></exception>
+        public static IKernelServices RegistryConventionServices(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var conventionServiceDescriptorProvider =
                 serviceProvider.GetService<IConventionServiceDescriptorProvider>();
-            var conditionFilterAddProvider = serviceProvider.GetService<IConditionProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
@@ -40,12 +61,14 @@ namespace Shashlik.Kernel
 
             foreach (var item in conventionAssemblies)
             {
-                var serviceDescriptors = conventionServiceDescriptorProvider.FromAssembly(item);
-                conditionFilterAddProvider.FilterAndRegistryService(serviceDescriptors, kernelServices.Services,
-                    kernelServices.RootConfiguration, hostEnvironment);
+                var serviceDescriptors = conventionServiceDescriptorProvider.FromAssembly(item).ToList();
+                foreach (var shashlikServiceDescriptor in serviceDescriptors)
+                    kernelServices.Services.Add(shashlikServiceDescriptor.ServiceDescriptor);
+
+                kernelServices.ShashlikServiceDescriptors.AddRange(serviceDescriptors);
             }
 
-            return new InnerInitializedKernelService(kernelServices);
+            return kernelServices;
         }
 
         /// <summary>
@@ -69,7 +92,7 @@ namespace Shashlik.Kernel
             services
                 .TryAddSingleton<IConventionServiceDescriptorProvider, DefaultConventionServiceDescriptorProvider>();
             services.TryAddSingleton<IBasedOnServiceDescriptorProvider, DefaultBasedOnServiceDescriptorProvider>();
-            services.TryAddSingleton<IConditionProvider, DefaultConditionFilterAddProvider>();
+            services.TryAddSingleton<IFilterProvider, DefaultFilterAddProvider>();
             services.TryAddSingleton(typeof(IAutowireProvider<>), typeof(DefaultAutowireProvider<>));
             services.TryAddSingleton<IOptionsAutowire, DefaultOptionsAutowire>();
             services.TryAddSingleton<ILock, MemoryLock>();
@@ -81,40 +104,41 @@ namespace Shashlik.Kernel
         /// <summary>
         /// 注册程序集中继承自<typeparamref name="TBaseType"/>的子类
         /// </summary>
-        /// <param name="kernelService"></param>
+        /// <param name="kernelServices"></param>
         /// <param name="serviceLifetime"></param>
-        public static IKernelServices AddServicesByBasedOn<TBaseType>(this IKernelServices kernelService,
+        public static IKernelServices AddServicesByBasedOn<TBaseType>(this IKernelServices kernelServices,
             ServiceLifetime serviceLifetime)
         {
-            return AddServicesByBasedOn(kernelService, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
+            return AddServicesByBasedOn(kernelServices, typeof(TBaseType).GetTypeInfo(), serviceLifetime);
         }
 
         /// <summary>
         /// 注册程序集中继承自<paramref name="baseType"/>的子类
         /// </summary>
-        /// <param name="kernelService"></param>
+        /// <param name="kernelServices"></param>
         /// <param name="baseType"></param>
         /// <param name="serviceLifetime"></param>
-        public static IKernelServices AddServicesByBasedOn(this IKernelServices kernelService, TypeInfo baseType,
+        public static IKernelServices AddServicesByBasedOn(this IKernelServices kernelServices, TypeInfo baseType,
             ServiceLifetime serviceLifetime)
         {
-            using var serviceProvider = kernelService.Services.BuildServiceProvider();
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
-            var conditionFilterAddProvider = serviceProvider.GetService<IConditionProvider>();
             var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
             var assemblies =
-                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelService.ScanFromDependencyContext);
+                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
             assemblies.Add(typeof(IKernelServices).Assembly);
 
             foreach (var item in assemblies)
             {
                 var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, baseType, serviceLifetime);
-                conditionFilterAddProvider.FilterAndRegistryService(serviceDescriptors, kernelService.Services,
-                    kernelService.RootConfiguration, hostEnvironment);
+                foreach (var shashlikServiceDescriptor in serviceDescriptors)
+                    kernelServices.Services.Add(shashlikServiceDescriptor.ServiceDescriptor);
+
+                kernelServices.ShashlikServiceDescriptors.AddRange(serviceDescriptors);
             }
 
-            return kernelService;
+            return kernelServices;
         }
 
         /// <summary>
@@ -130,11 +154,11 @@ namespace Shashlik.Kernel
         }
 
         /// <summary>
-        /// 自动装配服务配置: <see cref="IServiceAutowire"/>
+        /// 自动装配服务配置: <see cref="IServiceAutowire"/>, **服务装配类所有的条件特性都不可用**
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
-        public static IInitializedKernelService AutowireServices(this IInitializedKernelService kernelServices)
+        public static IKernelServices AutowireServices(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<IServiceAutowire>>();
@@ -172,7 +196,7 @@ namespace Shashlik.Kernel
             foreach (var disableType in disableTypes)
                 optionsAutowire.Disabled.Add(disableType);
 
-            return (T) optionsAutowire.ConfigureAll(kernelServices);
+            return (T)optionsAutowire.ConfigureAll(kernelServices);
         }
 
         /// <summary>

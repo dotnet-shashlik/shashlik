@@ -28,16 +28,18 @@ namespace BuildPostgreSqlMigration.Entry
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddShashlik(Configuration)
-                    .AutowireOptions()
-                    .Initialize()
-                    .AutowireServices(); ;
+                .AutowireOptions()
+                .RegistryConventionServices()
+                .AutowireServices()
+                .DoFilter();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env
         )
         {
-            ShashlikIdentityDbContext dbContext1 = app.ApplicationServices.GetRequiredService<ShashlikIdentityDbContext>();
+            ShashlikIdentityDbContext dbContext1 =
+                app.ApplicationServices.GetRequiredService<ShashlikIdentityDbContext>();
             ConfigurationDbContext dbContext2 = app.ApplicationServices.GetRequiredService<ConfigurationDbContext>();
             PersistedGrantDbContext dbContext3 = app.ApplicationServices.GetRequiredService<PersistedGrantDbContext>();
 

@@ -8,7 +8,7 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 条件依赖,服务存在时,优先级200
+    /// 条件依赖,服务存在时,优先级200, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(200)]
     public class ConditionDependsOnAttribute : Attribute, IConditionBase
@@ -31,7 +31,6 @@ namespace Shashlik.Kernel.Attributes
         /// 默认为ALL
         /// </summary>
         public ConditionType ConditionType { get; set; } = ConditionType.ALL;
-
 
         public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)

@@ -3,7 +3,7 @@
 namespace Shashlik.Kernel
 {
     /// <summary>
-    /// 锁
+    /// 抽象的分布式锁,kernel内部内存锁实现
     /// </summary>
     public interface ILock
     {

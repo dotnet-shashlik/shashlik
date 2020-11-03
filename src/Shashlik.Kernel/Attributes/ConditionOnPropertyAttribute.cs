@@ -7,7 +7,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 属性值条件,优先级20
+    /// 属性值条件,优先级20, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(20)]
     public class ConditionOnPropertyAttribute : Attribute, IConditionBase

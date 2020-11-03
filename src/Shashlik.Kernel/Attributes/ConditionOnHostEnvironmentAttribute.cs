@@ -7,7 +7,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 环境名称判断,优先级0
+    /// 环境名称判断,优先级0, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(0)]
     public class ConditionOnHostEnvironmentAttribute : Attribute, IConditionBase
