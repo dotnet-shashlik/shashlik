@@ -41,10 +41,10 @@ namespace Shashlik.Kernel.Attributes
             {
                 case ConditionType.ALL:
                     return Types.All(r => !services.Any(s =>
-                        s.ServiceType == r && s.ImplementationType == serviceDescriptor.ImplementationType));
+                        s.ServiceType == r && s.ImplementationType != serviceDescriptor.ImplementationType));
                 case ConditionType.ANY:
                     return Types.Any(r => !services.Any(s =>
-                        s.ServiceType == r && s.ImplementationType == serviceDescriptor.ImplementationType));
+                        s.ServiceType == r && s.ImplementationType != serviceDescriptor.ImplementationType));
                 default: throw new InvalidOperationException($"error condition type: {ConditionType}");
             }
         }
