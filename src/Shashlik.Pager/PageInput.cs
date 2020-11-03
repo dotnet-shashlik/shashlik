@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+// ReSharper disable UnusedMember.Global
 
 namespace Shashlik.Pager
 {
@@ -22,11 +25,11 @@ namespace Shashlik.Pager
         /// <summary>
         /// 排序字段
         /// </summary>
-        public string SortField { get; set; }
+        public string OrderField { get; set; }
 
         /// <summary>
         /// 排序方式
         /// </summary>
-        public SortType SortType { get; set; }
+        public OrderType OrderType { get; set; }
     }
 }

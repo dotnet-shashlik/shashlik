@@ -1,9 +1,11 @@
-﻿namespace Shashlik.Pager
+﻿// ReSharper disable UnusedMember.Global
+// ReSharper disable InconsistentNaming
+namespace Shashlik.Pager
 {
     /// <summary>
     /// 排序类型
     /// </summary>
-    public enum SortType
+    public enum OrderType
     {
         /// <summary>
         /// 升序

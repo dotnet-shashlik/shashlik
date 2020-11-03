@@ -15,7 +15,7 @@ namespace Shashlik.Pager
         /// <param name="orderType"></param>
         /// <returns></returns>
         public static IOrderedQueryable<TEntity> OrderBy<TEntity>(this IQueryable<TEntity> query,
-            OrderByBase<TEntity> order, string field, SortType orderType)
+            OrderByBase<TEntity> order, string field, OrderType orderType)
         {
             field = field?.Trim();
             if (field.IsNullOrWhiteSpace())
@@ -37,7 +37,7 @@ namespace Shashlik.Pager
         {
             return
                 query
-                    .OrderBy(order, input.SortField, input.SortType)
+                    .OrderBy(order, input.OrderField, input.OrderType)
                     .DoPage(input.PageIndex, input.PageSize);
         }
 
