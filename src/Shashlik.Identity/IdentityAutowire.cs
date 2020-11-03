@@ -9,10 +9,15 @@ using Shashlik.Identity.Entities;
 using Shashlik.Identity.Lookup;
 using Shashlik.Identity.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Identity
 {
+    /// <summary>
+    /// identity自动装配,装配顺序700
+    /// </summary>
+    [Order(700)]
     public class IdentityAutowire : IServiceAutowire
     {
         public IdentityAutowire(IOptions<ShashlikIdentityOptions> options, IOptions<CaptchaOptions> captchaOptions)

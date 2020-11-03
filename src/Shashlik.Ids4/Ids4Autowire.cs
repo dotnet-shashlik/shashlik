@@ -9,13 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 using RSAExtensions;
 using Shashlik.AspNetCore;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4
 {
     /// <summary>
-    /// ids4自动配置,使用推荐的典型配置, 可以通过<see cref="IIds4ExtensionAutowire"/>扩展配置
+    /// ids4自动配置,使用推荐的典型配置, 装配顺序800,可以通过<see cref="IIds4ExtensionAutowire"/>扩展配置
     /// </summary>
+    [Order(800)]
     public class Ids4Autowire : IServiceAutowire, IAspNetCoreAutowire
     {
         public Ids4Autowire(IOptions<Ids4Options> options)

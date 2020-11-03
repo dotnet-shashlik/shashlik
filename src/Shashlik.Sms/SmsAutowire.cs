@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Sms.Domains;
 using Shashlik.Sms.Options;
@@ -9,8 +10,9 @@ using Shashlik.Sms.Options;
 namespace Shashlik.Sms
 {
     /// <summary>
-    /// 短信服务自动配置
+    /// 短信服务自动配置,装配顺序300
     /// </summary>
+    [Order(300)]
     public class SmsAutowire : IServiceAutowire
     {
         public SmsAutowire(IOptions<SmsOptions> options)

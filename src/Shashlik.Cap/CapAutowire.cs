@@ -3,12 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Cap
 {
     /// <summary>
-    /// event bus自动装配
+    /// event bus自动装配,装配顺序600
     /// </summary>
+    [Order(600)]
     public class CapAutowire : IServiceAutowire
     {
         public CapAutowire(IOptions<ShashlikCapOptions> capOptions)
