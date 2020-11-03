@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Threading;
 using CSRedis;
-using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Redis
 {
-    /// <summary>
-    /// redis自动装配,装配顺序200
-    /// </summary>
-    [Order(200)]
     public class CSRedisLocker : IDisposable
     {
         public CSRedisLocker(CSRedisClient redisClient, bool autoDelay, int lockSecond, string key, string value)

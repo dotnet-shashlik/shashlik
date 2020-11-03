@@ -3,9 +3,14 @@ using Shashlik.Kernel;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Redis
 {
+    /// <summary>
+    /// redis自动装配,装配顺序200
+    /// </summary>
+    [Order(200)]
     public class RedisAutowire : IServiceAutowire
     {
         public RedisAutowire(IOptions<RedisOptions> options)
