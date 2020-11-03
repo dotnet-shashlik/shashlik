@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowire;
+using Shashlik.Kernel.Locker.Memory;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel
@@ -71,6 +72,8 @@ namespace Shashlik.Kernel
             services.TryAddSingleton<IConditionProvider, DefaultConditionFilterAddProvider>();
             services.TryAddSingleton(typeof(IAutowireProvider<>), typeof(DefaultAutowireProvider<>));
             services.TryAddSingleton<IOptionsAutowire, DefaultOptionsAutowire>();
+            services.TryAddSingleton<ILock, MemoryLock>();
+            services.AddHostedService<ApplicationLifetimeHostedService>();
 
             return kernelService;
         }
