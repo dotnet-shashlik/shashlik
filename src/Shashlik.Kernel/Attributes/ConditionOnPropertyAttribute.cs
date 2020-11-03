@@ -52,7 +52,10 @@ namespace Shashlik.Kernel.Attributes
         /// </summary>
         public bool IgnoreCase { get; set; } = true;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        public bool ConditionOn(
+            IServiceCollection services,
+            ServiceDescriptor serviceDescriptor,
+            IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             var value = rootConfiguration.GetValue(ValueType, Property, DefaultValue);

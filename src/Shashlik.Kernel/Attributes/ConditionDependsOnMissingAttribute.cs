@@ -3,7 +3,6 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Attributes
 {
@@ -32,15 +31,20 @@ namespace Shashlik.Kernel.Attributes
         /// </summary>
         public ConditionType ConditionType { get; set; } = ConditionType.ALL;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        public bool ConditionOn(
+            IServiceCollection services,
+            ServiceDescriptor serviceDescriptor,
+            IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             switch (ConditionType)
             {
                 case ConditionType.ALL:
-                    return Types.All(r => !services.AnyService(r));
+                    return Types.All(r => !services.Any(s =>
+                        s.ServiceType == r && s.ImplementationType == serviceDescriptor.ImplementationType));
                 case ConditionType.ANY:
-                    return Types.Any(r => !services.AnyService(r));
+                    return Types.Any(r => !services.Any(s =>
+                        s.ServiceType == r && s.ImplementationType == serviceDescriptor.ImplementationType));
                 default: throw new InvalidOperationException($"error condition type: {ConditionType}");
             }
         }

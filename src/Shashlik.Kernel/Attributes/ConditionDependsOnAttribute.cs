@@ -32,15 +32,18 @@ namespace Shashlik.Kernel.Attributes
         /// </summary>
         public ConditionType ConditionType { get; set; } = ConditionType.ALL;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        public bool ConditionOn(
+            IServiceCollection services,
+            ServiceDescriptor serviceDescriptor,
+            IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             switch (ConditionType)
             {
                 case ConditionType.ALL:
-                    return Types.All(r => services.AnyService(r));
+                    return Types.All(services.AnyService);
                 case ConditionType.ANY:
-                    return Types.Any(r => services.AnyService(r));
+                    return Types.Any(services.AnyService);
                 default: throw new InvalidOperationException($"error condition type: {ConditionType}");
             }
         }

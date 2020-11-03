@@ -18,7 +18,7 @@ namespace Shashlik.Kernel.Test.TestClasses
 
         public bool ShouldDependency { get; set; }
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        public bool ConditionOn(IServiceCollection services, ServiceDescriptor serviceDescriptor, IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             return ShouldDependency;

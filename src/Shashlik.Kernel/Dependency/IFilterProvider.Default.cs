@@ -34,7 +34,8 @@ namespace Shashlik.Kernel.Dependency
                     if (condition.condition == null)
                         continue;
 
-                    if (!condition.condition.ConditionOn(services, rootConfiguration, hostEnvironment))
+                    if (!condition.condition.ConditionOn(services, item.ServiceDescriptor, rootConfiguration,
+                        hostEnvironment))
                     {
                         services.RemoveByImplType(item.ServiceDescriptor.ImplementationType);
                         services.RemoveByServiceType(item.ServiceDescriptor.ImplementationType);

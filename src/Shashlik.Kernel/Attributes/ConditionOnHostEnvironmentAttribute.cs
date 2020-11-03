@@ -31,7 +31,10 @@ namespace Shashlik.Kernel.Attributes
 
         public bool IgnoreCase { get; set; } = true;
 
-        public bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        public bool ConditionOn(
+            IServiceCollection services,
+            ServiceDescriptor serviceDescriptor,
+            IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             return IgnoreCase

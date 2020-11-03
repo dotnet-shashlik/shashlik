@@ -13,10 +13,14 @@ namespace Shashlik.Kernel.Attributes
         /// 条件注册,满足条件才会注册
         /// </summary>
         /// <param name="services">服务</param>
+        /// <param name="serviceDescriptor">服务描述类</param>
         /// <param name="rootConfiguration">根配置</param>
         /// <param name="hostEnvironment">环境变量</param>
         /// <returns></returns>
-        bool ConditionOn(IServiceCollection services, IConfiguration rootConfiguration,
+        bool ConditionOn(
+            IServiceCollection services,
+            ServiceDescriptor serviceDescriptor,
+            IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment);
     }
 }
