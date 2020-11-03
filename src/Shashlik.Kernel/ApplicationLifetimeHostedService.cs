@@ -1,6 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Kernel.Autowire;
 
@@ -11,27 +11,26 @@ namespace Shashlik.Kernel
     /// </summary>
     public class ApplicationLifetimeHostedService : IHostedService
     {
-        public ApplicationLifetimeHostedService(IServiceScopeFactory serviceScopeFactory,
+        public ApplicationLifetimeHostedService(
             IAutowireProvider<IApplicationStartAutowire> applicationStartAutowireProvider,
-            IAutowireProvider<IApplicationStopAutowire> applicationStopAutowireProvider, IKernelServices kernelServices)
+            IAutowireProvider<IApplicationStopAutowire> applicationStopAutowireProvider,
+            IKernelServices kernelServices,
+            IServiceProvider serviceProvider)
         {
-            ServiceScopeFactory = serviceScopeFactory;
             ApplicationStartAutowireProvider = applicationStartAutowireProvider;
             ApplicationStopAutowireProvider = applicationStopAutowireProvider;
             KernelServices = kernelServices;
+            ServiceProvider = serviceProvider;
         }
 
-        private IServiceScopeFactory ServiceScopeFactory { get; }
+        private IServiceProvider ServiceProvider { get; }
         private IAutowireProvider<IApplicationStartAutowire> ApplicationStartAutowireProvider { get; }
         private IAutowireProvider<IApplicationStopAutowire> ApplicationStopAutowireProvider { get; }
         private IKernelServices KernelServices { get; }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            using var scope = ServiceScopeFactory.CreateScope();
-
-            var dic = ApplicationStartAutowireProvider.Load(KernelServices, scope.ServiceProvider);
-
+            var dic = ApplicationStartAutowireProvider.Load(KernelServices, ServiceProvider);
             ApplicationStartAutowireProvider.Autowire(dic,
                 async r => await r.ServiceInstance.OnStart(cancellationToken));
             return Task.CompletedTask;
@@ -39,9 +38,7 @@ namespace Shashlik.Kernel
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            using var scope = ServiceScopeFactory.CreateScope();
-
-            var dic = ApplicationStopAutowireProvider.Load(KernelServices, scope.ServiceProvider);
+            var dic = ApplicationStopAutowireProvider.Load(KernelServices, ServiceProvider);
 
             ApplicationStopAutowireProvider.Autowire(dic,
                 async r => await r.ServiceInstance.OnStop(cancellationToken));
