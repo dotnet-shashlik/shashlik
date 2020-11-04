@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.EventBus;
+using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils;
@@ -14,9 +12,12 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Sms.EventBus
 {
-    public class EventBusSmsSender : ISmsSender
+    [ConditionDependsOn(typeof(ISms))]
+    [ConditionDependsOnMissing(typeof(ISmsSender))]
+    public class EventBusSmsSender : ISmsSender, ISingleton
     {
-        public EventBusSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options, IEventPublisher eventPublisher)
+        public EventBusSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options,
+            IEventPublisher eventPublisher)
         {
             SmsLimit = smsLimit;
             Options = options;
@@ -27,7 +28,8 @@ namespace Shashlik.Sms.EventBus
         private IOptionsMonitor<SmsOptions> Options { get; }
         private IEventPublisher EventPublisher { get; }
 
-        public void Send(IEnumerable<string> phones, string subject, TransactionContext transactionContext, params string[] args)
+        public void Send(IEnumerable<string> phones, string subject, TransactionContext transactionContext,
+            params string[] args)
         {
             if (phones == null) throw new ArgumentNullException(nameof(phones));
             var list = phones.ToList();
@@ -43,7 +45,6 @@ namespace Shashlik.Sms.EventBus
                 Subject = subject,
                 Args = args.ToList()
             }, transactionContext).Wait();
-            
         }
 
         public void Send(string phone, string subject, TransactionContext transactionContext, params string[] args)
