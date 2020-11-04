@@ -44,6 +44,7 @@ namespace Shashlik.Redis
                             TimerHelper.SetInterval(() => { RedisHelper.Set(key, i, Expire); }, TimeSpan.FromHours(1),
                                 Source.Token);
                             _workId = i;
+                            break;
                         }
                     }
 
@@ -51,20 +52,20 @@ namespace Shashlik.Redis
                 }
 
                 if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
-                
-                {
-                    for (var i = 0; i < 32; i++)
-                    {
-                        var key = DcIdPrefix.Format(i);
-                        if (!RedisHelper.Set(key, i, Expire, RedisExistence.Nx)) continue;
-                        // 每小时刷新下数据
-                        TimerHelper.SetInterval(() => { RedisHelper.Set(key, i, Expire); }, TimeSpan.FromHours(1),
-                            Source.Token);
-                        _dcId = i;
-                    }
 
-                    throw new Exception("未能从redis从计算得到dcId");
+                for (var i = 0; i < 32; i++)
+                {
+                    var key = DcIdPrefix.Format(i);
+                    if (!RedisHelper.Set(key, i, Expire, RedisExistence.Nx)) continue;
+                    // 每小时刷新下数据
+                    TimerHelper.SetInterval(() => { RedisHelper.Set(key, i, Expire); }, TimeSpan.FromHours(1),
+                        Source.Token);
+                    _dcId = i;
+                    break;
                 }
+
+                if(_dcId == null) throw new Exception("未能从redis从计算得到dcId");
+                return (_workId.Value, _dcId.Value);
             }
         }
     }
