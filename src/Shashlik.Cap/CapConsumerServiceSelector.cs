@@ -117,8 +117,7 @@ namespace Shashlik.Cap
                     continue;
 
                 string eventName = _nameRuler.GetName(eventType);
-                types.Add((typeof(IEventHandler<>).MakeGenericType(eventType).GetTypeInfo(), eventType, groupName,
-                    eventName));
+                types.Add((type, eventType, groupName, eventName));
             }
 
             if (types.Count == 0)
