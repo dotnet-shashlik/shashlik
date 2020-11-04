@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\..\common.xml"/>
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Shashlik.EventBus.Abstract" Version="0.1.0-preview-00030" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+    <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
+  </ItemGroup>
+
+</Project>

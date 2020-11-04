@@ -83,11 +83,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{22AD
 		..\.github\workflows\nuget-push.yml = ..\.github\workflows\nuget-push.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Cap", "Shashlik.Cap\Shashlik.Cap.csproj", "{14D568F1-0AF6-4568-A483-E71B17E81DA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Cap", "Shashlik.Cap\Shashlik.Cap.csproj", "{14D568F1-0AF6-4568-A483-E71B17E81DA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Cap.Rabbit", "Shashlik.Cap.Rabbit\Shashlik.Cap.Rabbit.csproj", "{E4389B6D-B688-47FA-9F5B-5BF3E17A1239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Cap.Rabbit", "Shashlik.Cap.Rabbit\Shashlik.Cap.Rabbit.csproj", "{E4389B6D-B688-47FA-9F5B-5BF3E17A1239}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.Cap", "Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj", "{A9197FCC-20C4-4BF3-A188-D43DDE346B70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.Cap", "Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj", "{A9197FCC-20C4-4BF3-A188-D43DDE346B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.EventBus", "Shashlik.Sms.EventBus\Shashlik.Sms.EventBus.csproj", "{C8920538-5F15-4CEB-83BA-4A1ACD463905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -324,6 +326,12 @@ Global
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
