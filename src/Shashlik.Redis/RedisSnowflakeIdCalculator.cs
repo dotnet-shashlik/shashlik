@@ -47,8 +47,7 @@ namespace Shashlik.Redis
                             break;
                         }
                     }
-
-                    throw new Exception("未能从redis从计算得到workerId");
+                    if(_workId == null) throw new Exception("未能从redis从计算得到workerId");
                 }
 
                 if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
