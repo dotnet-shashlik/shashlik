@@ -28,7 +28,7 @@ namespace Shashlik.Sms.Options
         public string AppId { get; set; }
 
         /// <summary>
-        /// 云服务短信 appkey
+        /// 云服务短信 appKey
         /// </summary>
         public string AppKey { get; set; }
 
@@ -40,6 +40,6 @@ namespace Shashlik.Sms.Options
         /// <summary>
         /// 模板列表
         /// </summary>
-        public List<SmsTemplates> Templates { get; set; }
+        public List<SmsTemplates> Templates { get; set; } = new List<SmsTemplates>();
     }
 }

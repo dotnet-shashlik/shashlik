@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Shashlik.Identity.DataProtection;
+﻿using Shashlik.Identity.DataProtection;
 using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Identity.Options
@@ -31,11 +30,6 @@ namespace Shashlik.Identity.Options
         /// 验证码长度
         /// </summary>
         public int CaptchaLength { get; set; } = 6;
-
-        /// <summary>
-        /// 原生的identity options配置
-        /// </summary>
-        public IdentityOptions IdentityOptions { get; set; } = new IdentityOptions();
 
         /// <summary>
         /// 数据保护token配置项

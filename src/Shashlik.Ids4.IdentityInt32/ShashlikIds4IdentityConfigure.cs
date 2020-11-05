@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Validation;
+﻿using System.Collections.Generic;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,23 +15,46 @@ namespace Shashlik.Ids4.IdentityInt32
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
             IOptions<IdentityUserExtendsOptions> identityUserExtendsOptions)
         {
-            IdentityOptions = identityOptions;
-            ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
-            IdentityUserExtendsOptions = identityUserExtendsOptions;
+            IdentityOptions = identityOptions.Value;
+            ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions.Value;
+            IdentityUserExtendsOptions = identityUserExtendsOptions.Value;
         }
 
-        private IOptions<IdentityOptions> IdentityOptions { get; }
-        private IOptions<IdentityUserExtendsOptions> IdentityUserExtendsOptions { get; }
-        private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
+        private IdentityOptions IdentityOptions { get; }
+        private IdentityUserExtendsOptions IdentityUserExtendsOptions { get; }
+        private ShashlikIds4IdentityOptions ShashlikIds4IdentityOptions { get; }
 
         public void ConfigureIds4(IIdentityServerBuilder builder)
         {
-            if (!ShashlikIds4IdentityOptions.Value.Enable)
+            if (!ShashlikIds4IdentityOptions.Enable)
                 return;
 
-            if (!IdentityUserExtendsOptions.Value.RequireUniqueIdCard
-                && (ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .IdCardSource)))
+            if (ShashlikIds4IdentityOptions.PasswordSignInSources == null)
+            {
+                builder.Services.Configure<ShashlikIds4IdentityOptions>(r =>
+                {
+                    r.PasswordSignInSources = new List<string> {ShashlikIds4IdentityConsts.UsernameSource};
+                });
+
+                ShashlikIds4IdentityOptions.PasswordSignInSources =
+                    new List<string> {ShashlikIds4IdentityConsts.UsernameSource};
+            }
+
+            if (ShashlikIds4IdentityOptions.CaptchaSignInSources == null)
+            {
+                builder.Services.Configure<ShashlikIds4IdentityOptions>(r =>
+                {
+                    r.CaptchaSignInSources = new List<string>
+                        {ShashlikIds4IdentityConsts.PhoneSource, ShashlikIds4IdentityConsts.EMailSource};
+                });
+                ShashlikIds4IdentityOptions.CaptchaSignInSources = new List<string>
+                    {ShashlikIds4IdentityConsts.PhoneSource, ShashlikIds4IdentityConsts.EMailSource};
+            }
+
+
+            if (!IdentityUserExtendsOptions.RequireUniqueIdCard
+                && ShashlikIds4IdentityOptions.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .IdCardSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -38,9 +62,9 @@ namespace Shashlik.Ids4.IdentityInt32
                         "PasswordSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueIdCard = true"
                     });
 
-            if (!IdentityUserExtendsOptions.Value.RequireUniqueIdCard
-                && (ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .IdCardSource)))
+            if (!IdentityUserExtendsOptions.RequireUniqueIdCard
+                && ShashlikIds4IdentityOptions.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .IdCardSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -48,9 +72,9 @@ namespace Shashlik.Ids4.IdentityInt32
                         "CaptchaSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueIdCard = true"
                     });
 
-            if (!IdentityUserExtendsOptions.Value.RequireUniquePhoneNumber
-                && (ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .PhoneSource)))
+            if (!IdentityUserExtendsOptions.RequireUniquePhoneNumber
+                && ShashlikIds4IdentityOptions.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .PhoneSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -58,9 +82,9 @@ namespace Shashlik.Ids4.IdentityInt32
                         "PasswordSignInSources[phone] require unique phone, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
-            if (!IdentityUserExtendsOptions.Value.RequireUniquePhoneNumber
-                && (ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .PhoneSource)))
+            if (!IdentityUserExtendsOptions.RequireUniquePhoneNumber
+                && ShashlikIds4IdentityOptions.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .PhoneSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -68,9 +92,9 @@ namespace Shashlik.Ids4.IdentityInt32
                         "CaptchaSignInSources[phone] require unique phone, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
-            if (!IdentityOptions.Value.User.RequireUniqueEmail
-                && (ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .EMailSource)))
+            if (!IdentityOptions.User.RequireUniqueEmail
+                && ShashlikIds4IdentityOptions.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .EMailSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -78,9 +102,9 @@ namespace Shashlik.Ids4.IdentityInt32
                         "PasswordSignInSources[email] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
-            if (!IdentityOptions.Value.User.RequireUniqueEmail
-                && (ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .EMailSource)))
+            if (!IdentityOptions.User.RequireUniqueEmail
+                && ShashlikIds4IdentityOptions.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
+                    .EMailSource))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
@@ -88,16 +112,15 @@ namespace Shashlik.Ids4.IdentityInt32
                         "CaptchaSignInSources[email] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
-
             builder.AddAspNetIdentity<Users>();
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
                 .Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
 
-            // 验证码登录
-            builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();
-            // 手机短信双因子验证码
-            builder.AddExtensionGrantValidator<ShashlikTwoFactorValidator>();
+            // // 验证码登录
+            // builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();
+            // // 手机短信双因子验证码
+            // builder.AddExtensionGrantValidator<ShashlikTwoFactorValidator>();
 
             builder.Services.TryAddScoped<SignInManager<Users>>();
         }

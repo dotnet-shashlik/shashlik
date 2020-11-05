@@ -20,13 +20,16 @@ namespace Shashlik.Identity
     [Order(700)]
     public class IdentityAutowire : IServiceAutowire
     {
-        public IdentityAutowire(IOptions<ShashlikIdentityOptions> options, IOptions<CaptchaOptions> captchaOptions)
+        public IdentityAutowire(IOptions<ShashlikIdentityOptions> options, IOptions<CaptchaOptions> captchaOptions,
+            IOptions<OriginIdentityOptions> identityOptions)
         {
             Options = options;
             CaptchaOptions = captchaOptions;
+            IdentityOptions = identityOptions;
         }
 
         private IOptions<ShashlikIdentityOptions> Options { get; }
+        private IOptions<OriginIdentityOptions> IdentityOptions { get; }
         private IOptions<CaptchaOptions> CaptchaOptions { get; }
 
         public void Configure(IKernelServices kernelService)
@@ -37,7 +40,7 @@ namespace Shashlik.Identity
             kernelService.Services.AddDataProtection();
 
             // configure IdentityOptions
-            kernelService.Services.Configure<IdentityOptions>(r => { Options.Value.IdentityOptions.CopyTo(r); });
+            kernelService.Services.Configure<IdentityOptions>(r => { IdentityOptions.Value.CopyTo(r); });
 
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
             var userRoleDefinition = serviceProvider.GetRequiredService<IIdentityUserRoleDefinition>();
