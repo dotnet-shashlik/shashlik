@@ -35,7 +35,7 @@ namespace Shashlik.Ids4.MySqlStore
                 await ServiceProvider.MigrationAsync<ConfigurationDbContext>();
             }
 
-            if (Options.Value.EnableConfigurationStore)
+            if (Options.Value.EnableOperationalStore)
             {
                 await ServiceProvider.MigrationAsync<PersistedGrantDbContext>();
             }
