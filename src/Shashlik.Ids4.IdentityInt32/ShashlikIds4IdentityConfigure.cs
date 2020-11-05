@@ -55,7 +55,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "PasswordSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
+                        "PasswordSignInSources[idcard] require unique phone number, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
             if (!IdentityUserExtendsOptions.Value.RequireUniquePhoneNumber
@@ -65,7 +65,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "CaptchaSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
+                        "CaptchaSignInSources[idcard] require unique phone number, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
             if (!IdentityOptions.Value.User.RequireUniqueEmail
@@ -75,7 +75,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "PasswordSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
+                        "PasswordSignInSources[idcard] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
             if (!IdentityOptions.Value.User.RequireUniqueEmail
@@ -85,7 +85,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "CaptchaSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
+                        "CaptchaSignInSources[idcard] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
 
