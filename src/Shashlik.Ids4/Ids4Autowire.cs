@@ -92,6 +92,8 @@ namespace Shashlik.Ids4
                 builder.AddInMemoryIdentityResources(Options.IdentityResources);
             if (Options.ApiResources != null)
                 builder.AddInMemoryApiResources(Options.ApiResources);
+            if (Options.ApiScopes != null)
+                builder.AddInMemoryApiScopes(Options.ApiScopes);
 
             #endregion
 

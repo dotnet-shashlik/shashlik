@@ -40,5 +40,10 @@ namespace Shashlik.Ids4
         /// api resources 内存配置
         /// </summary>
         public List<ApiResource>? ApiResources { get; set; }
+        
+        /// <summary>
+        /// api scopes 内存配置
+        /// </summary>
+        public List<ApiScope>? ApiScopes { get; set; }
     }
 }

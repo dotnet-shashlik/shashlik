@@ -35,18 +35,18 @@ namespace Shashlik.Ids4.IdentityInt32
             Users? user = null;
             // 手机号唯一才能使用手机号码登录
             if (IdentityOptionsExtends.Value.RequireUniquePhoneNumber &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts.PhoneSource))
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.PhoneSource))
                 user = await manager.FindByPhoneNumberAsync(identity);
             // 手机号唯一才能使用手机号码登录
             if (IdentityOptions.Value.User.RequireUniqueEmail &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts.EMailSource))
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.EMailSource))
                 user = await manager.FindByEmailAsync(identity);
             if (user == null &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts
                     .UsernameSource))
                 user = await manager.FindByNameAsync(identity);
             if (user == null && IdentityOptionsExtends.Value.RequireUniqueIdCard &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts.IdCardSource)
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.IdCardSource)
             )
                 user = await manager.FindByIdCardAsync(identity);
 
