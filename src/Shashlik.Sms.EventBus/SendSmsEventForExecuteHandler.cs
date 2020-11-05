@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Shashlik.EventBus;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 
 namespace Shashlik.Sms.EventBus
@@ -10,8 +11,8 @@ namespace Shashlik.Sms.EventBus
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
-    [ConditionDependsOn(typeof(ISms))]
-    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>
+    [ConditionDependsOn(typeof(ISmsSender), typeof(ISms), ConditionType = ConditionType.ALL)]
+    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>, ITransient
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {
