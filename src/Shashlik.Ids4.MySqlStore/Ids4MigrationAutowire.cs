@@ -32,13 +32,11 @@ namespace Shashlik.Ids4.MySqlStore
 
             if (Options.Value.EnableConfigurationStore)
             {
-                var dbContext = ServiceProvider.GetService<ConfigurationDbContext>();
                 await ServiceProvider.MigrationAsync<ConfigurationDbContext>();
             }
 
             if (Options.Value.EnableConfigurationStore)
             {
-                var dbContext = ServiceProvider.GetService<PersistedGrantDbContext>();
                 await ServiceProvider.MigrationAsync<PersistedGrantDbContext>();
             }
         }
