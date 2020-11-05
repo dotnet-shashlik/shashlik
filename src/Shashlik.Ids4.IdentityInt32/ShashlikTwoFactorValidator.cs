@@ -7,13 +7,14 @@ using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
 using Shashlik.Identity;
 using Shashlik.Utils.Extensions;
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// 两步验证第二步
     /// </summary>
-    public class ShashlikTwoFactorValidator : IExtensionGrantValidator
+    public class ShashlikTwoFactorValidator : IShashlikExtensionGrantValidator
     {
         private ShashlikUserManager<Users, int> UserManager { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
