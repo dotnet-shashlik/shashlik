@@ -55,7 +55,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "PasswordSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
+                        "PasswordSignInSources[phone] require unique phone, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
             if (!IdentityUserExtendsOptions.Value.RequireUniquePhoneNumber
@@ -65,27 +65,27 @@ namespace Shashlik.Ids4.IdentityInt32
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "CaptchaSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
+                        "CaptchaSignInSources[phone] require unique phone, you should set Shashlik.Identity.IdentityOptions.User.RequireUniquePhoneNumber = true"
                     });
 
             if (!IdentityOptions.Value.User.RequireUniqueEmail
                 && (ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .PhoneSource)))
+                    .EMailSource)))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "PasswordSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
+                        "PasswordSignInSources[email] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
             if (!IdentityOptions.Value.User.RequireUniqueEmail
                 && (ShashlikIds4IdentityOptions.Value.CaptchaSignInSources.Contains(ShashlikIds4IdentityConsts
-                    .PhoneSource)))
+                    .EMailSource)))
                 throw new OptionsValidationException(nameof(ShashlikIds4IdentityOptions),
                     typeof(ShashlikIds4IdentityOptions),
                     new[]
                     {
-                        "CaptchaSignInSources[idcard] require unique idcard, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
+                        "CaptchaSignInSources[email] require unique email, you should set Shashlik.Identity.IdentityOptions.User.RequireUniqueEmail = true"
                     });
 
 
@@ -98,6 +98,8 @@ namespace Shashlik.Ids4.IdentityInt32
             builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();
             // 手机短信双因子验证码
             builder.AddExtensionGrantValidator<ShashlikTwoFactorValidator>();
+
+            builder.Services.TryAddScoped<SignInManager<Users>>();
         }
     }
 }
