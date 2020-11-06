@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Options;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Ids4.IdentityInt32
 {
@@ -113,6 +115,9 @@ namespace Shashlik.Ids4.IdentityInt32
                     });
 
             builder.AddAspNetIdentity<Users>();
+            // 替换ids4的UserClaimsFactory，加上角色 数据
+            builder.Services.AddTransient<IUserClaimsPrincipalFactory<Users>, ShashlikUserClaimsFactory<Users>>();
+
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
                 .Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
