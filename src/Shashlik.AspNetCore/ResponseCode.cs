@@ -87,7 +87,7 @@ namespace Shashlik.AspNetCore
         {
             return status switch
             {
-                ResponseStatus.ArgError => this.Success,
+                ResponseStatus.ArgError => this.ArgError,
                 ResponseStatus.LogicalError => this.LogicalError,
                 ResponseStatus.Unauthorized => this.Unauthorized,
                 ResponseStatus.Forbidden => this.Forbidden,
