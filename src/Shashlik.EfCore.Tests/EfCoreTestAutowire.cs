@@ -9,11 +9,11 @@ namespace Shashlik.EfCore.Tests
     {
         public void Configure(IKernelServices kernelServices)
         {
-            kernelServices.Services.AddDbContext<TestDbContext1>(r =>
+            kernelServices.Services.AddDbContextPool<TestDbContext1>(r =>
                 {
                     var conn = kernelServices.RootConfiguration.GetValue<string>("ConnectionStrings:Default");
                     r.UseMySql(conn, db => { db.MigrationsAssembly(typeof(EfCoreTestAutowire).Assembly.FullName); });
-                })
+                }, 5)
                 .Migration<TestDbContext1>();
         }
     }

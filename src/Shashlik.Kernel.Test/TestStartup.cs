@@ -28,7 +28,7 @@ namespace Shashlik.Kernel.Test
 
             services.Configure<TestOptions2>(r => r.Enable = false);
 
-            services.AddShashlik(Configuration)
+            services.AddShashlikCore(Configuration)
                 .AutowireOptions()
                 .RegistryConventionServices()
                 .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton)

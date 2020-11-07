@@ -52,7 +52,6 @@ namespace Shashlik.Kernel
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var conventionServiceDescriptorProvider =
                 serviceProvider.GetService<IConventionServiceDescriptorProvider>();
-            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
             // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
             var conventionAssemblies =
@@ -72,13 +71,13 @@ namespace Shashlik.Kernel
         }
 
         /// <summary>
-        /// AddShashlik
+        /// AddShashlikCore 注册核心服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="rootConfiguration">根配置</param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        public static IKernelServices AddShashlik(
+        public static IKernelServices AddShashlikCore(
             this IServiceCollection services,
             IConfiguration rootConfiguration,
             DependencyContext dependencyContext = null
@@ -99,6 +98,27 @@ namespace Shashlik.Kernel
             services.AddHostedService<ApplicationLifetimeHostedService>();
 
             return kernelService;
+        }
+
+        /// <summary>
+        /// AddShashlik,执行典型的shashlik服务配置
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="rootConfiguration">根配置</param>
+        /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
+        /// <returns></returns>
+        public static IServiceCollection AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration,
+            DependencyContext dependencyContext = null)
+        {
+            return services.AddShashlikCore(rootConfiguration, dependencyContext)
+                // 配置装载
+                .AutowireOptions()
+                // 注册约定的服务
+                .RegistryConventionServices()
+                // 自动服务装配
+                .AutowireServices()
+                // 执行服务过滤
+                .DoFilter();
         }
 
         /// <summary>
@@ -123,7 +143,6 @@ namespace Shashlik.Kernel
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var basedOnServiceDescriptorProvider = serviceProvider.GetService<IBasedOnServiceDescriptorProvider>();
-            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
 
             var assemblies =
                 ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
@@ -131,7 +150,8 @@ namespace Shashlik.Kernel
 
             foreach (var item in assemblies)
             {
-                var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, baseType, serviceLifetime);
+                var serviceDescriptors = basedOnServiceDescriptorProvider.FromAssembly(item, baseType, serviceLifetime)
+                    .ToList();
                 foreach (var shashlikServiceDescriptor in serviceDescriptors)
                     kernelServices.Services.Add(shashlikServiceDescriptor.ServiceDescriptor);
 
@@ -196,7 +216,7 @@ namespace Shashlik.Kernel
             foreach (var disableType in disableTypes)
                 optionsAutowire.Disabled.Add(disableType);
 
-            return (T)optionsAutowire.ConfigureAll(kernelServices);
+            return (T) optionsAutowire.ConfigureAll(kernelServices);
         }
 
         /// <summary>
