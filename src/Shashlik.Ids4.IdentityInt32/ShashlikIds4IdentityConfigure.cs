@@ -115,8 +115,6 @@ namespace Shashlik.Ids4.IdentityInt32
                     });
 
             builder.AddAspNetIdentity<Users>();
-            // 替换ids4的UserClaimsFactory，加上角色 数据
-            builder.Services.AddTransient<IUserClaimsPrincipalFactory<Users>, ShashlikUserClaimsFactory<Users>>();
 
             // 替换默认的密码认证器
             builder.Services.Replace(ServiceDescriptor
