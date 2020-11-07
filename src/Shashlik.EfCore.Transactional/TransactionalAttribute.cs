@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Utils.Extensions;
 
+// ReSharper disable MethodHasAsyncOverload
+
 // ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.EfCore.Transactional
@@ -63,11 +65,11 @@ namespace Shashlik.EfCore.Transactional
             try
             {
                 await next(context);
-                await tran.CommitAsync();
+                tran.Commit();
             }
             catch
             {
-                await tran.RollbackAsync();
+                tran.Rollback();
                 throw;
             }
         }
