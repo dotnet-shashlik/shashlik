@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -29,6 +30,36 @@ namespace Shashlik.AspNetCore.Filters
         public bool ResponseAllModelError { get; set; } = false;
 
         private static AspNetCoreOptions Options { get; set; }
+
+        public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+        {
+            Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
+
+            if (!context.ModelState.IsValid)
+            {
+                context.HttpContext.Response.StatusCode =
+                    ModelError2HttpOk ? (int) HttpStatusCode.OK : (int) HttpStatusCode.BadRequest;
+
+                string error;
+                if (!ResponseAllModelError)
+                    error = context.ModelState
+                        .SelectMany(r => r.Value.Errors)
+                        .FirstOrDefault(r => !r.ErrorMessage.IsNullOrWhiteSpace())
+                        ?.ErrorMessage;
+                else
+                {
+                    error = context.ModelState
+                        .SelectMany(r => r.Value.Errors)
+                        .Select(r => r.ErrorMessage)
+                        .Join(Environment.NewLine);
+                }
+
+                context.Result = new ObjectResult(new ResponseResult(Options.ResponseCode.ArgError, false,
+                    error ?? Options.ResponseCode.ArgErrorDefaultMessage, null, null));
+            }
+
+            await base.OnResultExecutionAsync(context, next);
+        }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
