@@ -110,14 +110,14 @@ namespace Shashlik.Response
         }
 
         /// <summary>
-        /// 未授权错误
+        /// 未认证用户
         /// </summary>
         /// <param name="msg">错误消息</param>
         /// <param name="debug">调试内容</param>
         /// <returns></returns>
-        public static ResponseException Unauthorized(string msg = null, string debug = null)
+        public static ResponseException UnAuthentication(string msg = null, string debug = null)
         {
-            return new ResponseException(msg, Response.ResponseStatus.Unauthorized, debug);
+            return new ResponseException(msg, Response.ResponseStatus.UnAuthentication, debug);
         }
 
         /// <summary>

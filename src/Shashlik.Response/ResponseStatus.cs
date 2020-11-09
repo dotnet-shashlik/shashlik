@@ -6,7 +6,7 @@
         /// 其它
         /// </summary>
         Other,
-        
+
         /// <summary>
         /// 参数错误
         /// </summary>
@@ -19,9 +19,9 @@
         LogicalError,
 
         /// <summary>
-        /// 未授权
+        /// 未认证
         /// </summary>
-        Unauthorized,
+        UnAuthentication,
 
         /// <summary>
         /// 拒绝请求

@@ -86,7 +86,7 @@ namespace Shashlik.AspNetCore.Filters
         {
             return status switch
             {
-                ResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
+                ResponseStatus.UnAuthentication => HttpStatusCode.Unauthorized,
                 ResponseStatus.Forbidden => HttpStatusCode.Forbidden,
                 ResponseStatus.NotFound => HttpStatusCode.NotFound,
                 ResponseStatus.SystemError => HttpStatusCode.InternalServerError,

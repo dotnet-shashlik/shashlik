@@ -41,12 +41,12 @@ namespace Shashlik.AspNetCore
         /// <summary>
         /// 未授权
         /// </summary>
-        public int Unauthorized { get; set; } = 401;
+        public int UnAuthentication { get; set; } = 401;
 
         /// <summary>
         /// 未授权
         /// </summary>
-        public string UnauthorizedDefaultMessage { get; set; } = "unauthorized";
+        public string UnAuthenticationDefaultMessage { get; set; } = "no authentication";
 
         /// <summary>
         /// 拒绝请求
@@ -90,7 +90,7 @@ namespace Shashlik.AspNetCore
             {
                 ResponseStatus.ArgError => this.ArgError,
                 ResponseStatus.LogicalError => this.LogicalError,
-                ResponseStatus.Unauthorized => this.Unauthorized,
+                ResponseStatus.UnAuthentication => this.UnAuthentication,
                 ResponseStatus.Forbidden => this.Forbidden,
                 ResponseStatus.NotFound => this.NotFound,
                 ResponseStatus.SystemError => this.SystemError,
@@ -115,8 +115,8 @@ namespace Shashlik.AspNetCore
                 ResponseStatus.LogicalError => inputMessage.IsNullOrWhiteSpace()
                     ? LogicalErrorDefaultMessage
                     : inputMessage,
-                ResponseStatus.Unauthorized => inputMessage.IsNullOrWhiteSpace()
-                    ? UnauthorizedDefaultMessage
+                ResponseStatus.UnAuthentication => inputMessage.IsNullOrWhiteSpace()
+                    ? UnAuthenticationDefaultMessage
                     : inputMessage,
                 ResponseStatus.Forbidden => inputMessage.IsNullOrWhiteSpace()
                     ? ForbiddenDefaultMessage
