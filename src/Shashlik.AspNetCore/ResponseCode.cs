@@ -1,4 +1,5 @@
 ﻿using System;
+using Shashlik.Utils.Extensions;
 using ResponseStatus = Shashlik.Response.ResponseStatus;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -83,7 +84,7 @@ namespace Shashlik.AspNetCore
         /// <param name="status"></param>
         /// <param name="otherErrorCode"></param>
         /// <returns></returns>
-        public int GetCode(Response.ResponseStatus status, int otherErrorCode)
+        public int FormatCode(Response.ResponseStatus status, int otherErrorCode)
         {
             return status switch
             {
@@ -94,7 +95,40 @@ namespace Shashlik.AspNetCore
                 ResponseStatus.NotFound => this.NotFound,
                 ResponseStatus.SystemError => this.SystemError,
                 ResponseStatus.Other => otherErrorCode,
-                _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
+                _ => (int) status
+            };
+        }
+
+        /// <summary>
+        /// 状态枚举转换位响应状态码
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="inputMessage">`</param>
+        /// <returns></returns>
+        public string FormatMessage(Response.ResponseStatus status, string inputMessage)
+        {
+            return status switch
+            {
+                ResponseStatus.ArgError => inputMessage.IsNullOrWhiteSpace()
+                    ? ArgErrorDefaultMessage
+                    : inputMessage,
+                ResponseStatus.LogicalError => inputMessage.IsNullOrWhiteSpace()
+                    ? LogicalErrorDefaultMessage
+                    : inputMessage,
+                ResponseStatus.Unauthorized => inputMessage.IsNullOrWhiteSpace()
+                    ? UnauthorizedDefaultMessage
+                    : inputMessage,
+                ResponseStatus.Forbidden => inputMessage.IsNullOrWhiteSpace()
+                    ? ForbiddenDefaultMessage
+                    : inputMessage,
+                ResponseStatus.NotFound => inputMessage.IsNullOrWhiteSpace()
+                    ? NotFoundDefaultMessage
+                    : inputMessage,
+                ResponseStatus.SystemError => inputMessage.IsNullOrWhiteSpace()
+                    ? SystemErrorDefaultMessage
+                    : inputMessage,
+                ResponseStatus.Other => inputMessage,
+                _ => inputMessage
             };
         }
     }

@@ -8,7 +8,7 @@ namespace Shashlik.AspNetCore
         /// <summary>
         /// 是否输出debug信息
         /// </summary>
-        public bool IsDebug { get; set; } = true;
+        public bool IsDebug { get; set; } = false;
 
         /// <summary>
         /// 返回状态码配置

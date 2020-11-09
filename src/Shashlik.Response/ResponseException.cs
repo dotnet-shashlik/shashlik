@@ -24,7 +24,7 @@ namespace Shashlik.Response
         /// </summary>
         public int ErrorCode { get; }
 
-        private ResponseException(string message, string debug) : base(message)
+        private ResponseException(string message, string debug) : base(message ?? string.Empty)
         {
             Debug = debug;
         }

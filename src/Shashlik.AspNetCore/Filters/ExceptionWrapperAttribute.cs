@@ -22,6 +22,11 @@ namespace Shashlik.AspNetCore.Filters
         /// </summary>
         public bool UseResponseExceptionToHttpCode { get; set; } = false;
 
+        /// <summary>
+        /// 查找<see cref="ResponseException"/>异常深度
+        /// </summary>
+        public int FindDepthResponseException { get; set; } = 10;
+
         public override void OnException(ExceptionContext context)
         {
             if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
@@ -35,53 +40,57 @@ namespace Shashlik.AspNetCore.Filters
                     .GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
 
                 var exception = context.Exception;
-                if (exception is AggregateException aggregateException)
-                    exception = aggregateException?.InnerException;
-                var loggerFactory = context.HttpContext.RequestServices.GetService<ILoggerFactory>();
-                var logger = loggerFactory.CreateLogger(context.Exception.Source);
-
-                // ResponseException包装处理
-                if (exception is ResponseException responseException)
+                for (var i = 0; i < FindDepthResponseException; i++)
                 {
-                    var errorCode =
-                        options.ResponseCode.GetCode(responseException.ResponseStatus, responseException.ErrorCode);
+                    // ResponseException包装处理
+                    if (exception is ResponseException responseException)
+                    {
+                        var errorCode =
+                            options.ResponseCode.FormatCode(responseException.ResponseStatus,
+                                responseException.ErrorCode);
 
-                    var debug = options.IsDebug ? responseException.Debug : null;
-                    var responseResult = new ResponseResult(errorCode, false, responseException.Message, null,
-                        responseException.Debug);
-                    var httpCode = 200;
-                    if (UseResponseExceptionToHttpCode && responseException.ResponseStatus == ResponseStatus.Other)
-                        httpCode = (int) ToHttpCode(responseException.ResponseStatus);
-                    context.Result = new StatusCodeResult(httpCode);
-                    context.Result = new JsonResult(responseResult);
+                        var message = options.ResponseCode.FormatMessage(responseException.ResponseStatus,
+                            responseException.Message);
+                        var debug = options.IsDebug ? responseException.Debug : null;
+
+                        var responseResult = new ResponseResult(errorCode, false, message, null, debug);
+                        if (UseResponseExceptionToHttpCode)
+                            context.HttpContext.Response.StatusCode = (int) ToHttpCode(responseException.ResponseStatus,
+                                responseException.ErrorCode);
+                        else
+                            context.HttpContext.Response.StatusCode = (int) HttpStatusCode.OK;
+
+                        context.Result = new JsonResult(responseResult);
+                        return;
+                    }
+                    else if (exception.InnerException != null)
+                        exception = exception.InnerException;
                 }
-                else
+
+                // 没有ResponseException异常,包装500系统错误
                 {
-                    var debug = options.IsDebug ? exception!.ToString() : null;
+                    var debug = options.IsDebug ? exception.ToString() : null;
                     var responseResult = new ResponseResult(options.ResponseCode.SystemError, false,
                         options.ResponseCode.SystemErrorDefaultMessage, null, debug);
-                    var httpCode = 200;
-                    if (UseResponseExceptionToHttpCode)
-                        httpCode = 500;
 
-                    context.Result = new StatusCodeResult(httpCode);
+                    context.HttpContext.Response.StatusCode = UseResponseExceptionToHttpCode
+                        ? (int) HttpStatusCode.InternalServerError
+                        : (int) HttpStatusCode.OK;
                     context.Result = new JsonResult(responseResult);
                 }
             }
         }
 
 
-        private static HttpStatusCode ToHttpCode(ResponseStatus status)
+        private static HttpStatusCode ToHttpCode(ResponseStatus status, int errorCode)
         {
             return status switch
             {
-                ResponseStatus.ArgError => HttpStatusCode.BadRequest,
-                ResponseStatus.LogicalError => HttpStatusCode.Conflict,
                 ResponseStatus.Unauthorized => HttpStatusCode.Unauthorized,
                 ResponseStatus.Forbidden => HttpStatusCode.Forbidden,
                 ResponseStatus.NotFound => HttpStatusCode.NotFound,
                 ResponseStatus.SystemError => HttpStatusCode.InternalServerError,
-                _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
+                _ => HttpStatusCode.BadRequest,
             };
         }
     }
