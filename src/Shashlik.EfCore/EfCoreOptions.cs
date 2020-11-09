@@ -5,6 +5,6 @@ namespace Shashlik.EfCore
     [AutoOptions("Shashlik.EfCore")]
     public class EfCoreOptions
     {
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
     }
 }
