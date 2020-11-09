@@ -14,6 +14,7 @@ namespace Shashlik.AspNetCore.Filters
     /// <summary>
     /// 自动异常拦截,并返回<see cref="ResponseResult"/>数据
     /// </summary>    
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ExceptionWrapperAttribute : ExceptionFilterAttribute
     {
         /// <summary>
@@ -21,17 +22,17 @@ namespace Shashlik.AspNetCore.Filters
         /// </summary>
         public bool UseResponseExceptionToHttpCode { get; set; } = false;
 
-        private static AspNetCoreOptions Options { get; set; }
-
         public override void OnException(ExceptionContext context)
         {
             if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
             {
-                if (actionDescriptor.MethodInfo.IsDefinedAttribute<ExceptionWrapperAttribute>(true))
+                if (actionDescriptor.MethodInfo.IsDefinedAttribute<ExceptionWrapperAttribute>(true)
+                    || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<ExceptionWrapperAttribute>(true))
                     return;
 
                 base.OnException(context);
-                Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
+                var options = context.HttpContext.RequestServices
+                    .GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
 
                 var exception = context.Exception;
                 if (exception is AggregateException aggregateException)
@@ -43,9 +44,9 @@ namespace Shashlik.AspNetCore.Filters
                 if (exception is ResponseException responseException)
                 {
                     var errorCode =
-                        Options.ResponseCode.GetCode(responseException.ResponseStatus, responseException.ErrorCode);
+                        options.ResponseCode.GetCode(responseException.ResponseStatus, responseException.ErrorCode);
 
-                    var debug = Options.IsDebug ? responseException.Debug : null;
+                    var debug = options.IsDebug ? responseException.Debug : null;
                     var responseResult = new ResponseResult(errorCode, false, responseException.Message, null,
                         responseException.Debug);
                     var httpCode = 200;
@@ -56,9 +57,9 @@ namespace Shashlik.AspNetCore.Filters
                 }
                 else
                 {
-                    var debug = Options.IsDebug ? exception!.ToString() : null;
-                    var responseResult = new ResponseResult(Options.ResponseCode.SystemError, false,
-                        Options.ResponseCode.SystemErrorDefaultMessage, null, debug);
+                    var debug = options.IsDebug ? exception!.ToString() : null;
+                    var responseResult = new ResponseResult(options.ResponseCode.SystemError, false,
+                        options.ResponseCode.SystemErrorDefaultMessage, null, debug);
                     var httpCode = 200;
                     if (UseResponseExceptionToHttpCode)
                         httpCode = 500;

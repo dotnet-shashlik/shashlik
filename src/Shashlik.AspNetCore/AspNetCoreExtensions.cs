@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Shashlik.AspNetCore.Middlewares;
 using Shashlik.Kernel;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -19,6 +20,16 @@ namespace Shashlik.AspNetCore
             IApplicationBuilder app)
         {
             return kernelServiceProvider.Autowire<IAspNetCoreAutowire>(r => r.Configure(app, kernelServiceProvider));
+        }
+
+        /// <summary>
+        /// 启用Request.Body 重复读
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseEnableBuffering(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<EnableBufferingMiddleware>();
         }
     }
 }
