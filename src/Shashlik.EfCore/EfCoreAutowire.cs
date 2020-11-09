@@ -24,7 +24,7 @@ namespace Shashlik.EfCore
 
         public void Configure(IKernelServices kernelService)
         {
-            if (Options.Value.Enable)
+            if (!Options.Value.Enable)
                 return;
             kernelService.Services.AddScoped(typeof(IEfNestedTransaction<>), typeof(DefaultEfNestedTransaction<>));
         }
