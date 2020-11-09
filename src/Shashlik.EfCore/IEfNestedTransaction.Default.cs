@@ -15,8 +15,8 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        private ConcurrentStack<ShashlikDbContextTransaction<TDbContext>> Transactions { get; } =
-            new ConcurrentStack<ShashlikDbContextTransaction<TDbContext>>();
+        private ConcurrentStack<ShashlikDbContextTransaction> Transactions { get; } =
+            new ConcurrentStack<ShashlikDbContextTransaction>();
 
         public DefaultEfNestedTransaction(IServiceProvider serviceProvider)
         {
@@ -65,7 +65,7 @@ namespace Shashlik.EfCore
             else
                 tran = BeginFunction.BeginTransaction(DbContext, isolationLevel);
 
-            var innerTran = new ShashlikDbContextTransaction<TDbContext>(DbContext, tran);
+            var innerTran = new ShashlikDbContextTransaction(tran);
             Transactions.Push(innerTran);
             return innerTran;
         }

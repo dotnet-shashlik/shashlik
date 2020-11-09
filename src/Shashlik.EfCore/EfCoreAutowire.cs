@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 
@@ -14,9 +15,18 @@ namespace Shashlik.EfCore
     [Order(500)]
     public class EfCoreAutowire : IServiceAutowire
     {
+        public EfCoreAutowire(IOptions<EfCoreOptions> options)
+        {
+            Options = options;
+        }
+
+        private IOptions<EfCoreOptions> Options { get; }
+
         public void Configure(IKernelServices kernelService)
         {
-            kernelService.Services.TryAddScoped(typeof(IEfNestedTransaction<>), typeof(DefaultEfNestedTransaction<>));
+            if (Options.Value.Enable)
+                return;
+            kernelService.Services.AddScoped(typeof(IEfNestedTransaction<>), typeof(DefaultEfNestedTransaction<>));
         }
     }
 }

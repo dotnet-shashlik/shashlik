@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Shashlik.EfCore
 {
-    internal class ShashlikDbContextTransaction<TDbContext> : IDbContextTransaction
-        where TDbContext : DbContext
+    public class ShashlikDbContextTransaction : IDbContextTransaction
     {
-        public ShashlikDbContextTransaction(TDbContext dbContext, IDbContextTransaction transaction)
+        public ShashlikDbContextTransaction(IDbContextTransaction transaction)
         {
-            DbContext = dbContext;
             Transaction = transaction;
         }
 
@@ -19,11 +16,6 @@ namespace Shashlik.EfCore
         /// 是否已销毁
         /// </summary>
         public bool IsDone { get; private set; }
-
-        /// <summary>
-        /// 上下文
-        /// </summary>
-        public TDbContext DbContext { get; }
 
         /// <summary>
         /// 原始事务数据

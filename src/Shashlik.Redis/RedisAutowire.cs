@@ -25,13 +25,16 @@ namespace Shashlik.Redis
             if (!Options.Enable)
                 return;
 
-            var csRedis = new CSRedisClient(Options.ConnectionString, Options.Sentinels, Options.Readonly);
-            RedisHelper.Initialization(csRedis);
-            kernelService.Services.AddSingleton(csRedis);
-            kernelService.Services.AddSingleton<IDistributedCache>(
-                new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
-            if (Options.EnableRedisLock)
-                kernelService.Services.AddSingleton<ILock, RedisLock>();
+            lock (Options)
+            {
+                var csRedis = new CSRedisClient(Options.ConnectionString, Options.Sentinels, Options.Readonly);
+                RedisHelper.Initialization(csRedis);
+                kernelService.Services.AddSingleton(csRedis);
+                kernelService.Services.AddSingleton<IDistributedCache>(
+                    new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
+                if (Options.EnableRedisLock)
+                    kernelService.Services.AddSingleton<ILock, RedisLock>();
+            }
         }
     }
 }
