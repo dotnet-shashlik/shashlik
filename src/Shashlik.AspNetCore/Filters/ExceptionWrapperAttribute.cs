@@ -31,8 +31,8 @@ namespace Shashlik.AspNetCore.Filters
         {
             if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
             {
-                if (actionDescriptor.MethodInfo.IsDefinedAttribute<ExceptionWrapperAttribute>(true)
-                    || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<ExceptionWrapperAttribute>(true))
+                if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoExceptionWrapperAttribute>(true)
+                    || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<NoExceptionWrapperAttribute>(true))
                     return;
 
                 base.OnException(context);

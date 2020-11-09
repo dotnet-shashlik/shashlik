@@ -6,7 +6,7 @@
         <RepositoryUrl>https://github.com/dotnet-shashlik/shashlik</RepositoryUrl>
         <PackageTags>shashlik</PackageTags>
         <Authors>dotnet-shashlik</Authors>
-        <Version>0.1.0-preview-00061</Version>
+        <Version>0.1.0-preview-00062</Version>
     </PropertyGroup>
 
     <!--    see: https://cloud.tencent.com/developer/article/1673096    -->
