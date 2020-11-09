@@ -34,6 +34,16 @@ namespace Shashlik.AspNetCore.Filters
         {
             if (!context.ModelState.IsValid)
             {
+                if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
+                {
+                    if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
+                        || actionDescriptor.MethodInfo.DeclaringType
+                            .IsDefinedAttribute<NoResponseWrapperAttribute>(true)
+                    )
+                        return;
+                }
+
+
                 var options = context.HttpContext.RequestServices
                     .GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
                 context.HttpContext.Response.StatusCode =
