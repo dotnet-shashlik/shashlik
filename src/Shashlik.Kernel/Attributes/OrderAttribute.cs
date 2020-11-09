@@ -1,4 +1,5 @@
 ﻿using System;
+
 // ReSharper disable RedundantAttributeUsageProperty
 
 namespace Shashlik.Kernel.Attributes

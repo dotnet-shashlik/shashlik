@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
@@ -12,6 +13,8 @@ namespace Shashlik.Sms
     /// <summary>
     /// 内存缓存短信发送限制
     /// </summary>
+    [ConditionDependsOnMissing(typeof(IDistributedCache))]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class MemorySmsLimit : ISmsLimit
     {
         public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options)

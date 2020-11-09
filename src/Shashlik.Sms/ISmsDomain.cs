@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms
@@ -6,7 +7,7 @@ namespace Shashlik.Sms
     /// <summary>
     /// 短信发送执行接口
     /// </summary>
-    public interface ISmsDomain
+    public interface ISmsDomain : ISingleton
     {
         /// <summary>
         /// 主机类型,aliyun/tencent ....

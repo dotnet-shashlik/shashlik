@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信接口
     /// </summary>
-    public interface ISms
+    public interface ISms : ISingleton
     {
         /// <summary>
         /// 短信发送

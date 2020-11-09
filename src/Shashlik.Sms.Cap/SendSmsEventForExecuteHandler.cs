@@ -23,7 +23,6 @@ namespace Shashlik.Sms.Cap
 
         public async Task Execute(SendSmsEvent @event)
         {
-            await Task.CompletedTask;
             try
             {
                 if (@event.Phones.Count == 1)
@@ -41,6 +40,8 @@ namespace Shashlik.Sms.Cap
                 Logger.LogError(e, "短信发送失败, 服务商错误");
                 throw;
             }
+
+            await Task.CompletedTask;
         }
     }
 }

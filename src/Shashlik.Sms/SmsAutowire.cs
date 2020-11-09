@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowired;
-using Shashlik.Sms.Domains;
 using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms
@@ -27,20 +24,7 @@ namespace Shashlik.Sms
             if (!Options.Value.Enable)
                 return;
 
-            if (Options.Value.UseEmptySms)
-                kernelService.Services.TryAddSingleton<ISms, EmptySms>();
-            else kernelService.Services.TryAddSingleton<ISms, DefaultSms>();
-
-            if (Options.Value.EnableDistributedCacheLimit)
-                kernelService.Services.TryAddSingleton<ISmsLimit, DistributedCacheSmsLimit>();
-            else
-            {
-                kernelService.Services.AddMemoryCache();
-                kernelService.Services.TryAddSingleton<ISmsLimit, MemorySmsLimit>();
-            }
-
-            kernelService.Services.AddSingleton<ISmsDomain, AliSms>();
-            kernelService.Services.AddSingleton<ISmsDomain, TencentSms>();
+            kernelService.Services.AddMemoryCache();
         }
     }
 }

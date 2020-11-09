@@ -1,9 +1,11 @@
-﻿namespace Shashlik.Sms
+﻿using Shashlik.Kernel.Dependency;
+
+namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信发送频率限制
     /// </summary>
-    public interface ISmsLimit
+    public interface ISmsLimit : ISingleton
     {
         /// <summary>
         /// 发送频率限制检查

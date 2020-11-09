@@ -20,11 +20,6 @@ namespace Shashlik.Sms.Options
         public bool UseEmptySms { get; set; }
 
         /// <summary>
-        /// 启用分布式缓存短信发送限制,需自行配置分布式缓存
-        /// </summary>
-        public bool EnableDistributedCacheLimit { get; set; }
-
-        /// <summary>
         /// 批量发送最大手机数量
         /// </summary>
         public int PatchMax { get; set; } = 1000;

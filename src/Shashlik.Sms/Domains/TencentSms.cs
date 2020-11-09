@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using qcloudsms_csharp;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
@@ -13,7 +14,8 @@ namespace Shashlik.Sms.Domains
     /// <summary>
     /// 手机短信
     /// </summary>
-    public class TencentSms : ISmsDomain, ISingleton
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
+    public class TencentSms : ISmsDomain
     {
         public TencentSms(ILogger<TencentSms> logger)
         {

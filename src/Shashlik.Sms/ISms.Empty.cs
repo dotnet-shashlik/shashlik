@@ -16,7 +16,8 @@ namespace Shashlik.Sms
     /// 手机短信
     /// </summary>
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.UseEmptySms", true)]
-    class EmptySms : ISms, ISingleton
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
+    internal class EmptySms : ISms
     {
         public EmptySms(IOptionsMonitor<SmsOptions> smsOptions, IServiceProvider serviceProvider,
             ILogger<DefaultSms> logger, ISmsLimit smsLimit)
