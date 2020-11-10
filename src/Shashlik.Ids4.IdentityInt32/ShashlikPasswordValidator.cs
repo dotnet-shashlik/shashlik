@@ -51,13 +51,13 @@ namespace Shashlik.Ids4.IdentityInt32
 
             if (username.IsNullOrWhiteSpace())
             {
-                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                context.WriteError(ErrorCodes.UserNameOrPasswordError);
                 return;
             }
 
             if (password.IsNullOrWhiteSpace())
             {
-                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                context.WriteError(ErrorCodes.UserNameOrPasswordError);
                 return;
             }
 
@@ -66,7 +66,7 @@ namespace Shashlik.Ids4.IdentityInt32
 
             if (user == null)
             {
-                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                context.WriteError(ErrorCodes.UserNameOrPasswordError);
                 return;
             }
 

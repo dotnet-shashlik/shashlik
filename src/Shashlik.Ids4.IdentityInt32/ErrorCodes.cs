@@ -21,7 +21,7 @@ namespace Shashlik.Ids4.IdentityInt32
         /// 用户名或密码错误
         /// </summary>
         [Description("userName or password error")]
-        UsernameOrPasswordError = 401,
+        UserNameOrPasswordError = 401,
 
         /// <summary>
         /// 用户已锁定

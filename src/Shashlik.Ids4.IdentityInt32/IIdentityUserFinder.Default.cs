@@ -5,11 +5,13 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.IdentityInt32
 {
@@ -17,20 +19,19 @@ namespace Shashlik.Ids4.IdentityInt32
     /// 默认的用户查找类,依次根据手机号码/邮件地址/身份证号码/用户名查找用户
     /// </summary>
     [ConditionDependsOnMissing(typeof(IIdentityUserFinder))]
-    public class DefaultIIdentityUserFinder : IIdentityUserFinder, IScoped
+    public class DefaultIIdentityUserFinder : IIdentityUserFinder
     {
         public DefaultIIdentityUserFinder(IOptions<IdentityOptions> identityOptions,
-            IOptions<IdentityUserExtendsOptions> identityOptionsExtends,
-            IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions)
+            IOptions<IdentityUserExtendsOptions> identityOptionsExtends, ILogger<DefaultIIdentityUserFinder> logger)
         {
             IdentityOptions = identityOptions;
             IdentityOptionsExtends = identityOptionsExtends;
-            ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
+            Logger = logger;
         }
 
         private IOptions<IdentityOptions> IdentityOptions { get; }
         private IOptions<IdentityUserExtendsOptions> IdentityOptionsExtends { get; }
-        private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
+        private ILogger<DefaultIIdentityUserFinder> Logger { get; }
 
         public async Task<Users?> FindByIdentityAsync(
             string identity,
@@ -45,6 +46,12 @@ namespace Shashlik.Ids4.IdentityInt32
 
             Users? user = null;
             var signInSources = allowSignInSources.ToList();
+            if (signInSources.IsNullOrEmpty())
+            {
+                Logger.LogWarning(
+                    "SignInSource is empty, check your configuration: Shashlik.Ids4.Identity.PasswordSignInSources/Shashlik.Ids4.Identity.CaptchaSignInSources.");
+                return null;
+            }
 
             if (user == null && signInSources.Contains(ShashlikIds4IdentityConsts.UsernameSource))
                 user = await manager.FindByNameAsync(identity);
