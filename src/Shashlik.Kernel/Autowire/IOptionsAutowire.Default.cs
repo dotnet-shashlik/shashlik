@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Autowire
@@ -41,6 +43,23 @@ namespace Shashlik.Kernel.Autowire
                     {
                         services, section
                     });
+            }
+
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+
+            // options model validation
+            foreach (var (key, value) in dic)
+            {
+                var optionsTypes = typeof(IOptions<>).MakeGenericType(key);
+                // ReSharper disable once PossibleMultipleEnumeration
+                if (disabledAutoOptionTypes.Contains(key))
+                    continue;
+
+                var optionValue = serviceProvider.GetService(optionsTypes).GetPropertyValue("Value");
+
+                var res = ValidationHelper.Validate(optionValue, serviceProvider);
+                if (res.Count > 0)
+                    throw new OptionsValidationException(value.Section, key, res.Select(r => r.ErrorMessage));
             }
         }
     }

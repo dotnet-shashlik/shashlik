@@ -15,13 +15,13 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="model">模型</param>
         /// <param name="validationServiceProvider">服务上下文</param>
-        /// <param name="maxErrorCount">最大错误数量</param>
-        /// <param name="maxValidationDepth">最大递归验证深度</param>
+        /// <param name="maxErrorCount">最大错误数量,null全部验证</param>
+        /// <param name="maxValidationDepth">最大递归验证深度,null全部验证</param>
         /// <returns></returns>
         public static List<ValidationResult> Validate(
             object model,
             IServiceProvider validationServiceProvider = null,
-            int maxErrorCount = 10,
+            int? maxErrorCount = null,
             int? maxValidationDepth = null)
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
@@ -33,7 +33,7 @@ namespace Shashlik.Utils.Helpers
         private static void Validate(
             object model,
             IServiceProvider validationServiceProvider,
-            int maxErrorCount,
+            int? maxErrorCount,
             int? maxValidationDepth,
             int hasDepth,
             List<ValidationResult> results
@@ -43,7 +43,7 @@ namespace Shashlik.Utils.Helpers
                 return;
             if (maxValidationDepth.HasValue && hasDepth > maxValidationDepth)
                 return;
-            if (results.Count > maxErrorCount)
+            if (maxErrorCount.HasValue && results.Count > maxErrorCount)
                 return;
 
             var context = new ValidationContext(model, serviceProvider: validationServiceProvider, items: null);
