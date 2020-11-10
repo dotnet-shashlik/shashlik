@@ -246,8 +246,9 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
         {
+            if (obj == null) throw new ArgumentNullException(nameof(obj));
             if (string.IsNullOrWhiteSpace(prop))
-                throw new ArgumentException($"“{nameof(prop)}”不能为 Null 或空白", nameof(prop));
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(prop));
 
             var propArr = prop.Split('.');
 
