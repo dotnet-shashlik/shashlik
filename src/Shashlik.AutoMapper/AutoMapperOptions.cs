@@ -5,6 +5,6 @@ namespace Shashlik.AutoMapper
     [AutoOptions("Shashlik.AutoMapper")]
     public class AutoMapperOptions
     {
-        public bool Enable { get; set; }
+        public bool Enable { get; set; } = true;
     }
 }
