@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 using AutoMapper;
 using System;
@@ -9,7 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
+using System.Data;
 using Shashlik.Utils.Helpers;
+
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedMethodReturnValue.Global
 
@@ -19,7 +20,7 @@ using Shashlik.Utils.Helpers;
 
 namespace Shashlik.AutoMapper
 {
-    public static class MapperExtensions
+    public static class AutoMapperExtensions
     {
         /// <summary>
         /// 增加auto mapper自动化映射,注册了全局单例IMapper
@@ -28,9 +29,10 @@ namespace Shashlik.AutoMapper
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
-            DependencyContext? dependencyContext = null)
+            DependencyContext dependencyContext = null)
         {
-            var assemblies = ReflectHelper.GetReferredAssemblies(typeof(IMapFrom<>).Assembly, dependencyContext);
+            var assemblies =
+                ReflectHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, dependencyContext);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 
@@ -44,9 +46,7 @@ namespace Shashlik.AutoMapper
             IEnumerable<Assembly> assemblies)
         {
             if (assemblies == null)
-            {
                 throw new ArgumentNullException(nameof(assemblies));
-            }
 
             var configuration = new MapperConfiguration(config =>
             {
@@ -111,11 +111,13 @@ namespace Shashlik.AutoMapper
                             }
                             catch
                             {
-                                throw new Exception($"auto mapper 初始化失败:无法创建类型:{item}");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             }
 
                             if (obj == null)
-                                throw new Exception($"auto mapper 初始化失败:无法创建类型:{item}");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             try
                             {
                                 configMethod.Invoke(obj, new object[] {expression});
@@ -123,9 +125,10 @@ namespace Shashlik.AutoMapper
                                 {
                                 }
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                throw new Exception($"auto mapper 初始化失败:初始化类型[{item}]配置失败");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] create mapper {fromType}->{destType} error on type {item}.", e);
                             }
                         }
                     }
@@ -172,11 +175,13 @@ namespace Shashlik.AutoMapper
                             }
                             catch
                             {
-                                throw new Exception($"auto mapper 初始化失败:无法创建类型:{item},请检查是否有无参构造函数.");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             }
 
                             if (obj == null)
-                                throw new Exception($"auto mapper 初始化失败:无法创建类型:{item},请检查是否有无参构造函数.");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             try
                             {
                                 configMethod.Invoke(obj, new object[] {expression});
@@ -184,9 +189,10 @@ namespace Shashlik.AutoMapper
                                 {
                                 }
                             }
-                            catch
+                            catch (Exception e)
                             {
-                                throw new Exception($"auto mapper 初始化失败:初始化类型[{item}]配置失败");
+                                throw new InvalidConstraintException(
+                                    $"[AutoMapper] create mapper {fromType}->{destType} error on type {item}.", e);
                             }
                         }
                     }
@@ -210,14 +216,14 @@ namespace Shashlik.AutoMapper
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
             if (ShashlikAutoMapper.Instance == null)
-                throw new InvalidOperationException("shashlik mapper has been uninitialized.");
+                throw new InvalidOperationException("shashlik mapper hasn't been initialized.");
             return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }
 
         /// <summary>
         /// 对象映射 obj-><typeparamref name="TDest"/>
         /// </summary>
-        /// <typeparam name="TDest"></typeparam>
+        /// <typeparam name="TDest">dest type</typeparam>
         /// <returns></returns>
         public static TDest MapTo<TDest>(this object obj)
         {
@@ -227,10 +233,10 @@ namespace Shashlik.AutoMapper
         /// <summary>
         /// 对象映射到已经存在的对象, obj-><typeparamref name="TDest"/>
         /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="destObj"></param>
-        /// <typeparam name="TSource"></typeparam>
-        /// <typeparam name="TDest"></typeparam>
+        /// <param name="obj">source object</param>
+        /// <param name="destObj">dest exists object</param>
+        /// <typeparam name="TSource">source type</typeparam>
+        /// <typeparam name="TDest">dest type</typeparam>
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
             ShashlikAutoMapper.Instance.Map(obj, destObj);
