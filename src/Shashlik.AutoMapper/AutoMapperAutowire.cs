@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel;
+﻿using Microsoft.Extensions.Options;
+using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.AutoMapper
@@ -9,8 +10,17 @@ namespace Shashlik.AutoMapper
     [Order(100)]
     public class AutoMapperAutowire : IServiceAutowire
     {
+        public AutoMapperAutowire(IOptions<AutoMapperOptions> options)
+        {
+            Options = options;
+        }
+
+        private IOptions<AutoMapperOptions> Options { get; }
+
         public void Configure(IKernelServices kernelService)
         {
+            if (!Options.Value.Enable)
+                return;
             kernelService.AddAutoMapperByConvention();
         }
     }
