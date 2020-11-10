@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 namespace Shashlik.Kernel.Test.Autowired.TestAutowiredConfigureClasses
