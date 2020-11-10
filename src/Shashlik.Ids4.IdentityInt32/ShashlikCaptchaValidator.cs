@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using IdentityServer4.Validation;
+using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Utils.Extensions;
 
@@ -12,49 +12,49 @@ namespace Shashlik.Ids4.IdentityInt32
     public class ShashlikCaptchaValidator : IShashlikExtensionGrantValidator
     {
         public ShashlikCaptchaValidator(ShashlikUserManager<Users, int> userManager,
-            IIdentityUserFinder userFinder)
+            IIdentityUserFinder userFinder, IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions)
         {
             UserManager = userManager;
             IdentityUserFinder = userFinder;
+            ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
         }
 
         private ShashlikUserManager<Users, int> UserManager { get; }
         private IIdentityUserFinder IdentityUserFinder { get; }
+        private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
         {
-            ErrorCodes errorCode = 0;
             var identity = context.Request.Raw.Get("identity");
             var captcha = context.Request.Raw.Get("captcha");
             if (captcha.IsNullOrWhiteSpace())
-                errorCode = ErrorCodes.TokenError;
-            if (identity.IsNullOrWhiteSpace())
-                errorCode = ErrorCodes.IdentityError;
-
-            var user = await IdentityUserFinder.FindByIdentityAsync(identity, UserManager, context.Request.Raw);
-            if (user == null)
-                errorCode = ErrorCodes.UserNotFound;
-
-            if (user != null)
             {
-                var sub = await UserManager.GetUserIdAsync(user);
-                if (await UserManager.IsValidLoginCaptcha(user, captcha))
-                {
-                    context.Result = new GrantValidationResult(sub, GrantType);
-                    return;
-                }
-
-                errorCode = ErrorCodes.TokenError;
+                context.WriteError(ErrorCodes.TokenError);
+                return;
             }
 
-            context.Result = new GrantValidationResult
+            if (identity.IsNullOrWhiteSpace())
             {
-                IsError = true,
-                CustomResponse = new Dictionary<string, object>
-                {
-                    {"code", (int) errorCode}
-                }
-            };
+                context.WriteError(ErrorCodes.IdentityError);
+                return;
+            }
+
+            var user = await IdentityUserFinder.FindByIdentityAsync(identity,
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources, UserManager, context.Request.Raw);
+            if (user == null)
+            {
+                context.WriteError(ErrorCodes.UserNotFound);
+                return;
+            }
+
+            var sub = await UserManager.GetUserIdAsync(user);
+            if (await UserManager.IsValidLoginCaptcha(user, captcha))
+            {
+                context.Result = new GrantValidationResult(sub, GrantType);
+                return;
+            }
+
+            context.WriteError(ErrorCodes.TokenError);
         }
 
         public string GrantType => ShashlikIds4IdentityConsts.CaptchaGrantType;

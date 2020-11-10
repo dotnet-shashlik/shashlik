@@ -24,18 +24,20 @@ namespace Shashlik.Ids4.IdentityInt32
         public ShashlikPasswordValidator(SignInManager<Users> signInManager,
             ShashlikUserManager<Users, int> userManager,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
-            IDataProtectionProvider dataProtectionProvider)
+            IDataProtectionProvider dataProtectionProvider, IIdentityUserFinder identityUserFinder)
         {
             SignInManager = signInManager;
             UserManager = userManager;
             ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
             DataProtectionProvider = dataProtectionProvider;
+            IdentityUserFinder = identityUserFinder;
         }
 
         private SignInManager<Users> SignInManager { get; }
         private ShashlikUserManager<Users, int> UserManager { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
+        private IIdentityUserFinder IdentityUserFinder { get; }
 
         /// <summary>
         /// Validates the resource owner password credential
@@ -47,35 +49,27 @@ namespace Shashlik.Ids4.IdentityInt32
             var username = context.UserName;
             var password = context.Password;
 
-            ErrorCodes errorCode = 0;
-            var customResponse = new Dictionary<string, object>();
             if (username.IsNullOrWhiteSpace())
-                errorCode = ErrorCodes.UsernameOrPasswordError;
-            if (password.IsNullOrWhiteSpace())
-                errorCode = ErrorCodes.UsernameOrPasswordError;
-
-            Users? user = null;
-            if (errorCode != 0)
             {
-                // 根据用户名和邮件地址查找用户
-                user = await UserManager.FindByNameAsync(username);
-                if (user == null &&
-                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                        .EMailSource))
-                    user = await UserManager.FindByEmailAsync(username);
-                if (user == null &&
-                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                        .PhoneSource))
-                    user = await UserManager.FindByPhoneNumberAsync(username);
-                if (user == null &&
-                    ShashlikIds4IdentityOptions.Value.PasswordSignInSources.Contains(ShashlikIds4IdentityConsts
-                        .IdCardSource))
-                    user = await UserManager.FindByIdCardAsync(username);
-                if (user == null)
-                    errorCode = ErrorCodes.UsernameOrPasswordError;
+                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                return;
             }
 
-            if (user != null)
+            if (password.IsNullOrWhiteSpace())
+            {
+                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                return;
+            }
+
+            var user = await IdentityUserFinder.FindByIdentityAsync(username,
+                ShashlikIds4IdentityOptions.Value.PasswordSignInSources, UserManager, context.Request.Raw);
+
+            if (user == null)
+            {
+                context.WriteError(ErrorCodes.UsernameOrPasswordError);
+                return;
+            }
+
             {
                 var result = await SignInManager.CheckPasswordSignInAsync(user, password, true);
                 if (result.Succeeded)
@@ -86,13 +80,19 @@ namespace Shashlik.Ids4.IdentityInt32
                 }
 
                 if (result.IsLockedOut)
-                    errorCode = ErrorCodes.UserLockout;
-                else if (result.IsNotAllowed)
-                    errorCode = ErrorCodes.NotAllowLogin;
-                else if (result.RequiresTwoFactor)
                 {
-                    errorCode = ErrorCodes.RequiresTwoFactor;
+                    context.WriteError(ErrorCodes.UserLockout);
+                    return;
+                }
 
+                if (result.IsNotAllowed)
+                {
+                    context.WriteError(ErrorCodes.NotAllowLogin);
+                    return;
+                }
+
+                if (result.RequiresTwoFactor)
+                {
                     // 如果需要两阶段登录,将用户id和过期时间组装成json让后加密返回给前端(security),前端执行第二阶段登录时传入security
                     var data = new TwoFactorStep1SecurityModel
                     {
@@ -106,18 +106,20 @@ namespace Shashlik.Ids4.IdentityInt32
                         .ToTimeLimitedDataProtector()
                         .Protect(json, TimeSpan.FromSeconds(ShashlikIds4IdentityOptions.Value.TwoFactorExpiration));
 
-                    customResponse.Add("security", security);
+                    context.Result = new GrantValidationResult
+                    {
+                        IsError = true,
+                        CustomResponse = new Dictionary<string, object>
+                        {
+                            {"code", (int) ErrorCodes.RequiresTwoFactor},
+                            {"message", ErrorCodes.RequiresTwoFactor.GetEnumDescription()},
+                            {"security", security}
+                        }
+                    };
                 }
-                else
-                    errorCode = ErrorCodes.Other;
-            }
 
-            customResponse.Add("code", (int) errorCode);
-            context.Result = new GrantValidationResult
-            {
-                IsError = true,
-                CustomResponse = customResponse
-            };
+                context.WriteError(ErrorCodes.Other);
+            }
         }
     }
 }

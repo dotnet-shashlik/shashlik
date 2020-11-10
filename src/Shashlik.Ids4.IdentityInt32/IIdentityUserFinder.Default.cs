@@ -1,5 +1,8 @@
 ﻿#nullable enable
+using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -29,25 +32,37 @@ namespace Shashlik.Ids4.IdentityInt32
         private IOptions<IdentityUserExtendsOptions> IdentityOptionsExtends { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
 
-        public async Task<Users?> FindByIdentityAsync(string identity, ShashlikUserManager<Users, int> manager,
+        public async Task<Users?> FindByIdentityAsync(
+            string identity,
+            IEnumerable<string> allowSignInSources,
+            ShashlikUserManager<Users, int> manager,
             NameValueCollection postData)
         {
+            if (identity == null) throw new ArgumentNullException(nameof(identity));
+            if (allowSignInSources == null) throw new ArgumentNullException(nameof(allowSignInSources));
+            if (manager == null) throw new ArgumentNullException(nameof(manager));
+            if (postData == null) throw new ArgumentNullException(nameof(postData));
+
             Users? user = null;
+            var signInSources = allowSignInSources.ToList();
+
+            if (user == null && signInSources.Contains(ShashlikIds4IdentityConsts.UsernameSource))
+                user = await manager.FindByNameAsync(identity);
+
             // 手机号唯一才能使用手机号码登录
             if (IdentityOptionsExtends.Value.RequireUniquePhoneNumber &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.PhoneSource))
+                signInSources.Contains(ShashlikIds4IdentityConsts.PhoneSource))
                 user = await manager.FindByPhoneNumberAsync(identity);
-            // 手机号唯一才能使用手机号码登录
-            if (IdentityOptions.Value.User.RequireUniqueEmail &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.EMailSource))
+
+            // 邮件地址唯一才能使用邮件登录
+            if (user == null
+                && IdentityOptions.Value.User.RequireUniqueEmail
+                && signInSources.Contains(ShashlikIds4IdentityConsts.EMailSource))
                 user = await manager.FindByEmailAsync(identity);
-            if (user == null &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts
-                    .UsernameSource))
-                user = await manager.FindByNameAsync(identity);
-            if (user == null && IdentityOptionsExtends.Value.RequireUniqueIdCard &&
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!.Contains(ShashlikIds4IdentityConsts.IdCardSource)
-            )
+
+            if (user == null
+                && IdentityOptionsExtends.Value.RequireUniqueIdCard
+                && signInSources.Contains(ShashlikIds4IdentityConsts.IdCardSource))
                 user = await manager.FindByIdCardAsync(identity);
 
             return user;

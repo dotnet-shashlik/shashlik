@@ -120,11 +120,7 @@ namespace Shashlik.Ids4.IdentityInt32
             builder.Services.Replace(ServiceDescriptor
                 .Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
 
-            // // 验证码登录
-            // builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();
-            // // 手机短信双因子验证码
-            // builder.AddExtensionGrantValidator<ShashlikTwoFactorValidator>();
-
+            // TODO: 这里只用了CheckPasswordSignIn,自行实现,减少依赖
             builder.Services.TryAddScoped<SignInManager<Users>>();
         }
     }

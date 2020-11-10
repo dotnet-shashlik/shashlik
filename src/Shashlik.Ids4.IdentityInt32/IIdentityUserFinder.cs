@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Shashlik.Identity;
@@ -14,11 +15,15 @@ namespace Shashlik.Ids4.IdentityInt32
         /// <summary>
         /// 如何查找用户
         /// </summary>
-        /// <param name="identity"></param>
-        /// <param name="manager"></param>
-        /// <param name="postData"></param>
+        /// <param name="identity">登录凭证,username/phoneNumber/email数据等</param>
+        /// <param name="allowSignInSources">允许的登录源,username/phone/email/idcard</param>
+        /// <param name="manager">userManager</param>
+        /// <param name="postData">前端提交的原始数据</param>
         /// <returns></returns>
-        Task<Users?> FindByIdentityAsync(string identity, ShashlikUserManager<Users, int> manager,
+        Task<Users?> FindByIdentityAsync(
+            string identity,
+            IEnumerable<string> allowSignInSources,
+            ShashlikUserManager<Users, int> manager,
             NameValueCollection postData);
     }
 }

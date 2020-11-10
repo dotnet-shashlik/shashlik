@@ -1,4 +1,6 @@
-﻿namespace Shashlik.Ids4.IdentityInt32
+﻿using System.ComponentModel;
+
+namespace Shashlik.Ids4.IdentityInt32
 {
     /// <summary>
     /// 登录错误代码
@@ -8,56 +10,55 @@
         /// <summary>
         /// 需要两步验证
         /// </summary>
-        RequiresTwoFactor = 202,
+        [Description("require two factor")] RequiresTwoFactor = 202,
 
         /// <summary>
         /// 用户不存在
         /// </summary>
-        UserNotFound = 400,
+        [Description("user not found")] UserNotFound = 400,
 
         /// <summary>
         /// 用户名或密码错误
         /// </summary>
+        [Description("userName or password error")]
         UsernameOrPasswordError = 401,
 
         /// <summary>
         /// 用户已锁定
         /// </summary>
-        UserLockout = 402,
+        [Description("user has been lockout")] UserLockout = 402,
 
         /// <summary>
         /// 不允许登录
         /// </summary>
-        NotAllowLogin = 403,
+        [Description("not allow login")] NotAllowLogin = 403,
 
         /// <summary>
         /// provider参数错误
         /// </summary>
+        [Description("provider argument error")]
         ProviderError = 404,
 
         /// <summary>
         /// 验证码错误
         /// </summary>
-        TokenError = 405,
+        [Description("token argument error")] TokenError = 405,
 
         /// <summary>
         /// IdentityError
         /// </summary>
+        [Description("identity argument error")]
         IdentityError = 406,
 
         /// <summary>
         /// SecurityError
         /// </summary>
+        [Description("security argument error")]
         SecurityError = 407,
-
-        /// <summary>
-        /// SecurityTimeout
-        /// </summary>
-        SecurityTimeout = 408,
 
         /// <summary>
         /// 其他错误
         /// </summary>
-        Other = 500
+        [Description("other error")] Other = 500
     }
 }

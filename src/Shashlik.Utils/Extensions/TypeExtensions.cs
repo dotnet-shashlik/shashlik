@@ -793,7 +793,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取枚举值描述
+        /// 获取枚举值描述,<see cref="DescriptionAttribute"/>特性值
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -802,14 +802,9 @@ namespace Shashlik.Utils.Extensions
             var name = value.ToString();
             var fieldInfo = value.GetType().GetField(name);
             if (fieldInfo == null)
-                throw new ArgumentException($"Can not find enum value:{value}");
-            if (fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() is
-                DescriptionAttribute descriptionAttribute)
-            {
-                return descriptionAttribute.Description;
-            }
+                return null;
 
-            return string.Empty;
+            return fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
         }
 
         #region private
