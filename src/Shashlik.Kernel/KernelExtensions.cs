@@ -25,13 +25,17 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="rootConfiguration">根配置</param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
+        /// <param name="disableAutoOptionTypes">禁用自动装配的option类型</param>
         /// <returns></returns>
-        public static IServiceCollection AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration,
-            DependencyContext dependencyContext = null)
+        public static IServiceCollection AddShashlik(
+            this IServiceCollection services,
+            IConfiguration rootConfiguration,
+            DependencyContext dependencyContext = null,
+            params Type[] disableAutoOptionTypes)
         {
             return services.AddShashlikCore(rootConfiguration, dependencyContext)
                 // 配置装载
-                .AutowireOptions()
+                .AutowireOptions(disableAutoOptionTypes)
                 // 注册约定的服务
                 .RegistryConventionServices()
                 // 自动服务装配
