@@ -80,14 +80,13 @@ namespace Shashlik.Kernel
         /// <param name="kernelServices"></param>
         /// <param name="disableTypes"></param>
         /// <returns></returns>
-        public static T AutowireOptions<T>(this T kernelServices,
-            params Type[] disableTypes) where T : IKernelServices
+        public static IKernelServices AutowireOptions(this IKernelServices kernelServices,
+            params Type[] disableTypes)
         {
-            var optionsAutowire = new DefaultOptionsAutowire();
-            foreach (var disableType in disableTypes)
-                optionsAutowire.Disabled.Add(disableType);
-
-            return (T) optionsAutowire.ConfigureAll(kernelServices);
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+            var optionsAutowire = serviceProvider.GetRequiredService<IOptionsAutowire>();
+            optionsAutowire.ConfigureAll(kernelServices, disableTypes);
+            return kernelServices;
         }
 
         /// <summary>
