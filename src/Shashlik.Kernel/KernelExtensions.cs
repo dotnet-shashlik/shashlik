@@ -20,54 +20,24 @@ namespace Shashlik.Kernel
     public static class KernelExtensions
     {
         /// <summary>
-        /// 执行条件过滤
+        /// AddShashlik,执行典型的shashlik服务配置
         /// </summary>
-        /// <param name="kernelServices"></param>
+        /// <param name="services"></param>
+        /// <param name="rootConfiguration">根配置</param>
+        /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
-        /// <exception cref="InvalidCastException"></exception>
-        public static IServiceCollection DoFilter(this IKernelServices kernelServices)
+        public static IServiceCollection AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration,
+            DependencyContext dependencyContext = null)
         {
-            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var filterProvider = serviceProvider.GetService<IFilterProvider>();
-            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
-
-            // 按条件过滤服务注册
-            filterProvider.DoFilter(
-                kernelServices.ShashlikServiceDescriptors,
-                kernelServices.Services,
-                kernelServices.RootConfiguration,
-                hostEnvironment);
-
-            return kernelServices.Services;
-        }
-
-        /// <summary>
-        /// 注册约定的服务
-        /// </summary>
-        /// <param name="kernelServices"></param>
-        /// <returns></returns>
-        /// <exception cref="InvalidCastException"></exception>
-        public static IKernelServices RegistryConventionServices(this IKernelServices kernelServices)
-        {
-            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var conventionServiceDescriptorProvider =
-                serviceProvider.GetService<IConventionServiceDescriptorProvider>();
-
-            // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
-            var conventionAssemblies =
-                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
-            conventionAssemblies.Add(typeof(IKernelServices).Assembly);
-
-            foreach (var item in conventionAssemblies)
-            {
-                var serviceDescriptors = conventionServiceDescriptorProvider.FromAssembly(item).ToList();
-                foreach (var shashlikServiceDescriptor in serviceDescriptors)
-                    kernelServices.Services.Add(shashlikServiceDescriptor.ServiceDescriptor);
-
-                kernelServices.ShashlikServiceDescriptors.AddRange(serviceDescriptors);
-            }
-
-            return kernelServices;
+            return services.AddShashlikCore(rootConfiguration, dependencyContext)
+                // 配置装载
+                .AutowireOptions()
+                // 注册约定的服务
+                .RegistryConventionServices()
+                // 自动服务装配
+                .AutowireServices()
+                // 执行服务过滤
+                .DoFilter();
         }
 
         /// <summary>
@@ -101,25 +71,88 @@ namespace Shashlik.Kernel
         }
 
         /// <summary>
-        /// AddShashlik,执行典型的shashlik服务配置
+        /// 自动装载所有的配置options,<see cref="AutoOptionsAttribute"/>
         /// </summary>
-        /// <param name="services"></param>
-        /// <param name="rootConfiguration">根配置</param>
-        /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
+        /// <param name="kernelServices"></param>
+        /// <param name="disableTypes"></param>
         /// <returns></returns>
-        public static IServiceCollection AddShashlik(this IServiceCollection services, IConfiguration rootConfiguration,
-            DependencyContext dependencyContext = null)
+        public static T AutowireOptions<T>(this T kernelServices,
+            params Type[] disableTypes) where T : IKernelServices
         {
-            return services.AddShashlikCore(rootConfiguration, dependencyContext)
-                // 配置装载
-                .AutowireOptions()
-                // 注册约定的服务
-                .RegistryConventionServices()
-                // 自动服务装配
-                .AutowireServices()
-                // 执行服务过滤
-                .DoFilter();
+            var optionsAutowire = new DefaultOptionsAutowire();
+            foreach (var disableType in disableTypes)
+                optionsAutowire.Disabled.Add(disableType);
+
+            return (T) optionsAutowire.ConfigureAll(kernelServices);
         }
+
+        /// <summary>
+        /// 注册约定的服务
+        /// </summary>
+        /// <param name="kernelServices"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"></exception>
+        public static IKernelServices RegistryConventionServices(this IKernelServices kernelServices)
+        {
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+            var conventionServiceDescriptorProvider =
+                serviceProvider.GetService<IConventionServiceDescriptorProvider>();
+
+            // 查找所有包含Shashlik.Kernel引用的程序集,并按约定进行服务注册
+            var conventionAssemblies =
+                ReflectHelper.GetReferredAssemblies<IKernelServices>(kernelServices.ScanFromDependencyContext);
+            conventionAssemblies.Add(typeof(IKernelServices).Assembly);
+
+            foreach (var item in conventionAssemblies)
+            {
+                var serviceDescriptors = conventionServiceDescriptorProvider.FromAssembly(item).ToList();
+                foreach (var shashlikServiceDescriptor in serviceDescriptors)
+                    kernelServices.Services.Add(shashlikServiceDescriptor.ServiceDescriptor);
+
+                kernelServices.ShashlikServiceDescriptors.AddRange(serviceDescriptors);
+            }
+
+            return kernelServices;
+        }
+
+        /// <summary>
+        /// 自动装配服务配置: <see cref="IServiceAutowire"/>, **服务装配类所有的条件特性都不可用**
+        /// </summary>
+        /// <param name="kernelServices"></param>
+        /// <returns></returns>
+        public static IKernelServices AutowireServices(this IKernelServices kernelServices)
+        {
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+            var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<IServiceAutowire>>();
+            var dic = autowireProvider.Load(kernelServices, serviceProvider);
+            autowireProvider.Autowire(dic, r => { r.ServiceInstance.Configure(kernelServices); });
+
+            return kernelServices;
+        }
+
+
+        /// <summary>
+        /// 执行条件过滤
+        /// </summary>
+        /// <param name="kernelServices"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"></exception>
+        public static IServiceCollection DoFilter(this IKernelServices kernelServices)
+        {
+            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
+            var filterProvider = serviceProvider.GetService<IFilterProvider>();
+            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
+
+            // 按条件过滤服务注册
+            filterProvider.DoFilter(
+                kernelServices.ShashlikServiceDescriptors,
+                kernelServices.Services,
+                kernelServices.RootConfiguration,
+                hostEnvironment);
+
+            return kernelServices.Services;
+        }
+
 
         /// <summary>
         /// 注册程序集中继承自<typeparamref name="TBaseType"/>的子类
@@ -173,20 +206,6 @@ namespace Shashlik.Kernel
             return kernelServiceProvider;
         }
 
-        /// <summary>
-        /// 自动装配服务配置: <see cref="IServiceAutowire"/>, **服务装配类所有的条件特性都不可用**
-        /// </summary>
-        /// <param name="kernelServices"></param>
-        /// <returns></returns>
-        public static IKernelServices AutowireServices(this IKernelServices kernelServices)
-        {
-            using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<IServiceAutowire>>();
-            var dic = autowireProvider.Load(kernelServices, serviceProvider);
-            autowireProvider.Autowire(dic, r => { r.ServiceInstance.Configure(kernelServices); });
-
-            return kernelServices;
-        }
 
         /// <summary>
         /// 自动装配服务配置: <see cref="IServiceProviderAutowire"/>
@@ -203,21 +222,6 @@ namespace Shashlik.Kernel
             return kernelServiceProvider;
         }
 
-        /// <summary>
-        /// 自动装载所有的配置options,<see cref="AutoOptionsAttribute"/>
-        /// </summary>
-        /// <param name="kernelServices"></param>
-        /// <param name="disableTypes"></param>
-        /// <returns></returns>
-        public static T AutowireOptions<T>(this T kernelServices,
-            params Type[] disableTypes) where T : IKernelServices
-        {
-            var optionsAutowire = new DefaultOptionsAutowire();
-            foreach (var disableType in disableTypes)
-                optionsAutowire.Disabled.Add(disableType);
-
-            return (T) optionsAutowire.ConfigureAll(kernelServices);
-        }
 
         /// <summary>
         /// 自定义装配<typeparamref name="T"/>类型
