@@ -21,10 +21,7 @@ namespace Shashlik.Cap.Rabbit
         {
             if (!CapOptions.Enable)
                 return;
-            capOptions.UseRabbitMQ(r =>
-            {
-                Options.CopyTo(r);
-            });
+            capOptions.UseRabbitMQ(r => { Options.CopyTo(r); });
         }
     }
 }

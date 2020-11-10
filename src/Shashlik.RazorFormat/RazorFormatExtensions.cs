@@ -69,7 +69,7 @@ namespace Shashlik.RazorFormat
                     continue;
                 var exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
 
-                string proName = null; // 属性名
+                string proName; // 属性名
                 string formatExp = null; // 格式话表达式
                 var splitIndex = exp.IndexOf('|');
                 if (splitIndex != -1)
@@ -111,7 +111,7 @@ namespace Shashlik.RazorFormat
                     if (!hasFormater)
                     {
                         // 没有格式化器,使用标准string format-
-                        var s = string.Format("{0:" + formatExp + "}", v);
+                        var s = string.Format($"{{0:{formatExp}}}", v);
                         value = value.Replace(item.Value, s);
                     }
                 }
