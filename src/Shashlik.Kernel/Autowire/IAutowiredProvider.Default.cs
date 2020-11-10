@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowired;
 using Shashlik.Kernel.Autowired.Inner;
@@ -54,19 +55,27 @@ namespace Shashlik.Kernel.Autowire
             IServiceProvider serviceProvider)
         {
             var type = typeof(T);
-            var serviceDescriptors
-                = kernelServices.Services.Where(r => r.ServiceType == type).ToList();
+
+            var instances = serviceProvider.GetServices<T>();
+            // var serviceDescriptors
+            //     = kernelServices.Services.Where(r => r.ServiceType == type).ToList();
 
             var dic = new Dictionary<Type, AutowireDescriptor<T>>();
-            foreach (var serviceDescriptor in serviceDescriptors)
+            foreach (var instance in instances)
             {
-                var implementationType = serviceDescriptor.ImplementationType;
+                var implementationType = instance.GetType();
                 var afterAtAttribute = implementationType.GetCustomAttribute<AfterAtAttribute>(false);
                 var beforeAtAttribute = implementationType.GetCustomAttribute<BeforeAtAttribute>(false);
                 var orderAttribute = implementationType.GetCustomAttribute<OrderAttribute>(false);
 
-                var descriptor = new InnerAutowiredDescriptor<T>(implementationType, afterAtAttribute?.AfterAt,
-                    beforeAtAttribute?.BeforeAt, orderAttribute?.Order ?? 0);
+                var descriptor = new InnerAutowiredDescriptor<T>(
+                    implementationType,
+                    afterAtAttribute?.AfterAt,
+                    beforeAtAttribute?.BeforeAt,
+                    orderAttribute?.Order ?? 0)
+                {
+                    ServiceInstance = instance
+                };
 
                 dic.Add(implementationType, descriptor);
             }
@@ -88,8 +97,6 @@ namespace Shashlik.Kernel.Autowire
                     item.Value.Nexts.Add(item.Value.BeforeAt);
                     dic[item.Value.BeforeAt].Prevs.Add(item.Key);
                 }
-
-                item.Value.ServiceInstance = (T) serviceProvider.GetService(item.Key);
             }
 
             return dic;
