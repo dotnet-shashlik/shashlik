@@ -10,7 +10,6 @@ using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Options;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.IdentityInt32
@@ -19,6 +18,7 @@ namespace Shashlik.Ids4.IdentityInt32
     /// 默认的用户查找类,依次根据手机号码/邮件地址/身份证号码/用户名查找用户
     /// </summary>
     [ConditionDependsOnMissing(typeof(IIdentityUserFinder))]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Ids4.Identity.Enable", true, DefaultValue = true)]
     public class DefaultIIdentityUserFinder : IIdentityUserFinder
     {
         public DefaultIIdentityUserFinder(IOptions<IdentityOptions> identityOptions,

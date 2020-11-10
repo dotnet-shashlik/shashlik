@@ -14,7 +14,7 @@ namespace Shashlik.Ids4.IdentityInt32
     /// <summary>
     /// 两步验证第二步
     /// </summary>
-    public class ShashlikTwoFactorValidator : IShashlikExtensionGrantValidator
+    public class ShashlikTwoFactorValidator : IExtensionGrantValidator
     {
         private ShashlikUserManager<Users, int> UserManager { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }

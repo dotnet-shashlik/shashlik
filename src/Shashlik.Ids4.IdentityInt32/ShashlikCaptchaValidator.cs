@@ -9,7 +9,7 @@ namespace Shashlik.Ids4.IdentityInt32
     /// <summary>
     /// 通用的验证码登录,手机号码唯一有效,要求用户必须存在
     /// </summary>
-    public class ShashlikCaptchaValidator : IShashlikExtensionGrantValidator
+    public class ShashlikCaptchaValidator : IExtensionGrantValidator
     {
         public ShashlikCaptchaValidator(ShashlikUserManager<Users, int> userManager,
             IIdentityUserFinder userFinder, IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions)
