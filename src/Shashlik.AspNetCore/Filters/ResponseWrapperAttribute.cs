@@ -40,7 +40,10 @@ namespace Shashlik.AspNetCore.Filters
                         || actionDescriptor.MethodInfo.DeclaringType
                             .IsDefinedAttribute<NoResponseWrapperAttribute>(true)
                     )
+                    {
+                        await base.OnResultExecutionAsync(context, next);
                         return;
+                    }
                 }
 
 
@@ -77,7 +80,11 @@ namespace Shashlik.AspNetCore.Filters
                 if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
                     || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
                 )
+                {
+                    base.OnActionExecuted(context);
                     return;
+                }
+
 
                 base.OnActionExecuted(context);
                 var options = context.HttpContext.RequestServices
