@@ -210,12 +210,11 @@ namespace Shashlik.Utils.Extensions
             else
             {
                 var props = objType
-                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty)
-                    .Where(r => !r.GetIndexParameters().Any());
+                    .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
                 props.ForEachItem(r =>
                 {
-                    if (!r.GetIndexParameters().IsNullOrEmpty()) return;
+                    if (r.GetIndexParameters().Any() || !r.CanRead) return;
 
                     var value = r.GetValue(obj);
                     if (value == null || r.PropertyType.IsSimpleType())
@@ -438,7 +437,7 @@ namespace Shashlik.Utils.Extensions
             foreach (var propertyInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public |
                                                             BindingFlags.GetProperty))
             {
-                if (propertyInfo.GetIndexParameters().Any())
+                if (propertyInfo.GetIndexParameters().Any() || !propertyInfo.CanRead)
                     continue;
                 var value = propertyInfo.GetValue(source);
                 if (value == null && skipNullValue)
