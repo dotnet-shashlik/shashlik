@@ -72,8 +72,9 @@ namespace Shashlik.Ids4.IdentityInt32
 
             {
                 var result = await SignInManager.CheckPasswordSignInAsync(user, password, true);
-                if (result.Succeeded)
+                if (result.Succeeded && !await UserManager.GetTwoFactorEnabledAsync(user))
                 {
+                    // 账户密码成功,且未启用两阶段登录
                     var sub = await UserManager.GetUserIdAsync(user);
                     context.Result = new GrantValidationResult(sub, OidcConstants.AuthenticationMethods.Password);
                     return;
@@ -91,7 +92,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     return;
                 }
 
-                if (result.RequiresTwoFactor)
+                if (result.Succeeded && await UserManager.GetTwoFactorEnabledAsync(user))
                 {
                     // 如果需要两阶段登录,将用户id和过期时间组装成json让后加密返回给前端(security),前端执行第二阶段登录时传入security
                     var data = new TwoFactorStep1SecurityModel
@@ -116,6 +117,8 @@ namespace Shashlik.Ids4.IdentityInt32
                             {"security", security}
                         }
                     };
+
+                    return;
                 }
 
                 context.WriteError(ErrorCodes.Other);
