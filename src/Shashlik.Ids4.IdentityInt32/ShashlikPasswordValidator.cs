@@ -110,6 +110,8 @@ namespace Shashlik.Ids4.IdentityInt32
                     context.Result = new GrantValidationResult
                     {
                         IsError = true,
+                        Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
+                        ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
                         CustomResponse = new Dictionary<string, object>
                         {
                             {"code", (int) ErrorCodes.RequiresTwoFactor},
