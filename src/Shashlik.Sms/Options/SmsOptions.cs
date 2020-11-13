@@ -22,7 +22,7 @@ namespace Shashlik.Sms.Options
         /// <summary>
         /// 批量发送最大手机数量
         /// </summary>
-        public int PatchMax { get; set; } = 1000;
+        public int BatchMax { get; set; } = 1000;
 
         /// <summary>
         /// 短信发送限制

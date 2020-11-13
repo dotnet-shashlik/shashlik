@@ -84,8 +84,8 @@ namespace Shashlik.Sms
             var enumerable = phones?.ToList();
             if (enumerable.IsNullOrEmpty())
                 throw new SmsArgException("手机号码不能为空");
-            if (enumerable!.Count() > SmsOptions.CurrentValue.PatchMax)
-                throw new SmsArgException($"批量发送短信最多{SmsOptions.CurrentValue.PatchMax}个号码");
+            if (enumerable!.Count() > SmsOptions.CurrentValue.BatchMax)
+                throw new SmsArgException($"批量发送短信最多{SmsOptions.CurrentValue.BatchMax}个号码");
 
             var configs = SmsOptions.CurrentValue.DomainConfigs.OrderBy(r => r.Priority);
             var invokerList = ServiceProvider.GetServices<ISmsDomain>().ToList();
