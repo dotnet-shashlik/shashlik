@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.EfCore.Transactional;
 
@@ -100,6 +101,12 @@ namespace Shashlik.EfCore.Tests
                 await tran.RollbackAsync();
                 throw;
             }
+        }
+
+        public virtual void ClearDatas()
+        {
+            DbContext.Database.ExecuteSqlRaw("DELETE FROM `ROLES`");
+            DbContext.Database.ExecuteSqlRaw("DELETE FROM `USERS`");
         }
     }
 }

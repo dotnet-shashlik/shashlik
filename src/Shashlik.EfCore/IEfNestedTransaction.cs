@@ -19,7 +19,7 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 开始事务
         /// </summary>
-        /// <param name="isolationLevel">事务隔离级别,null使用默认的级别</param>
+        /// <param name="isolationLevel">事务隔离级别,null使用默认的级别, 定义了IEfNestedTransactionBeginFunction无效</param>
         /// <returns></returns>
         IDbContextTransaction Begin(IsolationLevel? isolationLevel = null);
     }

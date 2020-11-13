@@ -78,7 +78,7 @@ namespace Shashlik.EfCore.Tests
                 userEntity.IsDeleted = true;
                 userEntity.DeleteTime = DateTime.Now;
 
-                DbContext.SaveChanges();
+                await DbContext.SaveChangesAsync();
             }
 
             {
@@ -90,51 +90,61 @@ namespace Shashlik.EfCore.Tests
             }
         }
 
+        private static int count = 1000;
+
         [Fact]
-        public async Task PerformanceTest()
+        public async Task PerformanceAttributeTransactionalTest()
         {
             var testManager = GetService<TestManager>();
             var name = Guid.NewGuid().ToString();
             var role = "add_user_test_role";
             var roles = new[] {role};
-            var count = 1000;
-
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < count; i++)
             {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                for (int i = 0; i < count; i++)
-                {
-                    await testManager.CreateUserWithEfTransaction(name, roles, false);
-                }
-
-                stopwatch.Stop();
-                _testOutputHelper.WriteLine($"Ef原生事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
+                await testManager.CreateUser(name, roles, false);
             }
 
-            {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                for (int i = 0; i < count; i++)
-                {
-                    await testManager.CreateUserWithEfNestTransaction(name, roles, false);
-                }
+            stopwatch.Stop();
+            _testOutputHelper.WriteLine(
+                $"Transactional特性事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
+        }
 
-                stopwatch.Stop();
-                _testOutputHelper.WriteLine($"Ef嵌套事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
+        [Fact]
+        public async Task PerformanceNestTransactionTest()
+        {
+            var testManager = GetService<TestManager>();
+            var name = Guid.NewGuid().ToString();
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < count; i++)
+            {
+                await testManager.CreateUserWithEfNestTransaction(name, roles, false);
             }
 
-            {
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
-                for (int i = 0; i < count; i++)
-                {
-                    await testManager.CreateUser(name, roles, false);
-                }
+            stopwatch.Stop();
+            _testOutputHelper.WriteLine($"Ef嵌套事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
+        }
 
-                stopwatch.Stop();
-                _testOutputHelper.WriteLine(
-                    $"Transactional特性事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
+        [Fact]
+        public async Task PerformanceOriginalTransactionTest()
+        {
+            var testManager = GetService<TestManager>();
+            var name = Guid.NewGuid().ToString();
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            for (int i = 0; i < count; i++)
+            {
+                await testManager.CreateUserWithEfTransaction(name, roles, false);
             }
+
+            stopwatch.Stop();
+            _testOutputHelper.WriteLine($"Ef原生事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
         }
     }
 }
