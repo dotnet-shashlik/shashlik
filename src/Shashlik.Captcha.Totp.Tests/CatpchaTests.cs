@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
@@ -8,7 +7,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Shashlik.Captcha.Tests
+namespace Shashlik.Captcha.Totp.Tests
 {
     public class CatpchaTests : KernelTestBase
     {
@@ -41,6 +40,7 @@ namespace Shashlik.Captcha.Tests
             var captcha = GetService<ICaptcha>();
             var securityStamp = "123";
 
+            var createTime = DateTime.Now;
             var code = await captcha.Build("login", "13000000000", securityStamp);
             _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code.Code}");
             (await captcha.IsValid("login", "13000000000", code.Code, securityStamp)).ShouldBeTrue();
@@ -53,8 +53,8 @@ namespace Shashlik.Captcha.Tests
                 await Task.Delay(10_000);
                 var res = (await captcha.IsValid("login", "13000000000", code.Code, securityStamp));
                 _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】{count * 10}秒后验证: {res}");
-                //if (count > 6)
-                  //  res.ShouldBeFalse();
+                if ((DateTime.Now - createTime).TotalSeconds > 120 + 30)
+                    res.ShouldBeFalse();
                 count++;
             }
         }

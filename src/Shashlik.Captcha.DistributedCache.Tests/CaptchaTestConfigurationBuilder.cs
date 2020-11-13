@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Shashlik.Kernel.Test;
 
-namespace Shashlik.Captcha.Tests
+namespace Shashlik.Captcha.DistributedCache.Tests
 {
     public class CaptchaTestConfigurationBuilder : ITestConfigurationBuilder
     {
