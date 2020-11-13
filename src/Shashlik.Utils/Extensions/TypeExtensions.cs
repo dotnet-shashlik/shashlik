@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
+// ReSharper disable RedundantIfElseBlock
+
 // ReSharper disable ConvertIfStatementToReturnStatement
 
 namespace Shashlik.Utils.Extensions
@@ -60,16 +62,12 @@ namespace Shashlik.Utils.Extensions
         /// 获取指定的构造函数
         /// </summary>
         /// <param name="type"></param>
-        /// <param name="types"></param>
+        /// <param name="types">构造函数的参数类型匹配</param>
         /// <returns></returns>
-        public static ConstructorInfo GetDeclaredConstructor(this Type type, Type[] types)
+        public static ConstructorInfo GetDeclaredConstructor(this Type type, params Type[] types)
         {
-            types ??= Array.Empty<Type>();
-
-            return type.GetTypeInfo()
-                .DeclaredConstructors
-                .SingleOrDefault(
-                    r => !r.IsStatic && r.GetParameters().Select(p => p.ParameterType).SequenceEqual(types));
+            if (types == null) throw new ArgumentNullException(nameof(types));
+            return type.GetConstructor(types);
         }
 
         /// <summary>
@@ -212,24 +210,26 @@ namespace Shashlik.Utils.Extensions
                 var props = objType
                     .GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
 
-                props.ForEachItem(r =>
+                props.ForEachItem(propertyInfo =>
                 {
-                    if (r.GetIndexParameters().Any() || !r.CanRead) return;
+                    if (propertyInfo.GetIndexParameters().Any() || !propertyInfo.CanRead) return;
 
-                    var value = r.GetValue(obj);
-                    if (value == null || r.PropertyType.IsSimpleType())
-                        dic[r.Name] = value;
-                    else if (value is IDictionary || r.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
-                        dic[r.Name] = MapToDictionary(value);
+                    var value = propertyInfo.GetValue(obj);
+                    if (value == null || propertyInfo.PropertyType.IsSimpleType())
+                        dic[propertyInfo.Name] = value;
+                    else if (value is IDictionary ||
+                             propertyInfo.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+                        dic[propertyInfo.Name] = MapToDictionary(value);
                     else if (value is IEnumerable list)
                     {
-                        dic[r.Name] = list.OfType<object>().Select(r =>
+                        dic[propertyInfo.Name] = list.OfType<object>().Select(ele =>
                         {
-                            if (r.GetType().IsSimpleType()) return r;
-                            else return MapToDictionary(r);
+                            if (ele.GetType().IsSimpleType())
+                                return ele;
+                            return MapToDictionary(ele);
                         }).ToList();
                     }
-                    else dic[r.Name] = MapToDictionary(value);
+                    else dic[propertyInfo.Name] = MapToDictionary(value);
                 });
 
                 return dic;
@@ -241,7 +241,7 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="prop"></param>
+        /// <param name="prop">属性名称,子级属性.连接,例: User.Name</param>
         /// <returns></returns>
         public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
         {
@@ -289,7 +289,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 对象克隆
+        /// 对象深度克隆
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -297,9 +297,7 @@ namespace Shashlik.Utils.Extensions
         public static T Clone<T>(this T obj)
         {
             if (obj != null)
-            {
-                return System.Text.Json.JsonSerializer.Deserialize<T>(System.Text.Json.JsonSerializer.Serialize(obj));
-            }
+                return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(obj));
 
             return default;
         }
@@ -402,7 +400,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static HashSet<Type> GetAllBaseTypes(this Type type)
         {
-            HashSet<Type> types = new HashSet<Type>();
+            var types = new HashSet<Type>();
             FillBaseType(types, type);
             return types;
         }
@@ -440,7 +438,7 @@ namespace Shashlik.Utils.Extensions
                 if (propertyInfo.GetIndexParameters().Any() || !propertyInfo.CanRead)
                     continue;
                 var value = propertyInfo.GetValue(source);
-                if (value == null && skipNullValue)
+                if (value is null && skipNullValue)
                     continue;
                 propertyInfo.SetValue(dest, value);
             }
@@ -457,7 +455,7 @@ namespace Shashlik.Utils.Extensions
         public static T GetValue<T>(this JsonElement obj, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
-                throw new ArgumentException($"Json value kind must be JsonValueKind.Object.");
+                throw new ArgumentException("Json value kind must be JsonValueKind.Object.");
             if (obj.TryGetProperty(propertyName, out var value))
             {
                 switch (value.ValueKind)
@@ -476,7 +474,7 @@ namespace Shashlik.Utils.Extensions
         public static object GetValue(this JsonElement obj, Type type, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
-                throw new ArgumentException($"Json value kind must be JsonValueKind.Object.");
+                throw new ArgumentException("Json value kind must be JsonValueKind.Object.");
             if (obj.TryGetProperty(propertyName, out var value))
                 return GetValue(value, type);
 
@@ -785,7 +783,7 @@ namespace Shashlik.Utils.Extensions
                         obj.WriteTo(writer);
                     }
 
-                    return System.Text.Json.JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type);
+                    return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type);
                 }
                 default:
                     throw GetInvalidCastException(type, obj);
@@ -989,7 +987,7 @@ namespace Shashlik.Utils.Extensions
             var objType = obj.GetType();
             if (obj is JToken jToken)
             {
-                JToken json = null;
+                JToken json;
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
                     var jsonArr = jToken.Value<JArray>();
@@ -1036,7 +1034,7 @@ namespace Shashlik.Utils.Extensions
             }
             else if (obj is JsonElement jsonObj)
             {
-                JsonElement? json = null;
+                JsonElement? json;
                 if (jsonObj.ValueKind == JsonValueKind.Array && int.TryParse(proName, out var index))
                 {
                     if (jsonObj.GetArrayLength() < index + 1)
@@ -1060,9 +1058,7 @@ namespace Shashlik.Utils.Extensions
                 else
                     return (false, null);
 
-                if (json.HasValue)
-                    return (true, JsonElementValue(json.Value));
-                return (false, null);
+                return (true, JsonElementValue(json.Value));
             }
             else if (obj is IEnumerable list && int.TryParse(proName, out var index))
             {

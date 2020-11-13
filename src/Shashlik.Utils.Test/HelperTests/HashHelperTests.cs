@@ -26,11 +26,5 @@ namespace Shashlik.Utils.Test.HelperTests
             BitConverter.ToString(hash256).Replace("-", "").ToLower()
                 .ShouldBe("2f443685592900e619f2f3b2350c3c8a5738e2e7a26bc9a244d3393c3cd6abd6");
         }
-
-        [Fact]
-        public void BCryptTest()
-        {
-            BCryptHelper.Verify(text, BCryptHelper.Hash(text)).ShouldBe(true);
-        }
     }
 }

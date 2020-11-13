@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Timer = System.Timers.Timer;
 
 namespace Shashlik.Utils.Helpers
 {
@@ -19,12 +20,9 @@ namespace Shashlik.Utils.Helpers
 
             if (expire <= TimeSpan.Zero)
                 throw new ArgumentException("invalid expire.", nameof(expire));
-            Task.Run(() =>
-            {
-                Task.Delay((int) expire.TotalMilliseconds, cancellationToken.Value)
-                    .ContinueWith(task => action(), cancellationToken.Value)
-                    .ConfigureAwait(false);
-            });
+            Task.Delay((int) expire.TotalMilliseconds, cancellationToken.Value)
+                .ContinueWith(task => action(), cancellationToken.Value)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -42,12 +40,10 @@ namespace Shashlik.Utils.Helpers
             if (runAt <= DateTimeOffset.Now)
                 throw new ArgumentException("invalid run time.", nameof(runAt));
 
-            Task.Run(() =>
-            {
-                Task.Delay((int) (runAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
-                    .ContinueWith(task => action(), cancellationToken.Value)
-                    .ConfigureAwait(false);
-            });
+
+            Task.Delay((int) (runAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
+                .ContinueWith(task => action(), cancellationToken.Value)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
@@ -62,13 +58,10 @@ namespace Shashlik.Utils.Helpers
             cancellationToken ??= CancellationToken.None;
             if (interval <= TimeSpan.Zero)
                 throw new ArgumentException("invalid interval.", nameof(interval));
-            Task.Run(() =>
-            {
-                Task.Delay((int) interval.TotalMilliseconds, cancellationToken.Value)
-                    .ContinueWith(task => SetInterval(action, interval, cancellationToken.Value))
-                    .ContinueWith(task => action(), cancellationToken.Value)
-                    .ConfigureAwait(false);
-            }, cancellationToken.Value);
+            Task.Delay((int) interval.TotalMilliseconds, cancellationToken.Value)
+                .ContinueWith(task => SetInterval(action, interval, cancellationToken.Value))
+                .ContinueWith(task => action(), cancellationToken.Value)
+                .ConfigureAwait(false);
         }
     }
 }

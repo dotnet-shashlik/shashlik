@@ -305,8 +305,9 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void ConstructorTests()
         {
-            typeof(TestB).GetDeclaredConstructor(null).ShouldNotBeNull();
-            typeof(TestB).GetDeclaredConstructor(new[] {typeof(string), typeof(int)}).ShouldNotBeNull();
+            Should.Throw<Exception>(() => typeof(TestB).GetDeclaredConstructor(null).ShouldNotBeNull());
+            typeof(TestB).GetDeclaredConstructor().ShouldNotBeNull();
+            typeof(TestB).GetDeclaredConstructor(typeof(string), typeof(int)).ShouldNotBeNull();
         }
 
         [Fact]
@@ -389,7 +390,7 @@ namespace Shashlik.Utils.Test
                 object v = null;
                 v.ParseTo<int?>().ShouldBeNull();
             }
-            
+
             {
                 object v = 1;
                 v.ParseTo<int?>().ShouldBe(1);
@@ -463,7 +464,7 @@ namespace Shashlik.Utils.Test
         public void EnumTests()
         {
             TestJsonToClass.TestJsonToEnum.Male.GetEnumDescription().ShouldBe("男");
-            TestJsonToClass.TestJsonToEnum.Female.GetEnumDescription().ShouldBeEmpty();
+            TestJsonToClass.TestJsonToEnum.Female.GetEnumDescription().ShouldBeNullOrWhiteSpace();
         }
     }
 }

@@ -7,8 +7,6 @@ using System.Net;
 using System.Text;
 using Xunit;
 using Shouldly;
-using Shashlik.Utils.Extensions;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -33,77 +31,77 @@ namespace Shashlik.Utils.Test
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostForm("http://this_is_not_exist_host.com",
-                    new {name = "1"});
+                    new {name = "1"}, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostForm("http://this_is_not_exist_host.com",
-                    new List<KeyValuePair<string, string>>());
+                    new List<KeyValuePair<string, string>>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostForm<string>("http://this_is_not_exist_host.com",
-                    new {name = "1"});
+                    new {name = "1"}, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostForm<string>("http://this_is_not_exist_host.com",
-                    new List<KeyValuePair<string, string>>());
+                    new List<KeyValuePair<string, string>>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.PostJson("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.PostJson("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.PostJson<string>("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.PostJson<string>("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostFiles("http://this_is_not_exist_host.com", new { },
-                    new List<UploadFileModel>());
+                    new List<UploadFileModel>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostFiles("http://this_is_not_exist_host.com",
                     new List<KeyValuePair<string, string>>(),
-                    new List<UploadFileModel>());
+                    new List<UploadFileModel>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostFiles<string>("http://this_is_not_exist_host.com", new { },
-                    new List<UploadFileModel>());
+                    new List<UploadFileModel>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.PostFiles<string>("http://this_is_not_exist_host.com",
                     new List<KeyValuePair<string, string>>(),
-                    new List<UploadFileModel>());
+                    new List<UploadFileModel>(), timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.Get<string>("http://this_is_not_exist_host.com");
+                await HttpHelper.Get<string>("http://this_is_not_exist_host.com", timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.GetBytes("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.GetBytes("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.GetStream("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.GetStream("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.GetString("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.GetString("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
-                await HttpHelper.Get<EchoObject>("http://this_is_not_exist_host.com", new { });
+                await HttpHelper.Get<EchoObject>("http://this_is_not_exist_host.com", new { }, timeout: 3);
             });
             await Should.ThrowAsync<Exception>(async () =>
             {
                 await HttpHelper.GetString("http://this_is_not_exist_host.com", new { }, encoding: Encoding.UTF8,
-                    proxy: new WebProxy("127.0.0.1:8000"));
+                    proxy: new WebProxy("127.0.0.1:8000"), timeout: 3);
             });
         }
 

@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Shashlik.Utils.Test.HelperTests
 {
+    [DisplayAttribute]
     public class ReflectHelperTest
     {
         [Fact]
