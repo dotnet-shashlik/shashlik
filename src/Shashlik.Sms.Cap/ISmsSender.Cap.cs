@@ -33,8 +33,8 @@ namespace Shashlik.Sms.Cap
         {
             if (phones == null) throw new ArgumentNullException(nameof(phones));
             var list = phones.ToList();
-            if (list.Count > Options.CurrentValue.PatchMax)
-                throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.PatchMax}个号码");
+            if (list.Count > Options.CurrentValue.BatchMax)
+                throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.BatchMax}个号码");
             if (list.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Consts.Regexs.MobilePhoneNumber)))
                 throw new SmsArgException($"{list.Join(",")} 存在手机号码格式错误");
             if (list.Count == 1 && !SmsLimit.LimitCheck(list.First(), subject))
