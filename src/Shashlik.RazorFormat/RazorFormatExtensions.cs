@@ -54,7 +54,7 @@ namespace Shashlik.RazorFormat
         /// <returns></returns>
         public static string RazorFormat<TModel>(this string value, TModel model, char prefix = '@')
         {
-            if (value.IsNullOrWhiteSpace() || model == null)
+            if (value.IsNullOrWhiteSpace() || model is null)
                 return value;
 
             var reg = new Regex(prefix + @"\{[^\{\}]{1,}\}");

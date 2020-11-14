@@ -53,7 +53,7 @@ namespace Shashlik.EfCore
                 return Current;
 
             IDbContextTransaction tran;
-            if (_beginFunction.function == null)
+            if (_beginFunction.function is null)
                 tran = isolationLevel.HasValue
                     ? DbContext.Database.BeginTransaction(isolationLevel.Value)
                     : DbContext.Database.BeginTransaction();

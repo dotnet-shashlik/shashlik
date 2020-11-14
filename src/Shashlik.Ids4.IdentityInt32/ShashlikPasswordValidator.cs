@@ -64,7 +64,7 @@ namespace Shashlik.Ids4.IdentityInt32
             var user = await IdentityUserFinder.FindByIdentityAsync(username,
                 ShashlikIds4IdentityOptions.Value.PasswordSignInSources, UserManager, context.Request.Raw);
 
-            if (user == null)
+            if (user is null)
             {
                 context.WriteError(ErrorCodes.UserNameOrPasswordError);
                 return;

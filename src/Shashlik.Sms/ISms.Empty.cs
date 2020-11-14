@@ -48,7 +48,7 @@ namespace Shashlik.Sms
             foreach (var item in configs)
             {
                 var template = item.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
-                if (template == null)
+                if (template is null)
                     throw new Exception($"找不到短信类型{subject}");
                 if (template.TemplateId.IsNullOrWhiteSpace())
                     throw new Exception($"{subject}未配置短信模板");
@@ -72,7 +72,7 @@ namespace Shashlik.Sms
             foreach (var item in configs)
             {
                 var template = item.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
-                if (template == null)
+                if (template is null)
                     throw new Exception($"找不到短信类型{subject}");
                 if (template.TemplateId.IsNullOrWhiteSpace())
                     throw new Exception($"{subject}未配置短信模板");

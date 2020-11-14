@@ -24,7 +24,7 @@ namespace Shashlik.Utils.Helpers
             int? maxErrorCount = null,
             int? maxValidationDepth = null)
         {
-            if (model == null) throw new ArgumentNullException(nameof(model));
+            if (model is null) throw new ArgumentNullException(nameof(model));
             var results = new List<ValidationResult>();
             Validate(model, validationServiceProvider, maxErrorCount, maxValidationDepth, 1, results);
             return results;
@@ -39,7 +39,7 @@ namespace Shashlik.Utils.Helpers
             List<ValidationResult> results
         )
         {
-            if (model == null)
+            if (model is null)
                 return;
             if (maxValidationDepth.HasValue && hasDepth > maxValidationDepth)
                 return;

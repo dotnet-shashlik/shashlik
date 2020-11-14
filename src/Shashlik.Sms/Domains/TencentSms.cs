@@ -29,7 +29,7 @@ namespace Shashlik.Sms.Domains
             params string[] args)
         {
             var template = options.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
-            if (template == null)
+            if (template is null)
                 throw new Exception($"短信发送失败,未定义的短信类型:{subject}");
             if (template.TemplateId.IsNullOrWhiteSpace())
             {

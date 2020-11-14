@@ -31,7 +31,7 @@ namespace Shashlik.Sms.Cap
 
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
         {
-            if (phones == null) throw new ArgumentNullException(nameof(phones));
+            if (phones is null) throw new ArgumentNullException(nameof(phones));
             var list = phones.ToList();
             if (list.Count > Options.CurrentValue.BatchMax)
                 throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.BatchMax}个号码");

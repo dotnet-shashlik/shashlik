@@ -31,7 +31,7 @@ namespace Shashlik.Ids4.IdentityInt32
             if (!ShashlikIds4IdentityOptions.Enable)
                 return;
 
-            if (ShashlikIds4IdentityOptions.PasswordSignInSources == null)
+            if (ShashlikIds4IdentityOptions.PasswordSignInSources is null)
             {
                 builder.Services.Configure<ShashlikIds4IdentityOptions>(r =>
                 {
@@ -42,7 +42,7 @@ namespace Shashlik.Ids4.IdentityInt32
                     new List<string> {ShashlikIds4IdentityConsts.UsernameSource};
             }
 
-            if (ShashlikIds4IdentityOptions.CaptchaSignInSources == null)
+            if (ShashlikIds4IdentityOptions.CaptchaSignInSources is null)
             {
                 builder.Services.Configure<ShashlikIds4IdentityOptions>(r =>
                 {

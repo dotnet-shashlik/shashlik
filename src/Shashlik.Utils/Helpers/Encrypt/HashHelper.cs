@@ -17,7 +17,7 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         public static string MD5(string value, Encoding encoding = null)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (value is null) throw new ArgumentNullException(nameof(value));
 
             encoding ??= Encoding.UTF8;
             using var md5 = System.Security.Cryptography.MD5.Create();

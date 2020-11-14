@@ -71,7 +71,7 @@ namespace Shashlik.Ids4.IdentityInt32
                 return;
             }
 
-            if (model == null)
+            if (model is null)
             {
                 context.WriteError(ErrorCodes.SecurityError);
                 return;

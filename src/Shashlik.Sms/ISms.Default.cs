@@ -53,7 +53,7 @@ namespace Shashlik.Sms
                 if (invokerList.Any(r => r.SmsDomain == item.Domain))
                 {
                     var domainSms = invokerList.LastOrDefault(r => r.SmsDomain == item.Domain);
-                    if (domainSms == null)
+                    if (domainSms is null)
                         throw new SmsDomainException($"找不到对应的短信服务商接口:{item.Domain}");
                     try
                     {
@@ -95,7 +95,7 @@ namespace Shashlik.Sms
                 if (invokerList.Any(r => r.SmsDomain == item.Domain))
                 {
                     var domainSms = invokerList.LastOrDefault(r => r.SmsDomain == item.Domain);
-                    if (domainSms == null)
+                    if (domainSms is null)
                         throw new SmsDomainException($"找不到对应的短信服务商接口:{item.Domain}");
                     try
                     {

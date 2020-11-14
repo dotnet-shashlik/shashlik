@@ -41,7 +41,7 @@ namespace Shashlik.Captcha.DistributedCache
             var key = GetKey(purpose, target, securityStamp);
 
             var codeModel = await Cache.GetObjectWithJsonAsync<CodeModel>(key);
-            if (codeModel == null)
+            if (codeModel is null)
                 return false;
 
             if (code == codeModel.Code)
@@ -73,8 +73,8 @@ namespace Shashlik.Captcha.DistributedCache
         public async Task<CodeModel> Build(string purpose, string target, string securityStamp = null,
             int codeLength = 6)
         {
-            if (purpose == null) throw new ArgumentNullException(nameof(purpose));
-            if (target == null) throw new ArgumentNullException(nameof(target));
+            if (purpose is null) throw new ArgumentNullException(nameof(purpose));
+            if (target is null) throw new ArgumentNullException(nameof(target));
 
             var key = GetKey(purpose, target, securityStamp);
             var now = DateTime.Now;

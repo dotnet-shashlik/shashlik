@@ -39,10 +39,10 @@ namespace Shashlik.Ids4.IdentityInt32
             ShashlikUserManager<Users, int> manager,
             NameValueCollection postData)
         {
-            if (identity == null) throw new ArgumentNullException(nameof(identity));
-            if (allowSignInSources == null) throw new ArgumentNullException(nameof(allowSignInSources));
-            if (manager == null) throw new ArgumentNullException(nameof(manager));
-            if (postData == null) throw new ArgumentNullException(nameof(postData));
+            if (identity is null) throw new ArgumentNullException(nameof(identity));
+            if (allowSignInSources is null) throw new ArgumentNullException(nameof(allowSignInSources));
+            if (manager is null) throw new ArgumentNullException(nameof(manager));
+            if (postData is null) throw new ArgumentNullException(nameof(postData));
 
             Users? user = null;
             var signInSources = allowSignInSources.ToList();
@@ -53,7 +53,7 @@ namespace Shashlik.Ids4.IdentityInt32
                 return null;
             }
 
-            if (user == null && signInSources.Contains(ShashlikIds4IdentityConsts.UsernameSource))
+            if (user is null && signInSources.Contains(ShashlikIds4IdentityConsts.UsernameSource))
                 user = await manager.FindByNameAsync(identity);
 
             // 手机号唯一才能使用手机号码登录
@@ -62,12 +62,12 @@ namespace Shashlik.Ids4.IdentityInt32
                 user = await manager.FindByPhoneNumberAsync(identity);
 
             // 邮件地址唯一才能使用邮件登录
-            if (user == null
+            if (user is null
                 && IdentityOptions.Value.User.RequireUniqueEmail
                 && signInSources.Contains(ShashlikIds4IdentityConsts.EMailSource))
                 user = await manager.FindByEmailAsync(identity);
 
-            if (user == null
+            if (user is null
                 && IdentityOptionsExtends.Value.RequireUniqueIdCard
                 && signInSources.Contains(ShashlikIds4IdentityConsts.IdCardSource))
                 user = await manager.FindByIdCardAsync(identity);

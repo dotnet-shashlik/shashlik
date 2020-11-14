@@ -28,7 +28,7 @@ namespace Shashlik.Identity.DataProtection
                                           IOptions<DataProtectionTokenProviderOptions> options,
                                           ILogger<DataProtectorTokenProvider<TUser>> logger)
         {
-            if (dataProtectionProvider == null)
+            if (dataProtectionProvider is null)
             {
                 throw new ArgumentNullException(nameof(dataProtectionProvider));
             }
@@ -81,7 +81,7 @@ namespace Shashlik.Identity.DataProtection
         /// <returns>A <see cref="Task{TResult}"/> representing the generated token.</returns>
         public virtual async Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
         {
-            if (user == null)
+            if (user is null)
             {
                 throw new ArgumentNullException(nameof(user));
             }

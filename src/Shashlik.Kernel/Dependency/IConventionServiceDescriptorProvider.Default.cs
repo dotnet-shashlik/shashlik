@@ -15,7 +15,7 @@ namespace Shashlik.Kernel.Dependency
     {
         public IEnumerable<ShashlikServiceDescriptor> FromAssembly(Assembly assembly)
         {
-            if (assembly == null)
+            if (assembly is null)
             {
                 throw new ArgumentNullException(nameof(assembly));
             }

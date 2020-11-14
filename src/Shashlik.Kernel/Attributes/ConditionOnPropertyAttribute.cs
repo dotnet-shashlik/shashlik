@@ -23,7 +23,7 @@ namespace Shashlik.Kernel.Attributes
         /// <exception cref="ArgumentException"></exception>
         public ConditionOnPropertyAttribute(Type valueType, string property, object value)
         {
-            if (property == null) throw new ArgumentNullException(nameof(property));
+            if (property is null) throw new ArgumentNullException(nameof(property));
             ValueType = valueType ?? throw new ArgumentNullException(nameof(valueType));
             Property = property.Replace(".", ":");
             Value = value;
@@ -65,9 +65,9 @@ namespace Shashlik.Kernel.Attributes
             var isString = ValueType == typeof(string);
             if (Value != null && Value.Equals(value))
                 return true;
-            if (Value == null && value == null)
+            if (Value is null && value is null)
                 return true;
-            if (Value == null || value == null)
+            if (Value is null || value is null)
                 return false;
 
             return isString && (

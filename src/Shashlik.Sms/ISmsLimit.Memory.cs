@@ -41,7 +41,7 @@ namespace Shashlik.Sms
                                   limit.MinuteLimitCount.HasValue))
             {
                 var smsLimit = Cache.Get<SmsLimitModel>(key);
-                if (smsLimit == null)
+                if (smsLimit is null)
                     return true;
 
                 if (smsLimit.Day != day)
@@ -71,7 +71,7 @@ namespace Shashlik.Sms
         public void UpdateLimit(string phone, string subject)
         {
             var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
-            if (limit == null)
+            if (limit is null)
                 return;
             var key = CachePrefix.Format(subject, phone);
             var day = DateTime.Now.Day;

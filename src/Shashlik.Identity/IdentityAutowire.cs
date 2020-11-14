@@ -104,7 +104,7 @@ namespace Shashlik.Identity
                 ?.GetGenericArguments()
                 .FirstOrDefault();
 
-            if (userKeyType == null)
+            if (userKeyType is null)
                 throw new InvalidOperationException(
                     $"Error user type definition of {userRoleDefinition.UserType}, must implement from IdentityUsers<>.");
 
@@ -114,7 +114,7 @@ namespace Shashlik.Identity
                 ?.GetGenericArguments()
                 .FirstOrDefault();
 
-            if (roleKeyType == null)
+            if (roleKeyType is null)
                 throw new InvalidOperationException(
                     $"Error role type definition of {userRoleDefinition.RoleType}, must implement from IdentityRoles<>.");
 

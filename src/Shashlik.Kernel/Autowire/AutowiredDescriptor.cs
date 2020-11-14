@@ -68,7 +68,7 @@ namespace Shashlik.Kernel.Autowire
 
         public override bool Equals(object obj)
         {
-            if (ImplementationType == null)
+            if (ImplementationType is null)
                 return false;
             return ImplementationType == (Type) obj;
         }

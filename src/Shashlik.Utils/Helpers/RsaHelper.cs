@@ -75,7 +75,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static X509Certificate2 LoadX509FromBase64(string certificateBase64Content, string password = null)
         {
-            return password == null
+            return password is null
                 ? new X509Certificate2(Convert.FromBase64String(certificateBase64Content))
                 : new X509Certificate2(Convert.FromBase64String(certificateBase64Content), password);
         }
@@ -157,7 +157,7 @@ namespace Shashlik.Utils.Helpers
         {
             encoding ??= Encoding.UTF8;
             if (string.IsNullOrEmpty(dataStr)) return string.Empty;
-            if (rsa == null) throw new ArgumentException("public key can not null");
+            if (rsa is null) throw new ArgumentException("public key can not null");
             var inputBytes = encoding.GetBytes(dataStr);
             var bufferSize = (rsa.KeySize / 8) - 11;
             var buffer = new byte[bufferSize];
@@ -186,7 +186,7 @@ namespace Shashlik.Utils.Helpers
         public static string Decrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            if (rsa == null) throw new ArgumentException("private key can not null");
+            if (rsa is null) throw new ArgumentException("private key can not null");
 
             var dataBytes = Convert.FromBase64String(data);
             var resBytes = rsa.Decrypt(dataBytes, padding);
@@ -206,7 +206,7 @@ namespace Shashlik.Utils.Helpers
             Encoding encoding = null, char connChar = '$')
         {
             encoding ??= Encoding.UTF8;
-            if (rsa == null)
+            if (rsa is null)
             {
                 throw new ArgumentException("private key can not null");
             }
@@ -235,7 +235,7 @@ namespace Shashlik.Utils.Helpers
         {
             encoding ??= Encoding.UTF8;
             if (string.IsNullOrEmpty(dataStr)) return string.Empty;
-            if (rsa == null) throw new ArgumentException("private key can not null");
+            if (rsa is null) throw new ArgumentException("private key can not null");
             var inputBytes = Convert.FromBase64String(dataStr);
             var bufferSize = rsa.KeySize / 8;
             var buffer = new byte[bufferSize];
@@ -283,7 +283,7 @@ namespace Shashlik.Utils.Helpers
             RSASignaturePadding padding, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            if (rsa == null)
+            if (rsa is null)
             {
                 throw new ArgumentException("private key can not null");
             }
@@ -306,7 +306,7 @@ namespace Shashlik.Utils.Helpers
             RSASignaturePadding padding, Encoding encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            if (rsa == null)
+            if (rsa is null)
             {
                 throw new ArgumentException("public key can not null");
             }

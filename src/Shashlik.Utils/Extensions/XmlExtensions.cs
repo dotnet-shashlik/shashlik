@@ -9,7 +9,7 @@ namespace Shashlik.Utils.Extensions
     {
         public static string ToXmlString<T>(this T value, bool noNamespace = true, bool noHeader = true)
         {
-            if (value == null)
+            if (value is null)
             {
                 return string.Empty;
             }

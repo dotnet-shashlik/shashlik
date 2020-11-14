@@ -39,7 +39,7 @@ namespace Shashlik.Utils.Extensions
                 return true;
 
             var baseType = childType.BaseType;
-            if (baseType == null) return false;
+            if (baseType is null) return false;
 
             return IsSubTypeOfGenericType(baseType, genericType);
         }
@@ -66,7 +66,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static ConstructorInfo GetDeclaredConstructor(this Type type, params Type[] types)
         {
-            if (types == null) throw new ArgumentNullException(nameof(types));
+            if (types is null) throw new ArgumentNullException(nameof(types));
             return type.GetConstructor(types);
         }
 
@@ -109,7 +109,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static object ParseTo(this object value, Type destinationType)
         {
-            if (value == null)
+            if (value is null)
                 return null;
 
             if (destinationType.IsInstanceOfType(value))
@@ -180,7 +180,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IDictionary<string, object> MapToDictionary<TModel>(this TModel obj)
         {
-            if (obj == null)
+            if (obj is null)
                 return null;
             var dic = new Dictionary<string, object>();
             var objType = obj.GetType();
@@ -215,7 +215,7 @@ namespace Shashlik.Utils.Extensions
                     if (propertyInfo.GetIndexParameters().Any() || !propertyInfo.CanRead) return;
 
                     var value = propertyInfo.GetValue(obj);
-                    if (value == null || propertyInfo.PropertyType.IsSimpleType())
+                    if (value is null || propertyInfo.PropertyType.IsSimpleType())
                         dic[propertyInfo.Name] = value;
                     else if (value is IDictionary ||
                              propertyInfo.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
@@ -245,7 +245,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
         {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
+            if (obj is null) throw new ArgumentNullException(nameof(obj));
             if (string.IsNullOrWhiteSpace(prop))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(prop));
 
@@ -413,7 +413,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IEnumerable<Type> GetInterfaces(this Type type, bool includeBaseTypeInherited)
         {
-            if (includeBaseTypeInherited || type.BaseType == null)
+            if (includeBaseTypeInherited || type.BaseType is null)
                 return type.GetInterfaces();
             return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
         }
@@ -427,8 +427,8 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         public static void CopyTo<T>(this T source, T dest, bool skipNullValue = false)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (dest == null) throw new ArgumentNullException(nameof(dest));
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (dest is null) throw new ArgumentNullException(nameof(dest));
 
             var type = typeof(T);
 
@@ -799,7 +799,7 @@ namespace Shashlik.Utils.Extensions
         {
             var name = value.ToString();
             var fieldInfo = value.GetType().GetField(name);
-            if (fieldInfo == null)
+            if (fieldInfo is null)
                 return null;
 
             return fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
@@ -1076,7 +1076,7 @@ namespace Shashlik.Utils.Extensions
             {
                 var pro = objType.GetProperty(proName,
                     BindingFlags.Public | BindingFlags.Instance | BindingFlags.GetProperty);
-                if (pro == null) return (false, null);
+                if (pro is null) return (false, null);
                 return (true, pro.GetValue(obj));
             }
         }

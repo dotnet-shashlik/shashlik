@@ -18,10 +18,10 @@ namespace Shashlik.Kernel.Dependency
         /// <returns></returns>
         public static bool GenericArgumentsIsMatch(Type[] arg1, Type[] arg2)
         {
-            if (arg1 == null || arg1.Length == 0)
+            if (arg1 is null || arg1.Length == 0)
                 return false;
 
-            if (arg2 == null || arg2.Length == 0)
+            if (arg2 is null || arg2.Length == 0)
                 return false;
 
             if (arg1.Length != arg2.Length)

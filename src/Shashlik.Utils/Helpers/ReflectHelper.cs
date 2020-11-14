@@ -138,7 +138,7 @@ namespace Shashlik.Utils.Helpers
             foreach (var item in assembly.DefinedTypes)
             {
                 var attr = item.GetCustomAttribute(baseType, inherit);
-                if (attr == null)
+                if (attr is null)
                     continue;
 
                 dic.Add(item, attr);
@@ -183,7 +183,7 @@ namespace Shashlik.Utils.Helpers
             foreach (var item in assembly.DefinedTypes)
             {
                 var attr = item.GetCustomAttribute<TAttribute>(inherit);
-                if (attr == null)
+                if (attr is null)
                     continue;
 
                 dic.Add(item, attr);
@@ -329,7 +329,7 @@ namespace Shashlik.Utils.Helpers
                 allDependencies[key].Add(item.Name);
 
                 var next = runtimeLibraries.FirstOrDefault(r => r.Name == item.Name);
-                if (next == null || next.Dependencies.IsNullOrEmpty())
+                if (next is null || next.Dependencies.IsNullOrEmpty())
                     continue;
                 LoadAllDependency(runtimeLibraries, key, handled, next, allDependencies);
             }

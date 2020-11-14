@@ -20,7 +20,7 @@ namespace Shashlik.Cap
         public void Publish<T>(T eventModel, string? callbackName = null)
             where T : class, IEvent
         {
-            if (eventModel == null)
+            if (eventModel is null)
                 throw new ArgumentNullException(nameof(eventModel));
             CapPublisher.Publish(NameRuler.GetName(typeof(T)), eventModel, callbackName);
         }
@@ -29,7 +29,7 @@ namespace Shashlik.Cap
             CancellationToken cancellationToken = default)
             where T : class, IEvent
         {
-            if (eventModel == null)
+            if (eventModel is null)
                 throw new ArgumentNullException(nameof(eventModel));
             return CapPublisher.PublishAsync(NameRuler.GetName(typeof(T)), eventModel, callbackName, cancellationToken);
         }

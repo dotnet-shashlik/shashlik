@@ -45,13 +45,13 @@ namespace Shashlik.AutoMapper
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
             IEnumerable<Assembly> assemblies)
         {
-            if (assemblies == null)
+            if (assemblies is null)
                 throw new ArgumentNullException(nameof(assemblies));
 
             var configuration = new MapperConfiguration(config =>
             {
                 var method = config.GetType().GetTypeInfo().GetMethod("CreateMap", new Type[] {typeof(MemberList)});
-                if (method == null || !method.IsGenericMethodDefinition)
+                if (method is null || !method.IsGenericMethodDefinition)
                     throw new MissingMethodException(nameof(IMapperConfigurationExpression), "CreateMap");
                 //.Single(r => r.Name == "CreateMap" && r.IsGenericMethodDefinition && r.GetParameters().Length == 1);
 
@@ -115,7 +115,7 @@ namespace Shashlik.AutoMapper
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             }
 
-                            if (obj == null)
+                            if (obj is null)
                                 throw new InvalidConstraintException(
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             try
@@ -179,7 +179,7 @@ namespace Shashlik.AutoMapper
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             }
 
-                            if (obj == null)
+                            if (obj is null)
                                 throw new InvalidConstraintException(
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
                             try
@@ -215,7 +215,7 @@ namespace Shashlik.AutoMapper
         /// <returns></returns>
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
-            if (ShashlikAutoMapper.Instance == null)
+            if (ShashlikAutoMapper.Instance is null)
                 throw new InvalidOperationException("shashlik mapper hasn't been initialized.");
             return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }

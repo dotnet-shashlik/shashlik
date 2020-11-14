@@ -67,9 +67,9 @@ namespace Shashlik.EfCore
             var isString = ValueType == typeof(string);
             if (Value != null && Value.Equals(value))
                 return true;
-            if (Value == null && value == null)
+            if (Value is null && value is null)
                 return true;
-            if (Value == null || value == null)
+            if (Value is null || value is null)
                 return false;
 
             return isString && (

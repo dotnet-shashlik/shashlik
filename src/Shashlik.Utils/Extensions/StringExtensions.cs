@@ -38,7 +38,7 @@ namespace Shashlik.Utils.Extensions
         public static bool EqualsIgnoreCase(this string source, string target,
             StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (source == null || target == null)
+            if (source is null || target is null)
                 return false;
             return source.Equals(target, stringComparison);
         }
@@ -71,9 +71,7 @@ namespace Shashlik.Utils.Extensions
         {
             if (string.IsNullOrWhiteSpace(str))
                 return new List<T>();
-            var query =
-                str
-                    .Split(separators, StringSplitOptions.RemoveEmptyEntries);
+            var query = str.Split(separators, StringSplitOptions.RemoveEmptyEntries);
 
             List<T> result = new List<T>();
             foreach (var item in query)
@@ -93,15 +91,11 @@ namespace Shashlik.Utils.Extensions
 
         public static bool Contains(this string source, string value, StringComparison stringComparison)
         {
-            if (source == null || value == null)
-            {
+            if (source is null || value is null)
                 return false;
-            }
 
-            if (value == "")
-            {
+            if (value == string.Empty)
                 return true;
-            }
 
             return (source.IndexOf(value, stringComparison) >= 0);
         }
@@ -148,7 +142,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsMatch(this string value, string regexPattern)
         {
-            if (value == null)
+            if (value is null)
                 return false;
             return Regex.IsMatch(value, regexPattern);
         }
@@ -239,7 +233,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
         {
-            if (values == null) return url;
+            if (values is null) return url;
             var keyValuePairs = values.ToList();
             if (url.IsNullOrWhiteSpace() || keyValuePairs.IsNullOrEmpty())
                 return url;
@@ -256,7 +250,7 @@ namespace Shashlik.Utils.Extensions
             for (var i = 0; i < count; i++)
             {
                 var item = keyValuePairs.ElementAt(i);
-                if (item.Value == null)
+                if (item.Value is null)
                     continue;
 
                 sb.Append(item.Key);

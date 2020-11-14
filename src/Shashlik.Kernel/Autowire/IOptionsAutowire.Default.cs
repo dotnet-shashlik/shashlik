@@ -14,12 +14,12 @@ namespace Shashlik.Kernel.Autowire
     {
         public void ConfigureAll(IKernelServices kernelServices, IEnumerable<Type> disabledAutoOptionTypes)
         {
-            if (kernelServices == null) throw new ArgumentNullException(nameof(kernelServices));
-            if (disabledAutoOptionTypes == null) throw new ArgumentNullException(nameof(disabledAutoOptionTypes));
+            if (kernelServices is null) throw new ArgumentNullException(nameof(kernelServices));
+            if (disabledAutoOptionTypes is null) throw new ArgumentNullException(nameof(disabledAutoOptionTypes));
 
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
                 .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(IConfiguration)});
-            if (method == null)
+            if (method is null)
                 throw new MethodAccessException(
                     $"Cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
 

@@ -40,7 +40,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string Join<T>(this IEnumerable<T> source, string separator)
         {
-            if (separator == null)
+            if (separator is null)
             {
                 throw new ArgumentNullException(nameof(separator));
             }
@@ -56,7 +56,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="action"></param>
         public static void ForEachItem<T>(this IEnumerable<T> list, Action<T> action)
         {
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -75,7 +75,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IReadOnlyList<T> ToReadOnly<T>(this IEnumerable<T> list)
         {
-            if (list == null)
+            if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
@@ -91,7 +91,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
         {
-            return list == null || !list.Any();
+            return list is null || !list.Any();
         }
 
         /// <summary>
@@ -103,12 +103,12 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T> keyComparer = null)
         {
-            if (list == null)
+            if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
 
-            if (keyComparer == null)
+            if (keyComparer is null)
                 return list.GroupBy(r => r).Any(g => g.Count() > 1);
             else
                 return list.GroupBy(r => r, keyComparer).Any(g => g.Count() > 1);
@@ -126,17 +126,17 @@ namespace Shashlik.Utils.Extensions
         public static bool HasRepeat<T, TP>(this IEnumerable<T> list, Func<T, TP> selectProperty,
             IEqualityComparer<TP> keyComparer = null)
         {
-            if (list == null)
+            if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
 
-            if (selectProperty == null)
+            if (selectProperty is null)
             {
                 throw new ArgumentNullException(nameof(selectProperty));
             }
 
-            if (keyComparer == null)
+            if (keyComparer is null)
                 return list.GroupBy(selectProperty).Any(g => g.Count() > 1);
             else
                 return list.GroupBy(selectProperty, keyComparer).Any(g => g.Count() > 1);
@@ -153,12 +153,12 @@ namespace Shashlik.Utils.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> list, bool condition, Func<T, bool> where)
         {
-            if (list == null)
+            if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
 
-            if (where == null)
+            if (where is null)
             {
                 throw new ArgumentNullException(nameof(where));
             }
@@ -179,12 +179,12 @@ namespace Shashlik.Utils.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> list, bool condition, Expression<Func<T, bool>> where)
         {
-            if (list == null)
+            if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
 
-            if (where == null)
+            if (where is null)
             {
                 throw new ArgumentNullException(nameof(where));
             }
@@ -203,7 +203,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IQueryable<T> DoPage<T>(this IQueryable<T> query, int pageIndex, int pageSize)
         {
-            if (query == null)
+            if (query is null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
@@ -223,7 +223,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IEnumerable<T> DoPage<T>(this IEnumerable<T> query, int pageIndex, int pageSize)
         {
-            if (query == null)
+            if (query is null)
             {
                 throw new ArgumentNullException(nameof(query));
             }
@@ -244,7 +244,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
-            if (key == null)
+            if (key is null)
                 return default;
             if (dic.TryGetValue(key, out TValue value))
                 return value;
@@ -286,7 +286,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="from"></param>
         public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue> from)
         {
-            if (from == null) return;
+            if (from is null) return;
             foreach (var kv in from)
             {
                 if (to.ContainsKey(kv.Key))

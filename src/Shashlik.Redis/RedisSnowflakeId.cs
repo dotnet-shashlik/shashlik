@@ -9,7 +9,7 @@ namespace Shashlik.Redis
     {
         static RedisSnowflakeId()
         {
-            if (RedisHelper.Instance == null)
+            if (RedisHelper.Instance is null)
                 throw new System.Exception($"redis not initialized.");
             var (workId, dcId) = RedisSnowflakeIdCalculator.GetIdFromRedis();
 

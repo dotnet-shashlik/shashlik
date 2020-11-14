@@ -235,7 +235,7 @@ namespace Shashlik.Kernel
         public static IKernelServices Autowire<T>(this IKernelServices kernelServices,
             Action<T> autowireAction) where T : IAutowire
         {
-            if (autowireAction == null) throw new ArgumentNullException(nameof(autowireAction));
+            if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<T>>();
             var dic = autowireProvider.Load(kernelServices, serviceProvider);
@@ -252,7 +252,7 @@ namespace Shashlik.Kernel
         public static IKernelServiceProvider Autowire<T>(this IKernelServiceProvider kernelServiceProvider,
             Action<T> autowireAction) where T : IAutowire
         {
-            if (autowireAction == null) throw new ArgumentNullException(nameof(autowireAction));
+            if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));
             var autowireProvider = kernelServiceProvider.GetRequiredService<IAutowireProvider<T>>();
             var kernelServices = kernelServiceProvider.GetService<IKernelServices>();
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);

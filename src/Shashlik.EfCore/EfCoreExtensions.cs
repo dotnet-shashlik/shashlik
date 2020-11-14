@@ -43,7 +43,7 @@ namespace Shashlik.EfCore
         /// <returns></returns>
         public static IReadOnlyList<Type> GetAllEntityTypes(this DbContext context)
         {
-            if (context == null)
+            if (context is null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
@@ -103,7 +103,7 @@ namespace Shashlik.EfCore
             Func<Type, bool> entityTypeFilter,
             IServiceProvider? entityTypeConfigurationServiceProvider = null)
         {
-            if (assembly == null)
+            if (assembly is null)
                 throw new ArgumentNullException(nameof(assembly));
 
             //反射得到ModelBuilder的ApplyConfiguration<TEntity>(...)方法
@@ -133,7 +133,7 @@ namespace Shashlik.EfCore
 
                 var map = entityTypeConfigurationServiceProvider?.GetService(mappingType) ??
                           Activator.CreateInstance(mappingType);
-                if (map == null)
+                if (map is null)
                     throw new InvalidOperationException($"can not create instance of: {mappingType}!");
                 applyConfigurationMethod.MakeGenericMethod(entityType)
                     .Invoke(modelBuilder, new[] {map});

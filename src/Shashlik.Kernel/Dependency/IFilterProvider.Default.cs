@@ -31,7 +31,7 @@ namespace Shashlik.Kernel.Dependency
                 foreach (var item in list)
                 {
                     var condition = item.Conditions.FirstOrDefault(r => r.order == order);
-                    if (condition.condition == null)
+                    if (condition.condition is null)
                         continue;
 
                     if (!condition.condition.ConditionOn(services, item.ServiceDescriptor, rootConfiguration,

@@ -7,7 +7,6 @@ using Aliyun.Acs.Dysmsapi.Model.V20170525;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
@@ -32,7 +31,7 @@ namespace Shashlik.Sms.Domains
             params string[] args)
         {
             var template = options.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
-            if (template == null)
+            if (template is null)
                 throw new SmsArgException($"短信发送失败,未定义的短信类型:{subject}");
             if (template.TemplateId.IsNullOrWhiteSpace())
             {

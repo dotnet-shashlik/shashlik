@@ -36,7 +36,7 @@ namespace Shashlik.Identity
         public async Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user)
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
-            if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
+            if (securityStamp is null) throw new ArgumentNullException(nameof(securityStamp));
             var target = GetTarget(await manager.GetUserIdAsync(user));
             var code = await Captcha.Build(purpose, target, securityStamp, Options.Value.CaptchaLength);
             return code.Code;
@@ -54,7 +54,7 @@ namespace Shashlik.Identity
             TUser user)
         {
             var securityStamp = await manager.GetSecurityStampAsync(user);
-            if (securityStamp == null) throw new ArgumentNullException(nameof(securityStamp));
+            if (securityStamp is null) throw new ArgumentNullException(nameof(securityStamp));
             var target = GetTarget(await manager.GetUserIdAsync(user));
             return await Captcha.IsValid(purpose, target, token, securityStamp);
         }
