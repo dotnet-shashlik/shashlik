@@ -89,6 +89,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Distribute
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.RazorFormat.Test", "Shashlik.RazorFormat.Test\Shashlik.RazorFormat.Test.csproj", "{17944FE4-784E-4794-BE87-195F3D1F1636}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Redis.Tests", "Shashlik.Redis.Tests\Shashlik.Redis.Tests.csproj", "{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -324,6 +326,12 @@ Global
 		{17944FE4-784E-4794-BE87-195F3D1F1636}.Release|Any CPU.Build.0 = Release|Any CPU
 		{17944FE4-784E-4794-BE87-195F3D1F1636}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{17944FE4-784E-4794-BE87-195F3D1F1636}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -339,6 +347,7 @@ Global
 		{1B2DFF53-9618-44BF-BD8F-50058A1B604D} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{B57C2798-37BB-4926-B3B1-8437FA62E998} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{17944FE4-784E-4794-BE87-195F3D1F1636} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}
