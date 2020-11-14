@@ -65,10 +65,15 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void ConfidentialData_test()
         {
-            string phone = "13628452323";
-            phone.ConfidentialData(3, 3).ShouldBe("136****323");
-            "".ConfidentialData(3,3).ShouldBe("");
-            "abc".ConfidentialData(4,4).ShouldBe("abc");
+            string phone = "13000000000";
+            phone.ConfidentialData(3, 3).ShouldBe("130****000");
+            "".ConfidentialData(3, 3).ShouldBe("");
+            "abc".ConfidentialData(4, 4).ShouldBe("abc****abc");
+            Should.Throw<Exception>(() => "abc".ConfidentialData(-1, 4).ShouldBe("abc"));
+            Should.Throw<Exception>(() => "abc".ConfidentialData(4, -1).ShouldBe("abc"));
+            phone.ConfidentialData(3, 3, "####").ShouldBe("130####000");
+            phone.ConfidentialData(12, 3, "####").ShouldBe($"{phone}####000");
+            phone.ConfidentialData(3, 12, "####").ShouldBe($"130####{phone}");
         }
 
         [Fact]
@@ -127,7 +132,7 @@ namespace Shashlik.Utils.Test
                 str.UrlEncode().UrlDecode().ShouldBe(str);
             }
         }
-        
+
         [Fact]
         public void EqualsTest()
         {

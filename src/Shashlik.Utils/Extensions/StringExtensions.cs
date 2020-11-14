@@ -174,23 +174,32 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="beginLength">前面保留几位</param>
         /// <param name="endLength">后面保留几位</param>
+        /// <param name="mixStr">混淆字符</param>
         /// <returns></returns>
-        public static string ConfidentialData(this string value, int beginLength, int endLength)
+        public static string ConfidentialData(this string value, int beginLength, int endLength, string mixStr = "****")
         {
+            if (mixStr == null) throw new ArgumentNullException(nameof(mixStr));
+            if (beginLength < 0)
+                throw new ArgumentOutOfRangeException(nameof(beginLength));
+            if (endLength < 0)
+                throw new ArgumentOutOfRangeException(nameof(endLength));
+
             if (value.IsNullOrWhiteSpace())
-                return "";
+                return string.Empty;
 
             var span = value.AsSpan();
             var sb = new StringBuilder();
             if (value.Length >= beginLength)
                 sb.Append(span.Slice(0, beginLength).ToString());
             else
-                return value;
+                sb.Append(value);
 
-            sb.Append("****");
+            sb.Append(mixStr);
 
             if (value.Length >= endLength)
                 sb.Append(span.Slice(value.Length - endLength).ToString());
+            else
+                sb.Append(value);
 
             return sb.ToString();
         }
@@ -228,8 +237,8 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// url参数合并
         /// </summary>
-        /// <param name="url"></param>
-        /// <param name="values"></param>
+        /// <param name="url">url</param>
+        /// <param name="values">key/value键值对参数</param>
         /// <returns></returns>
         public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
         {
@@ -291,14 +300,14 @@ namespace Shashlik.Utils.Extensions
             return stringInfo.SubstringByTextElements(start, length);
         }
 
-        #region Base64位加密解密
+        #region Base64编码/解码
 
         /// <summary>
         /// 将字符串转换成base64格式,使用UTF8字符集
         /// </summary>
-        /// <param name="content">加密内容</param>
-        /// <param name="encoding"></param>
-        /// <param name="urlSafe"></param>
+        /// <param name="content">原始内容</param>
+        /// <param name="encoding">编码方式,默认utf8</param>
+        /// <param name="urlSafe">是否使用url安全方式编码,参考java的encodeBase64URLSafe</param>
         /// <returns></returns>
         public static string Base64Encode(this string content, Encoding encoding = null, bool urlSafe = false)
         {
@@ -314,11 +323,11 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 将base64格式，转换utf8
+        /// 解码base64文本内容
         /// </summary>
-        /// <param name="content">解密内容</param>
-        /// <param name="encoding"></param>
-        /// <param name="urlSafe"></param>
+        /// <param name="content">已编码内容</param>
+        /// <param name="encoding">编码方式,默认utf8</param>
+        /// <param name="urlSafe">是否使用url安全方式编码,参考java的encodeBase64URLSafe</param>
         /// <returns></returns>
         public static string Base64Decode(this string content, Encoding encoding = null, bool urlSafe = false)
         {
@@ -368,7 +377,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 首字母转小写
+        /// 首字母转大写
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
