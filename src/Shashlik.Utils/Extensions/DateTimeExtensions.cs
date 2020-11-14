@@ -159,11 +159,21 @@ namespace Shashlik.Utils.Extensions
             return dt.GetNextSpecificDayOfMonth(dayOfMonth);
         }
 
+        /// <summary>
+        /// format to yyyy-MM-dd HH:mm:ss
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public static string ToStringyyyyMMddHHmmss(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
+        /// <summary>
+        /// format to yyyy-MM-dd HH:mm
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public static string ToStringyyyyMMddHHmm(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd HH:mm");
@@ -211,7 +221,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 计算年龄字符串
+        /// 计算年龄
         /// 默认返回：xx岁xx月xx天
         /// </summary>
         /// <param name="birthday">第1个日期参数</param>
