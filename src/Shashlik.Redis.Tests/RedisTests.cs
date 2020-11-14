@@ -94,7 +94,7 @@ namespace Shashlik.Redis.Tests
         }
 
         /// <summary>
-        /// CSRedisCore原生锁测试
+        /// RedisLock测试
         /// </summary>
         [Fact]
         public void RedisLockTest()
@@ -102,44 +102,48 @@ namespace Shashlik.Redis.Tests
             var locker = GetService<ILock>();
 
             {
-                using var locker1 = locker.Lock("TestLock1", 5);
+                using var locker1 = locker.Lock("TestLock1", 5, true, 5);
                 locker1.ShouldNotBeNull();
-                using var locker2 = locker.Lock("TestLock1", 5);
-                locker2.ShouldBeNull();
+                Should.Throw<Exception>(() => locker.Lock("TestLock1", 5, true, 5));
             }
 
             {
-                var locker1 = locker.Lock("TestLock2", 5, false);
+                var locker1 = locker.Lock("TestLock2", 5, true, 5);
                 locker1.ShouldNotBeNull();
-                var locker2 = locker.Lock("TestLock2", 5);
-                locker2.ShouldBeNull();
+                Should.Throw<Exception>(() => locker.Lock("TestLock2", 5, true, 5));
                 locker1.Dispose();
-                using var locker3 = locker.Lock("TestLock2", 5);
+                using var locker3 = locker.Lock("TestLock2", 5, true, 5);
                 locker3.ShouldNotBeNull();
             }
 
             {
-                using var locker1 = locker.Lock("TestLock3", 5);
+                using var locker1 = locker.Lock("TestLock3", 5, true, 5);
                 locker1.ShouldNotBeNull();
 
                 var count = 5;
                 for (var i = 0; i < count; i++)
                 {
                     Thread.Sleep(5000);
-                    using var locker2 = locker.Lock("TestLock3", 5);
-                    locker2.ShouldBeNull();
+                    Should.Throw<Exception>(() => locker.Lock("TestLock3", 5, true, 5));
                 }
             }
 
             {
-                using var locker1 = locker.Lock("TestLock4", 5);
+                using var locker1 = locker.Lock("TestLock4", 5, true, 5);
                 locker1.ShouldNotBeNull();
 
                 var lockers = new ConcurrentBag<IDisposable>();
                 Parallel.For(1, 10, index =>
                 {
-                    using var locker2 = locker.Lock("TestLock4", 5);
-                    lockers.Add(locker2);
+                    try
+                    {
+                        using var locker2 = locker.Lock("TestLock4", 5, true, 5);
+                        lockers.Add(locker2);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 });
 
                 lockers.Count(r => r != null).ShouldBe(0);
@@ -149,8 +153,15 @@ namespace Shashlik.Redis.Tests
                 var lockers = new ConcurrentBag<IDisposable>();
                 Parallel.For(1, 10, index =>
                 {
-                    var locker2 = locker.Lock("TestLock5", 5);
-                    lockers.Add(locker2);
+                    try
+                    {
+                        var locker2 = locker.Lock("TestLock5", 5, true, 5);
+                        lockers.Add(locker2);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
                 });
 
                 lockers.Count(r => r != null).ShouldBe(1);
@@ -160,9 +171,17 @@ namespace Shashlik.Redis.Tests
                     csRedisClientLock?.Dispose();
                 }
 
-                using var locker1 = locker.Lock("TestLock5", 5);
+                using var locker1 = locker.Lock("TestLock5", 5, true, 5);
                 locker1.ShouldNotBeNull();
             }
+        }
+
+        [Fact]
+        public void RedisSnowflakeIdTest()
+        {
+            RedisSnowflakeId.DatacenterId.ShouldNotBeNull();
+            RedisSnowflakeId.WorkerId.ShouldNotBeNull();
+            RedisSnowflakeId.IdWorker.NextId().ToString().Length.ShouldBe(19);
         }
     }
 }

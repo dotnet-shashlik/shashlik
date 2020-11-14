@@ -26,7 +26,8 @@ namespace Shashlik.Redis
         public IDisposable Lock(string key, int lockSeconds, bool autoDelay = true, int waitTimeoutSeconds = 60)
         {
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
-            return Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ?? throw new SynchronizationLockException();
+            return Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
+                   throw new Exception($"Can't get lock: {key}.");
         }
 
         // Lock copy from: https://github.com/2881099/csredis/blob/master/src/CSRedisCore/CSRedisClient.cs

@@ -21,7 +21,9 @@ namespace Shashlik.Redis
         private const int Expire = 60 * 60 + 5 * 60;
         private static int? _workId = null;
         private static int? _dcId = null;
+
         private static readonly object Locker = new object();
+
         // 程序退出时取消任务
         private static readonly CancellationTokenSource Source = new CancellationTokenSource();
 
@@ -47,7 +49,8 @@ namespace Shashlik.Redis
                             break;
                         }
                     }
-                    if(_workId == null) throw new Exception("未能从redis从计算得到workerId");
+
+                    if (_workId == null) throw new Exception("未能从redis从计算得到workerId");
                 }
 
                 if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
@@ -63,7 +66,7 @@ namespace Shashlik.Redis
                     break;
                 }
 
-                if(_dcId == null) throw new Exception("未能从redis从计算得到dcId");
+                if (_dcId == null) throw new Exception("未能从redis从计算得到dcId");
                 return (_workId.Value, _dcId.Value);
             }
         }
