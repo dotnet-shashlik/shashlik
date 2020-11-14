@@ -38,8 +38,7 @@ namespace Shashlik.Utils.Extensions
         public static bool EqualsIgnoreCase(this string source, string target,
             StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
-            if (source is null || target is null)
-                return false;
+            if (source is null || target is null) return false;
             return source.Equals(target, stringComparison);
         }
 
@@ -109,6 +108,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string SubStringIfTooLong(this string str, int length, string suffix = "...")
         {
+            if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
+
             if (string.IsNullOrWhiteSpace(str))
                 return string.Empty;
 
@@ -131,6 +132,9 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string ReplaceIgnoreCase(this string str, string pattern, string replaceString)
         {
+            if (str == null) throw new ArgumentNullException(nameof(str));
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+            if (replaceString == null) throw new ArgumentNullException(nameof(replaceString));
             return Regex.Replace(str, pattern, replaceString, RegexOptions.IgnoreCase);
         }
 
@@ -142,8 +146,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsMatch(this string value, string regexPattern)
         {
-            if (value is null)
-                return false;
+            if (value is null) return false;
+            if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
             return Regex.IsMatch(value, regexPattern);
         }
 
