@@ -148,7 +148,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 空值转换为null
+        /// 空字符串转换为null
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -158,13 +158,14 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 字符串格式化,string.Formart
+        /// 字符串格式化,string.Format
         /// </summary>
         /// <param name="value"></param>
         /// <param name="ps"></param>
         /// <returns></returns>
         public static string Format(this string value, params object[] ps)
         {
+            if (value == null) throw new ArgumentNullException(nameof(value));
             return string.Format(value, ps);
         }
 
@@ -204,31 +205,67 @@ namespace Shashlik.Utils.Extensions
             return sb.ToString();
         }
 
+        /// <summary>
+        /// is starts with "<paramref name="starts"/>" with ignore case
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="starts"></param>
+        /// <returns></returns>
         public static bool StartsWithIgnoreCase(this string value, string starts)
         {
+            if (value is null) return false;
+            if (starts is null) return false;
             return value.AsSpan().StartsWith(starts.AsSpan(), StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// is ends with "<paramref name="ends"/>" with ignore case
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="ends"></param>
+        /// <returns></returns>
         public static bool EndsWithIgnoreCase(this string value, string ends)
         {
+            if (value is null) return false;
+            if (ends is null) return false;
             return value.AsSpan().EndsWith(ends.AsSpan(), StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// html encode
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string HtmlEncode(this string value)
         {
             return HttpUtility.HtmlEncode(value);
         }
 
+        /// <summary>
+        /// html decode
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string HtmlDecode(this string value)
         {
             return HttpUtility.HtmlDecode(value);
         }
 
+        /// <summary>
+        /// url encode
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string UrlEncode(this string value)
         {
             return HttpUtility.UrlEncode(value);
         }
 
+        /// <summary>
+        /// url decode
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static string UrlDecode(this string value)
         {
             return HttpUtility.UrlDecode(value);
