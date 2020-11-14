@@ -309,7 +309,8 @@ namespace Shashlik.Utils.Extensions
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
             PropertyDescriptorCollection props =
-                TypeDescriptor.GetProperties(typeof(T));
+                TypeDescriptor.GetProperties(typeof(T))
+                ;
 
             DataTable table = new DataTable();
             for (int i = 0; i < props.Count; i++)
