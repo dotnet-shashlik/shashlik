@@ -2,7 +2,7 @@
 
 namespace Shashlik.Utils.Helpers
 {
-    public class SnowflakeId
+    public sealed class SnowflakeId
     {
         private const long Twepoch = 1288834974657L;
 
@@ -38,7 +38,7 @@ namespace Shashlik.Utils.Helpers
         private long DatacenterId { get; set; }
         private long Sequence { get; set; }
 
-        public virtual long NextId()
+        public long NextId()
         {
             lock (_lock)
             {
@@ -67,14 +67,14 @@ namespace Shashlik.Utils.Helpers
             }
         }
 
-        protected virtual long TilNextMillis(long lastTimestamp)
+        private long TilNextMillis(long lastTimestamp)
         {
             var timestamp = TimeGen();
             while (timestamp <= lastTimestamp) timestamp = TimeGen();
             return timestamp;
         }
 
-        protected virtual long TimeGen()
+        private long TimeGen()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
         }

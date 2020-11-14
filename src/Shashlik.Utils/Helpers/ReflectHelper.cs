@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -18,6 +19,10 @@ namespace Shashlik.Utils.Helpers
         public static List<Assembly> GetReferredAssemblies(Assembly assembly,
             DependencyContext dependencyContext = null)
         {
+            var res = CacheAssemblyReferred.GetOrDefault(assembly);
+            if (res != null)
+                return res;
+
             var allLib = (dependencyContext ?? DependencyContext.Default)
                 .RuntimeLibraries
                 .OrderBy(r => r.Name)
@@ -48,7 +53,9 @@ namespace Shashlik.Utils.Helpers
                 })
                 .Where(r => r != null);
 
-            return list.ToList();
+            res = list.ToList();
+            CacheAssemblyReferred.TryAdd(assembly, res);
+            return res;
         }
 
         /// <summary>
@@ -306,6 +313,12 @@ namespace Shashlik.Utils.Helpers
         }
 
         #region private
+
+        /// <summary>
+        /// 缓存程序集被引用数据
+        /// </summary>
+        private static readonly ConcurrentDictionary<Assembly, List<Assembly>> CacheAssemblyReferred =
+            new ConcurrentDictionary<Assembly, List<Assembly>>();
 
         /// <summary>
         /// 加载所有的依赖
