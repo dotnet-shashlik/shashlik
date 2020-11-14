@@ -19,11 +19,11 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// 判断给定的类型是否继承自<paramref name="genericType"/>泛型类型,
         /// <para>
-        /// 例typeof(Child).IsChildTypeOfGenericType(typeof(IParent&lt;&gt;));
+        /// 例: typeof(Child).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));
         /// </para>
         /// </summary>
         /// <param name="childType">子类型</param>
-        /// <param name="genericType">泛型父级,例:typeof(IParent&lt;&gt;)</param>
+        /// <param name="genericType">泛型父级,例: typeof(IParent&lt;&gt;)</param>
         /// <returns></returns>
         public static bool IsSubTypeOfGenericType(this Type childType, Type genericType)
         {
@@ -241,7 +241,7 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="obj"></param>
-        /// <param name="prop">属性名称,子级属性.连接,例: User.Name</param>
+        /// <param name="prop">属性名称, 子级属性.连接,例: User.Name</param>
         /// <returns></returns>
         public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
         {
@@ -267,7 +267,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 是否为<paramref name="parentType"/>的子类
+        /// 是否为类型<paramref name="parentType"/>的子类
         /// </summary>
         /// <param name="type"></param>
         /// <param name="parentType"></param>
@@ -278,7 +278,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 是否为<typeparamref name="T"/>的子类
+        /// 是否为类型<typeparamref name="T"/>的子类
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>
@@ -289,7 +289,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 对象深度克隆
+        /// 对象深度克隆(json序列化/反序列化)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
@@ -303,7 +303,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 是否定义了特性
+        /// 是否定义了特性类型<typeparamref name="T"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="member"></param>
@@ -316,7 +316,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 是否定义了特性
+        /// 是否定义了特性特性类型<paramref name="type"/>
         /// </summary>
         /// <param name="member"></param>
         /// <param name="type"></param>
