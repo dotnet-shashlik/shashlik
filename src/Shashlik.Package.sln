@@ -37,8 +37,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha.Totp", "Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Transactional", "Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj", "{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Pager", "Shashlik.Pager\Shashlik.Pager.csproj", "{A8735F96-4B93-4420-A0AA-586A570DB4AC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.RazorFormat", "Shashlik.RazorFormat\Shashlik.RazorFormat.csproj", "{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.MySql", "Shashlik.DataProtection.MySql\Shashlik.DataProtection.MySql.csproj", "{BAA25C5A-F4BB-4C88-B071-C820EA1C696E}"
@@ -59,7 +57,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Cap.Rabbit", "Shas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.Cap", "Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj", "{A9197FCC-20C4-4BF3-A188-D43DDE346B70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.EventBus", "Shashlik.Sms.EventBus\Shashlik.Sms.EventBus.csproj", "{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.EventBus", "Shashlik.Sms.EventBus\Shashlik.Sms.EventBus.csproj", "{C8920538-5F15-4CEB-83BA-4A1ACD463905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -170,12 +168,6 @@ Global
 		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8735F96-4B93-4420-A0AA-586A570DB4AC}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -236,15 +228,17 @@ Global
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Test|Any CPU.ActiveCfg = Release|Any CPU
-		{2F4871ED-F9A9-4F59-BF0C-0EE90D325280}.Test|Any CPU.Build.0 = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.ActiveCfg = Release|Any CPU
+		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}
