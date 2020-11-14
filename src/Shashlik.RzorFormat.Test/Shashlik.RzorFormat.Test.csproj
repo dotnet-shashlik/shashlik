@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+    <ProjectReference Include="..\Shashlik.RazorFormat\Shashlik.RazorFormat.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,20 +38,11 @@
     <None Update="rsatest.demokey\rsa_public_key.pem">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="HelperTests\test_template.xls">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="HelperTests\test_template.xlsx" />
-    <Content Include="HelperTests\test_template.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Remove="rsatest.demokey\test.pfx" />
-    <Content Include="rsatest.demokey\test.pfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>

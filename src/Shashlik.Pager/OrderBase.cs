@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Pager
 {
@@ -31,7 +30,7 @@ namespace Shashlik.Pager
         public OrderByModel<TEntity> Get(string orderBy)
         {
             // 空使用第一个,即默认排序
-            if (orderBy.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(orderBy))
                 return Orders.FirstOrDefault().Value;
             if (!Orders.ContainsKey(orderBy))
                 throw new ArgumentException($"Can not find sort definition of {orderBy}");

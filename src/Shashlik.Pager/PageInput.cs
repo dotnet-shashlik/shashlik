@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
-// ReSharper disable UnusedMember.Global
 
 namespace Shashlik.Pager
 {
@@ -13,13 +10,13 @@ namespace Shashlik.Pager
         /// <summary>
         /// 分页参数,默认1
         /// </summary>
-        [Range(1, int.MaxValue, ErrorMessage = ("参数错误"))]
+        [Range(1, int.MaxValue)]
         public int PageIndex { get; set; } = 1;
 
         /// <summary>
         /// 分页参数,默认20
         /// </summary>
-        [Range(1, int.MaxValue, ErrorMessage = ("参数错误"))]
+        [Range(1, int.MaxValue)]
         public int PageSize { get; set; } = 20;
 
         /// <summary>

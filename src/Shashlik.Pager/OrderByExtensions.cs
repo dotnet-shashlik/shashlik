@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Pager
 {
@@ -18,7 +17,7 @@ namespace Shashlik.Pager
             OrderByBase<TEntity> order, string field, OrderType orderType)
         {
             field = field?.Trim();
-            if (field.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(field))
                 return order.Get(null).OrderByFunction(query);
 
             return order.Get($"{field}.{orderType}").OrderByFunction(query);
@@ -38,7 +37,8 @@ namespace Shashlik.Pager
             return
                 query
                     .OrderBy(order, input.OrderField, input.OrderType)
-                    .DoPage(input.PageIndex, input.PageSize);
+                    .Skip((input.PageIndex - 1) * input.PageSize)
+                    .Take(input.PageSize);
         }
 
         /// <summary>
@@ -51,7 +51,9 @@ namespace Shashlik.Pager
         public static IQueryable<TEntity> DoPage<TEntity>(this IQueryable<TEntity> query,
             PageInput input)
         {
-            return query.DoPage(input.PageIndex, input.PageSize);
+            return query
+                .Skip((input.PageIndex - 1) * input.PageSize)
+                .Take(input.PageSize);
         }
     }
 }

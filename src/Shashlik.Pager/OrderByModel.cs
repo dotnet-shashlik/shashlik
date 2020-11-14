@@ -14,17 +14,20 @@ namespace Shashlik.Pager
         /// </summary>
         /// <param name="orderBy">排序定义名称: 排序字段.排序方式, 例Name.asc 不区分大小写</param>
         /// <param name="func">排序表达式</param>
-        public OrderByModel(
-            string orderBy,
-            Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> func
-        )
+        public OrderByModel(string orderBy, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> func)
         {
             OrderBy = orderBy ?? throw new ArgumentNullException(nameof(orderBy));
             OrderByFunction = func ?? throw new ArgumentNullException(nameof(func));
         }
 
+        /// <summary>
+        /// 排序方式名称
+        /// </summary>
         public string OrderBy { get; }
 
+        /// <summary>
+        /// 排序表达式
+        /// </summary>
         public Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> OrderByFunction { get; }
     }
 }
