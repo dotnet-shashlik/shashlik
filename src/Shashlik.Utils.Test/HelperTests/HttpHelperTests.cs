@@ -252,7 +252,7 @@ namespace Shashlik.Utils.Test
         [Fact]
         public async Task InvokeTest()
         {
-            var json = await HttpHelper.Invoke(Method.PUT, "https://postman-echo.com/put", "{}", "application/json",
+            var json = await HttpHelper.DoRequest(Method.PUT, "https://postman-echo.com/put", "{}", "application/json",
                 new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("name", "name1"),

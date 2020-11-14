@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
-using RestSharp.Serialization.Json;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Utils.Helpers
@@ -14,32 +14,31 @@ namespace Shashlik.Utils.Helpers
     //TODO: 增加客户端证书上传功能
     public static class HttpHelper
     {
-        private static IRestClient GetClient(Uri uri, IWebProxy proxy = null, Encoding encoding = null)
+        private static IRestClient GetClient(string uri, IWebProxy proxy = null, Encoding encoding = null)
         {
-            var client = new RestClient(uri);
+            if (string.IsNullOrWhiteSpace(uri))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(uri));
+
+            var client = new RestClient(new Uri(uri));
             if (encoding != null)
                 client.Encoding = encoding;
             if (proxy != null)
                 client.Proxy = proxy;
-            // 放通一切证书
-            //TODO: 优化这句代码
             client.RemoteCertificateValidationCallback = (a, b, c, d) => true;
             return client;
         }
 
-        private static IRestRequest GetRequest(Uri uri, IDictionary<string, string> headers = null,
+        private static IRestRequest GetRequest(IDictionary<string, string> headers = null,
             IDictionary<string, string> cookies = null, int timeout = 30)
         {
             var request = new RestRequest {Timeout = timeout * 1000};
 
             if (!headers.IsNullOrEmpty())
-                foreach (var (key, value) in headers)
-                {
+                foreach (var (key, value) in headers!)
                     request.AddHeader(key, value);
-                }
 
             if (!cookies.IsNullOrEmpty())
-                foreach (var (key, value) in headers)
+                foreach (var (key, value) in cookies!)
                     request.AddCookie(key, value);
 
             return request;
@@ -60,9 +59,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (jsonData != null)
                 request.AddJsonBody(jsonData);
@@ -70,8 +68,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -92,9 +90,8 @@ namespace Shashlik.Utils.Helpers
             IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (jsonData != null)
                 request.AddJsonBody(jsonData);
@@ -102,8 +99,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -124,9 +121,8 @@ namespace Shashlik.Utils.Helpers
             IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (jsonData != null)
                 request.AddJsonBody(jsonData);
@@ -149,9 +145,11 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            if (url == null) throw new ArgumentNullException(nameof(url));
+            if (formData == null) throw new ArgumentNullException(nameof(formData));
+
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
@@ -161,8 +159,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -181,17 +179,18 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            if (url == null) throw new ArgumentNullException(nameof(url));
+
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -212,9 +211,10 @@ namespace Shashlik.Utils.Helpers
             Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            if (url == null) throw new ArgumentNullException(nameof(url));
+
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
@@ -224,8 +224,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -246,17 +246,16 @@ namespace Shashlik.Utils.Helpers
             IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -275,9 +274,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
@@ -300,9 +298,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
             Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
@@ -315,7 +312,7 @@ namespace Shashlik.Utils.Helpers
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="formData">form表单键值对</param>
         /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
@@ -323,16 +320,15 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formDatas,
+        public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formData,
             IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
             IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
             Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
-            var keyValuePairs = formDatas.ToList();
+            var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
                 foreach (var item in keyValuePairs)
                     request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
@@ -345,8 +341,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -366,9 +362,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
@@ -380,8 +375,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -389,7 +384,7 @@ namespace Shashlik.Utils.Helpers
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="formData">form表单键值对</param>
         /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
@@ -398,16 +393,15 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostFiles<TResult>(string url,
-            IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
+            IEnumerable<KeyValuePair<string, string>> formData, IEnumerable<UploadFileModel> files,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
-            var keyValuePairs = formDatas.ToList();
+            var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
                 foreach (var item in keyValuePairs)
                     request.AddParameter(item.Key, item.Value, ParameterType.GetOrPost);
@@ -420,8 +414,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -443,9 +437,8 @@ namespace Shashlik.Utils.Helpers
             Encoding encoding = null)
             where TResult : class
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
@@ -457,8 +450,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecutePostAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:post,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -466,7 +459,7 @@ namespace Shashlik.Utils.Helpers
         /// post文件上传
         /// </summary>
         /// <param name="url">请求地址</param>
-        /// <param name="formDatas">form表单键值对</param>
+        /// <param name="formData">form表单键值对</param>
         /// <param name="files"></param>
         /// <param name="headers">请求头部</param>
         /// <param name="cookies">请求cookie</param>
@@ -475,15 +468,18 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFilesForOriginResponse(string url,
-            IEnumerable<KeyValuePair<string, string>> formDatas, IEnumerable<UploadFileModel> files,
+            IEnumerable<KeyValuePair<string, string>> formData, IEnumerable<UploadFileModel> files,
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            if (url == null) throw new ArgumentNullException(nameof(url));
+            if (formData == null) throw new ArgumentNullException(nameof(formData));
 
-            var keyValuePairs = formDatas.ToList();
+
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
+
+            var keyValuePairs = formData.ToList();
             if (!keyValuePairs.IsNullOrEmpty())
                 foreach (var (key, value) in keyValuePairs)
                     request.AddParameter(key, value, ParameterType.GetOrPost);
@@ -513,9 +509,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
             Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (formData != null)
                 request.AddObject(formData);
@@ -531,9 +526,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
             request.AddParameter(contentType, body, ParameterType.RequestBody);
 
             return await client.ExecutePostAsync(request);
@@ -554,17 +548,16 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (queryStringData != null)
                 request.AddObject(queryStringData);
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return response.Content;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -584,24 +577,22 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (queryStringData != null)
                 request.AddObject(queryStringData);
             var response = await client.ExecuteGetAsync<TResult>(request);
             if (response.IsSuccessful)
                 return response.Data;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
         /// <summary>
         /// get获取数据流
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="url">请求地址</param>
         /// <param name="queryStringData">url参数,读取pubic 可取的属性,转换为url参数</param>
         /// <param name="headers">请求头</param>
@@ -614,17 +605,16 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (queryStringData != null)
                 request.AddObject(queryStringData);
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return new MemoryStream(response.RawBytes);
-            throw new Exception(
-                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -643,9 +633,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (queryStringData != null)
                 request.AddObject(queryStringData);
@@ -653,8 +642,8 @@ namespace Shashlik.Utils.Helpers
             var response = await client.ExecuteGetAsync(request);
             if (response.IsSuccessful)
                 return response.RawBytes;
-            throw new Exception(
-                $"请求发生错误,url:{url},method:get,http code:{response.StatusCode},result:{response.Content}",
+            throw new HttpRequestException(
+                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -673,9 +662,8 @@ namespace Shashlik.Utils.Helpers
             IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
             IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
 
             if (queryStringData != null)
                 request.AddObject(queryStringData);
@@ -683,7 +671,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 通用http调方法,body不为空时,contentType也不能为空
+        /// 通用http调方法
         /// </summary>
         /// <param name="method"></param>
         /// <param name="url"></param>
@@ -696,21 +684,21 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> Invoke(
+        public static async Task<IRestResponse> DoRequest(
             Method method,
             string url,
             string body,
-            string contentType,
+            string contentType = "text/plain",
             IEnumerable<KeyValuePair<string, string>> queryStringData = null,
             IDictionary<string, string> headers = null,
             IDictionary<string, string> cookies = null,
             int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
         {
-            var uri = new Uri(url);
-            var client = GetClient(uri, proxy, encoding);
-            var request = GetRequest(uri, headers, cookies, timeout);
-            if (!queryStringData.IsNullOrEmpty())
-                foreach (var item in queryStringData)
+            var client = GetClient(url, proxy, encoding);
+            var request = GetRequest(headers, cookies, timeout);
+            var list = queryStringData?.ToList();
+            if (!list.IsNullOrEmpty())
+                foreach (var item in list!)
                     request.AddParameter(item.Key, item.Value, ParameterType.QueryString);
             if (!body.IsNullOrWhiteSpace() && !contentType.IsNullOrWhiteSpace())
                 request.AddParameter(contentType, body, ParameterType.RequestBody);

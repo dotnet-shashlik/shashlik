@@ -4,10 +4,18 @@ using System.Threading.Tasks;
 
 namespace Shashlik.Utils.Helpers
 {
+    /// <summary>
+    /// 异步内存锁
+    /// </summary>
     public sealed class AsyncLock
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
+        /// <summary>
+        /// lock
+        /// </summary>
+        /// <param name="waitTimeoutCancellationToken">锁等待超时token</param>
+        /// <returns></returns>
         public async Task<Releaser> LockAsync(CancellationToken waitTimeoutCancellationToken = default)
         {
             waitTimeoutCancellationToken.ThrowIfCancellationRequested();
@@ -15,6 +23,11 @@ namespace Shashlik.Utils.Helpers
             return new Releaser(this);
         }
 
+        /// <summary>
+        /// lock
+        /// </summary>
+        /// <param name="waitTimeoutCancellationToken">锁等待超时token</param>
+        /// <returns></returns>
         public Releaser Lock(CancellationToken waitTimeoutCancellationToken = default)
         {
             waitTimeoutCancellationToken.ThrowIfCancellationRequested();
