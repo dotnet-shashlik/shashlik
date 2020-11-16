@@ -32,10 +32,27 @@ namespace Shashlik.RazorFormat
                 throw new ArgumentNullException(nameof(formater));
             if (formater.Action.IsNullOrWhiteSpace()
                 || !actionReg.IsMatch(formater.Action))
-                throw new ArgumentException("action name error!", nameof(formater.Action));
+                throw new ArgumentException("formatter name error!", nameof(formater.Action));
             if (formatters.ContainsKey(formater.Action))
-                throw new ArgumentException($"action '{formater.Action}' already exists!", nameof(formater.Action));
+                throw new ArgumentException($"formatter '{formater.Action}' already exists!", nameof(formater.Action));
             formatters.Add(formater.Action, formater);
+        }
+
+        /// <summary>
+        /// 移除已注册的格式化器
+        /// </summary>
+        /// <param name="formaterName">格式化器的名称</param>
+        /// <param name="formatter">格式化器</param>
+        public static bool TryRemove(string formaterName, out IFormatter formatter)
+        {
+            formatter = formatters.GetOrDefault(formaterName);
+            if (formatter != null)
+            {
+                formatters.Remove(formaterName);
+                return true;
+            }
+
+            return false;
         }
 
         static RazorFormatExtensions()
