@@ -34,6 +34,10 @@ namespace Shashlik.RazorFormat.Test
                 }
             };
 
+            Should.Throw<Exception>(() =>
+                "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
+                    .RazorFormat(model, throwExceptionWhenPropertyNotExists: true));
+
             "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
                 .RazorFormat(model)
                 .ShouldBe(
