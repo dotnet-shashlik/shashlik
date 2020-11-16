@@ -15,7 +15,7 @@
 
         public object? Format(object? value, string expression)
         {
-            return value is null ? value : $"{expression}{value}";
+            return value is null ? value : $"{value}{expression}";
         }
     }
 }

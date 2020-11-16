@@ -1,5 +1,7 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Diagnostics;
+using Shashlik.Utils.Extensions;
 using Shouldly;
 using SmartFormat;
 using Xunit;
@@ -50,7 +52,9 @@ namespace Shashlik.RazorFormat.Test
                 .ShouldBe(
                     $"仍然让人人@@{{Age|d5}}啊啊啊啊啊@{{NotMatch}}啪啪啪{model.Age:d5}嘎嘎嘎{model.Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{model.Money:f2}惆怅长岑长{model.Company.CompanyName}对方的等待{model.Company.Address.Code:d6}诶诶诶诶诶@{{NotMatch}}呵呵呵呵");
 
-            ((string) null).RazorFormat(model).ShouldBeNull();
+            string? emptyStr = null;
+            emptyStr.RazorFormat(model).ShouldBeNull();
+
             "".RazorFormat(model).ShouldBeNullOrWhiteSpace();
             "@{Age}@{Birthday}@{Money}".RazorFormat((UserTestModel) null).ShouldBe("@{Age}@{Birthday}@{Money}");
 
@@ -79,14 +83,38 @@ namespace Shashlik.RazorFormat.Test
             switchFormatString.RazorFormat(new {Gender = ""}).ShouldBe("空");
             switchFormatString.RazorFormat(new {Gender = 7}).ShouldBe("未知");
             "@{Gender|switch(0:未知)}".RazorFormat(new {Gender = 7}).ShouldBe("7");
-            try
-            {
-                "@{Gender|switch(0未知)}".RazorFormat(new {Gender = 7});
-            }
-            catch (Exception e)
-            {
-                e.ShouldNotBeNull();
-            }
+            Should.Throw<Exception>(() => "@{Gender|switch(0未知)}".RazorFormat(new {Gender = 7}));
+        }
+
+        [Fact]
+        public void FormatPipelineTest()
+        {
+            // -> 0000000018
+            // -> ...0000000018
+            // -> ...0000000018...
+            // -> ...00###
+            "@{Age|stringFormat(D10)-addPrefix(...)-addSuffix(...)-subIfTooLong(5,###)}"
+                .RazorFormat(model)
+                .ShouldBe("...00###");
+
+            // -> 0000000018
+            // -> 00018
+            "@{Age|stringFormat(D10)-substr(5)}"
+                .RazorFormat(model)
+                .ShouldBe("00018");
+
+            // -> 0000000018
+            // -> 00
+            "@{Age|stringFormat(D10)-substr( 5, 2)}"
+                .RazorFormat(model)
+                .ShouldBe("00");
+
+            // -> 0000000018
+            // -> ABC0000000018
+            // -> aBC0000000018
+            "@{Age|stringFormat(D10)-addPrefix(ABC)-toggleCase(firstLower)}"
+                .RazorFormat(model)
+                .ShouldBe("aBC0000000018");
         }
 
         private readonly int _performanceCount = 100_0000;
@@ -114,7 +142,7 @@ namespace Shashlik.RazorFormat.Test
             sw.Start();
             for (int i = 0; i < _performanceCount; i++)
             {
-              var res=  Smart.Format(
+                var res = Smart.Format(
                     "仍然让人人{Age:d5}啊啊啊啊啊啪啪啪{Age:d5}嘎嘎嘎{Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{Money:f2}惆怅长岑长{Company.CompanyName}对方的等待{Company.Address.Code:d6}诶诶诶诶诶呵呵呵呵",
                     model
                 );

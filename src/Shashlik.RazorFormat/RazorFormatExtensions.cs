@@ -18,7 +18,7 @@ namespace Shashlik.RazorFormat
         private static readonly IDictionary<string, IFormatter> formatters = new Dictionary<string, IFormatter>();
 
         // 格式化表达式匹配正则
-        private static readonly Regex formatExpressionReg = new Regex("^([a-zA-Z]{1}\\w{0,15})\\s*\\([\\s\\S]*\\)$");
+        private static readonly Regex formatExpressionReg = new Regex("([a-zA-Z]{1}\\w{0,15})\\s*\\({1,1}[^\\(^\\)]*\\){1,1}");
 
         // action
         private static readonly Regex actionReg = new Regex("^[a-zA-Z]{1}\\w{0,15}$");
@@ -83,7 +83,7 @@ namespace Shashlik.RazorFormat
             if (value.IsNullOrWhiteSpace() || model is null)
                 return value;
 
-            var reg = new Regex("\\" + prefix + @"\{[^\{\}]{1,}\}");
+            var reg = new Regex("\\" + prefix + @"\{[^\{^\}]{1,}\}");
 
             var matches = reg.Matches(value);
             if (matches.Count == 0)
@@ -198,7 +198,7 @@ namespace Shashlik.RazorFormat
                     var formater = formatters.GetOrDefault(action);
                     if (formater != null)
                     {
-                        var expression = formatExpression.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
+                        var expression = formatMatch.Value.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
                             .TrimEnd(')').Trim();
                         lastValue = formater.Format(lastValue, expression);
                         has = true;
