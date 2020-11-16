@@ -58,7 +58,7 @@ namespace Shashlik.EfCore
         {
             lock (DbContext)
             {
-                if (DbContext.Database.CurrentTransaction == null)
+                if (DbContext.Database.CurrentTransaction is null)
                 {
                     IDbContextTransaction tran;
                     if (_beginFunction.function is null)
