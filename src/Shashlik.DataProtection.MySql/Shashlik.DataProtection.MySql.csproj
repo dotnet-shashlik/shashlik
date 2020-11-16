@@ -8,9 +8,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="3.1.9" />
         <PackageReference Include="MySqlConnector" Version="0.69.9" />
-
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
     </ItemGroup>
 
 </Project>

@@ -93,6 +93,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Redis.Tests", "Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AutoMapper.Tests", "Shashlik.AutoMapper.Tests\Shashlik.AutoMapper.Tests.csproj", "{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.Redis.Tests", "Shashlik.DataProtection.Redis.Tests\Shashlik.DataProtection.Redis.Tests.csproj", "{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -340,6 +342,12 @@ Global
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -357,6 +365,7 @@ Global
 		{17944FE4-784E-4794-BE87-195F3D1F1636} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}
