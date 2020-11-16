@@ -58,8 +58,8 @@ namespace Shashlik.RazorFormat
 
         static RazorFormatExtensions()
         {
-            var formater = new SwitchFormatter();
-            Registry(formater);
+            Registry(new SwitchFormatter());
+            Registry(new SubIfTooLongFormatter());
         }
 
         /// <summary>
