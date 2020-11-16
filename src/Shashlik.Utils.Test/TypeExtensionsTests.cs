@@ -51,7 +51,7 @@ namespace Shashlik.Utils.Test
             }
         }
 
-        internal class TestJsonToClass
+        public class TestJsonToClass
         {
             public int Int1 { get; set; }
             public int? Int2 { get; set; }
@@ -83,6 +83,8 @@ namespace Shashlik.Utils.Test
             public TestJsonToEnum? Enum2 { get; set; }
 
             public List<string> StrList { get; set; }
+
+            public TestJsonToClass InnerClass { get; set; }
 
             public enum TestJsonToEnum
             {
@@ -116,9 +118,9 @@ namespace Shashlik.Utils.Test
                     score = 2
                 }
             },
-            friends = new[] {"张三", "李四"},
-            dic = new Dictionary<object, object> {{1, "1"}},
-            dic1 = new Hashtable {{"a", 1}},
+            friends = new[] { "张三", "李四" },
+            dic = new Dictionary<object, object> { { 1, "1" } },
+            dic1 = new Hashtable { { "a", 1 } },
             jObject = new
             {
                 first = "用户11111，提交了新的实名认证申请。",
@@ -144,9 +146,9 @@ namespace Shashlik.Utils.Test
                         score = 2
                     }
                 },
-                friends = new[] {"张三", "李四"},
-                dic = new Dictionary<object, object> {{1, "1"}},
-                dic1 = new Hashtable {{"a", 1}},
+                friends = new[] { "张三", "李四" },
+                dic = new Dictionary<object, object> { { 1, "1" } },
+                dic1 = new Hashtable { { "a", 1 } },
             }.ToJson().DeserializeJson<JObject>(),
             jElement = new
             {
@@ -173,10 +175,10 @@ namespace Shashlik.Utils.Test
                         score = 2
                     }
                 },
-                friends = new[] {"张三", "李四"},
+                friends = new[] { "张三", "李四" },
                 // text json not support Serialize: Dictionary<object, object>
                 // dic = new Dictionary<object, object> {{1, "1"}},
-                dic1 = new Hashtable {{"a", 1}},
+                dic1 = new Hashtable { { "a", 1 } },
             }.ToJsonWithTextJson().DeserializeJsonWithTextJson<JsonElement>()
         };
 
@@ -220,7 +222,7 @@ namespace Shashlik.Utils.Test
             dic.ContainsKey("first").ShouldBeTrue();
             dic["first"].ShouldBe("用户11111，提交了新的实名认证申请。");
 
-            var jObject = new JObject {["test"] = "test", ["array"] = new JArray("value1", "value2")};
+            var jObject = new JObject { ["test"] = "test", ["array"] = new JArray("value1", "value2") };
 
             var jDic = jObject.MapToDictionary();
             jDic.ContainsKey("test").ShouldBeTrue();
@@ -254,8 +256,6 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void JsonElementGetValueTests()
         {
-            var now = DateTime.Now;
-            var nowOffset = DateTimeOffset.Now;
             var model = new TestJsonToClass
             {
                 Int1 = 1,
@@ -266,10 +266,23 @@ namespace Shashlik.Utils.Test
                 Dto1 = DateTimeOffset.Now,
                 Dto2 = DateTimeOffset.Now,
                 Enum1 = TestJsonToClass.TestJsonToEnum.Male,
-                StrList = new List<string> {"str1", "str2"}
+                StrList = new List<string> { "str1", "str2" },
+                InnerClass = new TestJsonToClass
+                {
+                    Int1 = 1,
+                    Int2 = null,
+                    D1 = 0.1,
+                    Dt1 = DateTime.Now,
+                    Guid1 = Guid.NewGuid(),
+                    Dto1 = DateTimeOffset.Now,
+                    Dto2 = DateTimeOffset.Now,
+                    Enum1 = TestJsonToClass.TestJsonToEnum.Male,
+                    StrList = new List<string> { "str1", "str2" },
+                }
             };
 
             var json = model.ToJson();
+
             {
                 var model2 = JsonSerializer.Deserialize<TestJsonToClass>(json);
                 model2.Int1.ShouldBe(model.Int1);
@@ -285,6 +298,7 @@ namespace Shashlik.Utils.Test
                 model2.Enum1.ShouldBe(model.Enum1);
                 model2.Enum2.ShouldBe(model.Enum2);
             }
+
             //_testOutputHelper.WriteLine(json);
             {
                 var jsonElement = JsonSerializer.Deserialize<JsonElement>(json);
@@ -307,55 +321,117 @@ namespace Shashlik.Utils.Test
                 exists.ShouldBeTrue();
                 value.ShouldBe(model.StrList.Last());
 
-                Should.Throw<Exception>(() => jsonElement.GetProperty("D1").GetValue<bool>());
+                {
+                    Should.Throw<Exception>(() => jsonElement.GetProperty("D1").GetValue<bool>());
 
-                jsonElement.GetValue<long>("Long").ShouldBe(model.Long);
-                jsonElement.GetValue<float>("Float").ShouldBe(model.Float);
-                jsonElement.GetValue<decimal>("Decimal").ShouldBe(model.Decimal);
-                jsonElement.GetValue<short>("Short").ShouldBe(model.Short);
-                jsonElement.GetValue<uint>("Uint").ShouldBe(model.Uint);
-                jsonElement.GetValue<ulong>("Ulong").ShouldBe(model.Ulong);
-                jsonElement.GetValue<ushort>("Ushort").ShouldBe(model.Ushort);
-                jsonElement.GetValue<byte>("Byte").ShouldBe(model.Byte);
-                jsonElement.GetValue<sbyte>("Sbyte").ShouldBe(model.Sbyte);
-                jsonElement.GetValue<char>("Char").ShouldBe(model.Char);
-                jsonElement.GetValue<List<string>>("StrList").ShouldBe(model.StrList);
+                    jsonElement.GetValue<long>("Long").ShouldBe(model.Long);
+                    jsonElement.GetValue<float>("Float").ShouldBe(model.Float);
+                    jsonElement.GetValue<decimal>("Decimal").ShouldBe(model.Decimal);
+                    jsonElement.GetValue<short>("Short").ShouldBe(model.Short);
+                    jsonElement.GetValue<uint>("Uint").ShouldBe(model.Uint);
+                    jsonElement.GetValue<ulong>("Ulong").ShouldBe(model.Ulong);
+                    jsonElement.GetValue<ushort>("Ushort").ShouldBe(model.Ushort);
+                    jsonElement.GetValue<byte>("Byte").ShouldBe(model.Byte);
+                    jsonElement.GetValue<sbyte>("Sbyte").ShouldBe(model.Sbyte);
+                    jsonElement.GetValue<char>("Char").ShouldBe(model.Char);
+                    jsonElement.GetValue<List<string>>("StrList").ShouldBe(model.StrList);
 
-                jsonElement.GetProperty("Int1").GetValue<int>().ShouldBe(model.Int1);
-                jsonElement.GetValue<int>("Int1").ShouldBe(model.Int1);
-                jsonElement.GetProperty("Int1").GetValue(typeof(int)).ShouldBe(model.Int1);
-                jsonElement.GetValue(typeof(int), "Int1").ShouldBe(model.Int1);
+                    jsonElement.GetProperty("Int1").GetValue<int>().ShouldBe(model.Int1);
+                    jsonElement.GetProperty("Int1").GetValue<long>().ShouldBe(model.Int1);
+                    jsonElement.GetProperty("Int1").GetValue<decimal>().ShouldBe(model.Int1);
+                    jsonElement.GetValue<int>("Int1").ShouldBe(model.Int1);
+                    jsonElement.GetProperty("Int1").GetValue(typeof(int)).ShouldBe(model.Int1);
+                    jsonElement.GetValue(typeof(int), "Int1").ShouldBe(model.Int1);
 
-                jsonElement.GetProperty("Int2").GetValue<int?>().ShouldBe(model.Int2);
-                jsonElement.GetProperty("Int2").GetValue(typeof(int?)).ShouldBe(model.Int2);
-                jsonElement.GetProperty("D1").GetValue<double>().ShouldBe(model.D1);
-                jsonElement.GetProperty("D1").GetValue(typeof(double)).ShouldBe(model.D1);
-                jsonElement.GetProperty("D2").GetValue<double?>().ShouldBe(model.D2);
-                jsonElement.GetProperty("D2").GetValue(typeof(double?)).ShouldBe(model.D2);
-                jsonElement.GetProperty("Dt1").GetValue<DateTime>().ShouldBe(model.Dt1);
-                jsonElement.GetProperty("Dt1").GetValue(typeof(DateTime)).ShouldBe(model.Dt1);
-                jsonElement.GetProperty("Dt2").GetValue<DateTime?>().ShouldBe(model.Dt2);
-                jsonElement.GetProperty("Dt2").GetValue(typeof(DateTime)).ShouldBe(model.Dt2);
-                jsonElement.GetProperty("Guid1").GetValue<Guid>().ShouldBe(model.Guid1);
-                jsonElement.GetProperty("Guid1").GetValue(typeof(Guid)).ShouldBe(model.Guid1);
-                jsonElement.GetProperty("Guid2").GetValue<Guid?>().ShouldBe(model.Guid2);
-                jsonElement.GetProperty("Guid2").GetValue(typeof(Guid?)).ShouldBe(model.Guid2);
-                jsonElement.GetProperty("Dto1").GetValue<DateTimeOffset>().ShouldBe(model.Dto1);
-                jsonElement.GetProperty("Dto1").GetValue(typeof(DateTimeOffset)).ShouldBe(model.Dto1);
-                jsonElement.GetProperty("Dto2").GetValue<DateTimeOffset?>().ShouldBe(model.Dto2);
-                jsonElement.GetProperty("Dto2").GetValue(typeof(DateTimeOffset?)).ShouldBe(model.Dto2);
-                jsonElement.GetProperty("Enum1").GetValue<TestJsonToClass.TestJsonToEnum>();
-                jsonElement.GetProperty("Enum1").GetValue(typeof(TestJsonToClass.TestJsonToEnum));
-                jsonElement.GetProperty("Enum1").GetValue<TestJsonToClass.TestJsonToEnum>().ShouldBe(model.Enum1);
-                jsonElement.GetProperty("Enum1").GetValue(typeof(TestJsonToClass.TestJsonToEnum)).ShouldBe(model.Enum1);
-                jsonElement.GetProperty("Enum2").GetValue<TestJsonToClass.TestJsonToEnum?>().ShouldBe(model.Enum2);
-                jsonElement.GetProperty("Enum2").GetValue(typeof(TestJsonToClass.TestJsonToEnum?))
-                    .ShouldBe(model.Enum2);
+                    jsonElement.GetProperty("Int2").GetValue<int?>().ShouldBe(model.Int2);
+                    jsonElement.GetProperty("Int2").GetValue(typeof(int?)).ShouldBe(model.Int2);
+                    jsonElement.GetProperty("D1").GetValue<double>().ShouldBe(model.D1);
+                    jsonElement.GetProperty("D1").GetValue(typeof(double)).ShouldBe(model.D1);
+                    jsonElement.GetProperty("D2").GetValue<double?>().ShouldBe(model.D2);
+                    jsonElement.GetProperty("D2").GetValue(typeof(double?)).ShouldBe(model.D2);
+                    jsonElement.GetProperty("Dt1").GetValue<DateTime>().ShouldBe(model.Dt1);
+                    jsonElement.GetProperty("Dt1").GetValue(typeof(DateTime)).ShouldBe(model.Dt1);
+                    jsonElement.GetProperty("Dt2").GetValue<DateTime?>().ShouldBe(model.Dt2);
+                    jsonElement.GetProperty("Dt2").GetValue(typeof(DateTime)).ShouldBe(model.Dt2);
+                    jsonElement.GetProperty("Guid1").GetValue<Guid>().ShouldBe(model.Guid1);
+                    jsonElement.GetProperty("Guid1").GetValue(typeof(Guid)).ShouldBe(model.Guid1);
+                    jsonElement.GetProperty("Guid2").GetValue<Guid?>().ShouldBe(model.Guid2);
+                    jsonElement.GetProperty("Guid2").GetValue(typeof(Guid?)).ShouldBe(model.Guid2);
+                    jsonElement.GetProperty("Dto1").GetValue<DateTimeOffset>().ShouldBe(model.Dto1);
+                    jsonElement.GetProperty("Dto1").GetValue(typeof(DateTimeOffset)).ShouldBe(model.Dto1);
+                    jsonElement.GetProperty("Dto2").GetValue<DateTimeOffset?>().ShouldBe(model.Dto2);
+                    jsonElement.GetProperty("Dto2").GetValue(typeof(DateTimeOffset?)).ShouldBe(model.Dto2);
+                    jsonElement.GetProperty("Enum1").GetValue<TestJsonToClass.TestJsonToEnum>();
+                    jsonElement.GetProperty("Enum1").GetValue(typeof(TestJsonToClass.TestJsonToEnum));
+                    jsonElement.GetProperty("Enum1").GetValue<TestJsonToClass.TestJsonToEnum>().ShouldBe(model.Enum1);
+                    jsonElement.GetProperty("Enum1").GetValue(typeof(TestJsonToClass.TestJsonToEnum))
+                        .ShouldBe(model.Enum1);
+                    jsonElement.GetProperty("Enum2").GetValue<TestJsonToClass.TestJsonToEnum?>().ShouldBe(model.Enum2);
+                    jsonElement.GetProperty("Enum2").GetValue(typeof(TestJsonToClass.TestJsonToEnum?))
+                        .ShouldBe(model.Enum2);
 
-                var dic = jsonElement.MapToDictionary();
-                dic.ShouldNotBeEmpty();
-                dic.ContainsKey("Guid1").ShouldBeTrue();
-                dic.ContainsKey("Enum2").ShouldBeTrue();
+
+                    jsonElement.GetProperty("InnerClass").GetValue<long>("Long").ShouldBe(model.InnerClass.Long);
+                    jsonElement.GetProperty("InnerClass").GetValue<float>("Float").ShouldBe(model.InnerClass.Float);
+                    jsonElement.GetProperty("InnerClass").GetValue<decimal>("Decimal").ShouldBe(model.InnerClass.Decimal);
+                    jsonElement.GetProperty("InnerClass").GetValue<short>("Short").ShouldBe(model.InnerClass.Short);
+                    jsonElement.GetProperty("InnerClass").GetValue<uint>("Uint").ShouldBe(model.InnerClass.Uint);
+                    jsonElement.GetProperty("InnerClass").GetValue<ulong>("Ulong").ShouldBe(model.InnerClass.Ulong);
+                    jsonElement.GetProperty("InnerClass").GetValue<ushort>("Ushort").ShouldBe(model.InnerClass.Ushort);
+                    jsonElement.GetProperty("InnerClass").GetValue<byte>("Byte").ShouldBe(model.InnerClass.Byte);
+                    jsonElement.GetProperty("InnerClass").GetValue<sbyte>("Sbyte").ShouldBe(model.InnerClass.Sbyte);
+                    jsonElement.GetProperty("InnerClass").GetValue<char>("Char").ShouldBe(model.InnerClass.Char);
+                    jsonElement.GetProperty("InnerClass").GetValue<List<string>>("StrList").ShouldBe(model.InnerClass.StrList);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<int>().ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<long>().ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<decimal>().ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetValue<int>("Int1").ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue(typeof(int))
+                        .ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetValue(typeof(int), "Int1").ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int2").GetValue<int?>().ShouldBe(model.InnerClass.Int2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int2").GetValue(typeof(int?))
+                        .ShouldBe(model.InnerClass.Int2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue<double>().ShouldBe(model.InnerClass.D1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue(typeof(double)).ShouldBe(model.InnerClass.D1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D2").GetValue<double?>().ShouldBe(model.InnerClass.D2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D2").GetValue(typeof(double?))
+                        .ShouldBe(model.InnerClass.D2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt1").GetValue<DateTime>().ShouldBe(model.InnerClass.Dt1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt1").GetValue(typeof(DateTime))
+                        .ShouldBe(model.InnerClass.Dt1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt2").GetValue<DateTime?>().ShouldBe(model.InnerClass.Dt2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt2").GetValue(typeof(DateTime))
+                        .ShouldBe(model.InnerClass.Dt2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid1").GetValue<Guid>().ShouldBe(model.InnerClass.Guid1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid1").GetValue(typeof(Guid))
+                        .ShouldBe(model.InnerClass.Guid1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid2").GetValue<Guid?>().ShouldBe(model.InnerClass.Guid2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid2").GetValue(typeof(Guid?))
+                        .ShouldBe(model.InnerClass.Guid2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dto1").GetValue<DateTimeOffset>()
+                        .ShouldBe(model.InnerClass.Dto1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dto1").GetValue(typeof(DateTimeOffset))
+                        .ShouldBe(model.InnerClass.Dto1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dto2").GetValue<DateTimeOffset?>()
+                        .ShouldBe(model.InnerClass.Dto2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dto2").GetValue(typeof(DateTimeOffset?))
+                        .ShouldBe(model.InnerClass.Dto2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum1")
+                        .GetValue<TestJsonToClass.TestJsonToEnum>();
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum1")
+                        .GetValue(typeof(TestJsonToClass.TestJsonToEnum));
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum1")
+                        .GetValue<TestJsonToClass.TestJsonToEnum>().ShouldBe(model.InnerClass.Enum1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum1")
+                        .GetValue(typeof(TestJsonToClass.TestJsonToEnum))
+                        .ShouldBe(model.InnerClass.Enum1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum2")
+                        .GetValue<TestJsonToClass.TestJsonToEnum?>().ShouldBe(model.InnerClass.Enum2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Enum2")
+                        .GetValue(typeof(TestJsonToClass.TestJsonToEnum?))
+                        .ShouldBe(model.InnerClass.Enum2);
+                }
             }
         }
 

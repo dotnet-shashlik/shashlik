@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
+// ReSharper disable UseNullPropagation
+
 // ReSharper disable RedundantIfElseBlock
 
 // ReSharper disable ConvertIfStatementToReturnStatement
@@ -445,11 +447,11 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取json对象属性值
+        /// get json object property value and parse to type: <typeparamref name="T"/>
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="propertyName"></param>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyName">property name</param>
+        /// <typeparam name="T">value type</typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
         public static T GetValue<T>(this JsonElement obj, string propertyName)
@@ -471,6 +473,14 @@ namespace Shashlik.Utils.Extensions
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
 
+        /// <summary>
+        /// get json object property value and parse to: <paramref name="type"/>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="type">value type</param>
+        /// <param name="propertyName">property name</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
         public static object GetValue(this JsonElement obj, Type type, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
@@ -481,6 +491,12 @@ namespace Shashlik.Utils.Extensions
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
 
+        /// <summary>
+        /// get json value to type: <typeparamref name="T"/>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T GetValue<T>(this JsonElement obj)
         {
             switch (obj.ValueKind)
@@ -493,6 +509,13 @@ namespace Shashlik.Utils.Extensions
             return (T) GetValue(obj, typeof(T));
         }
 
+        /// <summary>
+        /// get json value to <paramref name="type"/>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidCastException"></exception>
         public static object GetValue(this JsonElement obj, Type type)
         {
             if (type == typeof(object))
@@ -845,7 +868,7 @@ namespace Shashlik.Utils.Extensions
 
                 case JTokenType.Array:
                 {
-                    List<object> children = new List<object>();
+                    var children = new List<object>();
                     foreach (var item in token.Value<JArray>())
                         children.Add(JToken2Object(item));
                     return children;
@@ -860,7 +883,7 @@ namespace Shashlik.Utils.Extensions
                 case JTokenType.Null:
                     return token.ToObject<object>();
                 default:
-                    throw new FormatException("json format error!");
+                    throw new JsonException($"Invalid json string: {token}");
             }
         }
 
@@ -888,7 +911,7 @@ namespace Shashlik.Utils.Extensions
                 case JTokenType.None:
                     return token.ToObject<object>();
                 default:
-                    throw new FormatException("json format error!");
+                    throw new JsonException($"Invalid json string: {token}");
             }
         }
 
@@ -912,14 +935,12 @@ namespace Shashlik.Utils.Extensions
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
                 {
+                    if (obj.TryGetInt32(out var value1))
+                        return value1;
                     if (obj.TryGetInt64(out var value2))
-                    {
                         return value2;
-                    }
-                    else if (obj.TryGetDecimal(out var value3))
-                    {
+                    if (obj.TryGetDecimal(out var value3))
                         return value3;
-                    }
 
                     return null;
                 }
@@ -935,13 +956,13 @@ namespace Shashlik.Utils.Extensions
                 }
                 case JsonValueKind.Array:
                 {
-                    List<object> children = new List<object>();
+                    var children = new List<object>();
                     foreach (var item in obj.EnumerateArray())
                         children.Add(JsonElement2Object(item));
                     return children;
                 }
                 default:
-                    throw new FormatException("json format error!");
+                    throw new JsonException($"Invalid json string: {obj}");
             }
         }
 
@@ -978,7 +999,7 @@ namespace Shashlik.Utils.Extensions
                 case JsonValueKind.Array:
                     return obj;
                 default:
-                    throw new FormatException("json format error!");
+                    throw new JsonException($"Invalid json string: {obj}");
             }
         }
 
