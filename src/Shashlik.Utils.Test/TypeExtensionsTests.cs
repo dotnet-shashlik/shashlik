@@ -444,7 +444,7 @@ namespace Shashlik.Utils.Test
         }
 
         [Fact]
-        public void GetPropertyTests()
+        public void GetPropertyValueTests()
         {
             {
                 bool exists;
