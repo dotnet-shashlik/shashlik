@@ -60,6 +60,8 @@ namespace Shashlik.RazorFormat
         {
             Registry(new SwitchFormatter());
             Registry(new SubIfTooLongFormatter());
+            Registry(new SubstrFormatter());
+            Registry(new ToggleCaseFormatter());
         }
 
         /// <summary>
