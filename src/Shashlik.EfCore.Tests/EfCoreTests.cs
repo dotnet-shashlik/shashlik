@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,13 +24,183 @@ namespace Shashlik.EfCore.Tests
         private TestDbContext1 DbContext => GetService<TestDbContext1>();
 
         [Fact]
+        public void TransactionForeachCommitSyncTest()
+        {
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
+            var names = new List<string>();
+            for (int i = 0; i < new Random().Next(5, 10); i++)
+            {
+                using var tran = nestTran.Begin();
+                try
+                {
+                    for (int j = 0; j < new Random().Next(5, 10); j++)
+                    {
+                        var name = Guid.NewGuid().ToString();
+                        names.Add(name);
+                        testManager.CreateUserWithEfNestTransaction(name, roles, false).GetAwaiter().GetResult();
+                    }
+
+                    tran.Commit();
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                }
+            }
+
+            foreach (var name in names)
+            {
+                var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+                userEntity.ShouldNotBeNull();
+                var roleEntity = DbContext.Set<Roles>()
+                    .FirstOrDefault(r => r.UserId == userEntity.Id && r.Name == role);
+                roleEntity.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public void TransactionForeachRollbackSyncTest()
+        {
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
+            var names = new List<string>();
+            for (int i = 0; i < new Random().Next(5, 10); i++)
+            {
+                using var tran = nestTran.Begin();
+                try
+                {
+                    for (int j = 0; j < new Random().Next(5, 10); j++)
+                    {
+                        var name = Guid.NewGuid().ToString();
+                        names.Add(name);
+                        testManager.CreateUserWithEfNestTransaction(name, roles, j % 2 == 0).GetAwaiter().GetResult();
+                    }
+
+                    tran.Commit();
+                }
+                catch (Exception ex)
+                {
+                    tran.Rollback();
+                }
+            }
+
+            foreach (var name in names)
+            {
+                var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+                userEntity.ShouldBeNull();
+                var roleEntity = DbContext.Set<Roles>().FirstOrDefault(r => r.Name == role && r.User.Name == name);
+                roleEntity.ShouldBeNull();
+            }
+        }
+
+
+        [Fact]
+        public async Task TransactionForeachCommitAsyncTest()
+        {
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
+            var names = new List<string>();
+            for (int i = 0; i < new Random().Next(5, 10); i++)
+            {
+                await using var tran = nestTran.Begin();
+                try
+                {
+                    for (int j = 0; j < new Random().Next(5, 10); j++)
+                    {
+                        var name = Guid.NewGuid().ToString();
+                        names.Add(name);
+                        await testManager.CreateUserWithEfNestTransaction(name, roles, false);
+                    }
+
+                    await tran.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await tran.RollbackAsync();
+                }
+            }
+
+            foreach (var name in names)
+            {
+                var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+                userEntity.ShouldNotBeNull();
+                var roleEntity = DbContext.Set<Roles>()
+                    .FirstOrDefault(r => r.UserId == userEntity.Id && r.Name == role);
+                roleEntity.ShouldNotBeNull();
+            }
+        }
+
+        [Fact]
+        public async Task TransactionForeachRollbackAsyncTest()
+        {
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
+            var names = new List<string>();
+            for (int i = 0; i < new Random().Next(5, 10); i++)
+            {
+                await using var tran = nestTran.Begin();
+                try
+                {
+                    for (int j = 0; j < new Random().Next(5, 10); j++)
+                    {
+                        var name = Guid.NewGuid().ToString();
+                        names.Add(name);
+                        await testManager.CreateUserWithEfNestTransaction(name, roles, j % 2 == 0);
+                    }
+                    await tran.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await tran.RollbackAsync();
+                }
+            }
+
+            foreach (var name in names)
+            {
+                var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+                userEntity.ShouldBeNull();
+                var roleEntity = DbContext.Set<Roles>().FirstOrDefault(r => r.Name == role && r.User.Name == name);
+                roleEntity.ShouldBeNull();
+            }
+        }
+
+
+        [Fact]
         public async Task TransactionalSuccessTest()
         {
-            var testManager = GetService<TestManager>();
             var name = Guid.NewGuid().ToString();
             var role = "add_user_test_role";
             var roles = new[] {role};
-            await testManager.CreateUser(name, roles, false);
+
+            var testManager = GetService<TestManager>();
+
+            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
+            await using var tran = nestTran.Begin();
+
+            try
+            {
+                await testManager.CreateUserWithEfNestTransaction(name, roles, false);
+
+                await tran.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await tran.RollbackAsync();
+                throw;
+            }
 
             var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
             userEntity.ShouldNotBeNull();

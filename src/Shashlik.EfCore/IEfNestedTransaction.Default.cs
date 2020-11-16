@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Data;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel;
+using IsolationLevel = System.Data.IsolationLevel;
 
 // ReSharper disable ClassWithVirtualMembersNeverInherited.Global
 
@@ -17,16 +18,21 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(TDbContext dbContext, IServiceProvider serviceProvider)
+        public DefaultEfNestedTransaction(TDbContext dbContext)
         {
             DbContext = dbContext;
-            BeginFunction = serviceProvider.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
+            if (!_beginFunction.isSetValue)
+            {
+                _beginFunction.function = GlobalKernelServiceProvider.KernelServiceProvider
+                    .GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
+                _beginFunction.isSetValue = true;
+            }
         }
 
         /// <summary>
         /// 开启事务的方式
         /// </summary>
-        private IEfNestedTransactionBeginFunction<TDbContext>? BeginFunction { get; }
+        private static (bool isSetValue, IEfNestedTransactionBeginFunction<TDbContext>? function) _beginFunction;
 
         /// <summary>
         /// 数据库上下文
@@ -36,7 +42,13 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 当前事务
         /// </summary>
-        public virtual IDbContextTransaction? Current => DbContext.Database.CurrentTransaction;
+        public virtual IDbContextTransaction? Current =>
+            _topTransaction == null || _topTransaction.IsDone ? null : _topTransaction;
+
+        /// <summary>
+        /// 顶层事务实例
+        /// </summary>
+        private ShashlikDbContextTransaction? _topTransaction;
 
         /// <summary>
         /// 开启事务
@@ -44,18 +56,27 @@ namespace Shashlik.EfCore
         /// <returns></returns>
         public virtual IDbContextTransaction Begin(IsolationLevel? isolationLevel = null)
         {
-            if (Current != null)
-                return Current;
+            lock (DbContext)
+            {
+                if (DbContext.Database.CurrentTransaction == null)
+                {
+                    IDbContextTransaction tran;
+                    if (_beginFunction.function is null)
+                        tran = isolationLevel.HasValue
+                            ? DbContext.Database.BeginTransaction(isolationLevel.Value)
+                            : DbContext.Database.BeginTransaction();
+                    else
+                        tran = _beginFunction.function.BeginTransaction(DbContext, isolationLevel);
 
-            IDbContextTransaction tran;
-            if (BeginFunction is null)
-                tran = isolationLevel.HasValue
-                    ? DbContext.Database.BeginTransaction(isolationLevel.Value)
-                    : DbContext.Database.BeginTransaction();
-            else
-                tran = BeginFunction.BeginTransaction(DbContext, isolationLevel);
+                    _topTransaction = new ShashlikDbContextTransaction(tran);
+                    return _topTransaction;
+                }
 
-            return tran;
+                if (_topTransaction == null)
+                    throw new TransactionException(
+                        $"DbContext.Database.CurrentTransaction is null, and inner top transaction is null.");
+                return new ShashlikDbContextTransaction(_topTransaction);
+            }
         }
     }
 }
