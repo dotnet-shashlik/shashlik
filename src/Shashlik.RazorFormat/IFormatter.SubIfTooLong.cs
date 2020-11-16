@@ -1,6 +1,4 @@
-﻿#nullable enable
-using System;
-using System.Linq;
+﻿using System;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.RazorFormat
@@ -17,22 +15,20 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "subIfTooLong";
 
-        public string? Format(string? value, string expression)
+        public object? Format(object? value, string expression)
         {
-            if (value.IsNullOrWhiteSpace())
+            if (value is null)
                 return value;
             var args = expression.Split(',');
             if (args.Length == 0 || args.Length > 2)
-                throw new FormatException(expression);
-
+                throw new FormatException($"{Action}({expression})");
             if (!args[0].Trim().TryParse<int>(out var length) || length < 0)
-                throw new FormatException(expression);
-
+                throw new FormatException($"{Action}({expression})");
             string suffix = "...";
             if (args.Length == 2)
                 suffix = args[1];
 
-            return value.SubStringIfTooLong(length, suffix);
+            return value.ToString().SubStringIfTooLong(length, suffix);
         }
     }
 }

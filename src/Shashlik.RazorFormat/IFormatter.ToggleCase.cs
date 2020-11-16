@@ -21,17 +21,18 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "toggleCase";
 
-        public string? Format(string? value, string expression)
+        public object? Format(object? value, string expression)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (value is null)
                 return value;
 
+            var str = value.ToString();
             return expression switch
             {
-                "upper" => value.ToUpperInvariant(),
-                "lower" => value.ToLowerInvariant(),
-                "firstUpper" => value.UpperFirstCase(),
-                "firstLower" => value.LowerFirstCase(),
+                "upper" => str.ToUpperInvariant(),
+                "lower" => str.ToLowerInvariant(),
+                "firstUpper" => str.UpperFirstCase(),
+                "firstLower" => str.LowerFirstCase(),
                 _ => throw new FormatException($"{Action}({expression})")
             };
         }

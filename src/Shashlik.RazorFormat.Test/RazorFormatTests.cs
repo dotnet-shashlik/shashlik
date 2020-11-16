@@ -153,7 +153,7 @@ namespace Shashlik.RazorFormat.Test
     {
         public string Action { get; }
 
-        public string Format(string value, string expression)
+        public object Format(object value, string expression)
         {
             throw new NotImplementedException();
         }
@@ -163,7 +163,7 @@ namespace Shashlik.RazorFormat.Test
     {
         public string Action { get; } = "switch";
 
-        public string Format(string value, string expression)
+        public object Format(object value, string expression)
         {
             throw new NotImplementedException();
         }

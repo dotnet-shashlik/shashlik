@@ -1,8 +1,4 @@
-﻿#nullable enable
-using System;
-using Shashlik.Utils.Extensions;
-
-namespace Shashlik.RazorFormat
+﻿namespace Shashlik.RazorFormat
 {
     /**
      * 
@@ -17,9 +13,9 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "addPrefix";
 
-        public string? Format(string? value, string expression)
+        public object? Format(object? value, string expression)
         {
-            return $"{expression}{value}";
+            return value is null ? value : $"{expression}{value}";
         }
     }
 }

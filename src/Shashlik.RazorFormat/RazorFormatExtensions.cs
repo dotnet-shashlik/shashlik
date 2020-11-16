@@ -62,6 +62,9 @@ namespace Shashlik.RazorFormat
             Registry(new SubIfTooLongFormatter());
             Registry(new SubstrFormatter());
             Registry(new ToggleCaseFormatter());
+            Registry(new AddPrefixFormatter());
+            Registry(new AddSuffixFormatter());
+            Registry(new StringFormatFormatter());
         }
 
         /// <summary>
@@ -185,7 +188,7 @@ namespace Shashlik.RazorFormat
             string formatExpression, object? objectValue)
         {
             var formatMatchList = formatExpressionReg.Matches(formatExpression!);
-            var lastValue = objectValue?.ToString();
+            var lastValue = objectValue;
             var has = false;
             foreach (Match formatMatch in formatMatchList)
             {
@@ -203,7 +206,7 @@ namespace Shashlik.RazorFormat
                 }
             }
 
-            return has ? (true, lastValue) : (false, null);
+            return has ? (true, lastValue?.ToString()) : (false, null);
         }
     }
 }

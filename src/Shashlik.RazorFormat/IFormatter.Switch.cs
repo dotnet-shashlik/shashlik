@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Linq;
 using Shashlik.Utils.Extensions;
 
@@ -19,8 +18,9 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "switch";
 
-        public string? Format(string? value, string expression)
+        public object? Format(object? value, string expression)
         {
+            var valueStr = value?.ToString();
             var formats = expression.Split('|');
             string s;
             // 择值表达式
@@ -28,17 +28,17 @@ namespace Shashlik.RazorFormat
             {
                 var arr = r.Split(":", StringSplitOptions.RemoveEmptyEntries);
                 if (arr.Length != 2)
-                    throw new FormatException($"select value format express error: {r}");
+                    throw new FormatException($"{Action}({expression})");
                 arr[0] = arr[0].Trim();
                 arr[1] = arr[1].Trim();
                 return arr;
             }).ToList();
             if (selectors.IsNullOrEmpty())
-                return value;
+                return valueStr;
 
-            var selectValue = selectors.FirstOrDefault(r => r[0] == value
-                                                            || (r[0] == "null" && value is null) // null选择器
-                                                            || (r[0] == "empty" && value.IsNullOrWhiteSpace()));
+            var selectValue = selectors.FirstOrDefault(r => r[0] == valueStr
+                                                            || (r[0] == "null" && valueStr is null) // null选择器
+                                                            || (r[0] == "empty" && valueStr.IsNullOrWhiteSpace()));
             if (selectValue != null)
                 // 找到了对应的值
                 s = selectValue[1];
@@ -47,7 +47,7 @@ namespace Shashlik.RazorFormat
                 s = selectors.Last()[1];
             else
                 // 没找到对应的选择器，返回原始值
-                return value;
+                return valueStr;
 
             return s;
         }

@@ -1,6 +1,4 @@
-﻿#nullable enable
-using System;
-using System.Linq;
+﻿using System;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.RazorFormat
@@ -18,9 +16,9 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "substr";
 
-        public string? Format(string? value, string expression)
+        public object? Format(object? value, string expression)
         {
-            if (string.IsNullOrWhiteSpace(value))
+            if (value is null)
                 return value;
             var args = expression.Split(',');
             if (args.Length != 1 && args.Length != 2)
@@ -31,14 +29,15 @@ namespace Shashlik.RazorFormat
 
             var length = 0;
             if (args.Length == 2)
-                if (!args[1].Trim().TryParse<int>(out length) || length < 0)
+                if (!args[1].Trim().TryParse(out length) || length < 0)
                     throw new FormatException(expression);
 
-            if (start > value.Length - 1)
+            var str = value.ToString();
+            if (start > str.Length - 1)
                 return string.Empty;
-            if (start + length > value.Length || length == 0)
-                return value.Substring(start);
-            return value.Substring(start, length);
+            if (start + length > str.Length || length == 0)
+                return str.Substring(start);
+            return str.Substring(start, length);
         }
     }
 }
