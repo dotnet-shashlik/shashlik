@@ -30,17 +30,21 @@ namespace Shashlik.Utils.Test
         {
         }
 
-        private interface ITest
+        private interface ITest : IDisposable
         {
         }
 
-        internal class TestA : ITest
+        internal class TestA : ITest, IDisposable
         {
             public string Str { get; set; }
             public TestB B { get; set; }
+
+            public void Dispose()
+            {
+            }
         }
 
-        internal class TestB : TestA
+        internal class TestB : TestA, IDisposable, ICloneable
         {
             public TestB()
             {
@@ -48,6 +52,15 @@ namespace Shashlik.Utils.Test
 
             public TestB(string str, int number)
             {
+            }
+
+            public void Dispose()
+            {
+            }
+
+            public object Clone()
+            {
+                throw new NotImplementedException();
             }
         }
 
@@ -118,9 +131,9 @@ namespace Shashlik.Utils.Test
                     score = 2
                 }
             },
-            friends = new[] { "张三", "李四" },
-            dic = new Dictionary<object, object> { { 1, "1" } },
-            dic1 = new Hashtable { { "a", 1 } },
+            friends = new[] {"张三", "李四"},
+            dic = new Dictionary<object, object> {{1, "1"}},
+            dic1 = new Hashtable {{"a", 1}},
             jObject = new
             {
                 first = "用户11111，提交了新的实名认证申请。",
@@ -146,9 +159,9 @@ namespace Shashlik.Utils.Test
                         score = 2
                     }
                 },
-                friends = new[] { "张三", "李四" },
-                dic = new Dictionary<object, object> { { 1, "1" } },
-                dic1 = new Hashtable { { "a", 1 } },
+                friends = new[] {"张三", "李四"},
+                dic = new Dictionary<object, object> {{1, "1"}},
+                dic1 = new Hashtable {{"a", 1}},
             }.ToJson().DeserializeJson<JObject>(),
             jElement = new
             {
@@ -175,10 +188,10 @@ namespace Shashlik.Utils.Test
                         score = 2
                     }
                 },
-                friends = new[] { "张三", "李四" },
+                friends = new[] {"张三", "李四"},
                 // text json not support Serialize: Dictionary<object, object>
                 // dic = new Dictionary<object, object> {{1, "1"}},
-                dic1 = new Hashtable { { "a", 1 } },
+                dic1 = new Hashtable {{"a", 1}},
             }.ToJsonWithTextJson().DeserializeJsonWithTextJson<JsonElement>()
         };
 
@@ -218,11 +231,11 @@ namespace Shashlik.Utils.Test
         public void MapToDictionary()
         {
             var dic = _testObject.MapToDictionary();
-            dic.Count.ShouldBe(9);
+            dic.Count.ShouldBe(11);
             dic.ContainsKey("first").ShouldBeTrue();
             dic["first"].ShouldBe("用户11111，提交了新的实名认证申请。");
 
-            var jObject = new JObject { ["test"] = "test", ["array"] = new JArray("value1", "value2") };
+            var jObject = new JObject {["test"] = "test", ["array"] = new JArray("value1", "value2")};
 
             var jDic = jObject.MapToDictionary();
             jDic.ContainsKey("test").ShouldBeTrue();
@@ -266,7 +279,7 @@ namespace Shashlik.Utils.Test
                 Dto1 = DateTimeOffset.Now,
                 Dto2 = DateTimeOffset.Now,
                 Enum1 = TestJsonToClass.TestJsonToEnum.Male,
-                StrList = new List<string> { "str1", "str2" },
+                StrList = new List<string> {"str1", "str2"},
                 InnerClass = new TestJsonToClass
                 {
                     Int1 = 1,
@@ -277,7 +290,7 @@ namespace Shashlik.Utils.Test
                     Dto1 = DateTimeOffset.Now,
                     Dto2 = DateTimeOffset.Now,
                     Enum1 = TestJsonToClass.TestJsonToEnum.Male,
-                    StrList = new List<string> { "str1", "str2" },
+                    StrList = new List<string> {"str1", "str2"},
                 }
             };
 
@@ -373,7 +386,8 @@ namespace Shashlik.Utils.Test
 
                     jsonElement.GetProperty("InnerClass").GetValue<long>("Long").ShouldBe(model.InnerClass.Long);
                     jsonElement.GetProperty("InnerClass").GetValue<float>("Float").ShouldBe(model.InnerClass.Float);
-                    jsonElement.GetProperty("InnerClass").GetValue<decimal>("Decimal").ShouldBe(model.InnerClass.Decimal);
+                    jsonElement.GetProperty("InnerClass").GetValue<decimal>("Decimal")
+                        .ShouldBe(model.InnerClass.Decimal);
                     jsonElement.GetProperty("InnerClass").GetValue<short>("Short").ShouldBe(model.InnerClass.Short);
                     jsonElement.GetProperty("InnerClass").GetValue<uint>("Uint").ShouldBe(model.InnerClass.Uint);
                     jsonElement.GetProperty("InnerClass").GetValue<ulong>("Ulong").ShouldBe(model.InnerClass.Ulong);
@@ -381,32 +395,44 @@ namespace Shashlik.Utils.Test
                     jsonElement.GetProperty("InnerClass").GetValue<byte>("Byte").ShouldBe(model.InnerClass.Byte);
                     jsonElement.GetProperty("InnerClass").GetValue<sbyte>("Sbyte").ShouldBe(model.InnerClass.Sbyte);
                     jsonElement.GetProperty("InnerClass").GetValue<char>("Char").ShouldBe(model.InnerClass.Char);
-                    jsonElement.GetProperty("InnerClass").GetValue<List<string>>("StrList").ShouldBe(model.InnerClass.StrList);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<int>().ShouldBe(model.InnerClass.Int1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<long>().ShouldBe(model.InnerClass.Int1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<decimal>().ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetValue<List<string>>("StrList")
+                        .ShouldBe(model.InnerClass.StrList);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<int>()
+                        .ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<long>()
+                        .ShouldBe(model.InnerClass.Int1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue<decimal>()
+                        .ShouldBe(model.InnerClass.Int1);
                     jsonElement.GetProperty("InnerClass").GetValue<int>("Int1").ShouldBe(model.InnerClass.Int1);
                     jsonElement.GetProperty("InnerClass").GetProperty("Int1").GetValue(typeof(int))
                         .ShouldBe(model.InnerClass.Int1);
                     jsonElement.GetProperty("InnerClass").GetValue(typeof(int), "Int1").ShouldBe(model.InnerClass.Int1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Int2").GetValue<int?>().ShouldBe(model.InnerClass.Int2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Int2").GetValue<int?>()
+                        .ShouldBe(model.InnerClass.Int2);
                     jsonElement.GetProperty("InnerClass").GetProperty("Int2").GetValue(typeof(int?))
                         .ShouldBe(model.InnerClass.Int2);
-                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue<double>().ShouldBe(model.InnerClass.D1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue(typeof(double)).ShouldBe(model.InnerClass.D1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("D2").GetValue<double?>().ShouldBe(model.InnerClass.D2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue<double>()
+                        .ShouldBe(model.InnerClass.D1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D1").GetValue(typeof(double))
+                        .ShouldBe(model.InnerClass.D1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("D2").GetValue<double?>()
+                        .ShouldBe(model.InnerClass.D2);
                     jsonElement.GetProperty("InnerClass").GetProperty("D2").GetValue(typeof(double?))
                         .ShouldBe(model.InnerClass.D2);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Dt1").GetValue<DateTime>().ShouldBe(model.InnerClass.Dt1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt1").GetValue<DateTime>()
+                        .ShouldBe(model.InnerClass.Dt1);
                     jsonElement.GetProperty("InnerClass").GetProperty("Dt1").GetValue(typeof(DateTime))
                         .ShouldBe(model.InnerClass.Dt1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Dt2").GetValue<DateTime?>().ShouldBe(model.InnerClass.Dt2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Dt2").GetValue<DateTime?>()
+                        .ShouldBe(model.InnerClass.Dt2);
                     jsonElement.GetProperty("InnerClass").GetProperty("Dt2").GetValue(typeof(DateTime))
                         .ShouldBe(model.InnerClass.Dt2);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Guid1").GetValue<Guid>().ShouldBe(model.InnerClass.Guid1);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid1").GetValue<Guid>()
+                        .ShouldBe(model.InnerClass.Guid1);
                     jsonElement.GetProperty("InnerClass").GetProperty("Guid1").GetValue(typeof(Guid))
                         .ShouldBe(model.InnerClass.Guid1);
-                    jsonElement.GetProperty("InnerClass").GetProperty("Guid2").GetValue<Guid?>().ShouldBe(model.InnerClass.Guid2);
+                    jsonElement.GetProperty("InnerClass").GetProperty("Guid2").GetValue<Guid?>()
+                        .ShouldBe(model.InnerClass.Guid2);
                     jsonElement.GetProperty("InnerClass").GetProperty("Guid2").GetValue(typeof(Guid?))
                         .ShouldBe(model.InnerClass.Guid2);
                     jsonElement.GetProperty("InnerClass").GetProperty("Dto1").GetValue<DateTimeOffset>()
@@ -634,9 +660,19 @@ namespace Shashlik.Utils.Test
             member.ShouldNotBeNull();
             member.IsDefinedAttribute<TestAttribute>(true).ShouldBeTrue();
             member.IsDefinedAttribute(typeof(TestAttribute), true).ShouldBeTrue();
+        }
 
-            typeof(TestB).GetInterfaces(true).ShouldNotBeEmpty();
-            typeof(TestB).GetInterfaces(false).ShouldBeEmpty();
+        [Fact]
+        public void GetInterfacesTest()
+        {
+            var interfaces1 = typeof(TestB).GetInterfaces(true).ToList();
+            interfaces1.Contains(typeof(IDisposable)).ShouldBeTrue();
+            interfaces1.Contains(typeof(ITest)).ShouldBeTrue();
+            interfaces1.Contains(typeof(ICloneable)).ShouldBeTrue();
+            var interfaces2 = typeof(TestB).GetInterfaces(false).ToList();
+            interfaces2.Contains(typeof(IDisposable)).ShouldBeFalse();
+            interfaces2.Contains(typeof(ITest)).ShouldBeFalse();
+            interfaces2.Contains(typeof(ICloneable)).ShouldBeTrue();
         }
 
         [Fact]
