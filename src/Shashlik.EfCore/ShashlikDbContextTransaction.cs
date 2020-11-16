@@ -14,17 +14,17 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 顶层事务是否已dispose
+        /// 是否已dispose
         /// </summary>
         public bool IsDispose { get; private set; }
 
         /// <summary>
-        /// 顶层事务是否已提交
+        /// 是否已提交
         /// </summary>
         public bool IsCommit { get; private set; }
 
         /// <summary>
-        /// 顶层事务是否已回滚
+        /// 是否已回滚
         /// </summary>
         public bool IsRollback { get; private set; }
 
@@ -39,7 +39,7 @@ namespace Shashlik.EfCore
         public bool IsTop => !(TopTransaction is ShashlikDbContextTransaction);
 
         /// <summary>
-        /// 原始事务数据
+        /// 原始/顶层事务数据
         /// </summary>
         private IDbContextTransaction TopTransaction { get; }
 
