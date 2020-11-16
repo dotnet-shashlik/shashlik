@@ -8,8 +8,7 @@ namespace Shashlik.RazorFormat
     /**
      *    subIfTooLong格式化器,
      *    e.g.  value = "1234567890"
-     *    subIfTooLong(3,...)
-     *    result: "123..." 
+     *    subIfTooLong(3,...) -> result: "123..." 
      */
     /// <summary>
     /// switch格式化器

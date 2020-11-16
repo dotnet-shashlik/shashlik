@@ -182,22 +182,26 @@ namespace Shashlik.RazorFormat
         private static (bool hasFormatter, string? formatterStringValue) GetFormatterStringValue(
             string formatExpression, object? objectValue)
         {
-            var formatMatch = formatExpressionReg.Match(formatExpression!);
-            if (formatMatch.Success && formatMatch.Groups.Count >= 2)
+            var formatMatchList = formatExpressionReg.Matches(formatExpression!);
+            var lastValue = objectValue?.ToString();
+            var has = false;
+            foreach (Match formatMatch in formatMatchList)
             {
-                var action = formatMatch.Groups[1].Value;
-                var formater = formatters.GetOrDefault(action);
-                if (formater != null)
+                if (formatMatch.Success && formatMatch.Groups.Count >= 2)
                 {
-                    var expression = formatExpression.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
-                        .TrimEnd(')').Trim();
-                    var valueStr = objectValue?.ToString();
-                    var formattedStringValue = formater.Format(valueStr, expression);
-                    return (true, formattedStringValue);
+                    var action = formatMatch.Groups[1].Value;
+                    var formater = formatters.GetOrDefault(action);
+                    if (formater != null)
+                    {
+                        var expression = formatExpression.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
+                            .TrimEnd(')').Trim();
+                        lastValue = formater.Format(lastValue, expression);
+                        has = true;
+                    }
                 }
             }
 
-            return (false, null);
+            return has ? (true, lastValue) : (false, null);
         }
     }
 }
