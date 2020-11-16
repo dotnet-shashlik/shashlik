@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.RegularExpressions;
 using Shashlik.Utils.Extensions;
 
@@ -10,7 +11,6 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.RazorFormat
 {
-    //TODO: 优化正则,排除@@{},此类的字符
     public static class RazorFormatExtensions
     {
         // 已注册的格式化器
@@ -57,20 +57,40 @@ namespace Shashlik.RazorFormat
             if (value.IsNullOrWhiteSpace() || model is null)
                 return value;
 
-            var reg = new Regex(prefix + @"\{[^\{\}]{1,}\}");
+            var reg = new Regex("\\" + prefix + @"\{[^\{\}]{1,}\}");
 
             var matches = reg.Matches(value);
             if (matches.Count == 0)
                 return value;
 
+            var sb = new StringBuilder();
+            var inputSpan = value.AsSpan();
+
+            var lastIndex = 0;
             foreach (Match item in matches)
             {
                 if (!item.Success)
                     continue;
+
+                // ignore e.g. @@{Name}
+                if (item.Index > 0 && inputSpan[item.Index - 1] == prefix)
+                {
+                    var newIndex = item.Index + item.Value.Length;
+                    sb.Append(inputSpan[lastIndex..newIndex]);
+                    lastIndex = newIndex;
+                    continue;
+                }
+                else
+                {
+                    var newIndex = item.Index;
+                    sb.Append(inputSpan[lastIndex..newIndex]);
+                    lastIndex = newIndex;
+                }
+
                 var exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
 
                 string proName; // 属性名
-                string formatExp = null; // 格式话表达式
+                string formatExp = null; // 格式化表达式
                 var splitIndex = exp.IndexOf('|');
                 if (splitIndex != -1)
                 {
@@ -87,7 +107,11 @@ namespace Shashlik.RazorFormat
 
                 if (formatExp.IsNullOrWhiteSpace())
                     // 没有格式化输出,直接replace
-                    value = value.Replace(item.Value, v?.ToString());
+                {
+                    //value = value.Replace(item.Value, v?.ToString());
+                    sb.Append(v ?? string.Empty);
+                    lastIndex += item.Value.Length;
+                }
                 else
                 {
                     var hasFormater = false; // 有没有格式化器
@@ -103,7 +127,9 @@ namespace Shashlik.RazorFormat
                                 .TrimEnd(')').Trim();
                             var valueStr = v?.ToString();
                             var s = formater.Format(valueStr, expression);
-                            value = value.Replace(item.Value, s ?? "");
+                            //value = value.Replace(item.Value, s ?? "");
+                            sb.Append(s ?? string.Empty);
+                            lastIndex += item.Value.Length;
                             hasFormater = true;
                         }
                     }
@@ -112,12 +138,17 @@ namespace Shashlik.RazorFormat
                     {
                         // 没有格式化器,使用标准string format-
                         var s = string.Format($"{{0:{formatExp}}}", v);
-                        value = value.Replace(item.Value, s);
+                        //value = value.Replace(item.Value, s);
+                        sb.Append(s);
+                        lastIndex += item.Value.Length;
                     }
                 }
             }
 
-            return value;
+            if (lastIndex < inputSpan.Length)
+                sb.Append(inputSpan.Slice(lastIndex));
+
+            return sb.ToString();
         }
     }
 }
