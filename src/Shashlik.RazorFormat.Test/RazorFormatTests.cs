@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using Shouldly;
+using SmartFormat;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,6 +16,17 @@ namespace Shashlik.RazorFormat.Test
             _testOutputHelper = testOutputHelper;
         }
 
+        private UserTestModel model = new UserTestModel
+        {
+            Age = 18,
+            Birthday = new DateTime(2000, 1, 1),
+            Money = 1.11111,
+            Company = new UserTestModel._Company
+            {
+                CompanyName = "test company",
+                Address = new UserTestModel._Company._Address {Code = 1}
+            }
+        };
 
         [Fact]
         public void Test()
@@ -22,17 +35,6 @@ namespace Shashlik.RazorFormat.Test
             Should.Throw<Exception>(() => RazorFormatExtensions.Registry(new ErrorFormatter()));
             Should.Throw<Exception>(() => RazorFormatExtensions.Registry(new DuplicateFormatter()));
 
-            var model = new UserTestModel
-            {
-                Age = 18,
-                Birthday = new DateTime(2000, 1, 1),
-                Money = 1.11111,
-                Company = new UserTestModel._Company
-                {
-                    CompanyName = "test company",
-                    Address = new UserTestModel._Company._Address {Code = 1}
-                }
-            };
 
             Should.Throw<Exception>(() =>
                 "@{Age|d5}@{Birthday|yyyy-MM-dd HH:mm:ss}@{Money|f2}@{Company.CompanyName}@{Company.Address.Code|d6}@{NotMatch}"
@@ -86,6 +88,43 @@ namespace Shashlik.RazorFormat.Test
                 e.ShouldNotBeNull();
             }
         }
+
+        private readonly int _performanceCount = 100_0000;
+
+        [Fact]
+        public void RazorFormatPerformanceTest()
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < _performanceCount; i++)
+            {
+                "仍然让人人@@{Age|d5}啊啊啊啊啊@{NotMatch}啪啪啪@{Age|d5}嘎嘎嘎@{Birthday|yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢@{Money|f2}惆怅长岑长@{Company.CompanyName}对方的等待@{Company.Address.Code|d6}诶诶诶诶诶@{NotMatch}呵呵呵呵"
+                    .RazorFormat(model);
+            }
+
+            sw.Stop();
+
+            _testOutputHelper.WriteLine($"RazorFormat 执行{_performanceCount}次总计耗时: {sw.ElapsedMilliseconds / 1000M}秒");
+        }
+
+        [Fact]
+        public void SmartFormatPerformanceTest()
+        {
+            var sw = new Stopwatch();
+            sw.Start();
+            for (int i = 0; i < _performanceCount; i++)
+            {
+              var res=  Smart.Format(
+                    "仍然让人人{Age:d5}啊啊啊啊啊啪啪啪{Age:d5}嘎嘎嘎{Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{Money:f2}惆怅长岑长{Company.CompanyName}对方的等待{Company.Address.Code:d6}诶诶诶诶诶呵呵呵呵",
+                    model
+                );
+            }
+
+            sw.Stop();
+
+            _testOutputHelper.WriteLine($"SmartFormat 执行{_performanceCount}次总计耗时: {sw.ElapsedMilliseconds / 1000M}秒");
+        }
+
 
         public class UserTestModel
         {
