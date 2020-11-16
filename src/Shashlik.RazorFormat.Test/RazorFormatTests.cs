@@ -39,10 +39,10 @@ namespace Shashlik.RazorFormat.Test
                 .ShouldBe(
                     $"{model.Age:d5}{model.Birthday:yyyy-MM-dd HH:mm:ss}{model.Money:f2}{model.Company.CompanyName}{model.Company.Address.Code:d6}@{{NotMatch}}");
 
-            "仍然让人人@@{Age|d5}啊啊啊啊啊@{Age|d5}嘎嘎嘎@{Birthday|yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢@{Money|f2}惆怅长岑长@{Company.CompanyName}对方的等待@{Company.Address.Code|d6}诶诶诶诶诶@{NotMatch}呵呵呵呵"
+            "仍然让人人@@{Age|d5}啊啊啊啊啊@{NotMatch}啪啪啪@{Age|d5}嘎嘎嘎@{Birthday|yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢@{Money|f2}惆怅长岑长@{Company.CompanyName}对方的等待@{Company.Address.Code|d6}诶诶诶诶诶@{NotMatch}呵呵呵呵"
                 .RazorFormat(model)
                 .ShouldBe(
-                    $"仍然让人人@@{{Age|d5}}啊啊啊啊啊{model.Age:d5}嘎嘎嘎{model.Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{model.Money:f2}惆怅长岑长{model.Company.CompanyName}对方的等待{model.Company.Address.Code:d6}诶诶诶诶诶@{{NotMatch}}呵呵呵呵");
+                    $"仍然让人人@@{{Age|d5}}啊啊啊啊啊@{{NotMatch}}啪啪啪{model.Age:d5}嘎嘎嘎{model.Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{model.Money:f2}惆怅长岑长{model.Company.CompanyName}对方的等待{model.Company.Address.Code:d6}诶诶诶诶诶@{{NotMatch}}呵呵呵呵");
 
             ((string) null).RazorFormat(model).ShouldBeNull();
             "".RazorFormat(model).ShouldBeNullOrWhiteSpace();

@@ -1,10 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.RazorFormat
 {
-
     /**
      * 
      * 表达式格式:
@@ -12,7 +12,6 @@ namespace Shashlik.RazorFormat
      * null：空选择器，empty：空字符串选择器,default:默认选择器，只能放到最后
      * 
      */
-
     /// <summary>
     /// switch格式化器
     /// </summary>
@@ -20,7 +19,7 @@ namespace Shashlik.RazorFormat
     {
         public string Action => "switch";
 
-        public string Format(string value, string expression)
+        public string? Format(string? value, string expression)
         {
             var formats = expression.Split('|');
             string s;

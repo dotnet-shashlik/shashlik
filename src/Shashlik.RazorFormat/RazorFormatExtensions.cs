@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -68,8 +69,11 @@ namespace Shashlik.RazorFormat
         /// <param name="value">值</param>
         /// <param name="model">格式化模型,支持IDictionary/JsonElement/JsonObject</param>
         /// <param name="prefix">格式符前缀,默认@</param>
-        /// <returns></returns>
-        public static string RazorFormat<TModel>(this string value, TModel model, char prefix = '@')
+        /// <param name="throwExceptionWhenPropertyNotExists">属性值不存在时是否抛出异常,false则直接原样字符串输出</param>
+        /// <returns>format result value</returns>
+        /// <exception cref="MissingMemberException">throwExceptionWhenPropertyNotExists == true 可能抛出成员不存在异常</exception>
+        public static string RazorFormat<TModel>(this string value, TModel model, char prefix = '@',
+            bool throwExceptionWhenPropertyNotExists = false)
         {
             if (value.IsNullOrWhiteSpace() || model is null)
                 return value;
@@ -104,59 +108,39 @@ namespace Shashlik.RazorFormat
                     lastIndex = newIndex;
                 }
 
-                var exp = item.Value.TrimStart(prefix, '{').TrimEnd('}');
+                // proName: 属性名称, formatExp: 格式化表达式
+                var (proName, formatExp) = GetFormatContent(item.Value, prefix);
 
-                string proName; // 属性名
-                string formatExp = null; // 格式化表达式
-                var splitIndex = exp.IndexOf('|');
-                if (splitIndex != -1)
-                {
-                    formatExp = exp.Substring(splitIndex + 1).Trim();
-                    proName = exp.Substring(0, splitIndex).Trim();
-                }
-                else
-                    proName = exp.Trim();
-
+                // 实例属性值
                 var proValue = model.GetPropertyValue(proName);
-                if (!proValue.exists)
+                if (!proValue.exists && !throwExceptionWhenPropertyNotExists)
+                    // 属性值不存在, 跳过, 直接原始输出
                     continue;
-                var v = proValue.value;
+                if (!proValue.exists && throwExceptionWhenPropertyNotExists)
+                    throw new MissingMemberException(typeof(TModel).FullName, proName);
 
-                if (formatExp.IsNullOrWhiteSpace())
-                    // 没有格式化输出,直接replace
+                var objectValue = proValue.value; // object value
+                var stringValue = objectValue?.ToString(); // string value, nullable
+
+                if (string.IsNullOrWhiteSpace(formatExp))
                 {
-                    //value = value.Replace(item.Value, v?.ToString());
-                    sb.Append(v ?? string.Empty);
+                    // 没有格式化表达式, 直接append
+                    sb.Append(stringValue);
                     lastIndex += item.Value.Length;
                 }
                 else
                 {
-                    var hasFormater = false; // 有没有格式化器
-                    // 正则匹配,计算action
-                    var formatMatch = formatExpressionReg.Match(formatExp!);
-                    if (formatMatch.Success && formatMatch.Groups.Count >= 2)
+                    var (hasFormatter, formatterStringValue) = GetFormatterStringValue(formatExp, objectValue);
+                    if (hasFormatter)
                     {
-                        var action = formatMatch.Groups[1].Value;
-                        var formater = formatters.GetOrDefault(action);
-                        if (formater != null)
-                        {
-                            var expression = formatExp.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
-                                .TrimEnd(')').Trim();
-                            var valueStr = v?.ToString();
-                            var s = formater.Format(valueStr, expression);
-                            //value = value.Replace(item.Value, s ?? "");
-                            sb.Append(s ?? string.Empty);
-                            lastIndex += item.Value.Length;
-                            hasFormater = true;
-                        }
+                        sb.Append(formatterStringValue ?? string.Empty);
+                        lastIndex += item.Value.Length;
                     }
-
-                    if (!hasFormater)
+                    else
                     {
-                        // 没有格式化器,使用标准string format-
-                        var s = string.Format($"{{0:{formatExp}}}", v);
-                        //value = value.Replace(item.Value, s);
-                        sb.Append(s);
+                        // 没有格式化器,使用标准string format进行格式化
+                        var formattedStringValue = string.Format($"{{0:{formatExp}}}", objectValue);
+                        sb.Append(formattedStringValue);
                         lastIndex += item.Value.Length;
                     }
                 }
@@ -166,6 +150,54 @@ namespace Shashlik.RazorFormat
                 sb.Append(inputSpan.Slice(lastIndex));
 
             return sb.ToString();
+        }
+
+        private static (string proName, string? formarExpression) GetFormatContent(string matchedValue, char prefix)
+        {
+            var exp = matchedValue.TrimStart(prefix, '{').TrimEnd('}');
+
+            string proName; // 属性名
+            string? formatExp; // 格式化表达式
+            var splitIndex = exp.IndexOf('|');
+            if (splitIndex != -1)
+            {
+                formatExp = exp.Substring(splitIndex + 1).Trim();
+                proName = exp.Substring(0, splitIndex).Trim();
+            }
+            else
+            {
+                proName = exp.Trim();
+                formatExp = null;
+            }
+
+            return (proName, formatExp);
+        }
+
+        /// <summary>
+        /// 获取格式化器处理后的值
+        /// </summary>
+        /// <param name="formatExpression"></param>
+        /// <param name="objectValue"></param>
+        /// <returns>hasFormatter:有没有匹配的格式化器, formatterStringValue: 经过格式化器格式化后的值</returns>
+        private static (bool hasFormatter, string? formatterStringValue) GetFormatterStringValue(
+            string formatExpression, object? objectValue)
+        {
+            var formatMatch = formatExpressionReg.Match(formatExpression!);
+            if (formatMatch.Success && formatMatch.Groups.Count >= 2)
+            {
+                var action = formatMatch.Groups[1].Value;
+                var formater = formatters.GetOrDefault(action);
+                if (formater != null)
+                {
+                    var expression = formatExpression.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
+                        .TrimEnd(')').Trim();
+                    var valueStr = objectValue?.ToString();
+                    var formattedStringValue = formater.Format(valueStr, expression);
+                    return (true, formattedStringValue);
+                }
+            }
+
+            return (false, null);
         }
     }
 }
