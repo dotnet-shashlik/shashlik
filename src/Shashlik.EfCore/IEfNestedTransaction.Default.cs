@@ -18,21 +18,16 @@ namespace Shashlik.EfCore
     public class DefaultEfNestedTransaction<TDbContext> : IEfNestedTransaction<TDbContext>
         where TDbContext : DbContext
     {
-        public DefaultEfNestedTransaction(TDbContext dbContext)
+        public DefaultEfNestedTransaction(TDbContext dbContext, IServiceProvider serviceProvider)
         {
             DbContext = dbContext;
-            if (!_beginFunction.isSetValue)
-            {
-                _beginFunction.function = GlobalKernelServiceProvider.KernelServiceProvider
-                    .GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
-                _beginFunction.isSetValue = true;
-            }
+            Function = serviceProvider.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
         }
 
         /// <summary>
         /// 开启事务的方式
         /// </summary>
-        private static (bool isSetValue, IEfNestedTransactionBeginFunction<TDbContext>? function) _beginFunction;
+        private IEfNestedTransactionBeginFunction<TDbContext>? Function { get; }
 
         /// <summary>
         /// 数据库上下文
@@ -61,12 +56,12 @@ namespace Shashlik.EfCore
                 if (DbContext.Database.CurrentTransaction is null)
                 {
                     IDbContextTransaction tran;
-                    if (_beginFunction.function is null)
+                    if (Function is null)
                         tran = isolationLevel.HasValue
                             ? DbContext.Database.BeginTransaction(isolationLevel.Value)
                             : DbContext.Database.BeginTransaction();
                     else
-                        tran = _beginFunction.function.BeginTransaction(DbContext, isolationLevel);
+                        tran = Function.BeginTransaction(DbContext, isolationLevel);
 
                     _topTransaction = new ShashlikDbContextTransaction(tran);
                     return _topTransaction;
