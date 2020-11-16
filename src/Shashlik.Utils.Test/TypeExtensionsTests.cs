@@ -118,7 +118,66 @@ namespace Shashlik.Utils.Test
             },
             friends = new[] {"张三", "李四"},
             dic = new Dictionary<object, object> {{1, "1"}},
-            dic1 = new Hashtable {{"a", 1}}
+            dic1 = new Hashtable {{"a", 1}},
+            jObject = new
+            {
+                first = "用户11111，提交了新的实名认证申请。",
+                keyword1 = "等待管理员审核",
+                keyword2 = DateTime.Now.ToStringyyyyMMddHHmm(),
+                remark = "请及时登录后台管理系统处理。",
+                address = new
+                {
+                    provice = "四川省",
+                    city = "成都市",
+                    area = "金牛区"
+                },
+                tags = new[]
+                {
+                    new
+                    {
+                        title = "成熟",
+                        score = 1
+                    },
+                    new
+                    {
+                        title = "稳重",
+                        score = 2
+                    }
+                },
+                friends = new[] {"张三", "李四"},
+                dic = new Dictionary<object, object> {{1, "1"}},
+                dic1 = new Hashtable {{"a", 1}},
+            }.ToJson().DeserializeJson<JObject>(),
+            jElement = new
+            {
+                first = "用户11111，提交了新的实名认证申请。",
+                keyword1 = "等待管理员审核",
+                keyword2 = DateTime.Now.ToStringyyyyMMddHHmm(),
+                remark = "请及时登录后台管理系统处理。",
+                address = new
+                {
+                    provice = "四川省",
+                    city = "成都市",
+                    area = "金牛区"
+                },
+                tags = new[]
+                {
+                    new
+                    {
+                        title = "成熟",
+                        score = 1
+                    },
+                    new
+                    {
+                        title = "稳重",
+                        score = 2
+                    }
+                },
+                friends = new[] {"张三", "李四"},
+                // text json not support Serialize: Dictionary<object, object>
+                // dic = new Dictionary<object, object> {{1, "1"}},
+                dic1 = new Hashtable {{"a", 1}},
+            }.ToJsonWithTextJson().DeserializeJsonWithTextJson<JsonElement>()
         };
 
         public TypeExtensionsTests(ITestOutputHelper testOutputHelper)
@@ -168,7 +227,6 @@ namespace Shashlik.Utils.Test
             jDic["test"].ShouldBe("test");
         }
 
-
         [Fact]
         public void IsSimpleTypeTest()
         {
@@ -192,7 +250,6 @@ namespace Shashlik.Utils.Test
             (new { }).GetType().IsSimpleType().ShouldBeFalse();
             typeof(TypeExtensionsTests).IsSimpleType().ShouldBeFalse();
         }
-
 
         [Fact]
         public void JsonElementGetValueTests()
@@ -313,38 +370,107 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void GetPropertyTests()
         {
-            bool exists;
-            object value;
-            (exists, value) = _testObject.GetPropertyValue("keyword1");
-            exists.ShouldBeTrue();
-            value.ShouldBe("等待管理员审核");
-            (exists, value) = _testObject.GetPropertyValue("address.city");
-            exists.ShouldBeTrue();
-            value.ShouldBe("成都市");
-            (exists, value) = _testObject.GetPropertyValue("friends.1");
-            exists.ShouldBeTrue();
-            value.ShouldBe("李四");
-
-            var dic = new Dictionary<string, string>()
             {
-                {"key1", "value1"},
-                {"key2", "value2"}
-            };
-            (exists, value) = dic.GetPropertyValue("key1");
-            exists.ShouldBeTrue();
-            value.ShouldBe(dic["key1"]);
+                bool exists;
+                object value;
 
-            JToken jt = new JObject();
-            jt["key"] = "value";
-            (exists, value) = jt.GetPropertyValue("key");
-            exists.ShouldBeTrue();
-            value.ShouldBe(jt["key"]);
+                {
+                    (exists, value) = _testObject.GetPropertyValue("absolute_not_exists");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("keyword1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("等待管理员审核");
+                    (exists, value) = _testObject.GetPropertyValue("address.city");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成都市");
+                    (exists, value) = _testObject.GetPropertyValue("tags.0.title");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成熟");
+                    (exists, value) = _testObject.GetPropertyValue("tags.2.title");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("friends.1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("李四");
+                    (exists, value) = _testObject.GetPropertyValue("dic.1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("1");
+                    (exists, value) = _testObject.GetPropertyValue("dic1.a");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe(1);
+                }
 
-            var ja = new JArray();
-            ja.Add(jt);
-            (exists, value) = ja.GetPropertyValue("0.key");
-            exists.ShouldBeTrue();
-            value.ToString().ShouldBe(jt["key"].ToString());
+                {
+                    (exists, value) = _testObject.GetPropertyValue("jObject.absolute_not_exists");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("jObject.keyword1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("等待管理员审核");
+                    (exists, value) = _testObject.GetPropertyValue("jObject.address.city");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成都市");
+                    (exists, value) = _testObject.GetPropertyValue("jObject.tags.0.title");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成熟");
+                    (exists, value) = _testObject.GetPropertyValue("jObject.tags.2.title");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("jObject.friends.1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("李四");
+                    (exists, value) = _testObject.GetPropertyValue("jObject.dic.1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("1");
+                    (exists, value) = _testObject.GetPropertyValue("jObject.dic1.a");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe(1);
+                }
+
+                {
+                    (exists, value) = _testObject.GetPropertyValue("jElement.absolute_not_exists");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("jElement.keyword1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("等待管理员审核");
+                    (exists, value) = _testObject.GetPropertyValue("jElement.address.city");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成都市");
+                    (exists, value) = _testObject.GetPropertyValue("jElement.tags.0.title");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("成熟");
+                    (exists, value) = _testObject.GetPropertyValue("jElement.tags.2.title");
+                    exists.ShouldBeFalse();
+                    (exists, value) = _testObject.GetPropertyValue("jElement.friends.1");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe("李四");
+                    // (exists, value) = _testObject.GetPropertyValue("jElement.dic.1");
+                    // exists.ShouldBeTrue();
+                    // value.ShouldBe("1");
+                    (exists, value) = _testObject.GetPropertyValue("jElement.dic1.a");
+                    exists.ShouldBeTrue();
+                    value.ShouldBe(1);
+                }
+
+
+                var dic = new Dictionary<string, string>()
+                {
+                    {"key1", "value1"},
+                    {"key2", "value2"}
+                };
+                (exists, value) = dic.GetPropertyValue("key1");
+                exists.ShouldBeTrue();
+                value.ShouldBe(dic["key1"]);
+
+                JToken jt = new JObject();
+                jt["key"] = "value";
+                (exists, value) = jt.GetPropertyValue("key");
+                exists.ShouldBeTrue();
+                value.ShouldBe(jt["key"]);
+
+                var ja = new JArray();
+                ja.Add(jt);
+                (exists, value) = ja.GetPropertyValue("0.key");
+                exists.ShouldBeTrue();
+                value.ToString().ShouldBe(jt["key"].ToString());
+            }
         }
 
         [Fact]
@@ -465,6 +591,19 @@ namespace Shashlik.Utils.Test
         {
             TestJsonToClass.TestJsonToEnum.Male.GetEnumDescription().ShouldBe("男");
             TestJsonToClass.TestJsonToEnum.Female.GetEnumDescription().ShouldBeNullOrWhiteSpace();
+        }
+    }
+
+    public static class JsonExtensions
+    {
+        public static string ToJsonWithTextJson(this object obj)
+        {
+            return System.Text.Json.JsonSerializer.Serialize(obj);
+        }
+
+        public static T DeserializeJsonWithTextJson<T>(this string json)
+        {
+            return System.Text.Json.JsonSerializer.Deserialize<T>(json);
         }
     }
 }
