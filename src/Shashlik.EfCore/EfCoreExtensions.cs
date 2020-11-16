@@ -240,7 +240,8 @@ namespace Shashlik.EfCore
             where TDbContext : DbContext
         {
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, lockSecond, waitTimeoutSeconds: lockSecond);
+            using var @lock = locker.Lock(MigrationLockKey.Format(typeof(TDbContext).FullName), lockSecond,
+                waitTimeoutSeconds: lockSecond);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
             dbContext.Database.Migrate();
@@ -260,7 +261,8 @@ namespace Shashlik.EfCore
             if (!dbContextType.IsSubTypeOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, lockSecond, waitTimeoutSeconds: lockSecond);
+            using var @lock = locker.Lock(MigrationLockKey.Format(dbContextType.FullName), lockSecond,
+                waitTimeoutSeconds: lockSecond);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             dbContext!.Database.Migrate();
