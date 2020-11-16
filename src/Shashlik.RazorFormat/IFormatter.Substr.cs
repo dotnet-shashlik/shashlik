@@ -21,7 +21,7 @@ namespace Shashlik.RazorFormat
         public string? Format(string? value, string expression)
         {
             if (string.IsNullOrWhiteSpace(value))
-                return string.Empty;
+                return value;
             var args = expression.Split(',');
             if (args.Length != 1 && args.Length != 2)
                 throw new FormatException(expression);

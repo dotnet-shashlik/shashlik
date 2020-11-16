@@ -20,7 +20,7 @@ namespace Shashlik.RazorFormat
         public string? Format(string? value, string expression)
         {
             if (value.IsNullOrWhiteSpace())
-                return string.Empty;
+                return value;
             var args = expression.Split(',');
             if (args.Length == 0 || args.Length > 2)
                 throw new FormatException(expression);
