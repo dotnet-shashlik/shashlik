@@ -37,6 +37,34 @@ namespace Shashlik.Utils.Extensions
 
             return ms.ReadToString(encoding);
         }
+        
+        /// <summary>
+        /// serialize to xml string
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <param name="writerSettings"></param>
+        /// <param name="namespaces"></param>
+        /// <returns></returns>
+        public static string ToXmlString<T>(this T value, XmlWriterSettings writerSettings, XmlSerializerNamespaces namespaces)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+            try
+            {
+                var xmlSerializer = new XmlSerializer(typeof(T));
+                var stringWriter = new StringWriter();
+                using var writer = XmlWriter.Create(stringWriter, writerSettings);
+                xmlSerializer.Serialize(writer, value, namespaces);
+                return stringWriter.ToString();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred", ex);
+            }
+        }
 
         /// <summary>
         /// serialize to xml string
