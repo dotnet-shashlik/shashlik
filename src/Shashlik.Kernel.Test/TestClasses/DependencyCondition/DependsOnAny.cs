@@ -1,9 +1,11 @@
 ﻿using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
     [ConditionDependsOn(typeof(EnvConditionProd), typeof(NeedTestOption1True), ConditionType = ConditionType.ANY)]
-    public class DependsOnAny : Shashlik.Kernel.Dependency.ISingleton
+    [Singleton]
+    public class DependsOnAny
     {
         // should be not null
     }

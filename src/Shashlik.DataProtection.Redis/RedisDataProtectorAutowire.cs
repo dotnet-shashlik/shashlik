@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowired;
 using Shashlik.Redis;
 using Shashlik.Utils.Extensions;
 

@@ -1,4 +1,4 @@
-﻿namespace Shashlik.Kernel.Autowired.Inner
+﻿namespace Shashlik.Kernel.Autowire.Inner
 {
     /// <summary>
     /// 初始化状态

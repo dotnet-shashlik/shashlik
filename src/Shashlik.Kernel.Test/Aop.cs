@@ -16,7 +16,8 @@ namespace Shashlik.Kernel.Test
         void Call3();
     }
 
-    public class CustomService : ICustomService, ISingleton
+    [Singleton]
+    public class CustomService : ICustomService
     {
         public void Call1()
         {

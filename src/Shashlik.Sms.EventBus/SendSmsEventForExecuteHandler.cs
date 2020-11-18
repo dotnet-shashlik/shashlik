@@ -12,7 +12,8 @@ namespace Shashlik.Sms.EventBus
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
     [ConditionDependsOn(typeof(ISmsSender), typeof(ISms), ConditionType = ConditionType.ALL)]
-    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>, ITransient
+    [Transient]
+    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {

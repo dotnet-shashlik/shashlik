@@ -8,7 +8,10 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Utils.Helpers
 {
-    public class ReflectHelper
+    /// <summary>
+    /// 反射相关方法
+    /// </summary>
+    public class ReflectionHelper
     {
         /// <summary>
         /// 获取引用了<paramref name="assembly"/>程序集的所有的程序集
@@ -80,7 +83,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="assembly"></param>
@@ -92,7 +95,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
@@ -110,7 +113,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="assembly"></param>
         /// <returns></returns>
@@ -120,7 +123,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="dependencyContext"></param>
@@ -128,6 +131,57 @@ namespace Shashlik.Utils.Helpers
         public static List<TypeInfo> GetFinalSubTypes<TBaseType>(DependencyContext dependencyContext = null)
         {
             return GetFinalSubTypes(typeof(TBaseType), dependencyContext);
+        }
+
+        /// <summary>
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// </summary>
+        /// <param name="baseType">基类,可以是泛型定义</param>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetSubTypes(Type baseType, Assembly assembly)
+        {
+            return assembly
+                .DefinedTypes
+                .Where(r => r.IsSubTypeOf(baseType) || r.IsSubTypeOfGenericType(baseType))
+                .ToList();
+        }
+
+        /// <summary>
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// </summary>
+        /// <param name="baseType">基类,可以是泛型定义</param>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetSubTypes(Type baseType, DependencyContext dependencyContext = null)
+        {
+            var types = new List<TypeInfo>();
+            foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
+                types.AddRange(GetSubTypes(baseType, item));
+
+            types.AddRange(GetSubTypes(baseType, baseType.Assembly));
+            return types;
+        }
+
+        /// <summary>
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetSubTypes<TBaseType>(Assembly assembly)
+        {
+            return GetSubTypes(typeof(TBaseType), assembly);
+        }
+
+        /// <summary>
+        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// </summary>
+        /// <typeparam name="TBaseType"></typeparam>
+        /// <param name="dependencyContext"></param>
+        /// <returns></returns>
+        public static List<TypeInfo> GetSubTypes<TBaseType>(DependencyContext dependencyContext = null)
+        {
+            return GetSubTypes(typeof(TBaseType), dependencyContext);
         }
 
         /// <summary>

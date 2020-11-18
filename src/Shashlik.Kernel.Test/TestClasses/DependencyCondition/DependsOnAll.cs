@@ -1,10 +1,12 @@
 ﻿using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
     // default is ALL
     [ConditionDependsOn(typeof(EnvConditionProd), typeof(NeedTestOption1True))]
-    public class DependsOnAll : Shashlik.Kernel.Dependency.ISingleton
+    [Singleton]
+    public class DependsOnAll
     {
         // should be null
     }

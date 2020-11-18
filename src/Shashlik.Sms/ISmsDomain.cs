@@ -7,7 +7,8 @@ namespace Shashlik.Sms
     /// <summary>
     /// 短信发送执行接口
     /// </summary>
-    public interface ISmsDomain : ISingleton
+    [Singleton]
+    public interface ISmsDomain
     {
         /// <summary>
         /// 主机类型,aliyun/tencent ....

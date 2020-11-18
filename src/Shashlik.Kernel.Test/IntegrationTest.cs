@@ -58,7 +58,7 @@ namespace Shashlik.Kernel.Test
                 GetService<DependsOnAll>().ShouldBeNull();
                 GetService<DependsOnAllShouldBeNotNull>().ShouldNotBeNull();
                 GetService<TestCondition>().ShouldBeNull();
-                GetService<BasedOn>().ShouldNotBeNull();
+                //GetService<BasedOn>().ShouldNotBeNull();
                 GetService<FailConditionTestClass>().ShouldNotBeNull();
             }
 

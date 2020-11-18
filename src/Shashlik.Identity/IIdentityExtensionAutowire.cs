@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Identity
 {

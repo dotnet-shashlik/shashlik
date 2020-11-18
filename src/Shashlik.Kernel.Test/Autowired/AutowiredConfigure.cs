@@ -1,6 +1,4 @@
-﻿using Shashlik.Kernel.Autowired;
-
-namespace Shashlik.Kernel.Test.Autowired
+﻿namespace Shashlik.Kernel.Test.Autowired
 {
     public class AutowiredConfigure : IServiceProviderAutowire
     {

@@ -22,6 +22,112 @@ namespace Shashlik.Utils.Test
 
         #region Base
 
+        public interface IA1<T> : IDisposable
+        {
+        }
+
+        public abstract class B1<T> : IA1<T>, IComparer
+        {
+            public void Dispose()
+            {
+            }
+
+            public int Compare(object? x, object? y)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class C1<T> : B1<T>
+        {
+        }
+
+
+        //################################
+
+        public interface IA2 : IDisposable
+        {
+        }
+
+        public abstract class B2<T> : IA2, IComparer
+        {
+            public void Dispose()
+            {
+            }
+
+            public int CompareTo(object? obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int Compare(object? x, object? y)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class C2 : B2<int>
+        {
+        }
+
+        //################################
+        public interface IA3 : IDisposable, IComparer
+        {
+        }
+
+        public abstract class B3<T> : IA3
+        {
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public int CompareTo(object? obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int Compare(object? x, object? y)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class C3<T> : B3<T>
+        {
+        }
+
+
+        //################################
+
+        public interface IA4<T>
+        {
+        }
+
+        public class B4<T1, T2> : IA4<T1>
+        {
+        }
+
+        public class C4 : B4<int, string>, IDisposable, IComparer
+        {
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+
+            public int CompareTo(object? obj)
+            {
+                throw new NotImplementedException();
+            }
+
+            public int Compare(object? x, object? y)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        //################################
+
         private struct TestStruct
         {
         }
@@ -221,12 +327,112 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void GetAllBaseTypes_test()
         {
-            var types = typeof(TestB).GetAllBaseTypes();
+            {
+                typeof(C1<>).GetAllBaseTypes().Single().ShouldBe(typeof(B1<>));
+                typeof(C1<int>).GetAllBaseTypes().Single().ShouldBe(typeof(B1<int>));
+                typeof(B1<>).GetAllBaseTypes().Count.ShouldBe(0);
+            }
 
-            types.Count.ShouldBe(1);
-            types.First().ShouldBe(typeof(TestA));
+            {
+                typeof(C2).GetAllBaseTypes().Single().ShouldBe(typeof(B2<int>));
+                typeof(B2<>).GetAllBaseTypes().Count.ShouldBe(0);
+            }
+
+            {
+                typeof(C3<>).GetAllBaseTypes().Single().ShouldBe(typeof(B3<>));
+                typeof(C3<int?>).GetAllBaseTypes().Single().ShouldBe(typeof(B3<int?>));
+                typeof(B3<>).GetAllBaseTypes().Count.ShouldBe(0);
+            }
+
+            {
+                typeof(C4).GetAllBaseTypes().Single().ShouldBe(typeof(B4<int, string>));
+                typeof(B4<,>).GetAllBaseTypes().Count.ShouldBe(0);
+            }
         }
 
+        [Fact]
+        public void GetInterfaces_test()
+        {
+            {
+                typeof(C1<>).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
+                typeof(C1<IComparer>).GetInterfaces(true).Any(r => r == typeof(IA1<IComparer>)).ShouldBeTrue();
+
+                typeof(B1<>).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
+                typeof(B1<IDisposable>).GetInterfaces(true).Any(r => r == typeof(IA1<IDisposable>)).ShouldBeTrue();
+
+                typeof(IA1<>).GetInterfaces(true).Count().ShouldBe(1);
+                typeof(IA1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA1<object>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+            }
+
+            {
+                typeof(C2).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+
+                typeof(B2<>).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+                typeof(B2<string>).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+
+                typeof(IA2).GetInterfaces(true).Count().ShouldBe(1);
+                typeof(IA2).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+            }
+
+            {
+                typeof(C3<>).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(C3<int>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+
+                typeof(B3<>).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(B3<int?>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+
+                typeof(IA3).GetInterfaces(true).Count().ShouldBe(2);
+                typeof(IA3).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA3).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+            }
+
+            {
+                typeof(C4).GetInterfaces(true).Count().ShouldBe(3);
+                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IA4<int>)).ShouldBeTrue();
+
+                typeof(B4<,>).GetInterfaces(true).Count().ShouldBe(1);
+                typeof(B4<,>).GetInterfaces(true).Any(r => r == typeof(IA4<>)).ShouldBeTrue();
+                typeof(B4<int, string>).GetInterfaces(true).Single().ShouldBe(typeof(IA4<int>));
+
+                typeof(IA4<>).GetInterfaces(true).Count().ShouldBe(0);
+                typeof(IA4<int>).GetInterfaces(true).Count().ShouldBe(0);
+            }
+        }
+
+        [Fact]
+        public void IsSubTypeOfGenericDefinitionTypeTest()
+        {
+            typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeTrue();
+            typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<>)).ShouldBeTrue();
+            Should.Throw<Exception>(() => typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<int>)));
+            typeof(C1<int>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeFalse();
+            typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<>)).ShouldBeFalse();
+            typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeTrue();
+            Should.Throw<Exception>(() => typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<int>)));
+            typeof(B1<int>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeFalse();
+        }
+        
         [Fact]
         public void MapToDictionary()
         {

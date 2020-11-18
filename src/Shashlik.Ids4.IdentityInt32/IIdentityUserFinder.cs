@@ -10,7 +10,8 @@ namespace Shashlik.Ids4.IdentityInt32
     /// <summary>
     /// 通过identity获取用户的方法定义,自动注册为scoped
     /// </summary>
-    public interface IIdentityUserFinder : IScoped
+    [Scoped]
+    public interface IIdentityUserFinder
     {
         /// <summary>
         /// 如何查找用户

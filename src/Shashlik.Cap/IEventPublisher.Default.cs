@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using DotNetCore.CAP;
-using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Cap
 {

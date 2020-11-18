@@ -12,7 +12,7 @@ namespace Shashlik.Kernel.Attributes
     /// </summary>
     [Order(20)]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    public class ConditionOnPropertyAttribute : Attribute, IConditionBase
+    public class ConditionOnPropertyAttribute : ConditionBaseAttribute
     {
         /// <summary>
         /// 属性值条件,优先级20
@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Attributes
         /// <param name="property">属性名称</param>
         /// <param name="value">属性值</param>
         /// <exception cref="ArgumentException"></exception>
-        public ConditionOnPropertyAttribute(Type valueType, string property, object value)
+        public ConditionOnPropertyAttribute(Type valueType, string property, object? value)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
             ValueType = valueType ?? throw new ArgumentNullException(nameof(valueType));
@@ -42,38 +42,38 @@ namespace Shashlik.Kernel.Attributes
         /// <summary>
         /// 默认值,当不存在该属性值时
         /// </summary>
-        public object DefaultValue { get; set; }
+        public object? DefaultValue { get; set; }
 
         /// <summary>
         /// 值
         /// </summary>
-        public object Value { get; }
+        public object? Value { get; }
 
         /// <summary>
         /// 是否区分大小写,string类型比较时用
         /// </summary>
         public bool IgnoreCase { get; set; } = true;
 
-        public bool ConditionOn(
+        public override bool ConditionOn(
             IServiceCollection services,
             ServiceDescriptor serviceDescriptor,
             IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
-            var value = rootConfiguration.GetValue(ValueType, Property, DefaultValue);
+            var proValue = rootConfiguration.GetValue(ValueType, Property, DefaultValue);
 
-            var isString = ValueType == typeof(string);
-            if (Value != null && Value.Equals(value))
+            if (Value is null && proValue is null)
                 return true;
-            if (Value is null && value is null)
-                return true;
-            if (Value is null || value is null)
+            if (Value is null || proValue is null)
                 return false;
+            if (Value.Equals(proValue))
+                return true;
+            var isString = ValueType == typeof(string);
 
             return isString && (
                 IgnoreCase
-                    ? Value.ToString().EqualsIgnoreCase(value.ToString())
-                    : Value.ToString().Equals(value.ToString())
+                    ? Value.ToString().EqualsIgnoreCase(proValue.ToString())
+                    : Value.ToString().Equals(proValue.ToString())
             );
         }
     }

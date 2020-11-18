@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.EfCore.Transactional;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.EfCore.Tests
 {
-    public class TestManager : Kernel.Dependency.ITransient
+    [Transient]
+    public class TestManager
     {
         public TestManager(TestDbContext1 dbContext, IEfNestedTransaction<TestDbContext1> transaction)
         {

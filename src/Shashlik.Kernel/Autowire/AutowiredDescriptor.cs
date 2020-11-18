@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Shashlik.Utils.Extensions;
+// ReSharper disable MemberCanBeProtected.Global
 
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable IdentifierTypo
@@ -21,7 +22,8 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="afterAt">在谁之后</param>
         /// <param name="beforeAt">在谁之前</param>
         /// <param name="order">装配顺序</param>
-        public AutowireDescriptor(Type implementationType, Type afterAt, Type beforeAt, int order)
+        /// <param name="serviceInstance">自动装配类型实例</param>
+        public AutowireDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance)
         {
             if (afterAt != null && afterAt.IsSubTypeOf<T>())
                 AfterAt = afterAt;
@@ -29,6 +31,7 @@ namespace Shashlik.Kernel.Autowire
                 BeforeAt = beforeAt;
             Order = order;
             ImplementationType = implementationType!;
+            ServiceInstance = serviceInstance;
         }
 
         /// <summary>
@@ -39,12 +42,12 @@ namespace Shashlik.Kernel.Autowire
         /// <summary>
         /// 在谁之后
         /// </summary>
-        public Type AfterAt { get; }
+        public Type? AfterAt { get; }
 
         /// <summary>
         /// 在谁之前
         /// </summary>
-        public Type BeforeAt { get; }
+        public Type? BeforeAt { get; }
 
         /// <summary>
         /// 在我之前有哪些依赖
@@ -68,8 +71,6 @@ namespace Shashlik.Kernel.Autowire
 
         public override bool Equals(object obj)
         {
-            if (ImplementationType is null)
-                return false;
             return ImplementationType == (Type) obj;
         }
 

@@ -74,6 +74,24 @@ namespace Shashlik.Utils.Test
             cacheObj.ShouldNotBeNull();
             cacheObj.Str.ShouldBe(obj.Str);
         }
+        
+        [Fact]
+        public void TestInt()
+        {
+            {
+                var cache = new MemoryCache();
+                cache.SetObjectWithJson("test", null, DateTimeOffset.Now.AddSeconds(5));
+                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                cacheObj.ShouldBe(null);
+            }
+            
+            {
+                var cache = new MemoryCache();
+                cache.SetObjectWithJson("test", 1, DateTimeOffset.Now.AddSeconds(5));
+                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                cacheObj.ShouldBe(1);
+            }
+        }
 
         [Fact]
         public async Task AsyncTests()

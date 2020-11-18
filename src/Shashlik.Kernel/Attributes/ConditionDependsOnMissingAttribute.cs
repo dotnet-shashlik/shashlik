@@ -10,8 +10,7 @@ namespace Shashlik.Kernel.Attributes
     /// 条件依赖,服务不存在时,优先级100, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(100)]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
-    public class ConditionDependsOnMissingAttribute : Attribute, IConditionBase
+    public class ConditionDependsOnMissingAttribute : ConditionBaseAttribute
     {
         /// <summary>
         /// 条件依赖,服务不存在时,优先级100
@@ -32,7 +31,7 @@ namespace Shashlik.Kernel.Attributes
         /// </summary>
         public ConditionType ConditionType { get; set; } = ConditionType.ALL;
 
-        public bool ConditionOn(
+        public override bool ConditionOn(
             IServiceCollection services,
             ServiceDescriptor serviceDescriptor,
             IConfiguration rootConfiguration,

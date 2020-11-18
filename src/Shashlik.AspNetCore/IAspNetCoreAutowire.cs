@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.AspNetCore
 {

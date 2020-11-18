@@ -4,16 +4,21 @@ using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Dependency
 {
-    public class ShashlikServiceDescriptor
+    public class ShashlikServiceDescriptor : ServiceDescriptor
     {
         /// <summary>
         /// 注册条件集合
         /// </summary>
-        public List<(IConditionBase condition, int order)> Conditions { get; set; }
+        public List<ConditionDescriptor> Conditions { get; }
 
-        /// <summary>
-        /// 服务描述
-        /// </summary>
-        public ServiceDescriptor ServiceDescriptor { get; set; }
+        public ShashlikServiceDescriptor(ServiceDescriptor originalServiceDescriptor,
+            List<ConditionDescriptor> conditions) : base(originalServiceDescriptor.ServiceType,
+            originalServiceDescriptor.ImplementationType, originalServiceDescriptor.Lifetime)
+        {
+            if (ImplementationType == null)
+                throw new KernelServiceException("ShashlikServiceDescriptor implementation type can't be null.");
+
+            Conditions = conditions;
+        }
     }
 }

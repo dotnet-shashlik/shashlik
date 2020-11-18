@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowired.Inner;
+using Shashlik.Kernel.Autowire.Inner;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault
@@ -16,10 +16,12 @@ namespace Shashlik.Kernel.Autowire
 {
     public class DefaultAutowireProvider<T> : IAutowireProvider<T> where T : IAutowire
     {
-        private void Invoke(InnerAutowiredDescriptor<T> descriptor,
+        private void Invoke(InnerAutowiredDescriptor<T>? descriptor,
             IDictionary<Type, AutowireDescriptor<T>> autoServices,
             Action<AutowireDescriptor<T>> initAction)
         {
+            if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
+
             switch (descriptor.Status)
             {
                 case AutowireStatus.Done:
@@ -71,10 +73,8 @@ namespace Shashlik.Kernel.Autowire
                     implementationType,
                     afterAtAttribute?.AfterAt,
                     beforeAtAttribute?.BeforeAt,
-                    orderAttribute?.Order ?? 0)
-                {
-                    ServiceInstance = instance
-                };
+                    orderAttribute?.Order ?? 0,
+                    instance);
 
                 dic.Add(implementationType, descriptor);
             }

@@ -21,7 +21,10 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// 判断给定的类型是否继承自<paramref name="genericType"/>泛型类型,
         /// <para>
-        /// 例: typeof(Child).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));
+        /// 例: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// </para>
+        /// <para>
+        /// 例: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
         /// </para>
         /// </summary>
         /// <param name="childType">子类型</param>
@@ -29,6 +32,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsSubTypeOfGenericType(this Type childType, Type genericType)
         {
+            if (!genericType.IsGenericTypeDefinition)
+                return false;
             var interfaceTypes = childType.GetTypeInfo().ImplementedInterfaces;
 
             foreach (var it in interfaceTypes)
@@ -44,6 +49,28 @@ namespace Shashlik.Utils.Extensions
             if (baseType is null) return false;
 
             return IsSubTypeOfGenericType(baseType, genericType);
+        }
+
+        /// <summary>
+        /// 判断给定的类型是否继承自<paramref name="genericType"/>泛型类型,
+        /// <para>
+        /// 例: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// </para>
+        /// <para>
+        /// 例: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// </para>
+        /// </summary>
+        /// <param name="childType">子类型</param>
+        /// <param name="genericType">泛型父级,例: typeof(IParent&lt;&gt;)</param>
+        /// <returns></returns>
+        public static bool IsSubTypeOfGenericDefinitionType(this Type childType, Type genericType)
+        {
+            if (!genericType.IsGenericTypeDefinition)
+                return false;
+            if (!childType.IsGenericTypeDefinition)
+                return false;
+            return childType.GetAllBaseTypes().Any(r => r == genericType)
+                   || childType.GetInterfaces(true).Any(r => r == genericType);
         }
 
         /// <summary>
@@ -396,7 +423,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取所有的父级类型,不包含object
+        /// 获取所有的父级类型,不包含object,非接口类型
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
@@ -415,9 +442,23 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IEnumerable<Type> GetInterfaces(this Type type, bool includeBaseTypeInherited)
         {
+            Func<Type, Type> select = r => r.IsGenericType && r.AssemblyQualifiedName is null ? r.GetGenericTypeDefinition() : r;
+
             if (includeBaseTypeInherited || type.BaseType is null)
-                return type.GetInterfaces();
-            return type.GetInterfaces().Except(type.BaseType.GetInterfaces());
+                return type.GetInterfaces().Select(select);
+            return type.GetInterfaces()
+                .Select(select)
+                .Except(type.BaseType.GetInterfaces().Select(select));
+        }
+
+        /// <summary>
+        /// 获取所有的父级类型和接口类型,不包含object
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static IEnumerable<Type> GetAllBaseTypesAndInterfaces(this Type type)
+        {
+            return GetAllBaseTypes(type).Concat(GetInterfaces(type, true));
         }
 
         /// <summary>
@@ -1104,7 +1145,17 @@ namespace Shashlik.Utils.Extensions
 
         private static void FillBaseType(HashSet<Type> results, Type type)
         {
-            if (type.BaseType != typeof(object))
+            if (type.BaseType == null)
+                return;
+            if (type.BaseType == typeof(object))
+                return;
+            if (type.BaseType.IsGenericType && type.BaseType.AssemblyQualifiedName == null)
+            {
+                var genericTypeDefinition = type.BaseType.GetGenericTypeDefinition();
+                results.Add(genericTypeDefinition);
+                FillBaseType(results, genericTypeDefinition);
+            }
+            else
             {
                 results.Add(type.BaseType);
                 FillBaseType(results, type.BaseType);

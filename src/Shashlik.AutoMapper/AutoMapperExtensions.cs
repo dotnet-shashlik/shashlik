@@ -32,7 +32,7 @@ namespace Shashlik.AutoMapper
             DependencyContext dependencyContext = null)
         {
             var assemblies =
-                ReflectHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, dependencyContext);
+                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, dependencyContext);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 

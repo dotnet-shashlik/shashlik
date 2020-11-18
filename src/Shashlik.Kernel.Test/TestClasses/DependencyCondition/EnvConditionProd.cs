@@ -1,9 +1,11 @@
 ﻿using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
     [ConditionOnHostEnvironment("Production")]
-    public class EnvConditionProd : Shashlik.Kernel.Dependency.ISingleton
+    [Singleton]
+    public class EnvConditionProd
     {
         // should be null
     }

@@ -1,6 +1,6 @@
-﻿namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
-{
-    public class BasedOn : ITestBasedOn
-    {
-    }
-}
+﻿// namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
+// {
+//     public class BasedOn : ITestBasedOn
+//     {
+//     }
+// }

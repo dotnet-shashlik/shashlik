@@ -10,8 +10,7 @@ namespace Shashlik.Kernel.Attributes
     /// 环境名称判断,优先级0, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(0)]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-    public class ConditionOnHostEnvironmentAttribute : Attribute, IConditionBase
+    public class ConditionOnHostEnvironmentAttribute : ConditionBaseAttribute
     {
         /// <summary>
         /// 环境名称判断,优先级0
@@ -32,7 +31,7 @@ namespace Shashlik.Kernel.Attributes
 
         public bool IgnoreCase { get; set; } = true;
 
-        public bool ConditionOn(
+        public override bool ConditionOn(
             IServiceCollection services,
             ServiceDescriptor serviceDescriptor,
             IConfiguration rootConfiguration,

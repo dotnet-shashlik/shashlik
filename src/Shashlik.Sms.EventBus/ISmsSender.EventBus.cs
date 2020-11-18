@@ -14,7 +14,8 @@ namespace Shashlik.Sms.EventBus
 {
     [ConditionDependsOn(typeof(ISms))]
     [ConditionDependsOnMissing(typeof(ISmsSender))]
-    public class EventBusSmsSender : ISmsSender, ISingleton
+    [Singleton]
+    public class EventBusSmsSender : ISmsSender
     {
         public EventBusSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options,
             IEventPublisher eventPublisher)

@@ -1,12 +1,9 @@
 ﻿using System;
-using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Shashlik.EfCore;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Autowired;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.PostgreSqlStore

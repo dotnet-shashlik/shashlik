@@ -27,7 +27,7 @@ namespace Shashlik.EfCore
 
         public async Task OnStart(CancellationToken cancellationToken)
         {
-            var dbContexts = ReflectHelper.GetFinalSubTypes<DbContext>();
+            var dbContexts = ReflectionHelper.GetFinalSubTypes<DbContext>();
             foreach (var dbContext in dbContexts)
             {
                 if (GetEnableAutoMigration(dbContext))

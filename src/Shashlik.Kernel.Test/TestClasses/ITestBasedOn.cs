@@ -1,7 +1,7 @@
-﻿namespace Shashlik.Kernel.Test.TestClasses
-{
-    public interface ITestBasedOn
-    {
-        
-    }
-}
+﻿// namespace Shashlik.Kernel.Test.TestClasses
+// {
+//     public interface ITestBasedOn
+//     {
+//         
+//     }
+// }

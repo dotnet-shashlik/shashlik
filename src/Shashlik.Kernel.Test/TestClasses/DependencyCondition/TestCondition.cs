@@ -1,7 +1,10 @@
-﻿namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
+﻿using Shashlik.Kernel.Dependency;
+
+namespace Shashlik.Kernel.Test.TestClasses.DependencyCondition
 {
     [TestCondition(false)]
-    public class TestCondition : Shashlik.Kernel.Dependency.ISingleton
+    [Singleton]
+    public class TestCondition
     {
     }
 }

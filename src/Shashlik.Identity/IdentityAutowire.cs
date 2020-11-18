@@ -77,11 +77,8 @@ namespace Shashlik.Identity
             }
 
             // configure DataProtectionTokenProviderOptions
-            kernelService.Services.Configure<DataProtectionTokenProviderOptions>(o =>
-                {
-                    Options.Value.DataProtectionTokenProviderOptions.CopyTo(o);
-                }
-            );
+            kernelService.Services.Configure<DataProtectionTokenProviderOptions>(
+                o => Options.Value.DataProtectionTokenProviderOptions.CopyTo(o));
 
             // extension identity
             kernelService.Autowire<IIdentityExtensionAutowire>(r => r.Configure(builder));

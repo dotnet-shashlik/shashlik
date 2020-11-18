@@ -21,13 +21,13 @@ namespace Shashlik.Kernel.Autowire
                 .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(IConfiguration)});
             if (method is null)
                 throw new MethodAccessException(
-                    $"Cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
+                    "Cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
 
             var services = kernelServices.Services;
             services.AddOptions();
 
             var dic =
-                ReflectHelper.GetTypesAndAttribute<AutoOptionsAttribute>(kernelServices.ScanFromDependencyContext);
+                ReflectionHelper.GetTypesAndAttribute<AutoOptionsAttribute>(kernelServices.ScanFromDependencyContext);
 
             foreach (var (key, value) in dic)
             {

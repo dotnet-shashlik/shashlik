@@ -1,15 +1,12 @@
 ﻿using System.Linq;
 using AspectCore.Configuration;
-using AspectCore.DynamicProxy;
 using AspectCore.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.AspNetCore;
-using Shashlik.Kernel.Autowired;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
-using Shashlik.Kernel.Test.TestClasses;
 
 namespace Shashlik.Kernel.Test
 {
@@ -31,7 +28,7 @@ namespace Shashlik.Kernel.Test
             services.AddShashlikCore(Configuration)
                 .AutowireOptions()
                 .RegistryConventionServices()
-                .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton)
+                // .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton)
                 .AutowireServices()
                 .Autowire<ITestAutowiredServices>(r => r.ConfigureServices(services))
                 .DoFilter();

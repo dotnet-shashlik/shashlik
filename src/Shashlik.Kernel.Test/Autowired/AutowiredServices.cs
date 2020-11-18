@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Kernel.Autowired;
 using Shashlik.Kernel.Test.Options;
 
 namespace Shashlik.Kernel.Test.Autowired

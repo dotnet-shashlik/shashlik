@@ -9,7 +9,7 @@ namespace Shashlik.Kernel.Test.TestClasses
     /// <summary>
     /// 测试自定义条件注册
     /// </summary>
-    public class TestConditionAttribute : Attribute, IConditionBase
+    public class TestConditionAttribute : ConditionBaseAttribute
     {
         public TestConditionAttribute(bool shouldDependency)
         {
@@ -18,7 +18,7 @@ namespace Shashlik.Kernel.Test.TestClasses
 
         public bool ShouldDependency { get; set; }
 
-        public bool ConditionOn(IServiceCollection services, ServiceDescriptor serviceDescriptor, IConfiguration rootConfiguration,
+        public override bool ConditionOn(IServiceCollection services, ServiceDescriptor serviceDescriptor, IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
             return ShouldDependency;

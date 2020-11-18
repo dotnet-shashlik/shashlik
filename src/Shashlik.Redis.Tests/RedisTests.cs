@@ -5,8 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSRedis;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Test;
+using Shashlik.Utils.Extensions;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
@@ -182,6 +185,23 @@ namespace Shashlik.Redis.Tests
             RedisSnowflakeId.DatacenterId.ShouldNotBeNull();
             RedisSnowflakeId.WorkerId.ShouldNotBeNull();
             RedisSnowflakeId.IdWorker.NextId().ToString().Length.ShouldBe(19);
+        }
+
+        [Fact]
+        public void CacheTest()
+        {
+            var cache = GetService<IDistributedCache>();
+            {
+                cache.SetObjectWithJson("unit_redis_test", null, DateTimeOffset.Now.AddSeconds(5));
+                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                cacheObj.ShouldBe(null);
+            }
+
+            {
+                cache.SetObjectWithJson("unit_redis_test", 1, DateTimeOffset.Now.AddSeconds(5));
+                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                cacheObj.ShouldBe(1);
+            }
         }
     }
 }

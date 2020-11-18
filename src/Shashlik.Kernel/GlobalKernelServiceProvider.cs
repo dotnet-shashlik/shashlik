@@ -7,7 +7,7 @@ namespace Shashlik.Kernel
     /// </summary>
     public static class GlobalKernelServiceProvider
     {
-        public static IKernelServiceProvider KernelServiceProvider { get; private set; }
+        public static IKernelServiceProvider? KernelServiceProvider { get; private set; }
 
         internal static void InitServiceProvider(IKernelServiceProvider serviceProvider)
         {

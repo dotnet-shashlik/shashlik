@@ -17,11 +17,6 @@ namespace Shashlik.Kernel
         IServiceCollection Services { get; }
 
         /// <summary>
-        /// shashlik服务注册与条件集合
-        /// </summary>
-        List<ShashlikServiceDescriptor> ShashlikServiceDescriptors { get; }
-
-        /// <summary>
         /// 程序集扫描上下文
         /// </summary>
         DependencyContext ScanFromDependencyContext { get; }

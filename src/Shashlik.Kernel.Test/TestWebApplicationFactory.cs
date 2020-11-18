@@ -17,7 +17,7 @@ namespace Shashlik.Kernel.Test
         {
             var builder = Host.CreateDefaultBuilder();
 
-            ReflectHelper.GetFinalSubTypes<IHostBuilderConfigure>().ForEach(typeInfo =>
+            ReflectionHelper.GetFinalSubTypes<IHostBuilderConfigure>().ForEach(typeInfo =>
             {
                 (Activator.CreateInstance(typeInfo) as IHostBuilderConfigure)
                     !.Configure(builder);
@@ -26,7 +26,7 @@ namespace Shashlik.Kernel.Test
             return builder.UseEnvironment("Development")
                 .ConfigureAppConfiguration((host, builder) =>
                 {
-                    var list = ReflectHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
+                    var list = ReflectionHelper.GetFinalSubTypes<ITestConfigurationBuilder>();
 
                     foreach (var typeInfo in list)
                     {

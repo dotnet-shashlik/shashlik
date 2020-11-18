@@ -13,7 +13,8 @@ namespace Shashlik.Captcha.Totp
     /// </summary>
     [ConditionDependsOnMissing(typeof(ICaptcha))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]
-    internal class TotpCatpcha : ICaptcha, ISingleton
+    [Singleton]
+    internal class TotpCatpcha : ICaptcha
     {
         public TotpCatpcha(IOptionsMonitor<CaptchaOptions> options)
         {

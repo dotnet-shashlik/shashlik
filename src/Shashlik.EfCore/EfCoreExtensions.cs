@@ -64,7 +64,7 @@ namespace Shashlik.EfCore
             DependencyContext? dependencyContext = null)
             where TEntityBase : class
         {
-            var assemblies = ReflectHelper.GetReferredAssemblies<TEntityBase>(dependencyContext);
+            var assemblies = ReflectionHelper.GetReferredAssemblies<TEntityBase>(dependencyContext);
 
             foreach (var item in assemblies)
                 modelBuilder.RegisterEntitiesFromAssembly(item,

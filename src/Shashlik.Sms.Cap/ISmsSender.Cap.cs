@@ -11,12 +11,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Sms.Cap
 {
     [ConditionDependsOn(typeof(ISms))]
     [ConditionDependsOnMissing(typeof(ISmsSender))]
-    public class CapSmsSender : ISmsSender, Kernel.Dependency.ISingleton
+    [Singleton]
+    public class CapSmsSender : ISmsSender
     {
         public CapSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options, IEventPublisher eventPublisher)
         {

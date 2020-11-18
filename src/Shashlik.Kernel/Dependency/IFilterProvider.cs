@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Collections.Generic;
 
 namespace Shashlik.Kernel.Dependency
 {
@@ -13,13 +12,11 @@ namespace Shashlik.Kernel.Dependency
         /// <summary>
         /// 根据条件进行服务过滤
         /// </summary>
-        /// <param name="serviceDescriptors"></param>
         /// <param name="services"></param>
         /// <param name="rootConfiguration"></param>
         /// <param name="hostEnvironment"></param>
         /// <returns></returns>
         void DoFilter(
-            IEnumerable<ShashlikServiceDescriptor> serviceDescriptors,
             IServiceCollection services,
             IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment);

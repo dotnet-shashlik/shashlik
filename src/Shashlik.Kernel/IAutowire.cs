@@ -5,7 +5,8 @@ namespace Shashlik.Kernel
     /// <summary>
     /// 自动装配基类
     /// </summary>
-    public interface IAutowire : ITransient
+    [Transient(typeof(IAutowire), RequireRegistryInheritedChain = true)]
+    public interface IAutowire
     {
     }
 }

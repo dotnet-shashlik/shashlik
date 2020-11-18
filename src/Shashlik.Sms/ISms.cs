@@ -6,7 +6,8 @@ namespace Shashlik.Sms
     /// <summary>
     /// 短信接口
     /// </summary>
-    public interface ISms : ISingleton
+    [Singleton]
+    public interface ISms
     {
         /// <summary>
         /// 短信发送
