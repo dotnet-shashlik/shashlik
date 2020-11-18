@@ -25,13 +25,7 @@ namespace Shashlik.Kernel.Test
 
             services.Configure<TestOptions2>(r => r.Enable = false);
 
-            services.AddShashlikCore(Configuration)
-                .AutowireOptions()
-                .RegistryConventionServices()
-                // .AddServicesByBasedOn<ITestBasedOn>(ServiceLifetime.Singleton)
-                .AutowireServices()
-                .Autowire<ITestAutowiredServices>(r => r.ConfigureServices(services))
-                .DoFilter();
+            services.AddShashlik(Configuration);
 
             services.ConfigureDynamicProxy(r =>
             {

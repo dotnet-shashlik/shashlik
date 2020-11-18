@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Attributes;
 using Shouldly;
 

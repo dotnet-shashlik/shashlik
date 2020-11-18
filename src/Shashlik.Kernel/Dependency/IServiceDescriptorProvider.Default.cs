@@ -67,11 +67,13 @@ namespace Shashlik.Kernel.Dependency
 
             var res = new List<ShashlikServiceDescriptor>();
             var conditions = Utils.GetConditions(type);
+
+            // 注册整个继承链
             if (lifeTimeAttribute.RequireRegistryInheritedChain)
             {
                 var baseTypes = type.GetAllBaseTypesAndInterfaces();
                 var subTypes = ReflectionHelper.GetSubTypes(type);
-                var finalSubTypes = subTypes.Where(r => r.IsClass && r.IsAbstract).ToList();
+                var finalSubTypes = subTypes.Where(r => r.IsClass && !r.IsAbstract).ToList();
                 var allTypes = baseTypes.Concat(subTypes).ToList();
 
                 foreach (var item1 in finalSubTypes)
@@ -120,6 +122,7 @@ namespace Shashlik.Kernel.Dependency
                     }
                 }
             }
+            // 最终实现类，往上查找服务
             else if (type.IsClass && !type.IsAbstract)
             {
                 if (!lifeTimeAttribute.IgnoreServices.Contains(type))

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Kernel.Attributes;
@@ -11,17 +10,17 @@ namespace Shashlik.Kernel.Test.TestClasses
     /// </summary>
     public class TestConditionAttribute : ConditionBaseAttribute
     {
-        public TestConditionAttribute(bool shouldDependency)
+        public TestConditionAttribute(bool requireRegistry)
         {
-            ShouldDependency = shouldDependency;
+            RequireRegistry = requireRegistry;
         }
 
-        public bool ShouldDependency { get; set; }
+        public bool RequireRegistry { get; set; }
 
         public override bool ConditionOn(IServiceCollection services, ServiceDescriptor serviceDescriptor, IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
-            return ShouldDependency;
+            return RequireRegistry;
         }
     }
 }
