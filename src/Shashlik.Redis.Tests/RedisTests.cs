@@ -188,18 +188,24 @@ namespace Shashlik.Redis.Tests
         }
 
         [Fact]
-        public void CacheTest()
+        public void DistributedCacheTest()
         {
             var cache = GetService<IDistributedCache>();
+
             {
                 cache.SetObjectWithJson("unit_redis_test", null, DateTimeOffset.Now.AddSeconds(5));
-                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                var cacheObj = cache.GetObjectWithJson<int?>("unit_redis_test");
+                cacheObj.ShouldBe(null);
+            }
+
+            {
+                var cacheObj = cache.GetObjectWithJson<int?>("absolute_not_exists");
                 cacheObj.ShouldBe(null);
             }
 
             {
                 cache.SetObjectWithJson("unit_redis_test", 1, DateTimeOffset.Now.AddSeconds(5));
-                var cacheObj = cache.GetObjectWithJson<int?>("test");
+                var cacheObj = cache.GetObjectWithJson<int?>("unit_redis_test");
                 cacheObj.ShouldBe(1);
             }
         }
