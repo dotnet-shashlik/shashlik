@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
+using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1;
 using Shouldly;
 using Xunit;
 
@@ -67,6 +70,50 @@ namespace Shashlik.Kernel.Test
                 GetService<IOptions<TestOptions3>>().Value.Name.ShouldBe("张三");
                 AutowiredConfigure.Inited.ShouldBeTrue();
                 AutowiredConfigureAspNetCore.Inited.ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IA1<int>>().Single() is D1<int>).ShouldBeTrue();
+                GetService<B1<int>>().ShouldBeNull();
+                GetService<C1<int>>().ShouldBeNull();
+                (GetServices<D1<int?>>().Single() is D1<int?>).ShouldBeTrue();
+            }
+
+            {
+                GetService<IA2<int>>().ShouldBeNull();
+                (GetServices<B2<int>>().Single() is D2<int>).ShouldBeTrue();
+                GetService<C2<int>>().ShouldBeNull();
+                (GetServices<D2<int?>>().Single() is D2<int?>).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IA3<int>>().Single() is C3<int>).ShouldBeTrue();
+                (GetServices<B3<int>>().Single() is C3<int>).ShouldBeTrue();
+                (GetServices<C3<int?>>().Single() is C3<int?>).ShouldBeTrue();
+                GetService<D3<int>>().ShouldBeNull();
+            }
+
+            {
+                (GetServices<IA4<int>>().Single() is D4<int>).ShouldBeTrue();
+                (GetServices<B4<int>>().Single() is D4<int>).ShouldBeTrue();
+                (GetServices<C4<int?>>().Single() is D4<int?>).ShouldBeTrue();
+                (GetServices<D4<int?>>().Single() is D4<int?>).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IComparer>().Any(r => r is C5<int>)).ShouldBeFalse();
+                (GetServices<IDisposable>().Any(r => r is C5<int>)).ShouldBeFalse();
+
+                GetServices<IA5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
+                GetServices<IA5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
+
+                GetServices<B5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
+                GetServices<B5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
+
+                GetServices<C5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
+                GetServices<C5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
+
+                GetServices<D5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
             }
         }
 

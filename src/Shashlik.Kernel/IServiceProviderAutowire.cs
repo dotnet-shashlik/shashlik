@@ -7,6 +7,6 @@ namespace Shashlik.Kernel
     /// </summary>
     public interface IServiceProviderAutowire : IAutowire
     {
-        void Configure(IKernelServiceProvider kernelConfigure);
+        void Configure(IKernelServiceProvider kernelServiceProvider);
     }
 }

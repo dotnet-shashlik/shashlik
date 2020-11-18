@@ -45,5 +45,17 @@ namespace Shashlik.Kernel.Dependency
         {
             return services.Any(r => r.ServiceType == serviceType);
         }
+
+        /// <summary>
+        /// 服务集合是否已经存在<paramref name="serviceType"/>服务类型
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="impleType"></param>
+        /// <returns></returns>
+        public static bool AnyService(this IServiceCollection services, Type serviceType, Type impleType)
+        {
+            return services.Any(r => r.ServiceType == serviceType && r.ImplementationType == impleType);
+        }
     }
 }

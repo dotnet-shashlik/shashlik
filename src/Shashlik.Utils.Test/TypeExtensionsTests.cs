@@ -425,14 +425,15 @@ namespace Shashlik.Utils.Test
         {
             typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeTrue();
             typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<>)).ShouldBeTrue();
-            Should.Throw<Exception>(() => typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<int>)));
+            typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<int>)).ShouldBeFalse();
             typeof(C1<int>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeFalse();
             typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(B1<>)).ShouldBeFalse();
             typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeTrue();
-            Should.Throw<Exception>(() => typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<int>)));
+            typeof(B1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<int>)).ShouldBeFalse();
             typeof(B1<int>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeFalse();
+            typeof(B1<int>).IsSubTypeOfGenericDefinitionType(typeof(B1<>)).ShouldBeFalse();
         }
-        
+
         [Fact]
         public void MapToDictionary()
         {

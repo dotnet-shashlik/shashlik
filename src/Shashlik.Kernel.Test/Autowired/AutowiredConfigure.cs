@@ -4,7 +4,7 @@
     {
         public static bool Inited { get; private set; } = false;
 
-        public void Configure(IKernelServiceProvider kernelConfigure)
+        public void Configure(IKernelServiceProvider kernelServiceProvider)
         {
             Inited = true;
         }

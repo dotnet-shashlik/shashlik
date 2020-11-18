@@ -106,7 +106,10 @@ namespace Shashlik.Kernel
             {
                 var services = serviceDescriptorProvider.GetDescriptor(item.Key);
                 foreach (var shashlikServiceDescriptor in services)
-                    kernelServices.Services.Add(shashlikServiceDescriptor);
+                {
+                    if (!kernelServices.Services.AnyService(shashlikServiceDescriptor.ServiceType, shashlikServiceDescriptor.ImplementationType))
+                        kernelServices.Services.Add(shashlikServiceDescriptor);
+                }
             }
 
             return kernelServices;

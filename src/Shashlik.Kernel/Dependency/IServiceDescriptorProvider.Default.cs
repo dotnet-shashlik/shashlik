@@ -28,7 +28,17 @@ namespace Shashlik.Kernel.Dependency
         /// <returns></returns>
         private static bool IsLastFinalType(IEnumerable<TypeInfo> types, Type type)
         {
-            return !types.Any(r => r.IsSubTypeOf(type) || r.IsSubTypeOfGenericType(type));
+            foreach (var typeInfo in types)
+            {
+                if (typeInfo == type)
+                    continue;
+                if (typeInfo.IsSubTypeOf(type))
+                    return false;
+                if (typeInfo.IsSubTypeOfGenericType(type))
+                    return false;
+            }
+
+            return true;
         }
 
         private static bool CanAddService(Type subType, Type parentType)
@@ -107,7 +117,7 @@ namespace Shashlik.Kernel.Dependency
                         continue;
                     ValidServiceLifetime(lifeTimeAttribute.ServiceLifetime, finalSubType);
 
-                    if (CanAddService(type, finalSubType))
+                    if (CanAddService(finalSubType, type))
                     {
                         // 只注册最下面的没有子类的最终类
                         if (IsLastFinalType(finalSubTypes, finalSubType))

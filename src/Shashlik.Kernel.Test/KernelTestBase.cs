@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
@@ -22,6 +24,11 @@ namespace Shashlik.Kernel.Test
         protected T GetService<T>()
         {
             return ServiceScope.ServiceProvider.GetService<T>();
+        }
+
+        protected IEnumerable<T> GetServices<T>()
+        {
+            return ServiceScope.ServiceProvider.GetServices<T>();
         }
 
         public virtual void Dispose()
