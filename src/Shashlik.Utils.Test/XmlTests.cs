@@ -27,16 +27,15 @@ namespace Shashlik.Utils.Test
         {
             public string token { get; set; }
         }
-        
+
         [System.SerializableAttribute()]
         [System.ComponentModel.DesignerCategoryAttribute("code")]
         [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
         [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false, ElementName = "root")]
         public class RegistryRequest
         {
-        
             private string yhzcxxField;
-            
+
             /// <remarks>注册人信息</remarks>
             public string yhzcxx
             {
@@ -73,14 +72,19 @@ namespace Shashlik.Utils.Test
                 var xml2 = obj.ToXmlString(true, Encoding.GetEncoding("GBK"));
                 var xml3 = request.ToXmlString(new XmlWriterSettings() {Indent = false, OmitXmlDeclaration = true},
                     new XmlSerializerNamespaces(new[] {XmlQualifiedName.Empty}));
+                var xml4 = request.ToXmlString(
+                    new XmlWriterSettings() {Indent = false, OmitXmlDeclaration = false, Encoding = Encoding.GetEncoding("GBK")},
+                    new XmlSerializerNamespaces(new[] {XmlQualifiedName.Empty}));
 
                 _testOutputHelper.WriteLine(xml1);
                 _testOutputHelper.WriteLine(xml2);
                 _testOutputHelper.WriteLine(xml3);
+                _testOutputHelper.WriteLine(xml4);
 
                 xml1.DeserializeXml<InvoiceTokenResponse>().token.ShouldBe(obj.token);
                 xml2.DeserializeXml<InvoiceTokenResponse>().token.ShouldBe(obj.token);
                 xml3.DeserializeXml<RegistryRequest>().yhzcxx.ShouldBe(request.yhzcxx);
+                xml4.DeserializeXml<RegistryRequest>().yhzcxx.ShouldBe(request.yhzcxx);
             }
 
             Should.Throw<Exception>(() => "".DeserializeXml<object>());

@@ -54,7 +54,7 @@ namespace Shashlik.Utils.Extensions
             using var ms = new MemoryStream();
             using var writer = XmlWriter.Create(ms, settings);
             xmlSerializer.Serialize(writer, value);
-            return ms.ReadToString();
+            return ms.ReadToString(settings.Encoding);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace Shashlik.Utils.Extensions
             using var ms = new MemoryStream();
             using var writer = XmlWriter.Create(ms, settings);
             xmlSerializer.Serialize(writer, value, namespaces);
-            return ms.ReadToString();
+            return ms.ReadToString(settings.Encoding);
         }
 
 
