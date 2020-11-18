@@ -20,7 +20,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="dependencyContext">依赖上下文,null则使用默认</param>
         /// <returns></returns>
         public static List<Assembly> GetReferredAssemblies(Assembly assembly,
-            DependencyContext dependencyContext = null)
+            DependencyContext? dependencyContext = null)
         {
             var res = CacheAssemblyReferred.GetOrDefault(assembly);
             if (res != null)
@@ -33,7 +33,6 @@ namespace Shashlik.Utils.Helpers
 
             var name = assembly.GetName().Name;
 
-            //HashSet<string> excludes = new HashSet<string>();
             Dictionary<string, HashSet<string>> allDependencies = new Dictionary<string, HashSet<string>>();
             foreach (var item in allLib)
             {
@@ -54,9 +53,10 @@ namespace Shashlik.Utils.Helpers
                         return null;
                     }
                 })
-                .Where(r => r != null);
+                .Where(r => r != null)
+                .ToList();
 
-            res = list.ToList();
+            res = list!;
             CacheAssemblyReferred.TryAdd(assembly, res);
             return res;
         }
@@ -66,7 +66,7 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="dependencyContext">依赖上下文,null则使用默认</param>
         /// <returns></returns>
-        public static List<Assembly> GetReferredAssemblies<TType>(DependencyContext dependencyContext = null)
+        public static List<Assembly> GetReferredAssemblies<TType>(DependencyContext? dependencyContext = null)
         {
             return GetReferredAssemblies(typeof(TType).Assembly, dependencyContext);
         }
@@ -77,7 +77,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="type"></param>
         /// <param name="dependencyContext">依赖上下文,null则使用默认</param>
         /// <returns></returns>
-        public static List<Assembly> GetReferredAssemblies(Type type, DependencyContext dependencyContext = null)
+        public static List<Assembly> GetReferredAssemblies(Type type, DependencyContext? dependencyContext = null)
         {
             return GetReferredAssemblies(type.Assembly, dependencyContext);
         }
@@ -100,7 +100,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetFinalSubTypes(Type baseType, DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetFinalSubTypes(Type baseType, DependencyContext? dependencyContext = null)
         {
             List<TypeInfo> types = new List<TypeInfo>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
@@ -128,7 +128,7 @@ namespace Shashlik.Utils.Helpers
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetFinalSubTypes<TBaseType>(DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetFinalSubTypes<TBaseType>(DependencyContext? dependencyContext = null)
         {
             return GetFinalSubTypes(typeof(TBaseType), dependencyContext);
         }
@@ -153,7 +153,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetSubTypes(Type baseType, DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetSubTypes(Type baseType, DependencyContext? dependencyContext = null)
         {
             var types = new List<TypeInfo>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
@@ -179,7 +179,7 @@ namespace Shashlik.Utils.Helpers
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static List<TypeInfo> GetSubTypes<TBaseType>(DependencyContext dependencyContext = null)
+        public static List<TypeInfo> GetSubTypes<TBaseType>(DependencyContext? dependencyContext = null)
         {
             return GetSubTypes(typeof(TBaseType), dependencyContext);
         }
@@ -216,7 +216,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="inherit"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, Attribute> GetTypesAndAttribute(Type baseType,
-            DependencyContext dependencyContext = null, bool inherit = true)
+            DependencyContext? dependencyContext = null, bool inherit = true)
         {
             Dictionary<TypeInfo, Attribute> dic = new Dictionary<TypeInfo, Attribute>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
@@ -261,7 +261,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="inherit"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, TAttribute> GetTypesAndAttribute<TAttribute>(
-            DependencyContext dependencyContext = null, bool inherit = true)
+            DependencyContext? dependencyContext = null, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, TAttribute> dic = new Dictionary<TypeInfo, TAttribute>();
@@ -307,7 +307,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="inherit"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, IEnumerable<object>> GetTypesByAttributes(Type baseType,
-            DependencyContext dependencyContext = null, bool inherit = true)
+            DependencyContext? dependencyContext = null, bool inherit = true)
         {
             Dictionary<TypeInfo, IEnumerable<object>> dic = new Dictionary<TypeInfo, IEnumerable<object>>();
             foreach (var item in GetReferredAssemblies(baseType, dependencyContext))
@@ -352,7 +352,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="inherit"></param>
         /// <returns></returns>
         public static IDictionary<TypeInfo, IEnumerable<TAttribute>> GetTypesByAttributes<TAttribute>(
-            DependencyContext dependencyContext = null, bool inherit = true)
+            DependencyContext? dependencyContext = null, bool inherit = true)
             where TAttribute : Attribute
         {
             Dictionary<TypeInfo, IEnumerable<TAttribute>> dic = new Dictionary<TypeInfo, IEnumerable<TAttribute>>();

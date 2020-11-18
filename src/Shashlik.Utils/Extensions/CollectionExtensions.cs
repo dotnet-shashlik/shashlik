@@ -23,7 +23,7 @@ namespace Shashlik.Utils.Extensions
             var i = 0;
             foreach (var item in source)
             {
-                if (item.Equals(value))
+                if (object.Equals(item, value))
                     return i;
                 i++;
             }
@@ -101,7 +101,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="list"></param>
         /// <param name="keyComparer"></param>
         /// <returns></returns>
-        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T> keyComparer = null)
+        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T>? keyComparer = null)
         {
             if (list is null)
             {
@@ -124,7 +124,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="keyComparer"></param>
         /// <returns></returns>
         public static bool HasRepeat<T, TP>(this IEnumerable<T> list, Func<T, TP> selectProperty,
-            IEqualityComparer<TP> keyComparer = null)
+            IEqualityComparer<TP>? keyComparer = null)
         {
             if (list is null)
             {
@@ -245,10 +245,10 @@ namespace Shashlik.Utils.Extensions
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
             if (key is null)
-                return default;
-            if (dic.TryGetValue(key, out TValue value))
+                return default!;
+            if (dic.TryGetValue(key, out var value))
                 return value;
-            return default;
+            return default!;
         }
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Shashlik.Utils.Extensions
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
             PropertyDescriptorCollection props =
-                TypeDescriptor.GetProperties(typeof(T))
+                    TypeDescriptor.GetProperties(typeof(T))
                 ;
 
             DataTable table = new DataTable();

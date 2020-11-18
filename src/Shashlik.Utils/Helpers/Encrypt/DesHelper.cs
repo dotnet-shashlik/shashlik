@@ -20,7 +20,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns>加密后的BASE64</returns>
         public static string Encrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyBytes = Encoding.UTF8.GetBytes(key);
@@ -60,7 +60,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns>原文</returns>
         public static string Decrypt(string text, string key, string iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyBytes = Encoding.UTF8.GetBytes(key);

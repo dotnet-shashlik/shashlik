@@ -4,6 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Shashlik.Utils.Extensions;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.Utils.Helpers
@@ -24,7 +25,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="iv">加密向量</param>
         /// <returns></returns>
         public static string Encrypt(string plainText, string key, CipherMode mode = CipherMode.ECB,
-            PaddingMode paddingMode = PaddingMode.PKCS7, Encoding encoder = null, string iv = null)
+            PaddingMode paddingMode = PaddingMode.PKCS7, Encoding? encoder = null, string? iv = null)
         {
             encoder ??= Encoding.UTF8;
             using var des = CreateDes(key, mode, paddingMode, iv);
@@ -45,8 +46,8 @@ namespace Shashlik.Utils.Helpers
         /// <param name="iv">加密向量</param>
         /// <returns></returns>
         public static string Decrypt(string cypherText, string key, CipherMode mode = CipherMode.ECB,
-            PaddingMode paddingMode = PaddingMode.PKCS7, Encoding encoder = null,
-            string iv = null)
+            PaddingMode paddingMode = PaddingMode.PKCS7, Encoding? encoder = null,
+            string? iv = null)
         {
             encoder ??= Encoding.UTF8;
             using var des = CreateDes(key, mode, paddingMode, iv);
@@ -57,12 +58,12 @@ namespace Shashlik.Utils.Helpers
         }
 
         private static TripleDES CreateDes(string key, CipherMode mode = CipherMode.ECB,
-            PaddingMode paddingMode = PaddingMode.PKCS7, string iv = null)
+            PaddingMode paddingMode = PaddingMode.PKCS7, string? iv = null)
         {
             TripleDES des = new TripleDESCryptoServiceProvider();
             var desKey = Encoding.ASCII.GetBytes(key);
             des.Key = desKey;
-            if (!iv.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(iv))
                 des.IV = Encoding.ASCII.GetBytes(iv);
             des.Padding = paddingMode;
             des.Mode = mode;

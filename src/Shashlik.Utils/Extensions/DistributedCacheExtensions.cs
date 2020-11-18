@@ -17,7 +17,7 @@ namespace Shashlik.Utils.Extensions
         public static async Task<T> GetObjectWithJsonAsync<T>(this IDistributedCache cache, string key)
         {
             var content = await cache.GetStringAsync(key);
-            return content.IsNullOrWhiteSpace() ? default : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default! : JsonSerializer.Deserialize<T>(content);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Shashlik.Utils.Extensions
         public static T GetObjectWithJson<T>(this IDistributedCache cache, string key)
         {
             var content = cache.GetString(key);
-            return content.IsNullOrWhiteSpace() ? default : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default! : JsonSerializer.Deserialize<T>(content);
         }
 
         /// <summary>

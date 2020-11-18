@@ -15,7 +15,7 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// MD5加密
         /// </summary>
-        public static string MD5(string value, Encoding encoding = null)
+        public static string MD5(string value, Encoding? encoding = null)
         {
             if (value is null) throw new ArgumentNullException(nameof(value));
 
@@ -31,7 +31,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="secret"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string HMACSHA256(string value, string secret, Encoding encoding = null)
+        public static string HMACSHA256(string value, string secret, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyByte = encoding.GetBytes(secret);
@@ -48,7 +48,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="secret"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string HMACSHA1(string value, string secret, Encoding encoding = null)
+        public static string HMACSHA1(string value, string secret, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyByte = encoding.GetBytes(secret);
@@ -61,7 +61,7 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA1 
         /// </summary>
-        public static string SHA1(string value, Encoding encoding = null)
+        public static string SHA1(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             using SHA1 sha1 = new SHA1Managed();
@@ -71,7 +71,7 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA256 
         /// </summary>
-        public static string SHA256(string value, Encoding encoding = null)
+        public static string SHA256(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             using SHA256 sha256 = new SHA256Managed();
@@ -81,7 +81,7 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// SHA512
         /// </summary>
-        public static string SHA512(string value, Encoding encoding = null)
+        public static string SHA512(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             using SHA512 sha512 = new SHA512Managed();

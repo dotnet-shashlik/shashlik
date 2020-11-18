@@ -20,7 +20,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static List<ValidationResult> Validate(
             object model,
-            IServiceProvider validationServiceProvider = null,
+            IServiceProvider? validationServiceProvider = null,
             int? maxErrorCount = null,
             int? maxValidationDepth = null)
         {
@@ -31,8 +31,8 @@ namespace Shashlik.Utils.Helpers
         }
 
         private static void Validate(
-            object model,
-            IServiceProvider validationServiceProvider,
+            object? model,
+            IServiceProvider? validationServiceProvider,
             int? maxErrorCount,
             int? maxValidationDepth,
             int hasDepth,

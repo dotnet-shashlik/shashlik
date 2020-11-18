@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Xml;
-using System.Xml.Serialization;
-using Newtonsoft.Json;
 
 namespace Shashlik.Utils.Extensions
 {
@@ -35,7 +30,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="target"></param>
         /// <param name="stringComparison"></param>
         /// <returns></returns>
-        public static bool EqualsIgnoreCase(this string source, string target,
+        public static bool EqualsIgnoreCase(this string? source, string? target,
             StringComparison stringComparison = StringComparison.OrdinalIgnoreCase)
         {
             if (source is null || target is null) return false;
@@ -88,7 +83,7 @@ namespace Shashlik.Utils.Extensions
             return result;
         }
 
-        public static bool Contains(this string source, string value, StringComparison stringComparison)
+        public static bool Contains(this string? source, string? value, StringComparison stringComparison)
         {
             if (source is null || value is null)
                 return false;
@@ -144,7 +139,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="regexPattern">正则表达式</param>
         /// <returns></returns>
-        public static bool IsMatch(this string value, string regexPattern)
+        public static bool IsMatch(this string? value, string regexPattern)
         {
             if (value is null) return false;
             if (regexPattern == null) throw new ArgumentNullException(nameof(regexPattern));
@@ -156,9 +151,9 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string EmptyToNull(this string value)
+        public static string? EmptyToNull(this string? value)
         {
-            return value.IsNullOrWhiteSpace() ? null : value;
+            return string.IsNullOrWhiteSpace(value) ? null : value;
         }
 
         /// <summary>
@@ -215,7 +210,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="starts"></param>
         /// <returns></returns>
-        public static bool StartsWithIgnoreCase(this string value, string starts)
+        public static bool StartsWithIgnoreCase(this string? value, string? starts)
         {
             if (value is null) return false;
             if (starts is null) return false;
@@ -228,7 +223,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="ends"></param>
         /// <returns></returns>
-        public static bool EndsWithIgnoreCase(this string value, string ends)
+        public static bool EndsWithIgnoreCase(this string? value, string? ends)
         {
             if (value is null) return false;
             if (ends is null) return false;
@@ -281,7 +276,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="url">url</param>
         /// <param name="values">key/value键值对参数</param>
         /// <returns></returns>
-        public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>> values)
+        public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>>? values)
         {
             if (values is null) return url;
             var keyValuePairs = values.ToList();
@@ -350,7 +345,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="encoding">编码方式,默认utf8</param>
         /// <param name="urlSafe">是否使用url安全方式编码,参考java的encodeBase64URLSafe</param>
         /// <returns></returns>
-        public static string Base64Encode(this string content, Encoding encoding = null, bool urlSafe = false)
+        public static string Base64Encode(this string content, Encoding? encoding = null, bool urlSafe = false)
         {
             encoding ??= Encoding.UTF8;
             var bytes = encoding.GetBytes(content);
@@ -370,7 +365,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="encoding">编码方式,默认utf8</param>
         /// <param name="urlSafe">是否使用url安全方式编码,参考java的encodeBase64URLSafe</param>
         /// <returns></returns>
-        public static string Base64Decode(this string content, Encoding encoding = null, bool urlSafe = false)
+        public static string Base64Decode(this string content, Encoding? encoding = null, bool urlSafe = false)
         {
             if (urlSafe)
             {

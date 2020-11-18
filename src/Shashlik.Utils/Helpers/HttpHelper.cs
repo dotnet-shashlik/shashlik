@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 using RestSharp;
 using Shashlik.Utils.Extensions;
 
+#pragma warning disable 8618
+
 namespace Shashlik.Utils.Helpers
 {
     //TODO: 增加客户端证书上传功能
     public static class HttpHelper
     {
-        private static IRestClient GetClient(string uri, IWebProxy proxy = null, Encoding encoding = null)
+        private static IRestClient GetClient(string uri, IWebProxy? proxy = null, Encoding? encoding = null)
         {
             if (string.IsNullOrWhiteSpace(uri))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(uri));
@@ -28,16 +30,16 @@ namespace Shashlik.Utils.Helpers
             return client;
         }
 
-        private static IRestRequest GetRequest(IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30)
+        private static IRestRequest GetRequest(IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30)
         {
             var request = new RestRequest {Timeout = timeout * 1000};
 
-            if (!headers.IsNullOrEmpty())
+            if (headers != null && headers.Any())
                 foreach (var (key, value) in headers!)
                     request.AddHeader(key, value);
 
-            if (!cookies.IsNullOrEmpty())
+            if (cookies != null && cookies.Any())
                 foreach (var (key, value) in cookies!)
                     request.AddCookie(key, value);
 
@@ -55,9 +57,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<string> PostJson(string url, object jsonData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostJson(string url, object? jsonData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -85,9 +87,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<TResult> PostJson<TResult>(string url, object jsonData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostJson<TResult>(string url, object? jsonData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
             where TResult : class
         {
             var client = GetClient(url, proxy, encoding);
@@ -116,9 +118,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object jsonData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object? jsonData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
             where TResult : class
         {
             var client = GetClient(url, proxy, encoding);
@@ -142,8 +144,8 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostForm(string url, IEnumerable<KeyValuePair<string, string>> formData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             if (url == null) throw new ArgumentNullException(nameof(url));
             if (formData == null) throw new ArgumentNullException(nameof(formData));
@@ -175,9 +177,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<string> PostForm(string url, object formData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostForm(string url, object? formData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             if (url == null) throw new ArgumentNullException(nameof(url));
 
@@ -206,9 +208,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<TResult> PostForm<TResult>(string url,
-            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
-            Encoding encoding = null)
+            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30, IWebProxy? proxy = null,
+            Encoding? encoding = null)
             where TResult : class
         {
             if (url == null) throw new ArgumentNullException(nameof(url));
@@ -241,9 +243,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<TResult> PostForm<TResult>(string url, object formData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> PostForm<TResult>(string url, object? formData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
             where TResult : class
         {
             var client = GetClient(url, proxy, encoding);
@@ -270,9 +272,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFormForOriginResponse(string url, object formData,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> PostFormForOriginResponse(string url, object? formData,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -294,9 +296,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<IRestResponse> PostFormForOriginResponse(string url,
-            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
-            Encoding encoding = null)
+            IEnumerable<KeyValuePair<string, string>> formData, IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30, IWebProxy? proxy = null,
+            Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -321,9 +323,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static async Task<string> PostFiles(string url, IEnumerable<KeyValuePair<string, string>> formData,
-            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
-            Encoding encoding = null)
+            IEnumerable<UploadFileModel> files, IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30, IWebProxy? proxy = null,
+            Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -358,9 +360,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<string> PostFiles(string url, object formData, IEnumerable<UploadFileModel> files,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> PostFiles(string url, object? formData, IEnumerable<UploadFileModel> files,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -394,8 +396,8 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static async Task<TResult> PostFiles<TResult>(string url,
             IEnumerable<KeyValuePair<string, string>> formData, IEnumerable<UploadFileModel> files,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
             where TResult : class
         {
             var client = GetClient(url, proxy, encoding);
@@ -431,10 +433,10 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<TResult> PostFiles<TResult>(string url, object formData,
-            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
-            Encoding encoding = null)
+        public static async Task<TResult> PostFiles<TResult>(string url, object? formData,
+            IEnumerable<UploadFileModel> files, IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30, IWebProxy? proxy = null,
+            Encoding? encoding = null)
             where TResult : class
         {
             var client = GetClient(url, proxy, encoding);
@@ -469,8 +471,8 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static async Task<IRestResponse> PostFilesForOriginResponse(string url,
             IEnumerable<KeyValuePair<string, string>> formData, IEnumerable<UploadFileModel> files,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             if (url == null) throw new ArgumentNullException(nameof(url));
             if (formData == null) throw new ArgumentNullException(nameof(formData));
@@ -504,10 +506,10 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostFilesForOriginResponse(string url, object formData,
-            IEnumerable<UploadFileModel> files, IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null, int timeout = 30, IWebProxy proxy = null,
-            Encoding encoding = null)
+        public static async Task<IRestResponse> PostFilesForOriginResponse(string url, object? formData,
+            IEnumerable<UploadFileModel> files, IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null, int timeout = 30, IWebProxy? proxy = null,
+            Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -523,8 +525,8 @@ namespace Shashlik.Utils.Helpers
         }
 
         public static async Task<IRestResponse> Post(string url, string body, string contentType,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -544,9 +546,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<string> GetString(string url, object queryStringData = null,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<string> GetString(string url, object? queryStringData = null,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -573,9 +575,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<TResult> Get<TResult>(string url, object queryStringData = null,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<TResult> Get<TResult>(string url, object? queryStringData = null,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -601,9 +603,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<Stream> GetStream(string url, object queryStringData = null,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<Stream> GetStream(string url, object? queryStringData = null,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -629,9 +631,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<byte[]> GetBytes(string url, object queryStringData = null,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<byte[]> GetBytes(string url, object? queryStringData = null,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -658,9 +660,9 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> GetForOriginResponse(string url, object queryStringData = null,
-            IDictionary<string, string> headers = null, IDictionary<string, string> cookies = null, int timeout = 30,
-            IWebProxy proxy = null, Encoding encoding = null)
+        public static async Task<IRestResponse> GetForOriginResponse(string url, object? queryStringData = null,
+            IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
+            IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
@@ -689,15 +691,15 @@ namespace Shashlik.Utils.Helpers
             string url,
             string body,
             string contentType = "text/plain",
-            IEnumerable<KeyValuePair<string, string>> queryStringData = null,
-            IDictionary<string, string> headers = null,
-            IDictionary<string, string> cookies = null,
-            int timeout = 30, IWebProxy proxy = null, Encoding encoding = null)
+            IEnumerable<KeyValuePair<string, string>>? queryStringData = null,
+            IDictionary<string, string>? headers = null,
+            IDictionary<string, string>? cookies = null,
+            int timeout = 30, IWebProxy? proxy = null, Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
             var list = queryStringData?.ToList();
-            if (!list.IsNullOrEmpty())
+            if (list != null && list.Any())
                 foreach (var item in list!)
                     request.AddParameter(item.Key, item.Value, ParameterType.QueryString);
             if (!body.IsNullOrWhiteSpace() && !contentType.IsNullOrWhiteSpace())

@@ -93,7 +93,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="type"></param>
         /// <param name="types">构造函数的参数类型匹配</param>
         /// <returns></returns>
-        public static ConstructorInfo GetDeclaredConstructor(this Type type, params Type[] types)
+        public static ConstructorInfo? GetDeclaredConstructor(this Type type, params Type[] types)
         {
             if (types is null) throw new ArgumentNullException(nameof(types));
             return type.GetConstructor(types);
@@ -104,12 +104,10 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static object GetDefaultValue(this Type type)
+        public static object? GetDefaultValue(this Type type)
         {
             if (!type.GetTypeInfo().IsValueType)
-            {
                 return null;
-            }
 
             // A bit of perf code to avoid calling Activator.CreateInstance for common types and
             // to avoid boxing on every call. This is about 50% faster than just calling CreateInstance
@@ -125,9 +123,11 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T ParseTo<T>(this object value)
+        public static T ParseTo<T>(this object? value)
         {
-            return (T) ParseTo(value, typeof(T));
+            var res = ParseTo(value, typeof(T));
+            if (res is null) return default!;
+            return (T) res;
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="value"></param>
         /// <param name="destinationType">目标类型</param>
         /// <returns></returns>
-        public static object ParseTo(this object value, Type destinationType)
+        public static object? ParseTo(this object? value, Type destinationType)
         {
             if (value is null)
                 return null;
@@ -167,7 +167,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="destinationType"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool TryParse(this object value, Type destinationType, out object result)
+        public static bool TryParse(this object? value, Type destinationType, out object? result)
         {
             try
             {
@@ -207,23 +207,23 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static IDictionary<string, object> MapToDictionary<TModel>(this TModel obj)
+        public static IDictionary<string, object?>? MapToDictionary<TModel>(this TModel obj)
         {
             if (obj is null)
                 return null;
-            var dic = new Dictionary<string, object>();
+            var dic = new Dictionary<string, object?>();
             var objType = obj.GetType();
             if (obj is JToken jToken)
             {
                 if (jToken.Type != JTokenType.Object)
                     return null;
-                return JToken2Object(jToken) as IDictionary<string, object>;
+                return JToken2Object(jToken) as IDictionary<string, object?>;
             }
             else if (objType.IsSubTypeOrEqualsOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 return (obj as IEnumerable)
                     !.OfType<dynamic>()
-                    .ToDictionary<dynamic, string, object>(
+                    .ToDictionary<dynamic, string, object?>(
                         r => r.Key.ToString(),
                         r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
             }
@@ -232,7 +232,7 @@ namespace Shashlik.Utils.Extensions
                 if (json.ValueKind != JsonValueKind.Object)
                     return null;
 
-                return JsonElement2Object(json) as IDictionary<string, object>;
+                return JsonElement2Object(json) as IDictionary<string, object?>;
             }
             else
             {
@@ -272,7 +272,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj"></param>
         /// <param name="prop">属性名称, 子级属性.连接,例: User.Name</param>
         /// <returns></returns>
-        public static (bool exists, object value) GetPropertyValue<TModel>(this TModel obj, string prop)
+        public static (bool exists, object? value) GetPropertyValue<TModel>(this TModel obj, string prop)
         {
             if (obj is null) throw new ArgumentNullException(nameof(obj));
             if (string.IsNullOrWhiteSpace(prop))
@@ -328,7 +328,7 @@ namespace Shashlik.Utils.Extensions
             if (obj != null)
                 return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(obj));
 
-            return default;
+            return default!;
         }
 
         /// <summary>
@@ -505,10 +505,12 @@ namespace Shashlik.Utils.Extensions
                 {
                     case JsonValueKind.Null:
                     case JsonValueKind.Undefined:
-                        return default;
+                        return default!;
                 }
 
-                return (T) GetValue(value, typeof(T));
+                var res = GetValue(value, typeof(T));
+                if (res is null) return default!;
+                return (T) res;
             }
 
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
@@ -522,7 +524,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="propertyName">property name</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static object GetValue(this JsonElement obj, Type type, string propertyName)
+        public static object? GetValue(this JsonElement obj, Type type, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
                 throw new ArgumentException("Json value kind must be JsonValueKind.Object.");
@@ -544,10 +546,12 @@ namespace Shashlik.Utils.Extensions
             {
                 case JsonValueKind.Null:
                 case JsonValueKind.Undefined:
-                    return default;
+                    return default!;
             }
 
-            return (T) GetValue(obj, typeof(T));
+            var res = GetValue(obj, typeof(T));
+            if (res is null) return default!;
+            return (T) res;
         }
 
         /// <summary>
@@ -557,7 +561,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="type"></param>
         /// <returns></returns>
         /// <exception cref="InvalidCastException"></exception>
-        public static object GetValue(this JsonElement obj, Type type)
+        public static object? GetValue(this JsonElement obj, Type type)
         {
             if (type == typeof(object))
                 return obj;
@@ -566,7 +570,7 @@ namespace Shashlik.Utils.Extensions
             {
                 case JsonValueKind.Null:
                 case JsonValueKind.Undefined:
-                    return default;
+                    return default!;
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                 {
@@ -604,7 +608,7 @@ namespace Shashlik.Utils.Extensions
                     #region ->Enum
 
                     {
-                        Type enumType = null;
+                        Type? enumType = null;
                         if (type.IsEnum)
                             enumType = type;
                         else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
@@ -782,7 +786,7 @@ namespace Shashlik.Utils.Extensions
 
                     #region ->Enum
 
-                    Type enumType = null;
+                    Type? enumType = null;
                     if (type.IsEnum)
                     {
                         enumType = type;
@@ -859,7 +863,7 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string GetEnumDescription(this Enum value)
+        public static string? GetEnumDescription(this Enum value)
         {
             var name = value.ToString();
             var fieldInfo = value.GetType().GetField(name);
@@ -875,9 +879,9 @@ namespace Shashlik.Utils.Extensions
         {
 #pragma warning disable IDE0034 // Simplify 'default' expression - default causes default(object)
             {typeof(int), default(int)},
-            {typeof(Guid), default(Guid)},
-            {typeof(DateTime), default(DateTime)},
-            {typeof(DateTimeOffset), default(DateTimeOffset)},
+            {typeof(Guid), default(Guid)!},
+            {typeof(DateTime), default(DateTime)!},
+            {typeof(DateTimeOffset), default(DateTimeOffset)!},
             {typeof(long), default(long)},
             {typeof(bool), default(bool)},
             {typeof(double), default(double)},
@@ -892,13 +896,15 @@ namespace Shashlik.Utils.Extensions
 #pragma warning restore IDE0034 // Simplify 'default' expression
         };
 
-        private static object JToken2Object(JToken token)
+        private static object? JToken2Object(JToken? token)
         {
+            if (token is null) return null;
+
             switch (token.Type)
             {
                 case JTokenType.Object:
                 {
-                    var dic = new Dictionary<string, object>();
+                    var dic = new Dictionary<string, object?>();
                     foreach (var item in token.Value<JObject>())
                     {
                         dic[item.Key] = JToken2Object(item.Value);
@@ -909,7 +915,7 @@ namespace Shashlik.Utils.Extensions
 
                 case JTokenType.Array:
                 {
-                    var children = new List<object>();
+                    var children = new List<object?>();
                     foreach (var item in token.Value<JArray>())
                         children.Add(JToken2Object(item));
                     return children;
@@ -928,8 +934,9 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        private static object JTokenValue(JToken token)
+        private static object? JTokenValue(JToken? token)
         {
+            if (token is null) return null;
             switch (token.Type)
             {
                 case JTokenType.Object:
@@ -956,7 +963,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        private static object JsonElement2Object(JsonElement obj)
+        private static object? JsonElement2Object(JsonElement obj)
         {
             switch (obj.ValueKind)
             {
@@ -987,7 +994,7 @@ namespace Shashlik.Utils.Extensions
                 }
                 case JsonValueKind.Object:
                 {
-                    var dic = new Dictionary<string, object>();
+                    var dic = new Dictionary<string, object?>();
                     foreach (var item in obj.EnumerateObject())
                     {
                         dic[item.Name] = JsonElement2Object(item.Value);
@@ -997,7 +1004,7 @@ namespace Shashlik.Utils.Extensions
                 }
                 case JsonValueKind.Array:
                 {
-                    var children = new List<object>();
+                    var children = new List<object?>();
                     foreach (var item in obj.EnumerateArray())
                         children.Add(JsonElement2Object(item));
                     return children;
@@ -1007,7 +1014,7 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        private static object JsonElementValue(JsonElement obj)
+        private static object? JsonElementValue(JsonElement obj)
         {
             switch (obj.ValueKind)
             {
@@ -1044,12 +1051,12 @@ namespace Shashlik.Utils.Extensions
             }
         }
 
-        private static (bool exists, object value) GetObjectValue(object obj, string proName)
+        private static (bool exists, object? value) GetObjectValue(object obj, string proName)
         {
             var objType = obj.GetType();
             if (obj is JToken jToken)
             {
-                JToken json;
+                JToken? json;
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
                     var jsonArr = jToken.Value<JArray>();
@@ -1080,7 +1087,7 @@ namespace Shashlik.Utils.Extensions
                 var list = (obj as IEnumerable)!.OfType<dynamic>();
                 try
                 {
-                    var el = list.First(r => r.Key?.ToString() == proName);
+                    var el = list.First(r => r.Key.ToString() == proName);
                     return (true, el.Value);
                 }
                 catch (InvalidOperationException)

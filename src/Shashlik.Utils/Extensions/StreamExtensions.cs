@@ -33,7 +33,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="stream"></param>
         /// <param name="encoding">编码方式</param>
         /// <returns></returns>
-        public static string ReadToString(this Stream stream, Encoding encoding = null)
+        public static string ReadToString(this Stream stream, Encoding? encoding = null)
         {
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);
@@ -50,7 +50,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="stream"></param>
         /// <param name="encoding">编码方式</param>
         /// <returns></returns>
-        public static async Task<string> ReadToStringAsync(this Stream stream, Encoding encoding = null)
+        public static async Task<string> ReadToStringAsync(this Stream stream, Encoding? encoding = null)
         {
             if (stream.CanSeek && stream.Position != 0)
                 stream.Seek(0, SeekOrigin.Begin);

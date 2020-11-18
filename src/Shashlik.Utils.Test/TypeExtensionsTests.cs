@@ -794,6 +794,8 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void ParseToTests()
         {
+            ((int?)null).ParseTo<int?>().ShouldBeNull();
+            ((int?)null).ParseTo<int>().ShouldBe(0);
             "1".ParseTo<int>().ShouldBe(1);
             "0010".ParseTo<long>().ShouldBe(10);
             1.ParseTo<TestJsonToClass.TestJsonToEnum>().ShouldBe(TestJsonToClass.TestJsonToEnum.Male);

@@ -73,7 +73,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="certificateBase64Content">证书内容</param>
         /// <param name="password">证书密码</param>
         /// <returns></returns>
-        public static X509Certificate2 LoadX509FromBase64(string certificateBase64Content, string password = null)
+        public static X509Certificate2 LoadX509FromBase64(string certificateBase64Content, string? password = null)
         {
             return password is null
                 ? new X509Certificate2(Convert.FromBase64String(certificateBase64Content))
@@ -98,7 +98,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="padding">填充算法</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Encrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding encoding = null)
+        public static string Encrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var dataBytes = encoding.GetBytes(data);
@@ -116,7 +116,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="connChar">块数据连接字符</param>
         /// <returns></returns>
         public static string EncryptBigDataWithSplit(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
-            Encoding encoding = null, char? connChar = '$')
+            Encoding? encoding = null, char? connChar = '$')
         {
             if (!connChar.HasValue)
                 return EncryptBigData(rsa, dataStr, padding, encoding);
@@ -153,7 +153,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static string EncryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             if (string.IsNullOrEmpty(dataStr)) return string.Empty;
@@ -183,7 +183,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="padding">填充算法</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static string Decrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding encoding = null)
+        public static string Decrypt(this RSA rsa, string data, RSAEncryptionPadding padding, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             if (rsa is null) throw new ArgumentException("private key can not null");
@@ -203,7 +203,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="connChar">块数据分割符</param>
         /// <returns></returns>
         public static string DecryptBigDataWithSplit(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
-            Encoding encoding = null, char connChar = '$')
+            Encoding? encoding = null, char connChar = '$')
         {
             encoding ??= Encoding.UTF8;
             if (rsa is null)
@@ -231,7 +231,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"></param>
         /// <returns></returns>
         public static string DecryptBigData(this RSA rsa, string dataStr, RSAEncryptionPadding padding,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             if (string.IsNullOrEmpty(dataStr)) return string.Empty;
@@ -263,7 +263,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"><paramref name="data"/>编码格式</param>
         /// <returns>Sign bytes</returns>
         public static string SignData(this RSA rsa, string data, HashAlgorithmName hashAlgorithmName,
-            RSASignaturePadding padding, Encoding encoding = null)
+            RSASignaturePadding padding, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var res = SignDataGetBytes(rsa, data, hashAlgorithmName, padding, encoding);
@@ -280,7 +280,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"><paramref name="data"/>编码格式</param>
         /// <returns>Sign bytes</returns>
         public static byte[] SignDataGetBytes(this RSA rsa, string data, HashAlgorithmName hashAlgorithmName,
-            RSASignaturePadding padding, Encoding encoding = null)
+            RSASignaturePadding padding, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             if (rsa is null)
@@ -303,7 +303,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="encoding"><paramref name="data"></paramref>编码格式</param>
         /// <returns></returns>
         public static bool VerifySignData(this RSA rsa, string data, string sign, HashAlgorithmName hashAlgorithmName,
-            RSASignaturePadding padding, Encoding encoding = null)
+            RSASignaturePadding padding, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             if (rsa is null)

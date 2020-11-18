@@ -1,5 +1,6 @@
 ﻿using System;
 using Shashlik.Utils.Extensions;
+#pragma warning disable 8618
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable ConvertIfStatementToConditionalTernaryExpression
@@ -88,7 +89,7 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="idCard"></param>
         /// <returns></returns>
-        public static IdCardModel GetIdCardModel(string idCard)
+        public static IdCardModel? GetIdCardModel(string idCard)
         {
             if (!IsIdCard(idCard))
                 return null;
