@@ -95,7 +95,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
@@ -113,7 +113,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="assembly"></param>
         /// <returns></returns>
@@ -123,7 +123,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,不包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="dependencyContext"></param>
@@ -134,7 +134,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="assembly"></param>
@@ -148,7 +148,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="baseType">基类,可以是泛型定义</param>
         /// <param name="dependencyContext"></param>
@@ -164,7 +164,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <param name="assembly"></param>
         /// <returns></returns>
@@ -174,7 +174,7 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 获取所有的子类,不包括接口和抽象类,包含泛型定义
+        /// 获取所有的子类和自身,包括接口和抽象类,包含泛型定义
         /// </summary>
         /// <typeparam name="TBaseType"></typeparam>
         /// <param name="dependencyContext"></param>
