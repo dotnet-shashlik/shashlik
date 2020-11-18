@@ -40,7 +40,7 @@ namespace Shashlik.EfCore.Transactional
         /// <param name="dbContextType">数据库上下文类型</param>
         public TransactionalAttribute(Type dbContextType)
         {
-            if (!dbContextType.IsSubTypeOf(typeof(DbContext)))
+            if (!dbContextType.IsSubTypeOrEqualsOf(typeof(DbContext)))
                 throw new ArgumentException($"{nameof(dbContextType)} must be subtype of DbContext.");
             DbContextType = dbContextType;
         }

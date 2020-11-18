@@ -219,7 +219,7 @@ namespace Shashlik.Utils.Extensions
                     return null;
                 return JToken2Object(jToken) as IDictionary<string, object>;
             }
-            else if (objType.IsSubTypeOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+            else if (objType.IsSubTypeOrEqualsOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
                 return (obj as IEnumerable)
                     !.OfType<dynamic>()
@@ -296,25 +296,25 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 是否为类型<paramref name="parentType"/>的子类
+        /// 是否为类型<paramref name="parentType"/>的子类或自身
         /// </summary>
         /// <param name="type"></param>
         /// <param name="parentType"></param>
         /// <returns></returns>
-        public static bool IsSubTypeOf(this Type type, Type parentType)
+        public static bool IsSubTypeOrEqualsOf(this Type type, Type parentType)
         {
             return parentType.IsAssignableFrom(type);
         }
 
         /// <summary>
-        /// 是否为类型<typeparamref name="T"/>的子类
+        /// 是否为类型<typeparamref name="T"/>的子类或自身
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static bool IsSubTypeOf<T>(this Type type)
+        public static bool IsSubTypeOrEqualsOf<T>(this Type type)
         {
-            return type.IsSubTypeOf(typeof(T));
+            return type.IsSubTypeOrEqualsOf(typeof(T));
         }
 
         /// <summary>
@@ -409,7 +409,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsCollectionType(this Type type)
         {
-            return type.IsSubTypeOf<IEnumerable>();
+            return type.IsSubTypeOrEqualsOf<IEnumerable>();
         }
 
         /// <summary>

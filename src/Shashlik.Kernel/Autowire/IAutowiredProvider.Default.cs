@@ -82,7 +82,7 @@ namespace Shashlik.Kernel.Autowire
             foreach (var item in dic)
             {
                 if (item.Value.AfterAt != null
-                    && item.Value.AfterAt.IsSubTypeOf(type)
+                    && item.Value.AfterAt.IsSubTypeOrEqualsOf(type)
                     && dic.ContainsKey(item.Value.AfterAt))
                 {
                     item.Value.Prevs.Add(item.Value.AfterAt);
@@ -90,7 +90,7 @@ namespace Shashlik.Kernel.Autowire
                 }
 
                 if (item.Value.BeforeAt != null
-                    && item.Value.BeforeAt.IsSubTypeOf(type)
+                    && item.Value.BeforeAt.IsSubTypeOrEqualsOf(type)
                     && dic.ContainsKey(item.Value.BeforeAt))
                 {
                     item.Value.Nexts.Add(item.Value.BeforeAt);

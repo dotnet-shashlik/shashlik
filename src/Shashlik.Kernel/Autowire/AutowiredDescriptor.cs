@@ -25,9 +25,9 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="serviceInstance">自动装配类型实例</param>
         public AutowireDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance)
         {
-            if (afterAt != null && afterAt.IsSubTypeOf<T>())
+            if (afterAt != null && afterAt.IsSubTypeOrEqualsOf<T>())
                 AfterAt = afterAt;
-            if (beforeAt != null && beforeAt.IsSubTypeOf<T>())
+            if (beforeAt != null && beforeAt.IsSubTypeOrEqualsOf<T>())
                 BeforeAt = beforeAt;
             Order = order;
             ImplementationType = implementationType!;

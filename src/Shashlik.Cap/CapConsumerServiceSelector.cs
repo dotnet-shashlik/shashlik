@@ -113,7 +113,7 @@ namespace Shashlik.Cap
                     continue;
 
                 var eventType = @interface.GenericTypeArguments[0].GetTypeInfo();
-                if (!eventType.IsSubTypeOf<IEvent>())
+                if (!eventType.IsSubTypeOrEqualsOf<IEvent>())
                     continue;
 
                 string eventName = _nameRuler.GetName(eventType);

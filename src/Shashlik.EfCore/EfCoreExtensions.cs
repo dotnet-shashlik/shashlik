@@ -187,7 +187,7 @@ namespace Shashlik.EfCore
         /// <exception cref="InvalidOperationException"></exception>
         public static async Task MigrationWithoutLock(this IServiceCollection services, Type dbContextType)
         {
-            if (!dbContextType.IsSubTypeOf<DbContext>())
+            if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             var rootServiceProvider = services.BuildServiceProvider();
             using var scope = rootServiceProvider.CreateScope();
@@ -258,7 +258,7 @@ namespace Shashlik.EfCore
         public static void Migration(this IServiceProvider provider, Type dbContextType, ILock? locker = null,
             int lockSecond = 60)
         {
-            if (!dbContextType.IsSubTypeOf<DbContext>())
+            if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
             using var @lock = locker.Lock(MigrationLockKey.Format(dbContextType.FullName), lockSecond,
@@ -331,7 +331,7 @@ namespace Shashlik.EfCore
         public static async Task MigrationAsync(this IServiceProvider provider, Type dbContextType,
             ILock? locker = null, int lockSecond = 60)
         {
-            if (!dbContextType.IsSubTypeOf<DbContext>())
+            if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
             using var @lock = locker.Lock(MigrationLockKey.Format(dbContextType.FullName), lockSecond,

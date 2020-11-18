@@ -91,7 +91,7 @@ namespace Shashlik.Utils.Helpers
         public static List<TypeInfo> GetFinalSubTypes(Type baseType, Assembly assembly)
         {
             return assembly.DefinedTypes.Where(r =>
-                !r.IsAbstract && r.IsClass && (r.IsSubTypeOf(baseType) || r.IsSubTypeOfGenericType(baseType))).ToList();
+                !r.IsAbstract && r.IsClass && (r.IsSubTypeOrEqualsOf(baseType) || r.IsSubTypeOfGenericType(baseType))).ToList();
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Shashlik.Utils.Helpers
         {
             return assembly
                 .DefinedTypes
-                .Where(r => r.IsSubTypeOf(baseType) || r.IsSubTypeOfGenericType(baseType))
+                .Where(r => r.IsSubTypeOrEqualsOf(baseType) || r.IsSubTypeOfGenericType(baseType))
                 .ToList();
         }
 

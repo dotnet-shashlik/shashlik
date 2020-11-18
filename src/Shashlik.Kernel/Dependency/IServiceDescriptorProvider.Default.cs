@@ -32,7 +32,7 @@ namespace Shashlik.Kernel.Dependency
             {
                 if (typeInfo == type)
                     continue;
-                if (typeInfo.IsSubTypeOf(type))
+                if (typeInfo.IsSubTypeOrEqualsOf(type))
                     return false;
                 if (typeInfo.IsSubTypeOfGenericType(type))
                     return false;
@@ -49,7 +49,7 @@ namespace Shashlik.Kernel.Dependency
                 return false;
 
             if (!subType.IsGenericTypeDefinition && !parentType.IsGenericTypeDefinition)
-                return subType.IsSubTypeOf(parentType);
+                return subType.IsSubTypeOrEqualsOf(parentType);
 
             return subType.IsSubTypeOfGenericDefinitionType(parentType);
         }

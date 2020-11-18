@@ -18,7 +18,7 @@ namespace Shashlik.EfCore.Transactional
 
         public static IHostBuilder UseEfCoreTransactional(this IHostBuilder builder, Type defaultDbContextType)
         {
-            if (!defaultDbContextType.IsSubTypeOf<DbContext>())
+            if (!defaultDbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new ArgumentException("Default dbContext type must inherit from DbContext.",
                     nameof(defaultDbContextType));
             TransactionalAttribute.DefaultDbContextType = defaultDbContextType;
