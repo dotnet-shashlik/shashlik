@@ -8,6 +8,7 @@ using Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
 using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1;
+using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2;
 using Shouldly;
 using Xunit;
 
@@ -104,8 +105,8 @@ namespace Shashlik.Kernel.Test
                 (GetServices<IComparer>().Any(r => r is C5<int>)).ShouldBeFalse();
                 (GetServices<IDisposable>().Any(r => r is C5<int>)).ShouldBeFalse();
 
-                GetServices<IA5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
-                GetServices<IA5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
+                GetServices<IA5<int>>().Any(r => r is C5<int>).ShouldBeFalse();
+                GetServices<IA5<int>>().Any(r => r is D5<int>).ShouldBeFalse();
 
                 GetServices<B5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
                 GetServices<B5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
@@ -114,6 +115,68 @@ namespace Shashlik.Kernel.Test
                 GetServices<C5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
 
                 GetServices<D5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IA1>().Single() is D1).ShouldBeTrue();
+                GetService<B1>().ShouldBeNull();
+                GetService<C1>().ShouldBeNull();
+                (GetServices<D1>().Single() is D1).ShouldBeTrue();
+            }
+
+            {
+                GetService<IA2>().ShouldBeNull();
+                (GetServices<B2>().Single() is D2).ShouldBeTrue();
+                GetService<C2>().ShouldBeNull();
+                (GetServices<D2>().Single() is D2).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IA3>().Single() is C3).ShouldBeTrue();
+                (GetServices<B3>().Single() is C3).ShouldBeTrue();
+                (GetServices<C3>().Single() is C3).ShouldBeTrue();
+                GetService<D3>().ShouldBeNull();
+            }
+
+            {
+                (GetServices<IA4>().Single() is D4).ShouldBeTrue();
+                (GetServices<B4>().Single() is D4).ShouldBeTrue();
+                (GetServices<C4>().Single() is D4).ShouldBeTrue();
+                (GetServices<D4>().Single() is D4).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IComparer>().Any(r => r is C5)).ShouldBeFalse();
+                (GetServices<IDisposable>().Any(r => r is C5)).ShouldBeFalse();
+
+                GetService<IA5>().ShouldBeNull();
+                GetServices<B5>().Any(r => r is C5).ShouldBeTrue();
+                GetServices<B5>().Any(r => r is D5).ShouldBeTrue();
+
+                GetServices<C5>().Any(r => r is C5).ShouldBeTrue();
+                GetServices<C5>().Any(r => r is D5).ShouldBeTrue();
+
+                GetServices<D5>().Any(r => r is D5).ShouldBeTrue();
+            }
+
+            {
+                (GetServices<IComparer>().Any(r => r is C6)).ShouldBeFalse();
+                (GetServices<IDisposable>().Any(r => r is D6)).ShouldBeFalse();
+                (GetServices<ICloneable>().Any(r => r is C6)).ShouldBeFalse();
+
+                GetService<IA6>().ShouldBeNull();
+                GetServices<IA61<int>>().Any(r => r is C6).ShouldBeTrue();
+                GetServices<IA61<string>>().Any(r => r is C6).ShouldBeFalse();
+                GetServices<IA61<int>>().Any(r => r is C61<int>).ShouldBeTrue();
+                GetServices<IA61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
+
+                GetServices<B6>().Any(r => r is C6).ShouldBeTrue();
+                GetServices<B6>().Any(r => r is C61<int>).ShouldBeFalse();
+
+                GetServices<C6>().Any(r => r is C6).ShouldBeTrue();
+                GetServices<C61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
+
+                GetServices<D6>().Any(r => r is D6).ShouldBeTrue();
             }
         }
 

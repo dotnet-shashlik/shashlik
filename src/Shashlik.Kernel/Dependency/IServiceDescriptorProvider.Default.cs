@@ -69,17 +69,36 @@ namespace Shashlik.Kernel.Dependency
                     $"Conflict service lifetime: {serviceLifetime}:{type.FullName} & {finalSubTypeLifeTimeAttribute.ServiceLifetime}:{type.FullName}");
         }
 
+        /// <summary>
+        /// 获取继承链所有的ignores
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static HashSet<Type> GetIgnoresFromInheritedChain(Type type)
+        {
+            List<Type> res = new List<Type>();
+            foreach (var item in type.GetAllBaseTypesAndInterfaces())
+            {
+                var serviceAttribute = item.GetCustomAttribute<ServiceAttribute>();
+                if (serviceAttribute == null)
+                    continue;
+                res.AddRange(serviceAttribute.IgnoreServices);
+            }
+
+            return res.ToHashSet();
+        }
+
         public IEnumerable<ShashlikServiceDescriptor> GetDescriptor(TypeInfo type)
         {
-            var lifeTimeAttribute = type.GetCustomAttribute<ServiceAttribute>(false);
-            if (lifeTimeAttribute is null)
+            var serviceAttribute = type.GetCustomAttribute<ServiceAttribute>(false);
+            if (serviceAttribute is null)
                 return new ShashlikServiceDescriptor[0];
 
             var res = new List<ShashlikServiceDescriptor>();
             var conditions = Utils.GetConditions(type);
 
             // 注册整个继承链
-            if (lifeTimeAttribute.RequireRegistryInheritedChain)
+            if (serviceAttribute.RequireRegistryInheritedChain)
             {
                 var baseTypes = type.GetAllBaseTypesAndInterfaces();
                 var subTypes = ReflectionHelper.GetSubTypes(type);
@@ -88,17 +107,18 @@ namespace Shashlik.Kernel.Dependency
 
                 foreach (var item1 in finalSubTypes)
                 {
+                    var ignores = GetIgnoresFromInheritedChain(item1);
                     foreach (var item2 in allTypes)
                     {
-                        if (lifeTimeAttribute.IgnoreServices.Contains(item2))
+                        if (ignores.Contains(item2))
                             continue;
 
-                        if (!item1.IsSubTypeOf(item2))
+                        if (!CanAddService(item1, item2))
                             continue;
 
                         if (CanAddService(item1, item2))
                         {
-                            var serviceDescriptor = ServiceDescriptor.Describe(item2, item1, lifeTimeAttribute.ServiceLifetime);
+                            var serviceDescriptor = ServiceDescriptor.Describe(item2, item1, serviceAttribute.ServiceLifetime);
                             var conditions1 = Utils.GetConditions(item1);
                             var conditions2 = Utils.GetConditions(item2);
                             res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions1.Concat(conditions2).ToList()));
@@ -113,9 +133,9 @@ namespace Shashlik.Kernel.Dependency
 
                 foreach (var finalSubType in finalSubTypes)
                 {
-                    if (lifeTimeAttribute.IgnoreServices.Contains(finalSubType))
+                    if (GetIgnoresFromInheritedChain(finalSubType).Contains(finalSubType))
                         continue;
-                    ValidServiceLifetime(lifeTimeAttribute.ServiceLifetime, finalSubType);
+                    ValidServiceLifetime(serviceAttribute.ServiceLifetime, finalSubType);
 
                     if (CanAddService(finalSubType, type))
                     {
@@ -123,8 +143,8 @@ namespace Shashlik.Kernel.Dependency
                         if (IsLastFinalType(finalSubTypes, finalSubType))
                         {
                             var currentConditions = conditions.Concat(Utils.GetConditions(finalSubType)).ToList();
-                            ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, lifeTimeAttribute.ServiceLifetime);
-                            ServiceDescriptor @base = ServiceDescriptor.Describe(type, finalSubType, lifeTimeAttribute.ServiceLifetime);
+                            ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, serviceAttribute.ServiceLifetime);
+                            ServiceDescriptor @base = ServiceDescriptor.Describe(type, finalSubType, serviceAttribute.ServiceLifetime);
                             // 每一个服务都使用服务类和实现的条件并集
                             res.Add(new ShashlikServiceDescriptor(self, currentConditions));
                             res.Add(new ShashlikServiceDescriptor(@base, currentConditions));
@@ -135,28 +155,27 @@ namespace Shashlik.Kernel.Dependency
             // 最终实现类，往上查找服务
             else if (type.IsClass && !type.IsAbstract)
             {
-                if (!lifeTimeAttribute.IgnoreServices.Contains(type))
+                var ignores = GetIgnoresFromInheritedChain(type);
+                if (!ignores.Contains(type))
                 {
-                    var serviceDescriptor = ServiceDescriptor.Describe(type, type, lifeTimeAttribute.ServiceLifetime);
+                    // 注册自身
+                    var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
                     res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions));
                 }
 
                 var baseTypes = type.GetAllBaseTypesAndInterfaces();
                 foreach (var baseType in baseTypes)
                 {
-                    if (lifeTimeAttribute.IgnoreServices.Contains(baseType))
+                    if (ignores.Contains(baseType))
                         continue;
 
-                    ValidServiceLifetime(lifeTimeAttribute.ServiceLifetime, baseType.GetTypeInfo());
+                    ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
 
                     if (CanAddService(type, baseType))
                     {
-                        if (!lifeTimeAttribute.IgnoreServices.Contains(baseType))
-                        {
-                            var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, lifeTimeAttribute.ServiceLifetime);
-                            var currentConditions = conditions.Concat(Utils.GetConditions(baseType)).ToList();
-                            res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
-                        }
+                        var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
+                        var currentConditions = conditions.Concat(Utils.GetConditions(baseType)).ToList();
+                        res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
                     }
                 }
             }
