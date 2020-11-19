@@ -1,9 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.Schema;
 using System.Xml.Serialization;
 
 namespace Shashlik.Utils.Extensions
@@ -18,7 +16,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="encoding">encode, default utf8</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static string ToXmlString<T>(this T value, bool omitXmlDeclaration = false, Encoding? encoding = null)
+        public static string ToXmlString<T>(this T value, bool omitXmlDeclaration = false, Encoding encoding = null)
         {
             if (value is null)
                 return string.Empty;

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,8 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 using Shashlik.Utils.Extensions;
-
-#pragma warning disable 8618
 
 namespace Shashlik.Utils.Helpers
 {
@@ -709,6 +708,7 @@ namespace Shashlik.Utils.Helpers
         }
     }
 
+#nullable disable
     public class UploadFileModel
     {
         /// <summary>

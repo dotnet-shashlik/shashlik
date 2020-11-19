@@ -91,7 +91,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T>? list)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
         {
             return list is null || !list.Any();
         }
@@ -103,7 +103,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="list"></param>
         /// <param name="keyComparer"></param>
         /// <returns></returns>
-        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T>? keyComparer = null)
+        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T> keyComparer = null)
         {
             if (list is null)
             {
@@ -126,7 +126,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="keyComparer"></param>
         /// <returns></returns>
         public static bool HasRepeat<T, TP>(this IEnumerable<T> list, Func<T, TP> selectProperty,
-            IEqualityComparer<TP>? keyComparer = null)
+            IEqualityComparer<TP> keyComparer = null)
         {
             if (list is null)
             {
@@ -247,10 +247,11 @@ namespace Shashlik.Utils.Extensions
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
             if (key is null)
-                return default!;
+                return default;
             if (dic.TryGetValue(key, out var value))
                 return value;
-            return default!;
+
+            return default;
         }
 
         /// <summary>
@@ -286,7 +287,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="TValue"></typeparam>
         /// <param name="to"></param>
         /// <param name="from"></param>
-        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue>? from)
+        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue> from)
         {
             if (to == null) throw new ArgumentNullException(nameof(to));
             if (from is null) return;
@@ -320,7 +321,7 @@ namespace Shashlik.Utils.Extensions
                 table.Columns.Add(prop.Name, prop.PropertyType);
             }
 
-            object?[] values = new object?[props.Count];
+            object[] values = new object[props.Count];
             foreach (T item in data)
             {
                 if (item is null)

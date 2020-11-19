@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -54,8 +55,8 @@ namespace Shashlik.Utils.Helpers
             var keyByte = encoding.GetBytes(secret);
             var valueBytes = encoding.GetBytes(value);
             using var hmacSha1 = new HMACSHA1(keyByte);
-            var hashvalue = hmacSha1.ComputeHash(valueBytes);
-            return Convert.ToBase64String(hashvalue);
+            var hashValue = hmacSha1.ComputeHash(valueBytes);
+            return Convert.ToBase64String(hashValue);
         }
 
         /// <summary>

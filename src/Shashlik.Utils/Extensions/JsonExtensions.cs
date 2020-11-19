@@ -25,7 +25,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj"></param>
         /// <param name="serializerSettings"></param>
         /// <returns></returns>
-        public static string ToJson<T>(this T obj, JsonSerializerSettings? serializerSettings = null)
+        public static string ToJson<T>(this T obj, JsonSerializerSettings serializerSettings = null)
             where T : class
         {
             if (obj is null) throw new ArgumentNullException(nameof(obj));
