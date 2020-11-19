@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Shashlik.Identity.MySql.DefaultMigrations
+namespace Shashlik.Identity.Int32.MySql.DefaultMigrations
 {
     public partial class init : Migration
     {

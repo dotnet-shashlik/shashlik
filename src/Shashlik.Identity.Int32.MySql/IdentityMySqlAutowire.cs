@@ -7,11 +7,11 @@ using Shashlik.Identity.Options;
 using Shashlik.Kernel;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Identity.PostgreSql
+namespace Shashlik.Identity.Int32.MySql
 {
-    public class IdentityPostgreSqlAutowire : IServiceAutowire
+    public class IdentityMySqlAutowire : IServiceAutowire
     {
-        public IdentityPostgreSqlAutowire(IOptions<ShashlikIdentityOptions> options)
+        public IdentityMySqlAutowire(IOptions<ShashlikIdentityOptions> options)
         {
             Options = options.Value;
         }
@@ -35,11 +35,11 @@ namespace Shashlik.Identity.PostgreSql
 
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
             {
-                options.UseNpgsql(conn!,
+                options.UseMySql(conn!,
                     db =>
                     {
                         db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??
-                                              typeof(IdentityPostgreSqlAutowire).Assembly.FullName);
+                                              typeof(IdentityMySqlAutowire).Assembly.FullName);
                     });
             });
         }

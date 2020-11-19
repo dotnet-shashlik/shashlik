@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using IdentityServer4.Validation;
@@ -9,7 +8,7 @@ using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// 两步验证第二步

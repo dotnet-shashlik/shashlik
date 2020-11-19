@@ -1,5 +1,5 @@
 ﻿#pragma warning disable 8618
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// 两步验证,第一步加密数据模型

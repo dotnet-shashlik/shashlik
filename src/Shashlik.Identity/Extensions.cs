@@ -1,7 +1,6 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // copy from https://github.com/dotnet/aspnetcore/blob/release/3.1/src/Identity/Core/src/IdentityBuilderExtensions.cs
-
 using Microsoft.AspNetCore.Identity;
 using Shashlik.Identity.DataProtection;
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// 通用的验证码登录,手机号码唯一有效,要求用户必须存在

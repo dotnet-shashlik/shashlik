@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -12,7 +11,7 @@ using Shashlik.Identity.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// 默认的用户查找类,依次根据手机号码/邮件地址/身份证号码/用户名查找用户

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.

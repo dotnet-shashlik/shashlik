@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Shashlik.Identity;
 using Shashlik.Kernel.Dependency;
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// 通过identity获取用户的方法定义,自动注册为scoped

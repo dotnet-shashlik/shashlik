@@ -17,7 +17,6 @@ namespace Shashlik.Identity.Lookup
         private IKeyManager KeyManager { get; }
         private IKeyRingProvider KeyRingProvider { get; }
 
-
         public IEnumerable<string> GetAllKeyIds()
         {
             return KeyManager.GetAllKeys()

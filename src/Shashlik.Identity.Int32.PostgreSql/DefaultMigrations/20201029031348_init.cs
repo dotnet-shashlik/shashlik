@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Shashlik.Identity.PostgreSql.DefaultMigrations
+namespace Shashlik.Identity.Int32.PostgreSql.DefaultMigrations
 {
     public partial class init : Migration
     {

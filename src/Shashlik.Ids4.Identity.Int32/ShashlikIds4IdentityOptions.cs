@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Shashlik.Kernel.Attributes;
 
-namespace Shashlik.Ids4.IdentityInt32
+namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
     /// ids4 AspNetCoreIdentity 配置选项
