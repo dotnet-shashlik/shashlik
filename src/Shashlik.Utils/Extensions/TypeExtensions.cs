@@ -8,12 +8,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 
-// ReSharper disable UseNullPropagation
-
-// ReSharper disable RedundantIfElseBlock
-
-// ReSharper disable ConvertIfStatementToReturnStatement
-
 namespace Shashlik.Utils.Extensions
 {
     public static class TypeExtensions
@@ -128,7 +122,9 @@ namespace Shashlik.Utils.Extensions
         public static T ParseTo<T>(this object? value)
         {
             var res = ParseTo(value, typeof(T));
-            if (res is null) return default!;
+#pragma warning disable 8603
+            if (res is null) return default;
+#pragma warning restore 8603
             return (T) res;
         }
 
@@ -330,7 +326,9 @@ namespace Shashlik.Utils.Extensions
             if (obj != null)
                 return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(obj));
 
-            return default!;
+#pragma warning disable 8603
+            return default;
+#pragma warning restore 8603
         }
 
         /// <summary>
@@ -507,11 +505,15 @@ namespace Shashlik.Utils.Extensions
                 {
                     case JsonValueKind.Null:
                     case JsonValueKind.Undefined:
-                        return default!;
+#pragma warning disable 8603
+                        return default;
+#pragma warning restore 8603
                 }
 
                 var res = GetValue(value, typeof(T));
-                if (res is null) return default!;
+#pragma warning disable 8603
+                if (res is null) return default;
+#pragma warning restore 8603
                 return (T) res;
             }
 
@@ -544,16 +546,20 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static T GetValue<T>(this JsonElement obj)
         {
+#pragma warning disable 8603
             switch (obj.ValueKind)
             {
                 case JsonValueKind.Null:
                 case JsonValueKind.Undefined:
-                    return default!;
+
+                    return default;
             }
 
             var res = GetValue(obj, typeof(T));
-            if (res is null) return default!;
+            if (res is null) return default;
+
             return (T) res;
+#pragma warning restore 8603
         }
 
         /// <summary>
@@ -572,7 +578,7 @@ namespace Shashlik.Utils.Extensions
             {
                 case JsonValueKind.Null:
                 case JsonValueKind.Undefined:
-                    return default!;
+                    return default;
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                 {
@@ -869,10 +875,7 @@ namespace Shashlik.Utils.Extensions
         {
             var name = value.ToString();
             var fieldInfo = value.GetType().GetField(name);
-            if (fieldInfo is null)
-                return null;
-
-            return fieldInfo.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            return fieldInfo?.GetCustomAttribute<DescriptionAttribute>()?.Description;
         }
 
         #region private

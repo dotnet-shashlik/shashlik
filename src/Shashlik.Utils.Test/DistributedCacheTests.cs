@@ -99,7 +99,7 @@ namespace Shashlik.Utils.Test
             var cache = new MemoryCache();
             var obj = new TestClass() {Str = "test"};
             await cache.SetObjectWithJsonAsync("test", obj , DateTimeOffset.Now.AddSeconds(5));
-            var cacheObj = await cache.GetObjectWithJsonAsync<TestClass>("test");
+            TestClass? cacheObj = await cache.GetObjectWithJsonAsync<TestClass>("test");
             cacheObj.ShouldNotBeNull();
             cacheObj.Str.ShouldBe(obj.Str);
         }
