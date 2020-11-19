@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable disable
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
@@ -17,7 +18,7 @@ namespace Shashlik.Utils.Extensions
         public static async Task<T> GetObjectWithJsonAsync<T>(this IDistributedCache cache, string key)
         {
             var content = await cache.GetStringAsync(key);
-            return string.IsNullOrWhiteSpace(content) ? default! : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default : JsonSerializer.Deserialize<T>(content);
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Shashlik.Utils.Extensions
         public static T GetObjectWithJson<T>(this IDistributedCache cache, string key)
         {
             var content = cache.GetString(key);
-            return string.IsNullOrWhiteSpace(content) ? default! : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default : JsonSerializer.Deserialize<T>(content);
         }
 
         /// <summary>
