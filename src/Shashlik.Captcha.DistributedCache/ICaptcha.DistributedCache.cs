@@ -42,6 +42,7 @@ namespace Shashlik.Captcha.DistributedCache
             var key = GetKey(purpose, target, securityStamp);
 
             var codeModel = await Cache.GetObjectWithJsonAsync<CodeModel>(key);
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (codeModel is null)
                 return false;
 
@@ -96,7 +97,7 @@ namespace Shashlik.Captcha.DistributedCache
 
         private string GetKey(string purpose, string target, string securityStamp = null)
         {
-            if (securityStamp.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(securityStamp))
                 return "CAPTCHA:{0}:{1}".Format(purpose, target);
             return "CAPTCHA:{0}:{1}:{2}".Format(purpose, target, securityStamp);
         }

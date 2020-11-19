@@ -1,5 +1,6 @@
 ﻿using System;
 // ReSharper disable UnusedAutoPropertyAccessor.Global
+#pragma warning disable 8618
 
 namespace Shashlik.Captcha
 {
