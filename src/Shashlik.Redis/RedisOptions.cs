@@ -26,12 +26,12 @@ namespace Shashlik.Redis
         /// <summary>
         /// 连接字符串
         /// </summary>
-        public string ConnectionString { get; set; }
+        public string? ConnectionString { get; set; }
 
         /// <summary>
         /// 哨兵配置
         /// </summary>
-        public string[] Sentinels { get; set; }
+        public string[] Sentinels { get; set; } = new string[0];
 
         /// <summary>
         /// 只读

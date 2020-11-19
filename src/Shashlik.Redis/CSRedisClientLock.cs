@@ -18,7 +18,7 @@ namespace Shashlik.Redis
         string _name;
         string _value;
         int _timeoutSeconds;
-        Timer _autoDelayTimer;
+        Timer? _autoDelayTimer;
 
         internal CSRedisClientLock(CSRedisClient rds, string name, string value, int timeoutSeconds, bool autoDelay)
         {
