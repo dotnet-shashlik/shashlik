@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Shashlik.Utils.Helpers
@@ -17,12 +18,31 @@ namespace Shashlik.Utils.Helpers
         public static void SetTimeout(Action action, TimeSpan expire, CancellationToken? cancellationToken = null)
         {
             cancellationToken ??= CancellationToken.None;
+            if (cancellationToken.Value.IsCancellationRequested)
+                return;
 
             if (expire <= TimeSpan.Zero)
                 throw new ArgumentException("invalid expire.", nameof(expire));
-            Task.Delay((int) expire.TotalMilliseconds, cancellationToken.Value)
-                .ContinueWith(task => action(), cancellationToken.Value)
-                .ConfigureAwait(false);
+
+            var timer = new Timer {Interval = expire.TotalMilliseconds};
+            timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            {
+                try
+                {
+                    timer.Enabled = false;
+                    timer.Stop();
+                    timer.Close();
+                    timer.Dispose();
+                }
+                catch
+                {
+                    // ignored
+                }
+
+                if (!cancellationToken.Value.IsCancellationRequested)
+                    action();
+            };
+            timer.Start();
         }
 
         /// <summary>
@@ -35,15 +55,7 @@ namespace Shashlik.Utils.Helpers
         public static void SetTimeout(Action action, DateTimeOffset runAt,
             CancellationToken? cancellationToken = null)
         {
-            cancellationToken ??= CancellationToken.None;
-
-            if (runAt <= DateTimeOffset.Now)
-                throw new ArgumentException("invalid run time.", nameof(runAt));
-
-
-            Task.Delay((int) (runAt - DateTimeOffset.Now).TotalMilliseconds, cancellationToken.Value)
-                .ContinueWith(task => action(), cancellationToken.Value)
-                .ConfigureAwait(false);
+            SetTimeout(action, (runAt - DateTimeOffset.Now), cancellationToken);
         }
 
         /// <summary>
@@ -56,12 +68,30 @@ namespace Shashlik.Utils.Helpers
         public static void SetInterval(Action action, TimeSpan interval, CancellationToken? cancellationToken = null)
         {
             cancellationToken ??= CancellationToken.None;
+            if (cancellationToken.Value.IsCancellationRequested)
+                return;
             if (interval <= TimeSpan.Zero)
                 throw new ArgumentException("invalid interval.", nameof(interval));
-            Task.Delay((int) interval.TotalMilliseconds, cancellationToken.Value)
-                .ContinueWith(task => SetInterval(action, interval, cancellationToken.Value))
-                .ContinueWith(task => action(), cancellationToken.Value)
-                .ConfigureAwait(false);
+
+            var timer = new Timer {Interval = interval.TotalMilliseconds};
+            timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            {
+                if (!cancellationToken.Value.IsCancellationRequested)
+                    action();
+                else
+                    try
+                    {
+                        timer.Enabled = false;
+                        timer.Stop();
+                        timer.Close();
+                        timer.Dispose();
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+            };
+            timer.Start();
         }
     }
 }
