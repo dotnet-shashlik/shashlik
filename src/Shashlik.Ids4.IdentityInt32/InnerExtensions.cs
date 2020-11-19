@@ -13,7 +13,7 @@ namespace Shashlik.Ids4.IdentityInt32
                 IsError = true,
                 Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
                 ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
-                CustomResponse = new Dictionary<string, object>
+                CustomResponse = new Dictionary<string, object?>
                 {
                     {"code", (int) code},
                     {"message", code.GetEnumDescription()},
@@ -28,7 +28,7 @@ namespace Shashlik.Ids4.IdentityInt32
                 IsError = true,
                 Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
                 ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
-                CustomResponse = new Dictionary<string, object>
+                CustomResponse = new Dictionary<string, object?>
                 {
                     {"code", (int) code},
                     {"message", code.GetEnumDescription()},

@@ -24,13 +24,13 @@ namespace Shashlik.Identity.MySql
                 return;
 
             var conn = Options.ConnectionString;
-            if (conn.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(conn))
             {
                 conn = kernelService.RootConfiguration.GetConnectionString("Default");
                 kernelService.Services.Configure<ShashlikIdentityOptions>(r => { r.ConnectionString = conn; });
             }
 
-            if (conn.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(conn))
                 throw new InvalidOperationException($"ConnectionString can not be empty.");
 
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>

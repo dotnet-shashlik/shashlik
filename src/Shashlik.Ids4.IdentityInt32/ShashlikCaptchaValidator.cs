@@ -40,7 +40,7 @@ namespace Shashlik.Ids4.IdentityInt32
             }
 
             var user = await IdentityUserFinder.FindByIdentityAsync(identity,
-                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources, UserManager, context.Request.Raw);
+                ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!, UserManager, context.Request.Raw);
             if (user is null)
             {
                 context.WriteError(ErrorCodes.UserNotFound);

@@ -45,7 +45,7 @@ namespace Shashlik.Ids4
                 builder.AddDeveloperSigningCredential();
             else if (Options.SignOptions.CredentialType == CredentialType.Rsa)
             {
-                if (Options.SignOptions.RsaPrivateKey.IsNullOrEmpty())
+                if (string.IsNullOrWhiteSpace(Options.SignOptions.RsaPrivateKey))
                     throw new ArgumentException($"Invalid rsa private key");
                 var rsa = RSA.Create();
                 rsa.ImportPrivateKey(Options.SignOptions.RsaKeyType, Options.SignOptions.RsaPrivateKey,
@@ -55,15 +55,15 @@ namespace Shashlik.Ids4
             else if (Options.SignOptions.CredentialType == CredentialType.X509)
             {
                 X509Certificate2 certificate;
-                if (!Options.SignOptions.X509CertificateFileContent.IsNullOrEmpty())
+                if (!string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificateFileContent))
                 {
                     var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateFileContent!);
-                    if (Options.SignOptions.X509CertificatePassword.IsNullOrEmpty())
+                    if (string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificatePassword))
                         certificate = new X509Certificate2(bytes);
                     else
                         certificate = new X509Certificate2(bytes, Options.SignOptions.X509CertificatePassword);
                 }
-                else if (!Options.SignOptions.X509CertificateFilePath.IsNullOrEmpty())
+                else if (!string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificateFilePath))
                 {
                     if (!File.Exists(Options.SignOptions.X509CertificateFilePath))
                         throw new FileNotFoundException($"Cannot found certificate file.",

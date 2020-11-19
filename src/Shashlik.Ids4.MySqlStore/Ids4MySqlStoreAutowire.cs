@@ -30,13 +30,13 @@ namespace Shashlik.Ids4.MySqlStore
             var conn = Options.ConnectionString;
             if (Options.EnableConfigurationStore || Options.EnableOperationalStore)
             {
-                if (conn.IsNullOrWhiteSpace())
+                if (string.IsNullOrWhiteSpace(conn))
                 {
                     conn = KernelServices.RootConfiguration.GetConnectionString("Default");
                     KernelServices.Services.Configure<Ids4MySqlStoreOptions>(r => { r.ConnectionString = conn; });
                 }
 
-                if (conn.IsNullOrWhiteSpace())
+                if (string.IsNullOrWhiteSpace(conn))
                     throw new InvalidOperationException($"ConnectionString can not be empty.");
             }
 
@@ -47,10 +47,7 @@ namespace Shashlik.Ids4.MySqlStore
                     options.ConfigureDbContext = dbOptions =>
                     {
                         dbOptions.UseMySql(conn!,
-                            mig =>
-                            {
-                                mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName);
-                            });
+                            mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
                     };
                 });
             }
@@ -62,10 +59,7 @@ namespace Shashlik.Ids4.MySqlStore
                     options.ConfigureDbContext = dbOptions =>
                     {
                         dbOptions.UseMySql(conn!,
-                            mig =>
-                            {
-                                mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName);
-                            });
+                            mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
                     };
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;

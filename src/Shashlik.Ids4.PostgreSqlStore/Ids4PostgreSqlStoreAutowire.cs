@@ -29,13 +29,13 @@ namespace Shashlik.Ids4.PostgreSqlStore
             var conn = Options.ConnectionString;
             if (Options.EnableConfigurationStore || Options.EnableOperationalStore)
             {
-                if (conn.IsNullOrWhiteSpace())
+                if (string.IsNullOrWhiteSpace(conn))
                 {
                     conn = KernelServices.RootConfiguration.GetConnectionString("Default");
                     KernelServices.Services.Configure<Ids4PostgreSqlStoreOptions>(r => { r.ConnectionString = conn; });
                 }
 
-                if (conn.IsNullOrWhiteSpace())
+                if (string.IsNullOrWhiteSpace(conn))
                     throw new InvalidOperationException($"ConnectionString can not be empty.");
             }
 

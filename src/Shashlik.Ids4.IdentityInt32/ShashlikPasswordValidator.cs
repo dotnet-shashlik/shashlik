@@ -62,7 +62,7 @@ namespace Shashlik.Ids4.IdentityInt32
             }
 
             var user = await IdentityUserFinder.FindByIdentityAsync(username,
-                ShashlikIds4IdentityOptions.Value.PasswordSignInSources, UserManager, context.Request.Raw);
+                ShashlikIds4IdentityOptions.Value.PasswordSignInSources!, UserManager, context.Request.Raw);
 
             if (user is null)
             {
@@ -112,7 +112,7 @@ namespace Shashlik.Ids4.IdentityInt32
                         IsError = true,
                         Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
                         ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
-                        CustomResponse = new Dictionary<string, object>
+                        CustomResponse = new Dictionary<string, object?>
                         {
                             {"code", (int) ErrorCodes.RequiresTwoFactor},
                             {"message", ErrorCodes.RequiresTwoFactor.GetEnumDescription()},
