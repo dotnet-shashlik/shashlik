@@ -8,7 +8,7 @@ namespace Shashlik.Response
     /// </summary>
     public class ResponseResult
     {
-        public ResponseResult(int code, bool success, string msg, object data, string debug)
+        public ResponseResult(int code, bool success, string? msg, object? data, string? debug)
         {
             Code = code;
             Success = success;
@@ -30,16 +30,16 @@ namespace Shashlik.Response
         /// <summary>
         /// 错误消息
         /// </summary>
-        public string Msg { get; set; }
+        public string? Msg { get; set; }
 
         /// <summary>
         /// 数据
         /// </summary>
-        public object Data { get; set; }
+        public object? Data { get; set; }
 
         /// <summary>
         /// 调试信息
         /// </summary>
-        public string Debug { get; set; }
+        public string? Debug { get; set; }
     }
 }

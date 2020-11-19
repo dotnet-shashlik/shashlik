@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Response;
 using Shashlik.Utils.Extensions;
@@ -32,7 +31,7 @@ namespace Shashlik.AspNetCore.Filters
             if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
             {
                 if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoExceptionWrapperAttribute>(true)
-                    || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<NoExceptionWrapperAttribute>(true))
+                    || actionDescriptor.MethodInfo.DeclaringType!.IsDefinedAttribute<NoExceptionWrapperAttribute>(true))
                     return;
 
                 base.OnException(context);
@@ -55,8 +54,7 @@ namespace Shashlik.AspNetCore.Filters
 
                         var responseResult = new ResponseResult(errorCode, false, message, null, debug);
                         if (UseResponseExceptionToHttpCode)
-                            context.HttpContext.Response.StatusCode = (int) ToHttpCode(responseException.ResponseStatus,
-                                responseException.ErrorCode);
+                            context.HttpContext.Response.StatusCode = (int) ToHttpCode(responseException.ResponseStatus);
                         else
                             context.HttpContext.Response.StatusCode = (int) HttpStatusCode.OK;
 
@@ -82,7 +80,7 @@ namespace Shashlik.AspNetCore.Filters
         }
 
 
-        private static HttpStatusCode ToHttpCode(ResponseStatus status, int errorCode)
+        private static HttpStatusCode ToHttpCode(ResponseStatus status)
         {
             return status switch
             {

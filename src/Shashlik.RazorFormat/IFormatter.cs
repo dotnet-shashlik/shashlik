@@ -1,4 +1,4 @@
-﻿#nullable enable
+﻿
 namespace Shashlik.RazorFormat
 {
     /// <summary>

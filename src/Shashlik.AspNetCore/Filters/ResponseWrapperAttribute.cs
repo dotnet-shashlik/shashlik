@@ -37,8 +37,7 @@ namespace Shashlik.AspNetCore.Filters
                 if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
                 {
                     if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
-                        || actionDescriptor.MethodInfo.DeclaringType
-                            .IsDefinedAttribute<NoResponseWrapperAttribute>(true)
+                        || actionDescriptor.MethodInfo.DeclaringType!.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
                     )
                     {
                         await base.OnResultExecutionAsync(context, next);
@@ -52,11 +51,11 @@ namespace Shashlik.AspNetCore.Filters
                 context.HttpContext.Response.StatusCode =
                     ModelError2HttpOk ? (int) HttpStatusCode.OK : (int) HttpStatusCode.BadRequest;
 
-                string error;
+                string? error;
                 if (!ResponseAllModelError)
                     error = context.ModelState
                         .SelectMany(r => r.Value.Errors)
-                        .FirstOrDefault(r => !r.ErrorMessage.IsNullOrWhiteSpace())
+                        .FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.ErrorMessage))
                         ?.ErrorMessage;
                 else
                 {
@@ -78,7 +77,7 @@ namespace Shashlik.AspNetCore.Filters
             if (context.ActionDescriptor is ControllerActionDescriptor actionDescriptor)
             {
                 if (actionDescriptor.MethodInfo.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
-                    || actionDescriptor.MethodInfo.DeclaringType.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
+                    || actionDescriptor.MethodInfo.DeclaringType!.IsDefinedAttribute<NoResponseWrapperAttribute>(true)
                 )
                 {
                     base.OnActionExecuted(context);
@@ -109,34 +108,5 @@ namespace Shashlik.AspNetCore.Filters
                 }
             }
         }
-
-        // public override void OnActionExecuting(ActionExecutingContext context)
-        // {
-        //     base.OnActionExecuting(context);
-        //     Options ??= context.HttpContext.RequestServices.GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
-        //
-        //     if (!context.ModelState.IsValid)
-        //     {
-        //         context.HttpContext.Response.StatusCode =
-        //             ModelError2HttpOk ? (int) HttpStatusCode.OK : (int) HttpStatusCode.BadRequest;
-        //
-        //         string error;
-        //         if (!ResponseAllModelError)
-        //             error = context.ModelState
-        //                 .SelectMany(r => r.Value.Errors)
-        //                 .FirstOrDefault(r => !r.ErrorMessage.IsNullOrWhiteSpace())
-        //                 ?.ErrorMessage;
-        //         else
-        //         {
-        //             error = context.ModelState
-        //                 .SelectMany(r => r.Value.Errors)
-        //                 .Select(r => r.ErrorMessage)
-        //                 .Join(Environment.NewLine);
-        //         }
-        //
-        //         context.Result = new ObjectResult(new ResponseResult(Options.ResponseCode.ArgError, false,
-        //             error ?? Options.ResponseCode.ArgErrorDefaultMessage, null, null));
-        //     }
-        // }
     }
 }
