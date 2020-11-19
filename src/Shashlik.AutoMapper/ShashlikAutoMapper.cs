@@ -2,6 +2,6 @@
 {
     public static class ShashlikAutoMapper
     {
-        public static global::AutoMapper.IMapper Instance { get; internal set; }
+        public static global::AutoMapper.IMapper? Instance { get; internal set; }
     }
 }

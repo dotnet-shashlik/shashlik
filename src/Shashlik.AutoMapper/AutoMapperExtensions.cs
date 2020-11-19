@@ -10,13 +10,8 @@ using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using Shashlik.Utils.Helpers;
-
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedMethodReturnValue.Global
-
-// ReSharper disable RedundantExplicitArrayCreation
 // ReSharper disable RedundantNameQualifier
-// ReSharper disable UnusedMember.Global
+// ReSharper disable RedundantExplicitArrayCreation
 
 namespace Shashlik.AutoMapper
 {
@@ -29,7 +24,7 @@ namespace Shashlik.AutoMapper
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
-            DependencyContext dependencyContext = null)
+            DependencyContext? dependencyContext = null)
         {
             var assemblies =
                 ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, dependencyContext);
@@ -227,7 +222,8 @@ namespace Shashlik.AutoMapper
         /// <returns></returns>
         public static TDest MapTo<TDest>(this object obj)
         {
-            return ShashlikAutoMapper.Instance.Map<TDest>(obj);
+            if (ShashlikAutoMapper.Instance != null) return ShashlikAutoMapper.Instance.Map<TDest>(obj);
+            throw new NullReferenceException($"Make sure AutoMapper initialized.");
         }
 
         /// <summary>
@@ -239,7 +235,8 @@ namespace Shashlik.AutoMapper
         /// <typeparam name="TDest">dest type</typeparam>
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
-            ShashlikAutoMapper.Instance.Map(obj, destObj);
+            if (ShashlikAutoMapper.Instance != null) ShashlikAutoMapper.Instance.Map(obj, destObj);
+            throw new NullReferenceException($"Make sure AutoMapper initialized.");
         }
     }
 }

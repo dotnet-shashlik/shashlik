@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+// ReSharper disable UnusedTypeParameter
 
 namespace Shashlik.AutoMapper
 {
