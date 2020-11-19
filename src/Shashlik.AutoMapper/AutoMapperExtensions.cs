@@ -236,7 +236,7 @@ namespace Shashlik.AutoMapper
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
             if (ShashlikAutoMapper.Instance != null) ShashlikAutoMapper.Instance.Map(obj, destObj);
-            throw new NullReferenceException($"Make sure AutoMapper initialized.");
+            else throw new NullReferenceException($"Make sure AutoMapper initialized.");
         }
     }
 }
