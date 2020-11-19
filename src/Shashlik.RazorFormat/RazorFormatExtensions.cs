@@ -188,7 +188,7 @@ namespace Shashlik.RazorFormat
         {
             var formatMatchList = formatExpressionReg.Matches(formatExpression!);
             var lastValue = objectValue;
-            var has = false;
+            var hasFormatter = false;
             foreach (Match formatMatch in formatMatchList)
             {
                 if (formatMatch.Success && formatMatch.Groups.Count >= 2)
@@ -197,15 +197,14 @@ namespace Shashlik.RazorFormat
                     var formater = formatters.GetOrDefault(action);
                     if (formater != null)
                     {
-                        var expression = formatMatch.Value.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(')
-                            .TrimEnd(')').Trim();
+                        var expression = formatMatch.Value.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(').TrimEnd(')').Trim();
                         lastValue = formater.Format(lastValue, expression);
-                        has = true;
+                        hasFormatter = true;
                     }
                 }
             }
 
-            return has ? (true, lastValue?.ToString()) : (false, null);
+            return (hasFormatter, lastValue?.ToString());
         }
     }
 }
