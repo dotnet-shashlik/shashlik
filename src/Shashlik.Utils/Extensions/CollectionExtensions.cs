@@ -6,6 +6,8 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 
+// ReSharper disable RedundantNameQualifier
+
 
 namespace Shashlik.Utils.Extensions
 {
@@ -89,7 +91,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T>? list)
         {
             return list is null || !list.Any();
         }
@@ -284,8 +286,9 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="TValue"></typeparam>
         /// <param name="to"></param>
         /// <param name="from"></param>
-        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue> from)
+        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue>? from)
         {
+            if (to == null) throw new ArgumentNullException(nameof(to));
             if (from is null) return;
             foreach (var kv in from)
             {
@@ -308,9 +311,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
-            PropertyDescriptorCollection props =
-                    TypeDescriptor.GetProperties(typeof(T))
-                ;
+            PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
 
             DataTable table = new DataTable();
             for (int i = 0; i < props.Count; i++)
@@ -319,9 +320,11 @@ namespace Shashlik.Utils.Extensions
                 table.Columns.Add(prop.Name, prop.PropertyType);
             }
 
-            object[] values = new object[props.Count];
+            object?[] values = new object?[props.Count];
             foreach (T item in data)
             {
+                if (item is null)
+                    continue;
                 for (int i = 0; i < values.Length; i++)
                 {
                     values[i] = props[i].GetValue(item);

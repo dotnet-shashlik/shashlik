@@ -117,7 +117,7 @@ namespace Shashlik.RazorFormat.Test
                 .ShouldBe("aBC0000000018");
         }
 
-        private readonly int _performanceCount = 100_0000;
+        private readonly int _performanceCount = 10_0000;
 
         [Fact]
         public void RazorFormatPerformanceTest()

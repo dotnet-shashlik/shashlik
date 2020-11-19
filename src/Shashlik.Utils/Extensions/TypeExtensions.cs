@@ -32,6 +32,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsSubTypeOfGenericType(this Type childType, Type genericType)
         {
+            if (childType == genericType)
+                return false;
             if (!genericType.IsGenericTypeDefinition)
                 return false;
             var interfaceTypes = childType.GetTypeInfo().ImplementedInterfaces;
@@ -877,7 +879,6 @@ namespace Shashlik.Utils.Extensions
 
         private static readonly Dictionary<Type, object> CommonTypeDictionary = new Dictionary<Type, object>
         {
-#pragma warning disable IDE0034 // Simplify 'default' expression - default causes default(object)
             {typeof(int), default(int)},
             {typeof(Guid), default(Guid)!},
             {typeof(DateTime), default(DateTime)!},
@@ -893,7 +894,6 @@ namespace Shashlik.Utils.Extensions
             {typeof(ushort), default(ushort)},
             {typeof(ulong), default(ulong)},
             {typeof(sbyte), default(sbyte)}
-#pragma warning restore IDE0034 // Simplify 'default' expression
         };
 
         private static object? JToken2Object(JToken? token)

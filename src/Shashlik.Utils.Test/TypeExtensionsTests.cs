@@ -421,6 +421,20 @@ namespace Shashlik.Utils.Test
         }
 
         [Fact]
+        public void IsSubTypeOfGenericTypeTest()
+        {
+            typeof(C1<>).IsSubTypeOfGenericType(typeof(IA1<>)).ShouldBeTrue();
+            typeof(C1<>).IsSubTypeOfGenericType(typeof(B1<>)).ShouldBeTrue();
+            typeof(C1<>).IsSubTypeOfGenericType(typeof(B1<int>)).ShouldBeFalse();
+            typeof(C1<int>).IsSubTypeOfGenericType(typeof(IA1<>)).ShouldBeTrue();
+            typeof(B1<>).IsSubTypeOfGenericType(typeof(B1<>)).ShouldBeFalse();
+            typeof(B1<>).IsSubTypeOfGenericType(typeof(IA1<>)).ShouldBeTrue();
+            typeof(B1<>).IsSubTypeOfGenericType(typeof(IA1<int>)).ShouldBeFalse();
+            typeof(B1<int>).IsSubTypeOfGenericType(typeof(IA1<>)).ShouldBeTrue();
+            typeof(B1<int>).IsSubTypeOfGenericType(typeof(B1<>)).ShouldBeTrue();
+        }
+        
+        [Fact]
         public void IsSubTypeOfGenericDefinitionTypeTest()
         {
             typeof(C1<>).IsSubTypeOfGenericDefinitionType(typeof(IA1<>)).ShouldBeTrue();
