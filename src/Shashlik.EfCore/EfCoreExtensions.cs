@@ -22,7 +22,7 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 0: DbContext Type
         /// </summary>
-        public const string MigrationLockKey = "EFCORE_MIGRATION:{0}";
+        public const string MigrationLockKey = "EFCORE_MIGRATION";
 
         /// <summary>
         /// 增加efcore嵌套事务
@@ -261,7 +261,7 @@ namespace Shashlik.EfCore
             if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey.Format(dbContextType.Name), lockSecond,
+            using var @lock = locker.Lock(MigrationLockKey, lockSecond,
                 waitTimeoutSeconds: lockSecond);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
@@ -334,7 +334,7 @@ namespace Shashlik.EfCore
             if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
             locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey.Format(dbContextType.Name), lockSecond,
+            using var @lock = locker.Lock(MigrationLockKey, lockSecond,
                 waitTimeoutSeconds: lockSecond);
             using var scope = provider.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;

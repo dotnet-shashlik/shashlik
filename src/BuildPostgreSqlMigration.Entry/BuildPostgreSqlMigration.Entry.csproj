@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shashlik.DataProtection.PostgreSql\Shashlik.DataProtection.PostgreSql.csproj" />
-    <ProjectReference Include="..\Shashlik.Identity.PostgreSql\Shashlik.Identity.PostgreSql.csproj" />
+    <ProjectReference Include="..\Shashlik.Identity.Int32.PostgreSql\Shashlik.Identity.Int32.PostgreSql.csproj" />
     <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9" />

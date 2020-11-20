@@ -2,7 +2,6 @@
 using IdentityServer4.Validation;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
-using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.Identity

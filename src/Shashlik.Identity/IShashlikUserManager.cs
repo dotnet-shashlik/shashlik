@@ -320,6 +320,13 @@ namespace Shashlik.Identity
         /// <returns></returns>
         Task<bool> IsValidLoginCaptcha(IIdentityUser user, string catpcha);
 
+        /// <summary>
+        /// 检查密码并获取登录结果
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="password"></param>
+        /// <param name="lockoutOnFailure"></param>
+        /// <returns></returns>
         Task<SignInResult> CheckPasswordSignInAsync(IIdentityUser user, string password, bool lockoutOnFailure);
     }
 }

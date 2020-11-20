@@ -95,6 +95,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.Int32.Pos
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.Identity", "Shashlik.Ids4.Identity\Shashlik.Ids4.Identity.csproj", "{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.IdentityIds4.MySql.Tests", "Shashlik.IdentityIds4.MySql.Tests\Shashlik.IdentityIds4.MySql.Tests.csproj", "{7BA35882-12CA-46A2-9C1E-865D7F775C59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -348,6 +350,12 @@ Global
 		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -366,6 +374,7 @@ Global
 		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{7BA35882-12CA-46A2-9C1E-865D7F775C59} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

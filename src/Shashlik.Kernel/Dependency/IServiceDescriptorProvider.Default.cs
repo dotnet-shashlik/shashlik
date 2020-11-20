@@ -100,7 +100,7 @@ namespace Shashlik.Kernel.Dependency
             // 注册整个继承链
             if (serviceAttribute.RequireRegistryInheritedChain)
             {
-                var baseTypes = type.GetAllBaseTypesAndInterfaces();
+                var baseTypes = type.GetAllBaseTypesAndInterfaces().ToList();
                 var subTypes = ReflectionHelper.GetSubTypes(type);
                 var finalSubTypes = subTypes.Where(r => r.IsClass && !r.IsAbstract).ToList();
                 var allTypes = baseTypes.Concat(subTypes).ToList();

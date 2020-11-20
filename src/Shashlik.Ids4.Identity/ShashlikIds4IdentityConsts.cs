@@ -1,6 +1,6 @@
 ﻿using IdentityServer4.Models;
 
-namespace Shashlik.Ids4.Identity.Int32 //ShashlikIds4Identity
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// 常量

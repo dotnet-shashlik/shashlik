@@ -16,6 +16,7 @@ namespace Shashlik.Identity
     /// <typeparam name="TKey"></typeparam>
     [Transient(RequireRegistryInheritedChain = true)]
     public interface IIdentityTypeConfigure<TUser, TRole, TKey>
+        : IIdentityTypeConfigure
         where TKey : IEquatable<TKey>
         where TUser : IdentityUser<TKey>, IIdentityUser
         where TRole : IdentityRole<TKey>, IIdentityRole

@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shashlik.DataProtection.MySql\Shashlik.DataProtection.MySql.csproj" />
-    <ProjectReference Include="..\Shashlik.Identity.MySql\Shashlik.Identity.MySql.csproj" />
+    <ProjectReference Include="..\Shashlik.Identity.Int32.MySql\Shashlik.Identity.Int32.MySql.csproj" />
     <ProjectReference Include="..\Shashlik.Ids4.MySqlStore\Shashlik.Ids4.MySqlStore.csproj" />
 
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9" />

@@ -1,5 +1,5 @@
 ﻿#nullable  disable
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// 两步验证,第一步加密数据模型

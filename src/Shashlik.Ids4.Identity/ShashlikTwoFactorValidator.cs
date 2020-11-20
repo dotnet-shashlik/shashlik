@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
 using Shashlik.Identity;
-using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Utils.Extensions;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 

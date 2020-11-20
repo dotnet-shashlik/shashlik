@@ -42,21 +42,53 @@ namespace Shashlik.Identity
             kernelService.Services.Configure<IdentityOptions>(r => { IdentityOptions.Value.CopyTo(r); });
 
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
-            var identityTypeOptions = serviceProvider.GetRequiredService<IIdentityTypeConfigure>();
-            if (identityTypeOptions is null)
-                throw new IdentityTypeConfigureException();
+            var identityTypeConfigure = serviceProvider.GetRequiredService<IIdentityTypeConfigure>();
+            Type userType, roleType, keyType;
+            if (identityTypeConfigure != null)
+            {
+                var type = identityTypeConfigure.GetType()
+                    .GetAllInterfaces(false)
+                    .FirstOrDefault(r => r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IIdentityTypeConfigure<,,>));
+                if (type is null)
+                    throw new IdentityTypeConfigureException();
+                userType = type.GetGenericArguments()[0];
+                roleType = type.GetGenericArguments()[1];
+                keyType = type.GetGenericArguments()[2];
 
-            var type = identityTypeOptions.GetType()
-                .GetAllInterfaces(false)
-                .FirstOrDefault(r => r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IIdentityTypeConfigure<,,>));
-            if (type is null)
-                throw new IdentityTypeConfigureException();
-            var userType = type.GetGenericArguments()[0];
-            var roleType = type.GetGenericArguments()[1];
-            var keyType = type.GetGenericArguments()[2];
+                kernelService.Services.Configure<IdentityTypeOptions>(r =>
+                {
+                    r.UserType = userType;
+                    r.RoleType = roleType;
+                    r.KeyType = keyType;
+                });
+            }
+            else
+            {
+                var identityTypeOptions = serviceProvider.GetRequiredService<IOptions<IdentityTypeOptions>>();
+                if (identityTypeOptions.Value.UserType is null
+                    || identityTypeOptions.Value.RoleType is null
+                    || identityTypeOptions.Value.KeyType is null)
+                    throw new OptionsValidationException(nameof(IdentityTypeOptions), typeof(IdentityTypeOptions), new string[]
+                    {
+                        $"Make sure configure \"{nameof(IdentityTypeOptions)}\" and can't be null"
+                    });
+
+                userType = identityTypeOptions.Value.UserType;
+                roleType = identityTypeOptions.Value.RoleType;
+                keyType = identityTypeOptions.Value.KeyType;
+            }
 
             // registry ShashlikUserManager<,>
             kernelService.Services.AddScoped(typeof(ShashlikUserManager<,>).MakeGenericType(userType, keyType));
+            kernelService.Services.AddScoped(
+                typeof(IShashlikUserManager),
+                typeof(ShashlikUserManager<,>).MakeGenericType(userType, keyType));
+
+            // registry ShashlikRoleManager<,>
+            kernelService.Services.AddScoped(typeof(ShashlikRoleManager<,>).MakeGenericType(roleType, keyType));
+            kernelService.Services.AddScoped(
+                typeof(IShashlikRoleManager),
+                typeof(ShashlikRoleManager<,>).MakeGenericType(roleType, keyType));
 
             // reflect AddIdentityCore
             var addIdentityCoreMethodInfo = typeof(IdentityServiceCollectionExtensions)
@@ -86,6 +118,7 @@ namespace Shashlik.Identity
             // configure DataProtectionTokenProviderOptions
             kernelService.Services.Configure<DataProtectionTokenProviderOptions>(
                 o => Options.Value.DataProtectionTokenProviderOptions.CopyTo(o));
+
 
             // extension identity
             kernelService.Autowire<IIdentityExtensionAutowire>(r => r.Configure(builder));

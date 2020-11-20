@@ -40,7 +40,7 @@ namespace Shashlik.Ids4
 
             #region 签名证书
 
-            // 使用开发证书,自动创建tempkey.rsa
+            // 使用开发证书,自动创建证书文件,不适用于集群环境
             if (Options.SignOptions.CredentialType == CredentialType.Dev)
                 builder.AddDeveloperSigningCredential();
             else if (Options.SignOptions.CredentialType == CredentialType.Rsa)

@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Identity.Options;
-using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 

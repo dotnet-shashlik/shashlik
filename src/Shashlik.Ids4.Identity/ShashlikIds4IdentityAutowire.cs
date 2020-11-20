@@ -1,19 +1,19 @@
 ﻿extern alias IdentityServer4AspNetIdentity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity.Options;
-using Shashlik.Ids4.Identity.Int32;
 
 namespace Shashlik.Ids4.Identity
 {
-    public class ShashlikIds4IdentityConfigure : IIds4ExtensionAutowire
+    public class ShashlikIds4IdentityAutowire : IIds4ExtensionAutowire
     {
-        public ShashlikIds4IdentityConfigure(IOptions<IdentityOptions> identityOptions,
+        public ShashlikIds4IdentityAutowire(IOptions<IdentityOptions> identityOptions,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
             IOptions<IdentityUserExtendsOptions> identityUserExtendsOptions, IOptions<IdentityTypeOptions> identityTypeOptions)
         {
@@ -123,11 +123,16 @@ namespace Shashlik.Ids4.Identity
                         .AddAspNetIdentity), new Type[] {typeof(IIdentityServerBuilder)});
 
                 method!.MakeGenericMethod(IdentityTypeOptions.Value.UserType!)
-                    .Invoke(null, new object?[0]);
+                    .Invoke(null, new object?[] {builder});
             }
 
+            // 移除默认的密码认证validator
+            var serviceDescriptors = builder.Services.Where(r => r.ServiceType == typeof(IResourceOwnerPasswordValidator)).ToList();
+            foreach (var serviceDescriptor in serviceDescriptors)
+                builder.Services.Remove(serviceDescriptor);
+
             // 替换默认的密码认证器
-            builder.Services.Replace(ServiceDescriptor.Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
+            builder.Services.Add(ServiceDescriptor.Transient<IResourceOwnerPasswordValidator, ShashlikPasswordValidator>());
 
             // 验证码登录
             builder.AddExtensionGrantValidator<ShashlikCaptchaValidator>();

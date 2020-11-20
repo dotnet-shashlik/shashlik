@@ -2,7 +2,7 @@
 using IdentityServer4.Validation;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     public static class InnerExtensions
     {

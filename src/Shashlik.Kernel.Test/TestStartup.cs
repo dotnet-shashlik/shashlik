@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using AspectCore.Configuration;
-using AspectCore.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.AspNetCore;
@@ -26,17 +23,6 @@ namespace Shashlik.Kernel.Test
             services.Configure<TestOptions2>(r => r.Enable = false);
 
             services.AddShashlik(Configuration);
-
-            services.ConfigureDynamicProxy(r =>
-            {
-                r.Interceptors.AddTyped<CustomInterceptorAttribute>(
-                    p => p.GetCustomAttributes(typeof(CustomInterceptorAttribute), true).Any()
-                );
-
-                r.Interceptors.AddTyped<CustomInterceptor2Attribute>(
-                    p => p.GetCustomAttributes(typeof(CustomInterceptor2Attribute), true).Any()
-                );
-            });
         }
 
         public void Configure(IApplicationBuilder app)

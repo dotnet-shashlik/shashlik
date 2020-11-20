@@ -5,10 +5,8 @@ using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
-using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
