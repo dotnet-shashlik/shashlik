@@ -11,8 +11,8 @@ namespace Shashlik.Ids4.Identity
             context.Result = new GrantValidationResult
             {
                 IsError = true,
-                Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
-                ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
+                Error = ((int) code).ToString(),
+                ErrorDescription = code.GetEnumDescription(),
                 CustomResponse = new Dictionary<string, object?>
                 {
                     {"code", (int) code},
@@ -26,8 +26,8 @@ namespace Shashlik.Ids4.Identity
             context.Result = new GrantValidationResult
             {
                 IsError = true,
-                Error = ((int) ErrorCodes.RequiresTwoFactor).ToString(),
-                ErrorDescription = ErrorCodes.RequiresTwoFactor.GetEnumDescription(),
+                Error = ((int) code).ToString(),
+                ErrorDescription = code.GetEnumDescription(),
                 CustomResponse = new Dictionary<string, object?>
                 {
                     {"code", (int) code},

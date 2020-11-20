@@ -27,7 +27,6 @@ namespace Shashlik.IdentityIds4.MySql.Tests
         private readonly string _password = Guid.NewGuid().ToString("n");
         private readonly string _clientId = "test_client_id";
         private readonly string _apiScope = "test_api";
-        private readonly string _testHost = "http://localhost";
 
         private readonly IShashlikUserManager _userManager;
         private readonly IShashlikRoleManager _roleManager;
@@ -156,6 +155,48 @@ namespace Shashlik.IdentityIds4.MySql.Tests
                 jObject["access_token"]?.Value<string>().IsNullOrWhiteSpace().ShouldBeFalse();
             }
 
+            // ids4 captcha登录,错误登录
+            {
+                var captcha = await _userManager.GenerateLoginCaptcha(user);
+                captcha.IsNullOrWhiteSpace().ShouldBeFalse();
+
+                var content = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    {"client_id", _clientId},
+                    {"grant_type", "captcha"},
+                    {"scope", _apiScope},
+                    {"identity", _testUserPhone},
+                    {"captcha", "------"},
+                });
+
+                var res = await HttpClient.PostAsync("/connect/token", content);
+                var resStr = await res.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(resStr);
+                res.IsSuccessStatusCode.ShouldBeFalse();
+                var jObject = resStr.DeserializeJson<JObject>();
+                jObject["error"]?.Value<string>().ShouldBe("405");
+                jObject["code"]?.Value<string>().ShouldBe("405");
+            }
+
+            {
+                // 第一步密码登录
+                var content1 = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    {"client_id", _clientId},
+                    {"grant_type", "password"},
+                    {"scope", _apiScope},
+                    {"username", _testUserName},
+                    {"password", Guid.NewGuid().ToString("n")},
+                });
+
+                var res1 = await HttpClient.PostAsync("/connect/token", content1);
+                var res1Str = await res1.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(res1Str);
+                res1.IsSuccessStatusCode.ShouldBeFalse();
+                var jObject1 = res1Str.DeserializeJson<JObject>();
+                jObject1["code"]?.Value<string>().ShouldBe("401");
+            }
+
             // password/two_factor 登录
             {
                 // 第一步密码登录
@@ -198,6 +239,51 @@ namespace Shashlik.IdentityIds4.MySql.Tests
                 res2.IsSuccessStatusCode.ShouldBeTrue();
                 var jObject2 = res2Str.DeserializeJson<JObject>();
                 jObject2["access_token"]?.Value<string>().IsNullOrWhiteSpace().ShouldBeFalse();
+            }
+            
+            // password/two_factor 登录
+            {
+                // 第一步密码登录
+                var content1 = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    {"client_id", _clientId},
+                    {"grant_type", "password"},
+                    {"scope", _apiScope},
+                    {"username", _testUserName},
+                    {"password", _password},
+                });
+
+                var res1 = await HttpClient.PostAsync("/connect/token", content1);
+                var res1Str = await res1.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(res1Str);
+                res1.IsSuccessStatusCode.ShouldBeFalse();
+                var jObject1 = res1Str.DeserializeJson<JObject>();
+                jObject1["code"]?.Value<string>().ShouldBe("202");
+                var security = jObject1["security"]?.Value<string>();
+                security.ShouldNotBeNullOrWhiteSpace();
+
+                // 发送验证码
+                var captcha = await _userManager.GenerateTwoFactorTokenAsync(user, "Captcha");
+                captcha.IsNullOrWhiteSpace().ShouldBeFalse();
+
+                // 第二步两步验证
+                var content2 = new FormUrlEncodedContent(new Dictionary<string, string>()
+                {
+                    {"client_id", _clientId},
+                    {"grant_type", "twofactor"},
+                    {"scope", _apiScope},
+                    {"token", "------"},
+                    {"security", security},
+                    {"provider", "Captcha"},
+                });
+
+                var res2 = await HttpClient.PostAsync("/connect/token", content2);
+                var res2Str = await res2.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(res2Str);
+                res2.IsSuccessStatusCode.ShouldBeFalse();
+                var jObject2 = res2Str.DeserializeJson<JObject>();
+                jObject2["error"]?.Value<string>().ShouldBe("405");
+                jObject2["code"]?.Value<string>().ShouldBe("405");
             }
         }
     }

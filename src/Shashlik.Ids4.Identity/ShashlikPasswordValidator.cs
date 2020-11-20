@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
 using Shashlik.Utils.Extensions;
@@ -73,6 +74,12 @@ namespace Shashlik.Ids4.Identity
                     // 账户密码成功,且未启用两阶段登录
                     var sub = await UserManager.GetUserIdAsync(user);
                     context.Result = new GrantValidationResult(sub, OidcConstants.AuthenticationMethods.Password);
+                    return;
+                }
+
+                if (result == SignInResult.Failed)
+                {
+                    context.WriteError(ErrorCodes.UserNameOrPasswordError);
                     return;
                 }
 
