@@ -66,7 +66,7 @@ namespace Shashlik.Utils.Extensions
             if (!childType.IsGenericTypeDefinition)
                 return false;
             return childType.GetAllBaseTypes().Any(r => r == genericType)
-                   || childType.GetInterfaces(true).Any(r => r == genericType);
+                   || childType.GetAllInterfaces(true).Any(r => r == genericType);
         }
 
         /// <summary>
@@ -438,7 +438,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="type"></param>
         /// <param name="includeBaseTypeInherited">是否包含父类实现的接口</param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetInterfaces(this Type type, bool includeBaseTypeInherited)
+        public static IEnumerable<Type> GetAllInterfaces(this Type type, bool includeBaseTypeInherited)
         {
             Func<Type, Type> select = r => r.IsGenericType && r.AssemblyQualifiedName is null ? r.GetGenericTypeDefinition() : r;
 
@@ -456,7 +456,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IEnumerable<Type> GetAllBaseTypesAndInterfaces(this Type type)
         {
-            return GetAllBaseTypes(type).Concat(GetInterfaces(type, true));
+            return GetAllBaseTypes(type).Concat(GetAllInterfaces(type, true));
         }
 
         /// <summary>

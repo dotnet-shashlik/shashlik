@@ -64,7 +64,7 @@ namespace Shashlik.AutoMapper
                     // IMapFrom<TFrom>
                     foreach (var item in iMapFrom1Types)
                     {
-                        var interfaces = item.GetInterfaces(false);
+                        var interfaces = item.GetAllInterfaces(false);
                         var fromTypes = interfaces
                             .Where(r => r.IsGenericType && r.GenericTypeArguments.Length == 1 &&
                                         r.FullName!.StartsWith(typeof(IMapFrom<>).FullName!))
@@ -78,7 +78,7 @@ namespace Shashlik.AutoMapper
                     // IMapFrom<TFrom, TDest>
                     foreach (var item in iMapFromTypes)
                     {
-                        var interfaces = item.GetInterfaces(false);
+                        var interfaces = item.GetAllInterfaces(false);
 
                         var interfaceTypes = interfaces.Where(r =>
                             r.IsGenericType && r.GenericTypeArguments.Length == 2 &&
@@ -131,7 +131,7 @@ namespace Shashlik.AutoMapper
                     // IMapTo < TDest >
                     foreach (var item in iMapTo1Types)
                     {
-                        var interfaces = item.GetInterfaces(false);
+                        var interfaces = item.GetAllInterfaces(false);
                         var toTypes = interfaces
                             .Where(r => r.IsGenericType && r.GenericTypeArguments.Length == 1 &&
                                         r.FullName!.StartsWith(typeof(IMapTo<>).FullName!))
@@ -146,7 +146,7 @@ namespace Shashlik.AutoMapper
                     // IMapTo<TDest, TSource>
                     foreach (var item in iMapToTypes)
                     {
-                        var interfaces = item.GetInterfaces(false);
+                        var interfaces = item.GetAllInterfaces(false);
                         var interfaceTypes = interfaces.Where(r =>
                             r.IsGenericType && r.GenericTypeArguments.Length == 2 &&
                             r.FullName!.StartsWith(typeof(IMapTo<,>).FullName!)).ToList();

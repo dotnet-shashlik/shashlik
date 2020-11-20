@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Shashlik.Identity;
 using Shashlik.Kernel.Dependency;
 
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// 通过identity获取用户的方法定义,自动注册为scoped
@@ -20,10 +20,10 @@ namespace Shashlik.Ids4.Identity.Int32
         /// <param name="manager">userManager</param>
         /// <param name="postData">前端提交的原始数据</param>
         /// <returns></returns>
-        Task<Users?> FindByIdentityAsync(
+        Task<IIdentityUser?> FindByIdentityAsync(
             string identity,
             IEnumerable<string> allowSignInSources,
-            ShashlikUserManager<Users, int> manager,
+            IShashlikUserManager manager,
             NameValueCollection postData);
     }
 }

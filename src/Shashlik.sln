@@ -91,9 +91,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.Red
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.Int32.MySql", "Shashlik.Identity.Int32.MySql\Shashlik.Identity.Int32.MySql.csproj", "{9414A639-E60F-4C99-8A22-93C5B1077C99}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.Identity.Int32", "Shashlik.Ids4.Identity.Int32\Shashlik.Ids4.Identity.Int32.csproj", "{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Identity.Int32.PostgreSql", "Shashlik.Identity.Int32.PostgreSql\Shashlik.Identity.Int32.PostgreSql.csproj", "{9A966F86-FED4-4D27-B3A8-1F98424DCA91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Ids4.Identity", "Shashlik.Ids4.Identity\Shashlik.Ids4.Identity.csproj", "{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -336,18 +336,18 @@ Global
 		{9414A639-E60F-4C99-8A22-93C5B1077C99}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9414A639-E60F-4C99-8A22-93C5B1077C99}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{9414A639-E60F-4C99-8A22-93C5B1077C99}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{85C0F589-0FE4-42F0-9EEB-2FE45E069B4B}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A966F86-FED4-4D27-B3A8-1F98424DCA91}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFDC9ED1-4A55-49A7-B344-ADD3EA3C91F4}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

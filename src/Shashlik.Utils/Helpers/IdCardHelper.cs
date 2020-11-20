@@ -60,7 +60,7 @@ namespace Shashlik.Utils.Helpers
                         }
 
                         Math.DivRem(num2, 11, out var num3);
-                        if (array[num3] != idCard.Substring(17, 1).ToLower())
+                        if (array[num3] != idCard.Substring(17, 1).ToLowerInvariant())
                         {
                             result = false;
                         }

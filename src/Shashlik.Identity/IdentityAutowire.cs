@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Captcha;
 using Shashlik.Identity.DataProtection;
-using Shashlik.Identity.Entities;
 using Shashlik.Identity.Lookup;
 using Shashlik.Identity.Options;
 using Shashlik.Kernel;
@@ -43,25 +42,33 @@ namespace Shashlik.Identity
             kernelService.Services.Configure<IdentityOptions>(r => { IdentityOptions.Value.CopyTo(r); });
 
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
-            var userRoleDefinition = serviceProvider.GetRequiredService<IIdentityUserRoleDefinition>();
+            var identityTypeOptions = serviceProvider.GetRequiredService<IIdentityTypeConfigure>();
+            if (identityTypeOptions is null)
+                throw new IdentityTypeConfigureException();
+
+            var type = identityTypeOptions.GetType()
+                .GetAllInterfaces(false)
+                .FirstOrDefault(r => r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IIdentityTypeConfigure<,,>));
+            if (type is null)
+                throw new IdentityTypeConfigureException();
+            var userType = type.GetGenericArguments()[0];
+            var roleType = type.GetGenericArguments()[1];
+            var keyType = type.GetGenericArguments()[2];
 
             // registry ShashlikUserManager<,>
-            kernelService.Services.AddScoped(typeof(ShashlikUserManager<,>).MakeGenericType(userRoleDefinition.UserType,
-                GetKeyType(userRoleDefinition)));
+            kernelService.Services.AddScoped(typeof(ShashlikUserManager<,>).MakeGenericType(userType, keyType));
 
             // reflect AddIdentityCore
             var addIdentityCoreMethodInfo = typeof(IdentityServiceCollectionExtensions)
-                .GetMethod(nameof(IdentityServiceCollectionExtensions.AddIdentityCore),
-                    new[] {typeof(IServiceCollection)});
+                .GetMethod(nameof(IdentityServiceCollectionExtensions.AddIdentityCore), new[] {typeof(IServiceCollection)});
 
             // registry identity core: AddIdentityCore<TUser>()
-            var builder =
-                addIdentityCoreMethodInfo!.MakeGenericMethod(userRoleDefinition.UserType)
-                    .Invoke(null, new object[] {kernelService.Services}) as IdentityBuilder;
+            var builder = addIdentityCoreMethodInfo!.MakeGenericMethod(userType)
+                .Invoke(null, new object[] {kernelService.Services}) as IdentityBuilder;
 
             // registry role: AddRole<Role>()
             var addRoleMethodInfo = typeof(IdentityBuilder).GetMethod(nameof(IdentityBuilder.AddRoles), new Type[] { });
-            addRoleMethodInfo!.MakeGenericMethod(userRoleDefinition.RoleType).Invoke(builder, new object[] { });
+            addRoleMethodInfo!.MakeGenericMethod(roleType).Invoke(builder, new object[] { });
 
             builder!
                 .AddPersonalDataProtection<DefaultLookupProtector, DefaultLookupProtectorKeyRing>()
@@ -71,7 +78,7 @@ namespace Shashlik.Identity
             if (CaptchaOptions.Value.Enable)
             {
                 var captchaTokenProviderType =
-                    typeof(CaptchaTokenProvider<>).MakeGenericType(userRoleDefinition.UserType);
+                    typeof(CaptchaTokenProvider<>).MakeGenericType(userType);
 
                 builder.AddTokenProvider(ShashlikIdentityConsts.CaptchaTokenProvider, captchaTokenProviderType);
             }
@@ -82,44 +89,6 @@ namespace Shashlik.Identity
 
             // extension identity
             kernelService.Autowire<IIdentityExtensionAutowire>(r => r.Configure(builder));
-        }
-
-        private Type GetKeyType(IIdentityUserRoleDefinition userRoleDefinition)
-        {
-            if (!userRoleDefinition.UserType.IsSubTypeOfGenericType(typeof(IdentityUserBase<>))
-                || userRoleDefinition.UserType.IsGenericTypeDefinition)
-                throw new InvalidOperationException(
-                    $"Error user type definition of {userRoleDefinition.UserType}, must implement from IdentityUsers<>.");
-            if (!userRoleDefinition.RoleType.IsSubTypeOfGenericType(typeof(IdentityRoleBase<>))
-                || userRoleDefinition.RoleType.IsGenericTypeDefinition)
-                throw new InvalidOperationException(
-                    $"Error role type definition of {userRoleDefinition.RoleType}, must implement from IdentityRoles<>.");
-
-            var userKeyType = userRoleDefinition.UserType
-                .GetAllBaseTypes()
-                .FirstOrDefault(r => r.GetGenericTypeDefinition() == typeof(IdentityUser<>))
-                ?.GetGenericArguments()
-                .FirstOrDefault();
-
-            if (userKeyType is null)
-                throw new InvalidOperationException(
-                    $"Error user type definition of {userRoleDefinition.UserType}, must implement from IdentityUsers<>.");
-
-            var roleKeyType = userRoleDefinition.RoleType
-                .GetAllBaseTypes()
-                .FirstOrDefault(r => r.GetGenericTypeDefinition() == typeof(IdentityRole<>))
-                ?.GetGenericArguments()
-                .FirstOrDefault();
-
-            if (roleKeyType is null)
-                throw new InvalidOperationException(
-                    $"Error role type definition of {userRoleDefinition.RoleType}, must implement from IdentityRoles<>.");
-
-
-            if (userKeyType != roleKeyType)
-                throw new InvalidOperationException("User key type must equals role key type.");
-
-            return userKeyType;
         }
     }
 }

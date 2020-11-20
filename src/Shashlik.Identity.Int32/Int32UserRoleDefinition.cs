@@ -1,14 +1,11 @@
-﻿using System;
-using Shashlik.Kernel.Attributes;
+﻿using Shashlik.Kernel.Attributes;
 
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.Identity
 {
-    [ConditionDependsOnMissing(typeof(IIdentityUserRoleDefinition))]
-    public class Int32UserRoleDefinition : IIdentityUserRoleDefinition
+    [ConditionDependsOnMissing(typeof(IIdentityTypeConfigure))]
+    public class Int32UserRoleDefinition : IIdentityTypeConfigure<Users, Roles, int>
     {
-        public Type UserType => typeof(Users);
-        public Type RoleType => typeof(Roles);
     }
 }

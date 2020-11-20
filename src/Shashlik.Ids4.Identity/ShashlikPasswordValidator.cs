@@ -8,11 +8,12 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Shashlik.Identity;
+using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
@@ -20,20 +21,18 @@ namespace Shashlik.Ids4.Identity.Int32
     /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
     public class ShashlikPasswordValidator : IResourceOwnerPasswordValidator
     {
-        public ShashlikPasswordValidator(SignInManager<Users> signInManager,
-            ShashlikUserManager<Users, int> userManager,
+        public ShashlikPasswordValidator(
+            IShashlikUserManager userManager,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
             IDataProtectionProvider dataProtectionProvider, IIdentityUserFinder identityUserFinder)
         {
-            SignInManager = signInManager;
             UserManager = userManager;
             ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
             DataProtectionProvider = dataProtectionProvider;
             IdentityUserFinder = identityUserFinder;
         }
 
-        private SignInManager<Users> SignInManager { get; }
-        private ShashlikUserManager<Users, int> UserManager { get; }
+        private IShashlikUserManager UserManager { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
         private IIdentityUserFinder IdentityUserFinder { get; }
@@ -70,8 +69,8 @@ namespace Shashlik.Ids4.Identity.Int32
             }
 
             {
-                var result = await SignInManager.CheckPasswordSignInAsync(user, password, true);
-                if (result.Succeeded && !await UserManager.GetTwoFactorEnabledAsync(user))
+                var result = await UserManager.CheckPasswordSignInAsync(user, password, true);
+                if (result.Succeeded)
                 {
                     // 账户密码成功,且未启用两阶段登录
                     var sub = await UserManager.GetUserIdAsync(user);
@@ -91,12 +90,12 @@ namespace Shashlik.Ids4.Identity.Int32
                     return;
                 }
 
-                if (result.Succeeded && await UserManager.GetTwoFactorEnabledAsync(user))
+                if (result.RequiresTwoFactor)
                 {
                     // 如果需要两阶段登录,将用户id和过期时间组装成json让后加密返回给前端(security),前端执行第二阶段登录时传入security
                     var data = new TwoFactorStep1SecurityModel
                     {
-                        UserId = user.Id.ToString(),
+                        UserId = user.IdString,
                         Nonce = Guid.NewGuid().ToString("n")
                     };
 

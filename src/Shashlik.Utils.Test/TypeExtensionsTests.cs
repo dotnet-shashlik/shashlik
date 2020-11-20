@@ -354,69 +354,69 @@ namespace Shashlik.Utils.Test
         public void GetInterfaces_test()
         {
             {
-                typeof(C1<>).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(C1<>).GetInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
-                typeof(C1<IComparer>).GetInterfaces(true).Any(r => r == typeof(IA1<IComparer>)).ShouldBeTrue();
+                typeof(C1<>).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(C1<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C1<>).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C1<>).GetAllInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
+                typeof(C1<IComparer>).GetAllInterfaces(true).Any(r => r == typeof(IA1<IComparer>)).ShouldBeTrue();
 
-                typeof(B1<>).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(B1<>).GetInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
-                typeof(B1<IDisposable>).GetInterfaces(true).Any(r => r == typeof(IA1<IDisposable>)).ShouldBeTrue();
+                typeof(B1<>).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(B1<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B1<>).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B1<>).GetAllInterfaces(true).Any(r => r == typeof(IA1<>)).ShouldBeTrue();
+                typeof(B1<IDisposable>).GetAllInterfaces(true).Any(r => r == typeof(IA1<IDisposable>)).ShouldBeTrue();
 
-                typeof(IA1<>).GetInterfaces(true).Count().ShouldBe(1);
-                typeof(IA1<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(IA1<object>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA1<>).GetAllInterfaces(true).Count().ShouldBe(1);
+                typeof(IA1<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA1<object>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
             }
 
             {
-                typeof(C2).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(C2).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+                typeof(C2).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(C2).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C2).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C2).GetAllInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
 
-                typeof(B2<>).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(B2<>).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
-                typeof(B2<string>).GetInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+                typeof(B2<>).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(B2<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B2<>).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B2<>).GetAllInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
+                typeof(B2<string>).GetAllInterfaces(true).Any(r => r == typeof(IA2)).ShouldBeTrue();
 
-                typeof(IA2).GetInterfaces(true).Count().ShouldBe(1);
-                typeof(IA2).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA2).GetAllInterfaces(true).Count().ShouldBe(1);
+                typeof(IA2).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
             }
 
             {
-                typeof(C3<>).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(C3<>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
-                typeof(C3<int>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(C3<>).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(C3<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C3<>).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C3<>).GetAllInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(C3<int>).GetAllInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
 
-                typeof(B3<>).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(B3<>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
-                typeof(B3<int?>).GetInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(B3<>).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(B3<>).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(B3<>).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(B3<>).GetAllInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
+                typeof(B3<int?>).GetAllInterfaces(true).Any(r => r == typeof(IA3)).ShouldBeTrue();
 
-                typeof(IA3).GetInterfaces(true).Count().ShouldBe(2);
-                typeof(IA3).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(IA3).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(IA3).GetAllInterfaces(true).Count().ShouldBe(2);
+                typeof(IA3).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(IA3).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
             }
 
             {
-                typeof(C4).GetInterfaces(true).Count().ShouldBe(3);
-                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
-                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
-                typeof(C4).GetInterfaces(true).Any(r => r == typeof(IA4<int>)).ShouldBeTrue();
+                typeof(C4).GetAllInterfaces(true).Count().ShouldBe(3);
+                typeof(C4).GetAllInterfaces(true).Any(r => r == typeof(IDisposable)).ShouldBeTrue();
+                typeof(C4).GetAllInterfaces(true).Any(r => r == typeof(IComparer)).ShouldBeTrue();
+                typeof(C4).GetAllInterfaces(true).Any(r => r == typeof(IA4<int>)).ShouldBeTrue();
 
-                typeof(B4<,>).GetInterfaces(true).Count().ShouldBe(1);
-                typeof(B4<,>).GetInterfaces(true).Any(r => r == typeof(IA4<>)).ShouldBeTrue();
-                typeof(B4<int, string>).GetInterfaces(true).Single().ShouldBe(typeof(IA4<int>));
+                typeof(B4<,>).GetAllInterfaces(true).Count().ShouldBe(1);
+                typeof(B4<,>).GetAllInterfaces(true).Any(r => r == typeof(IA4<>)).ShouldBeTrue();
+                typeof(B4<int, string>).GetAllInterfaces(true).Single().ShouldBe(typeof(IA4<int>));
 
-                typeof(IA4<>).GetInterfaces(true).Count().ShouldBe(0);
-                typeof(IA4<int>).GetInterfaces(true).Count().ShouldBe(0);
+                typeof(IA4<>).GetAllInterfaces(true).Count().ShouldBe(0);
+                typeof(IA4<int>).GetAllInterfaces(true).Count().ShouldBe(0);
             }
         }
 
@@ -888,11 +888,11 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void GetInterfacesTest()
         {
-            var interfaces1 = typeof(TestB).GetInterfaces(true).ToList();
+            var interfaces1 = typeof(TestB).GetAllInterfaces(true).ToList();
             interfaces1.Contains(typeof(IDisposable)).ShouldBeTrue();
             interfaces1.Contains(typeof(ITest)).ShouldBeTrue();
             interfaces1.Contains(typeof(ICloneable)).ShouldBeTrue();
-            var interfaces2 = typeof(TestB).GetInterfaces(false).ToList();
+            var interfaces2 = typeof(TestB).GetAllInterfaces(false).ToList();
             interfaces2.Contains(typeof(IDisposable)).ShouldBeFalse();
             interfaces2.Contains(typeof(ITest)).ShouldBeFalse();
             interfaces2.Contains(typeof(ICloneable)).ShouldBeTrue();

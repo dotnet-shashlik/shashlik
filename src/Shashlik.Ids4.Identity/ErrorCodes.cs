@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// 登录错误代码

@@ -4,22 +4,24 @@ using System.Threading.Tasks;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.DataProtection;
 using Shashlik.Identity;
+using Shashlik.Ids4.Identity.Int32;
 using Shashlik.Utils.Extensions;
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.Ids4.Identity.Int32
+namespace Shashlik.Ids4.Identity
 {
     /// <summary>
     /// 两步验证第二步
     /// </summary>
     public class ShashlikTwoFactorValidator : IExtensionGrantValidator
     {
-        private ShashlikUserManager<Users, int> UserManager { get; }
+        private IShashlikUserManager UserManager { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
 
         public ShashlikTwoFactorValidator(
-            ShashlikUserManager<Users, int> userManager,
+            IShashlikUserManager userManager,
             IDataProtectionProvider dataProtectionProvider)
         {
             UserManager = userManager;
@@ -60,7 +62,7 @@ namespace Shashlik.Ids4.Identity.Int32
                 var json = DataProtectionProvider
                     .CreateProtector(ShashlikIds4IdentityConsts.TwoFactorTokenProviderPurpose)
                     .ToTimeLimitedDataProtector()
-                    .Unprotect(security, out var expiration);
+                    .Unprotect(security, out _);
 
                 model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
             }
@@ -76,7 +78,7 @@ namespace Shashlik.Ids4.Identity.Int32
                 return;
             }
 
-            var user = await UserManager.FindByIdAsync(model.UserId);
+            var user = await UserManager.FindIdentityUserByIdAsync(model.UserId);
             if (user != null)
             {
                 // 验证码provider是否可用
@@ -99,7 +101,7 @@ namespace Shashlik.Ids4.Identity.Int32
                 return;
             }
 
-            context.Result = new GrantValidationResult(user.Id.ToString(), this.GrantType);
+            context.Result = new GrantValidationResult(user.IdString, this.GrantType);
         }
 
         public string GrantType => ShashlikIds4IdentityConsts.TwoFactorGrantType;

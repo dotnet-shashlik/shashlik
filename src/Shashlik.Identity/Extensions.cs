@@ -1,8 +1,13 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // copy from https://github.com/dotnet/aspnetcore/blob/release/3.1/src/Identity/Core/src/IdentityBuilderExtensions.cs
+
+using System;
+using System.Reflection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Identity.DataProtection;
+using Shashlik.Identity.Options;
 
 namespace Shashlik.Identity
 {
@@ -25,6 +30,30 @@ namespace Shashlik.Identity
                 .AddTokenProvider(TokenOptions.DefaultEmailProvider, emailTokenProviderType)
                 .AddTokenProvider(TokenOptions.DefaultPhoneProvider, phoneNumberProviderType)
                 .AddTokenProvider(TokenOptions.DefaultAuthenticatorProvider, authenticatorProviderType);
+        }
+
+        public static IServiceCollection ConfigureIdentityType<TUser, TRole, TKey>(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.Configure<IdentityTypeOptions>(r =>
+            {
+                r.UserType = typeof(TUser);
+                r.RoleType = typeof(TRole);
+                r.KeyType = typeof(TKey);
+            });
+
+            return serviceCollection;
+        }
+
+        public static IServiceCollection ConfigureIdentityType(this IServiceCollection serviceCollection, Type userType, Type roleType, Type keyType)
+        {
+            serviceCollection.Configure<IdentityTypeOptions>(r =>
+            {
+                r.UserType = userType;
+                r.RoleType = roleType;
+                r.KeyType = keyType;
+            });
+
+            return serviceCollection;
         }
     }
 }

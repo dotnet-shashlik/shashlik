@@ -1,4 +1,4 @@
-﻿#pragma warning disable 8618
+﻿#nullable  disable
 namespace Shashlik.Ids4.Identity.Int32
 {
     /// <summary>
