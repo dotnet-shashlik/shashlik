@@ -33,7 +33,11 @@ namespace Shashlik.Kernel.Test
 
                     builder.AddEnvironmentVariables();
                 })
-                .ConfigureWebHostDefaults(x => { x.UseStartup<TStartup>().UseTestServer(); });
+                .ConfigureWebHostDefaults(x =>
+                {
+                    x.UseStartup<TStartup>()
+                        .UseTestServer();
+                });
         }
     }
 }

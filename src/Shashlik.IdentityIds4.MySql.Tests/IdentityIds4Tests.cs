@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Shashlik.Identity;
 using Shashlik.Kernel.Test;
 using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
@@ -26,6 +27,7 @@ namespace Shashlik.IdentityIds4.MySql.Tests
         private readonly string _password = Guid.NewGuid().ToString("n");
         private readonly string _clientId = "test_client_id";
         private readonly string _apiScope = "test_api";
+        private readonly string _testHost = "http://localhost";
 
         private readonly IShashlikUserManager _userManager;
         private readonly IShashlikRoleManager _roleManager;
@@ -147,8 +149,10 @@ namespace Shashlik.IdentityIds4.MySql.Tests
                 });
 
                 var res = await HttpClient.PostAsync("/connect/token", content);
+                var resStr = await res.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(resStr);
                 res.IsSuccessStatusCode.ShouldBeTrue();
-                var jObject = (await res.Content.ReadAsStringAsync()).DeserializeJson<JObject>();
+                var jObject = resStr.DeserializeJson<JObject>();
                 jObject["access_token"]?.Value<string>().IsNullOrWhiteSpace().ShouldBeFalse();
             }
 
@@ -165,21 +169,23 @@ namespace Shashlik.IdentityIds4.MySql.Tests
                 });
 
                 var res1 = await HttpClient.PostAsync("/connect/token", content1);
+                var res1Str = await res1.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(res1Str);
                 res1.IsSuccessStatusCode.ShouldBeFalse();
-                var jObject1 = (await res1.Content.ReadAsStringAsync()).DeserializeJson<JObject>();
+                var jObject1 = res1Str.DeserializeJson<JObject>();
                 jObject1["code"]?.Value<string>().ShouldBe("202");
                 var security = jObject1["security"]?.Value<string>();
                 security.ShouldNotBeNullOrWhiteSpace();
 
                 // 发送验证码
-                var captcha = await _userManager.GenerateLoginCaptcha(user);
+                var captcha = await _userManager.GenerateTwoFactorTokenAsync(user, "Captcha");
                 captcha.IsNullOrWhiteSpace().ShouldBeFalse();
 
                 // 第二步两步验证
                 var content2 = new FormUrlEncodedContent(new Dictionary<string, string>()
                 {
                     {"client_id", _clientId},
-                    {"grant_type", "password"},
+                    {"grant_type", "twofactor"},
                     {"scope", _apiScope},
                     {"token", captcha},
                     {"security", security},
@@ -187,8 +193,10 @@ namespace Shashlik.IdentityIds4.MySql.Tests
                 });
 
                 var res2 = await HttpClient.PostAsync("/connect/token", content2);
+                var res2Str = await res2.Content.ReadAsStringAsync();
+                _testOutputHelper.WriteLine(res2Str);
                 res2.IsSuccessStatusCode.ShouldBeTrue();
-                var jObject2 = (await res1.Content.ReadAsStringAsync()).DeserializeJson<JObject>();
+                var jObject2 = res2Str.DeserializeJson<JObject>();
                 jObject2["access_token"]?.Value<string>().IsNullOrWhiteSpace().ShouldBeFalse();
             }
         }

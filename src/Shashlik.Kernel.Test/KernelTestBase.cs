@@ -16,6 +16,7 @@ namespace Shashlik.Kernel.Test
 
         public KernelTestBase(TestWebApplicationFactory<TestStartup> factory)
         {
+            var port = factory.Server.BaseAddress.Port;
             Factory = factory;
             HttpClient = factory.CreateClient();
             ServiceScope = factory.Services.CreateScope();

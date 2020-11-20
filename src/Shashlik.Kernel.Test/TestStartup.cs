@@ -22,6 +22,12 @@ namespace Shashlik.Kernel.Test
 
             services.Configure<TestOptions2>(r => r.Enable = false);
 
+            services.AddControllers()
+                .AddControllersAsServices();
+
+            services.AddAuthentication();
+            services.AddAuthorization();
+
             services.AddShashlik(Configuration);
         }
 
@@ -32,6 +38,18 @@ namespace Shashlik.Kernel.Test
                 .AutowireAspNet(app)
                 .Autowire<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
                 ;
+
+
+            // mvc
+            app.UseRouting();
+
+            app.UseStaticFiles();
+
+            // 认证
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints => { endpoints.MapDefaultControllerRoute(); });
         }
     }
 }
