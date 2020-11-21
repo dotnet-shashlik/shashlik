@@ -1,0 +1,12 @@
+﻿Shashlik:
+  AspNetCore:
+    IsDebug: true
+    ResponseCode:
+      Success: 1
+      SuccessDefaultMessage: "操作成功"
+      ArgErrorDefaultMessage: "参数错误"
+      LogicalErrorDefaultMessage: "操作错误"
+      UnAuthenticationDefaultMessage: "未认证用户"
+      ForbiddenDefaultMessage: "您无权进行此操作"
+      NotFoundDefaultMessage: "资源不存在"
+      SystemErrorDefaultMessage: "系统错误，请稍后再试"
