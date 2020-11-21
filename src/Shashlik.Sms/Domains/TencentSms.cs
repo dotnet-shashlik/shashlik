@@ -17,13 +17,7 @@ namespace Shashlik.Sms.Domains
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class TencentSms : ISmsDomain
     {
-        public TencentSms(ILogger<TencentSms> logger)
-        {
-            Logger = logger;
-        }
-
         public string SmsDomain => "tencent";
-        private ILogger<TencentSms> Logger { get; }
 
         public void Send(SmsDomainConfig options, IEnumerable<string> phones, string subject,
             params string[] args)
@@ -32,19 +26,17 @@ namespace Shashlik.Sms.Domains
             if (template is null)
                 throw new Exception($"短信发送失败,未定义的短信类型:{subject}");
             if (template.TemplateId.IsNullOrWhiteSpace())
-            {
-                Logger.LogWarning($"未配置短信模版,无法发送[{subject}]短信");
-                return;
-            }
+                throw new SmsArgException($"template id is empty, can't send of {subject}");
 
             try
             {
                 var list = phones.ToList();
                 var res = new SmsMultiSender(options.AppId.ParseTo<int>(), options.AppKey)
-                    .sendWithParam("86", list.ToArray(), template.TemplateId.ParseTo<int>(), args, template.Sign, "",
+                    .sendWithParam(options.Region.IsNullOrWhiteSpace() ? "86" : options.Region, list.ToArray(), template.TemplateId.ParseTo<int>(),
+                        args, template.Sign, "",
                         "");
                 if (res.result != 0)
-                    throw new SmsDomainException($"腾讯短信发送失败,{res.errMsg}:{list.Join(",")}");
+                    throw new SmsDomainException($"tencent cloud sms send failed, error:{res.errMsg}, phone: {list.Join(",")}.");
             }
             catch (Exception ex)
             {

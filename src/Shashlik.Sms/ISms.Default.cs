@@ -37,13 +37,13 @@ namespace Shashlik.Sms
         public void Send(string phone, string subject, params string[] args)
         {
             if (phone.IsNullOrWhiteSpace())
-                throw new SmsArgException($"手机号码不能为空");
+                throw new SmsArgException($"phone number can't be empty.");
             if (string.IsNullOrWhiteSpace(subject))
-                throw new SmsArgException("subject can not be empty.");
+                throw new SmsArgException("subject can't be empty.");
             if (!phone.IsPhone())
-                throw new SmsArgException("手机号码格式错误");
+                throw new SmsArgException("invalid phone number.");
             if (!SmsLimit.LimitCheck(phone, subject))
-                throw new SmsArgException("短信发送频率过快");
+                throw new SmsLimitException("frequency limitation.");
 
             var configs = SmsOptions.CurrentValue.DomainConfigs.OrderBy(r => r.Priority);
             var invokerList = ServiceProvider.GetServices<ISmsDomain>().ToList();
@@ -54,7 +54,7 @@ namespace Shashlik.Sms
                 {
                     var domainSms = invokerList.LastOrDefault(r => r.SmsDomain == item.Domain);
                     if (domainSms is null)
-                        throw new SmsDomainException($"找不到对应的短信服务商接口:{item.Domain}");
+                        throw new SmsDomainException($"not found sms domain: {item.Domain}");
                     try
                     {
                         domainSms.Send(item, new[] {phone}, subject, args);
@@ -65,14 +65,14 @@ namespace Shashlik.Sms
                     catch (SmsDomainException ex)
                     {
                         // 这一类异常 自动使用下一个类型的主机发送短信
-                        Logger.LogError(ex, $"[{item.Domain}]短信发送失败,phone:{phone}");
+                        Logger.LogError(ex, $"[{item.Domain}]send sms failed, will retry use next domain, phone: {phone}, args: {args.Join(",")}");
                     }
                 }
             }
 
             // 全部发送失败 则发送失败
             if (!success)
-                throw new SmsDomainException($"短信发送失败,phone:{phone}");
+                throw new SmsDomainException($"send sms failed, phone: {phone}");
 
             SmsLimit.UpdateLimit(phone, subject);
         }
@@ -80,12 +80,15 @@ namespace Shashlik.Sms
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
         {
             if (string.IsNullOrWhiteSpace(subject))
-                throw new SmsArgException("subject can not be empty.");
+                throw new SmsArgException("subject can't be empty.");
             var enumerable = phones?.ToList();
             if (enumerable.IsNullOrEmpty())
-                throw new SmsArgException("手机号码不能为空");
-            if (enumerable!.Count() > SmsOptions.CurrentValue.BatchMax)
-                throw new SmsArgException($"批量发送短信最多{SmsOptions.CurrentValue.BatchMax}个号码");
+                throw new SmsArgException($"phone number can't be empty.");
+            if (enumerable!.Count > SmsOptions.CurrentValue.BatchMax)
+                throw new SmsArgException($"batch send max count: {SmsOptions.CurrentValue.BatchMax}.");
+            if (enumerable.Count == 1 && !SmsLimit.LimitCheck(enumerable[0], subject))
+                throw new SmsLimitException("frequency limitation.");
+
 
             var configs = SmsOptions.CurrentValue.DomainConfigs.OrderBy(r => r.Priority);
             var invokerList = ServiceProvider.GetServices<ISmsDomain>().ToList();
@@ -96,7 +99,7 @@ namespace Shashlik.Sms
                 {
                     var domainSms = invokerList.LastOrDefault(r => r.SmsDomain == item.Domain);
                     if (domainSms is null)
-                        throw new SmsDomainException($"找不到对应的短信服务商接口:{item.Domain}");
+                        throw new SmsDomainException($"not found sms domain: {item.Domain}");
                     try
                     {
                         domainSms.Send(item, enumerable, subject, args);
@@ -107,14 +110,18 @@ namespace Shashlik.Sms
                     catch (SmsDomainException ex)
                     {
                         // 这一类异常 自动使用下一个类型的主机发送短信
-                        Logger.LogError(ex, $"[{item.Domain}]短信发送失败,phone:{enumerable.Join(",")}");
+                        Logger.LogError(ex,
+                            $"[{item.Domain}]send sms failed, will retry use next domain, phone: {enumerable.Join(",")}, args: {args.Join(",")}");
                     }
                 }
             }
 
             // 全部发送失败 则发送失败
             if (!success)
-                throw new SmsDomainException($"短信发送失败,phone:{enumerable.Join(",")}");
+                throw new SmsDomainException($"send sms failed, phone: {enumerable.Join(",")}");
+
+            if (enumerable.Count == 1)
+                SmsLimit.UpdateLimit(enumerable[0], subject);
         }
     }
 }

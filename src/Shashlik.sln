@@ -99,6 +99,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.IdentityIds4.MySql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AspNetCore.Tests", "Shashlik.AspNetCore.Tests\Shashlik.AspNetCore.Tests.csproj", "{99320F82-F4FA-4FE3-BFFD-F9C1B394F07B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.Cap.Tests", "Shashlik.Sms.Cap.Tests\Shashlik.Sms.Cap.Tests.csproj", "{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -364,6 +366,12 @@ Global
 		{99320F82-F4FA-4FE3-BFFD-F9C1B394F07B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99320F82-F4FA-4FE3-BFFD-F9C1B394F07B}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{99320F82-F4FA-4FE3-BFFD-F9C1B394F07B}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -384,6 +392,7 @@ Global
 		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{7BA35882-12CA-46A2-9C1E-865D7F775C59} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{99320F82-F4FA-4FE3-BFFD-F9C1B394F07B} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{D52F0AA4-1A9D-4C19-A82F-DF2760170DA2} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

@@ -19,25 +19,16 @@ namespace Shashlik.Sms.Domains
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class AliSms : ISmsDomain
     {
-        public AliSms(ILogger<AliSms> logger)
-        {
-            Logger = logger;
-        }
-
         public string SmsDomain => "aliyun";
-        private ILogger<AliSms> Logger { get; }
 
         public void Send(SmsDomainConfig options, IEnumerable<string> phones, string subject,
             params string[] args)
         {
             var template = options.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
             if (template is null)
-                throw new SmsArgException($"短信发送失败,未定义的短信类型:{subject}");
+                throw new SmsArgException($"not found sms subject {subject} in domain: {SmsDomain}");
             if (template.TemplateId.IsNullOrWhiteSpace())
-            {
-                Logger.LogWarning($"未配置短信模版,无法发送[{subject}]短信");
-                return;
-            }
+                throw new SmsArgException($"template id is empty, can't send of {subject}");
 
             const string product = "Dysmsapi"; //短信API产品名称（短信产品名固定，无需修改）
             const string domain = "dysmsapi.aliyuncs.com"; //短信API产品域名（接口地址固定，无需修改）
@@ -71,7 +62,7 @@ namespace Shashlik.Sms.Domains
                 SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
                 if (!sendSmsResponse.Code.EqualsIgnoreCase("OK"))
                     throw new SmsDomainException(
-                        $"阿里云短信发送失败,{sendSmsResponse.Message}:{list.Join(",")},response error code:{sendSmsResponse.Code}");
+                        $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}.");
             }
             catch (ServerException ex)
             {

@@ -8,8 +8,8 @@ namespace Shashlik.Redis.Tests
     {
         public void Build(IConfigurationBuilder builder)
         {
-            var file = new FileInfo("./config.json").FullName;
-            builder.AddJsonFile(file);
+            var file = new FileInfo("./config.yaml").FullName;
+            builder.AddYamlFile(file);
         }
     }
 }
