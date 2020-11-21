@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.9" />
         <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.9" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+        <PackageReference Include="MySqlConnector" Version="0.69.9" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <PrivateAssets>all</PrivateAssets>
@@ -26,6 +27,7 @@
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
         <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
         <ProjectReference Include="..\Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj" />
+        <ProjectReference Include="..\Shashlik.Sms.Limit.DistributedCache\Shashlik.Sms.Limit.DistributedCache.csproj" />
         <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
         <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
     </ItemGroup>

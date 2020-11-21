@@ -2,30 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
 
-namespace Shashlik.Sms
+namespace Shashlik.Sms.Limit.DistributedCache
 {
     /// <summary>
-    /// 内存缓存短信发送限制
+    /// 分布式缓存短信发送限制
     /// </summary>
-    [ConditionDependsOnMissing(typeof(IDistributedCache))]
+    [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
-    public class MemorySmsLimit : ISmsLimit
+    public class DistributedCacheSmsLimit : ISmsLimit
     {
-        public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options, ILock locker)
+        public DistributedCacheSmsLimit(IDistributedCache cache, IOptionsMonitor<SmsOptions> options, ILock locker)
         {
             Cache = cache;
             Options = options;
             Locker = locker;
         }
 
-        private IMemoryCache Cache { get; }
+        private IDistributedCache Cache { get; }
         private IOptionsMonitor<SmsOptions> Options { get; }
         private ILock Locker { get; }
 
@@ -34,15 +33,14 @@ namespace Shashlik.Sms
 
         public bool CanSend(string phone, string subject)
         {
-            var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
+            var limit = Options.CurrentValue.Limits.FirstOrDefault(r => r.Subject == subject);
             if (limit is null)
                 return true;
-            string key = CachePrefix.Format(subject, phone);
+            var key = CachePrefix.Format(subject, phone);
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
             var minute = DateTime.Now.Minute;
-
-            var smsLimit = Cache.Get<SmsLimitModel>(key);
+            var smsLimit = Cache.GetObjectWithJson<SmsLimitModel>(key);
             if (smsLimit is null)
                 return true;
 
@@ -68,20 +66,20 @@ namespace Shashlik.Sms
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
             var minute = DateTime.Now.Minute;
+            var expire = DateTimeOffset.Now.Date.AddDays(1);
 
-            var smsLimit = Cache.Get<SmsLimitModel>(key) ?? new SmsLimitModel
+            var smsLimit = Cache.GetObjectWithJson<SmsLimitModel>(key) ?? new SmsLimitModel
             {
                 Day = day,
                 Records = new List<SmsLimitModel.Record>()
             };
-
             smsLimit.Records.Add(new SmsLimitModel.Record
             {
                 Hour = hour,
                 Minute = minute
             });
 
-            Cache.Set(key, smsLimit, DateTimeOffset.Now.Date.AddDays(1));
+            Cache.SetObjectWithJson(key, smsLimit, expire);
         }
     }
 

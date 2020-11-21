@@ -1,4 +1,5 @@
-﻿using DotNetCore.CAP.Internal;
+﻿using System.Linq;
+using DotNetCore.CAP.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -46,7 +47,11 @@ namespace Shashlik.Cap
                 kernelService.Autowire<ICapAutowire>(a => a.Configure(r));
             });
 
-            kernelService.Services.Replace(ServiceDescriptor.Describe(typeof(IConsumerServiceSelector),
+            var exists = kernelService.Services.FirstOrDefault(r => r.ServiceType == typeof(IConsumerServiceSelector));
+            if (exists != null)
+                kernelService.Services.Remove(exists);
+
+            kernelService.Services.Add(ServiceDescriptor.Describe(typeof(IConsumerServiceSelector),
                 typeof(CapConsumerServiceSelector), ServiceLifetime.Singleton));
         }
     }

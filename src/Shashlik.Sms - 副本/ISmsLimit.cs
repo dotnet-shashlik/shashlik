@@ -14,13 +14,13 @@ namespace Shashlik.Sms
         /// <param name="phone">手机号码</param>
         /// <param name="subject">短信类型</param>
         /// <returns></returns>
-        bool CanSend(string phone, string subject);
+        bool LimitCheck(string phone, string subject);
 
         /// <summary>
         /// 更新限制数据
         /// </summary>
         /// <param name="phone"></param>
         /// <param name="subject"></param>
-        void SendDone(string phone, string subject);
+        void UpdateLimit(string phone, string subject);
     }
 }

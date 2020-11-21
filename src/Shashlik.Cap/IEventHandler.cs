@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DotNetCore.CAP;
 using Shashlik.Kernel.Dependency;
 
@@ -7,7 +8,7 @@ namespace Shashlik.Cap
     /// <summary>
     /// 事件订阅处理
     /// </summary>
-    [Transient]
+    [Transient(typeof(IEventHandler<>), RequireRegistryInheritedChain = true)]
     public interface IEventHandler<in TEvent> : ICapSubscribe
         where TEvent : class, IEvent
     {

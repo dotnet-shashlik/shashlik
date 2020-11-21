@@ -4,15 +4,15 @@ using Shashlik.Cap;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
 
-namespace Shashlik.Sms.Cap
+namespace Shashlik.Sms.Cap.Tests
 {
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
     [ConditionDependsOn(typeof(ISms))]
-    public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>
+    public class SendSmsEventForTestHandler : IEventHandler<SendSmsEvent>
     {
-        public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
+        public SendSmsEventForTestHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
         {
             Sms = sms;
             Logger = logger;
@@ -20,6 +20,8 @@ namespace Shashlik.Sms.Cap
 
         private ISms Sms { get; }
         private ILogger<SendSmsEventForExecuteHandler> Logger { get; }
+
+        public static bool HasSend { get; private set; }
 
         public async Task Execute(SendSmsEvent @event)
         {
@@ -39,6 +41,8 @@ namespace Shashlik.Sms.Cap
             }
 
             await Task.CompletedTask;
+
+            HasSend = true;
         }
     }
 }

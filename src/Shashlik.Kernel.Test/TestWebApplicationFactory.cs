@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Test
@@ -21,6 +22,7 @@ namespace Shashlik.Kernel.Test
             });
 
             return builder.UseEnvironment("Development")
+                .ConfigureLogging(r => { r.AddConsole().SetMinimumLevel(LogLevel.Debug); })
                 .ConfigureAppConfiguration((host, builder) =>
                 {
                     var list = ReflectionHelper.GetFinalSubTypes<ITestConfigurationBuilder>();

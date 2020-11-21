@@ -58,7 +58,7 @@ namespace Shashlik.Sms
                     throw new SmsOptionsException($"template id is empty of {item.Domain}.{subject}.");
             }
 
-            if (enumerable.Count == 1 && !smsLimit.CanSend(enumerable[0], subject))
+            if (enumerable.Count == 1 && !smsLimit.LimitCheck(enumerable[0], subject))
                 throw new SmsLimitException("frequency limitation.");
         }
 
@@ -110,7 +110,7 @@ namespace Shashlik.Sms
             try
             {
                 if (list.Count == 1)
-                    SmsLimit.SendDone(list[0], subject);
+                    SmsLimit.UpdateLimit(list[0], subject);
             }
             catch (Exception ex)
             {

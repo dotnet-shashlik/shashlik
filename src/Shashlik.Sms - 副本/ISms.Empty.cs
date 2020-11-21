@@ -46,7 +46,7 @@ namespace Shashlik.Sms
             try
             {
                 if (list.Count == 1)
-                    SmsLimit.SendDone(list[0], subject);
+                    SmsLimit.UpdateLimit(list[0], subject);
             }
             catch (Exception ex)
             {

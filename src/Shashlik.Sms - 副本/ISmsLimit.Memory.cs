@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
@@ -18,53 +17,63 @@ namespace Shashlik.Sms
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class MemorySmsLimit : ISmsLimit
     {
-        public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options, ILock locker)
+        public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options)
         {
             Cache = cache;
             Options = options;
-            Locker = locker;
         }
 
         private IMemoryCache Cache { get; }
         private IOptionsMonitor<SmsOptions> Options { get; }
-        private ILock Locker { get; }
 
         // 0:phone,1:subject
         private const string CachePrefix = "SMS_LIMIT:{0}:{1}";
 
-        public bool CanSend(string phone, string subject)
+        public bool LimitCheck(string phone, string subject)
         {
             var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
-            if (limit is null)
-                return true;
             string key = CachePrefix.Format(subject, phone);
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
             var minute = DateTime.Now.Minute;
 
-            var smsLimit = Cache.Get<SmsLimitModel>(key);
-            if (smsLimit is null)
-                return true;
+            if (limit != null && (limit.DayLimitCount.HasValue || limit.HourLimitCount.HasValue ||
+                                  limit.MinuteLimitCount.HasValue))
+            {
+                var smsLimit = Cache.Get<SmsLimitModel>(key);
+                if (smsLimit is null)
+                    return true;
 
-            if (smsLimit.Day != day)
-                return true;
-            if (smsLimit.Records.Count >= limit.DayLimitCount)
-                return false;
-            if (smsLimit.Records.Count(r => r.Hour == hour) >= limit.HourLimitCount)
-                return false;
-            if (smsLimit.Records.Count(r => r.Hour == hour && r.Minute == minute) >= limit.MinuteLimitCount)
-                return false;
+                if (smsLimit.Day != day)
+                    return true;
+
+                if (limit.DayLimitCount.HasValue && smsLimit.Records.Count >= limit.DayLimitCount)
+                {
+                    return false;
+                }
+
+                if (limit.HourLimitCount.HasValue &&
+                    smsLimit.Records.Count(r => r.Hour == hour) >= limit.HourLimitCount)
+                {
+                    return false;
+                }
+
+                if (limit.MinuteLimitCount.HasValue &&
+                    smsLimit.Records.Count(r => r.Hour == hour && r.Minute == minute) >= limit.MinuteLimitCount)
+                {
+                    return false;
+                }
+            }
 
             return true;
         }
 
-        public void SendDone(string phone, string subject)
+        public void UpdateLimit(string phone, string subject)
         {
-            var limit = Options.CurrentValue.Limits.FirstOrDefault(r => r.Subject == subject);
+            var limit = Options.CurrentValue.Limits?.FirstOrDefault(r => r.Subject == subject);
             if (limit is null)
                 return;
             var key = CachePrefix.Format(subject, phone);
-            using var @lock = Locker.Lock(key, 3);
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
             var minute = DateTime.Now.Minute;
@@ -82,20 +91,6 @@ namespace Shashlik.Sms
             });
 
             Cache.Set(key, smsLimit, DateTimeOffset.Now.Date.AddDays(1));
-        }
-    }
-
-    internal class SmsLimitModel
-    {
-        public int Day { get; set; }
-
-        public List<Record> Records { get; set; }
-
-        public class Record
-        {
-            public int Hour { get; set; }
-
-            public int Minute { get; set; }
         }
     }
 }

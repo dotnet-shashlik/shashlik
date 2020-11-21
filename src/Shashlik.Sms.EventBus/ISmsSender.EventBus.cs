@@ -38,7 +38,7 @@ namespace Shashlik.Sms.EventBus
                 throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.BatchMax}个号码");
             if (list.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Consts.Regexs.MobilePhoneNumber)))
                 throw new SmsArgException($"{list.Join(",")} 存在手机号码格式错误");
-            if (list.Count == 1 && !SmsLimit.LimitCheck(list.First(), subject))
+            if (list.Count == 1 && !SmsLimit.CanSend(list.First(), subject))
                 throw new SmsArgException("短信发送过于频繁");
             EventPublisher.PublishAsync(new SendSmsEvent
             {
