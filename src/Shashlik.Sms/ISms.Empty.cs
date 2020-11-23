@@ -37,6 +37,7 @@ namespace Shashlik.Sms
         public void Send(string phone, string subject, params string[] args)
         {
             Send(new[] {phone}, subject, args);
+            Logger.LogInformation($"Empty Sms Sent, phone:{phone}, subject:{subject}, args:{args.Join(",")}");
         }
 
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
