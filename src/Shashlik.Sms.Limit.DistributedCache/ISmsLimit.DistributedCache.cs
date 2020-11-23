@@ -15,6 +15,7 @@ namespace Shashlik.Sms.Limit.DistributedCache
     /// </summary>
     [ConditionDependsOn(typeof(IDistributedCache))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms.EnableDistributedCacheLimit", true, DefaultValue = true)]
     public class DistributedCacheSmsLimit : ISmsLimit
     {
         public DistributedCacheSmsLimit(IDistributedCache cache, IOptionsMonitor<SmsOptions> options, ILock locker)

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
+using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
@@ -18,14 +19,16 @@ namespace Shashlik.Captcha.DistributedCache
     [Singleton]
     internal class DistributedCacheCatpcha : ICaptcha
     {
-        public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options)
+        public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options, ILock @lock)
         {
             Cache = cache;
             Options = options;
+            Locker = @lock;
         }
 
         private IDistributedCache Cache { get; }
         private IOptionsMonitor<CaptchaOptions> Options { get; }
+        private ILock Locker { get; }
 
         /// <summary>
         /// 验证码是否正确
@@ -40,7 +43,7 @@ namespace Shashlik.Captcha.DistributedCache
             bool isDeleteOnSucceed = true)
         {
             var key = GetKey(purpose, target, securityStamp);
-
+            using var lck = Locker.Lock($"CAPTCHA:{key}", 3);
             var codeModel = await Cache.GetObjectWithJsonAsync<CodeModel>(key);
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (codeModel is null)

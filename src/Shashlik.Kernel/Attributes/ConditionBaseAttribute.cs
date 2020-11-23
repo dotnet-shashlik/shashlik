@@ -8,7 +8,7 @@ namespace Shashlik.Kernel.Attributes
     /// <summary>
     /// 条件特性基础接口,可以任意扩展
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public abstract class ConditionBaseAttribute : Attribute
     {
         /// <summary>

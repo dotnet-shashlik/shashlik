@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using Shashlik.Kernel.Dependency;
 
@@ -147,6 +146,28 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1
 
     [Singleton()]
     public class D5<T> : C5<T>
+    {
+    }
+
+    //############################
+
+    [Singleton()]
+    public interface IA16<T>
+    {
+    }
+
+    public class B16 : IA16<int>, IA16<string>
+    {
+    }
+
+    //############################
+
+    [Singleton()]
+    public interface IA17
+    {
+    }
+
+    public class B17<T> : IA17
     {
     }
 }
