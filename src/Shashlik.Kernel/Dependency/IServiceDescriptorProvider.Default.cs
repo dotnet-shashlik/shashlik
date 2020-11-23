@@ -41,16 +41,38 @@ namespace Shashlik.Kernel.Dependency
             return true;
         }
 
+        private static bool CanAddService(Type subType, Type parentType, out List<Type> serviceTypeList)
+        {
+            serviceTypeList = new List<Type>() {parentType};
+            if (subType == parentType)
+                return true;
+            if (!subType.IsGenericTypeDefinition && parentType.IsGenericTypeDefinition)
+            {
+                // 子类不是泛型定义,父类是,注册父类的泛型实现类为服务类
+                serviceTypeList = subType.GetAllBaseTypesAndInterfaces()
+                    .Where(r => !r.IsGenericTypeDefinition && r.IsSubTypeOfGenericType(parentType))
+                    .ToList();
+
+                if (serviceTypeList.IsNullOrEmpty())
+                    return false;
+                return true;
+            }
+
+            if (subType.IsGenericTypeDefinition != parentType.IsGenericTypeDefinition)
+                return false;
+            if (!subType.IsGenericTypeDefinition && !parentType.IsGenericTypeDefinition)
+                return subType.IsSubTypeOrEqualsOf(parentType);
+            return subType.IsSubTypeOfGenericDefinitionType(parentType);
+        }
+
         private static bool CanAddService(Type subType, Type parentType)
         {
             if (subType == parentType)
                 return true;
             if (subType.IsGenericTypeDefinition != parentType.IsGenericTypeDefinition)
                 return false;
-
             if (!subType.IsGenericTypeDefinition && !parentType.IsGenericTypeDefinition)
                 return subType.IsSubTypeOrEqualsOf(parentType);
-
             return subType.IsSubTypeOfGenericDefinitionType(parentType);
         }
 
@@ -113,14 +135,14 @@ namespace Shashlik.Kernel.Dependency
                         if (ignores.Contains(item2))
                             continue;
 
-                        if (!CanAddService(item1, item2))
+                        if (!CanAddService(item1, item2, out var serviceTypeList))
                             continue;
 
-                        if (CanAddService(item1, item2))
+                        foreach (var serviceType in serviceTypeList)
                         {
-                            var serviceDescriptor = ServiceDescriptor.Describe(item2, item1, serviceAttribute.ServiceLifetime);
+                            var serviceDescriptor = ServiceDescriptor.Describe(serviceType, item1, serviceAttribute.ServiceLifetime);
                             var conditions1 = Utils.GetConditions(item1);
-                            var conditions2 = Utils.GetConditions(item2);
+                            var conditions2 = Utils.GetConditions(serviceType);
                             res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions1.Concat(conditions2).ToList()));
                         }
                     }
@@ -137,17 +159,20 @@ namespace Shashlik.Kernel.Dependency
                         continue;
                     ValidServiceLifetime(serviceAttribute.ServiceLifetime, finalSubType);
 
-                    if (CanAddService(finalSubType, type))
+                    // 只注册最下面的没有子类的最终类
+                    if (IsLastFinalType(finalSubTypes, finalSubType))
                     {
-                        // 只注册最下面的没有子类的最终类
-                        if (IsLastFinalType(finalSubTypes, finalSubType))
+                        var currentConditions = conditions.Concat(Utils.GetConditions(finalSubType)).ToList();
+                        ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, serviceAttribute.ServiceLifetime);
+                        res.Add(new ShashlikServiceDescriptor(self, currentConditions));
+                        if (CanAddService(finalSubType, type, out var serviceTypeList))
                         {
-                            var currentConditions = conditions.Concat(Utils.GetConditions(finalSubType)).ToList();
-                            ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, serviceAttribute.ServiceLifetime);
-                            ServiceDescriptor @base = ServiceDescriptor.Describe(type, finalSubType, serviceAttribute.ServiceLifetime);
-                            // 每一个服务都使用服务类和实现的条件并集
-                            res.Add(new ShashlikServiceDescriptor(self, currentConditions));
-                            res.Add(new ShashlikServiceDescriptor(@base, currentConditions));
+                            foreach (var serviceType in serviceTypeList)
+                            {
+                                ServiceDescriptor @base = ServiceDescriptor.Describe(serviceType, finalSubType, serviceAttribute.ServiceLifetime);
+                                // 每一个服务都使用服务类和实现的条件并集
+                                res.Add(new ShashlikServiceDescriptor(@base, currentConditions));
+                            }
                         }
                     }
                 }
