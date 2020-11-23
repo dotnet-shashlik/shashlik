@@ -160,6 +160,10 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1
     {
     }
 
+    public class C16 : IA16<int>, IA16<string>
+    {
+    }
+
     //############################
 
     [Singleton()]
@@ -168,6 +172,10 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1
     }
 
     public class B17<T> : IA17
+    {
+    }
+
+    public class C17<T> : IA17
     {
     }
 }
