@@ -152,22 +152,22 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1
     //############################
 
     [Singleton()]
-    public interface IA6<T>
+    public interface IA16<T>
     {
     }
 
-    public class B16 : IA6<int>, IA6<string>
+    public class B16 : IA16<int>, IA16<string>
     {
     }
 
     //############################
 
     [Singleton()]
-    public interface IA7
+    public interface IA17
     {
     }
 
-    public class B17<T> : IA7
+    public class B17<T> : IA17
     {
     }
 }

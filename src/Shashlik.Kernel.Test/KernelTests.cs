@@ -112,13 +112,13 @@ namespace Shashlik.Kernel.Test
 
             {
                 GetService<B16>().ShouldNotBeNull();
-                (GetService<IA6<int>>() is B16).ShouldBeTrue();
-                (GetService<IA6<string>>() is B16).ShouldBeTrue();
-                GetService<IA6<long>>().ShouldBeNull();
+                (GetService<IA16<int>>() is B16).ShouldBeTrue();
+                (GetService<IA16<string>>() is B16).ShouldBeTrue();
+                GetService<IA16<long>>().ShouldBeNull();
             }
 
             {
-                GetService<IA7>().ShouldBeNull();
+                GetService<IA17>().ShouldBeNull();
                 GetService<B17<int>>().ShouldNotBeNull();
                 GetService<B17<string>>().ShouldNotBeNull();
             }
