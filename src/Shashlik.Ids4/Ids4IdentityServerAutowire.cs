@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Shashlik.AspNetCore;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4
 {
@@ -23,6 +25,17 @@ namespace Shashlik.Ids4
         {
             if (!Options.Enable)
                 return;
+
+            // V3->V4 migration: https://github.com/IdentityServer/IdentityServer4/issues/4592
+            app.Use(async (context, next) =>
+            {
+                if (!string.IsNullOrWhiteSpace(Options.PublicOrigin))
+                    context.SetIdentityServerOrigin(Options.PublicOrigin);
+                if (!string.IsNullOrWhiteSpace(Options.BasePath))
+                    context.SetIdentityServerBasePath(Options.BasePath);
+                await next.Invoke();
+            });
+
             app.UseIdentityServer();
         }
     }

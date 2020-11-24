@@ -17,6 +17,16 @@ namespace Shashlik.Ids4
         public bool Enable { get; set; } = true;
 
         /// <summary>
+        /// PublicOrigin
+        /// </summary>
+        public string? PublicOrigin { get; set; }
+        
+        /// <summary>
+        /// Base Path
+        /// </summary>
+        public  string? BasePath { get; set; }
+
+        /// <summary>
         /// ids4配置参数
         /// </summary>
         public IdentityServerOptions IdentityServerOptions { get; set; } = new IdentityServerOptions();
@@ -40,7 +50,7 @@ namespace Shashlik.Ids4
         /// api resources 内存配置
         /// </summary>
         public List<ApiResource>? ApiResources { get; set; }
-        
+
         /// <summary>
         /// api scopes 内存配置
         /// </summary>
