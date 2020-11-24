@@ -12,7 +12,6 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtection
 {
-    [Order(150)]
     public class PostgreSqlDataProtectionAutowire : IServiceAutowire
     {
         public PostgreSqlDataProtectionAutowire(IOptions<PostgreSqlDataProtectionOptions> options)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Npgsql;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection
@@ -13,21 +14,25 @@ namespace Shashlik.DataProtection
     {
         private PostgreSqlDataProtectionOptions Options { get; }
         private string ConnectionString { get; }
+        private static bool _dbInit;
 
         public PostgreSqlXmlRepository(PostgreSqlDataProtectionOptions options)
         {
             Options = options;
             ConnectionString = options.ConnectionString;
-            InitDb();
         }
 
         public IReadOnlyCollection<XElement> GetAllElements()
         {
+            if (!_dbInit)
+                InitDb();
             return GetAllElementsCore().ToList().AsReadOnly();
         }
 
         private IEnumerable<XElement> GetAllElementsCore()
         {
+            if (!_dbInit)
+                InitDb();
             using var conn = new NpgsqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -45,6 +50,8 @@ namespace Shashlik.DataProtection
 
         public void StoreElement(XElement element, string friendlyName)
         {
+            if (!_dbInit)
+                InitDb();
             using var conn = new NpgsqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -73,6 +80,7 @@ CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 );";
             cmd.CommandText = batchSql;
             cmd.ExecuteNonQuery();
+            _dbInit = true;
         }
     }
 }

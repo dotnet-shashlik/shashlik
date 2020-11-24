@@ -14,21 +14,26 @@ namespace Shashlik.DataProtection
     {
         private MySqlDataProtectionOptions Option { get; }
         private string ConnectionString { get; }
+        private static bool _dbInit;
 
         public MySqlXmlRepository(MySqlDataProtectionOptions option)
         {
             Option = option;
             ConnectionString = option.ConnectionString;
-            InitDb();
+          
         }
 
         public IReadOnlyCollection<XElement> GetAllElements()
         {
+            if(!_dbInit)
+                InitDb();
             return GetAllElementsCore().ToList().AsReadOnly();
         }
 
         private IEnumerable<XElement> GetAllElementsCore()
         {
+            if(!_dbInit)
+                InitDb();
             using var conn = new MySqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -46,6 +51,8 @@ namespace Shashlik.DataProtection
 
         public void StoreElement(XElement element, string friendlyName)
         {
+            if(!_dbInit)
+                InitDb();
             using var conn = new MySqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -75,6 +82,8 @@ CREATE TABLE IF NOT EXISTS `{Option.TableName}`(
 ";
             cmd.CommandText = batchSql;
             cmd.ExecuteNonQuery();
+
+            _dbInit = true;
         }
     }
 }

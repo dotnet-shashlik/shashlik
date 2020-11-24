@@ -13,7 +13,6 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtection
 {
-    [Order(150)]
     public class MySqlDataProtectionAutowire : IServiceAutowire
     {
         public MySqlDataProtectionAutowire(IOptions<MySqlDataProtectionOptions> options)
