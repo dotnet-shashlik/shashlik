@@ -37,7 +37,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM \"{Options.TableName}\";";
+            cmd.CommandText = $"SELECT * FROM \"{Options.Scheme}\".\"{Options.TableName}\";";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
@@ -56,7 +56,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $"insert into \"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
+            var sql = $"insert into \"{Options.Scheme}\".\"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new NpgsqlParameter("@xml", DbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
@@ -73,6 +73,8 @@ namespace Shashlik.DataProtection
 
             using var cmd = conn.CreateCommand();
             var batchSql = $@"
+CREATE SCHEMA IF NOT EXISTS ""{Options.Scheme}"";
+
 CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 	""Id"" SERIAL PRIMARY KEY,
 	""Xml"" VARCHAR(4000) NOT NULL,
