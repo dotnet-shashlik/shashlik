@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Response;
 using Shashlik.Utils.Extensions;
@@ -59,6 +60,9 @@ namespace Shashlik.AspNetCore.Filters
                             context.HttpContext.Response.StatusCode = (int) HttpStatusCode.OK;
 
                         context.Result = new JsonResult(responseResult);
+                        var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>()
+                            .CreateLogger(actionDescriptor.ControllerTypeInfo);
+                        logger.LogInformation(exception, $"Request has wrapped ResponseResult, debug: {responseResult.Debug ?? "empty"}.");
                         return;
                     }
                     else if (exception.InnerException != null)
@@ -67,6 +71,9 @@ namespace Shashlik.AspNetCore.Filters
 
                 // 没有ResponseException异常,包装500系统错误
                 {
+                    var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>().CreateLogger(actionDescriptor.ControllerTypeInfo);
+                    logger.LogError(context.Exception,
+                        $"Action occur exception on request: {actionDescriptor.ControllerTypeInfo.FullName}.{actionDescriptor.MethodInfo.Name}.");
                     var debug = options.IsDebug ? exception.ToString() : null;
                     var responseResult = new ResponseResult(options.ResponseCode.SystemError, false,
                         options.ResponseCode.SystemErrorDefaultMessage, null, debug);
