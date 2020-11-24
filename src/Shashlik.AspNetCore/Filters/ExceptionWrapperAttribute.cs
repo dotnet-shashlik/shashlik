@@ -62,7 +62,7 @@ namespace Shashlik.AspNetCore.Filters
                         context.Result = new JsonResult(responseResult);
                         var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>()
                             .CreateLogger(actionDescriptor.ControllerTypeInfo);
-                        logger.LogInformation(exception, $"Request has wrapped ResponseResult, debug: {responseResult.Debug ?? "empty"}.");
+                        logger.LogInformation(context.Exception, $"Request has wrapped ResponseResult, debug: {responseResult.Debug ?? "empty"}.");
                         return;
                     }
                     else if (exception.InnerException != null)
@@ -73,7 +73,7 @@ namespace Shashlik.AspNetCore.Filters
                 {
                     var logger = context.HttpContext.RequestServices.GetService<ILoggerFactory>().CreateLogger(actionDescriptor.ControllerTypeInfo);
                     logger.LogError(context.Exception,
-                        $"Action occur exception on request: {actionDescriptor.ControllerTypeInfo.FullName}.{actionDescriptor.MethodInfo.Name}.");
+                        $"Action occur exception on request [{context.HttpContext.Request.Method}] {context.HttpContext.Request.Path}.");
                     var debug = options.IsDebug ? exception.ToString() : null;
                     var responseResult = new ResponseResult(options.ResponseCode.SystemError, false,
                         options.ResponseCode.SystemErrorDefaultMessage, null, debug);
