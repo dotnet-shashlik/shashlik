@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable UnusedType.Global
@@ -11,6 +12,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtection
 {
+    [Order(150)]
     public class PostgreSqlDataProtectionAutowire : IServiceAutowire
     {
         public PostgreSqlDataProtectionAutowire(IOptions<PostgreSqlDataProtectionOptions> options)
