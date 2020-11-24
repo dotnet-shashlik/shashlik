@@ -178,4 +178,20 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1
     public class C17<T> : IA17
     {
     }
+
+    //############################
+
+
+    public interface IA18<T>
+    {
+    }
+
+    [Singleton(RequireRegistryInheritedChain = true)]
+    public abstract class B18<T> : IA18<T>
+    {
+    }
+
+    public class C18 : B18<int>, IA18<string>
+    {
+    }
 }

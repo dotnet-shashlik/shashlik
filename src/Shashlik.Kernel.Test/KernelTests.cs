@@ -130,6 +130,15 @@ namespace Shashlik.Kernel.Test
             }
 
             {
+                GetService<IA18<string>>().ShouldNotBeNull();
+                GetService<IA18<int>>().ShouldNotBeNull();
+                GetService<IA18<long>>().ShouldBeNull();
+                GetService<B18<int>>().ShouldNotBeNull();
+                GetService<B18<string>>().ShouldBeNull();
+                GetService<C18>().ShouldNotBeNull();
+            }
+
+            {
                 (GetServices<IA1>().Single() is D1).ShouldBeTrue();
                 GetService<B1>().ShouldBeNull();
                 GetService<C1>().ShouldBeNull();
