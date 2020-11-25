@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Shashlik.Utils.Helpers.RsaInner
+namespace Shashlik.Utils.Helpers.RSAInner
 {
     public class RSAParametersConvert
     {

@@ -5,11 +5,14 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Shashlik.Utils.Helpers;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Shashlik.Utils.Test
 {
     public class RsaTests
     {
+        private readonly ITestOutputHelper _testOutputHelper;
+
         static RsaTests()
         {
             PublicKeyCer = File.ReadAllText(@"./rsatest.demokey/x509_public.cer");
@@ -18,6 +21,11 @@ namespace Shashlik.Utils.Test
             PrivateKeyPkcs1 = File.ReadAllText(@"./rsatest.demokey/rsa_private_key.pem");
             var pfxBytes = File.ReadAllBytes(@"./rsatest.demokey/test.pfx");
             PfxBase64 = Convert.ToBase64String(pfxBytes);
+        }
+
+        public RsaTests(ITestOutputHelper testOutputHelper)
+        {
+            _testOutputHelper = testOutputHelper;
         }
 
         private static string PublicKeyCer { get; }
@@ -87,6 +95,72 @@ namespace Shashlik.Utils.Test
                 RSAHelper.FromPem(PublicKeyPem)
                     .VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
+            }
+
+            {
+                // xml 私钥导出测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var encrypted = rsa.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                var xml = rsa.ToXml(true);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(xml);
+                using var rsa1 = RSAHelper.FromXml(xml);
+                rsa1.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
+            }
+
+            {
+                // xml 公钥导出测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var xml = rsa.ToXml(false);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(xml);
+                using var rsa1 = RSAHelper.FromXml(xml);
+                var encrypted = rsa1.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                rsa.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
+            }
+
+            {
+                // pem pkcs1 导出导入测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var encrypted = rsa.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                var pem = rsa.ToPem(true, false);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(pem);
+                using var rsa1 = RSAHelper.FromPem(pem);
+                rsa1.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
+            }
+
+            {
+                // pem pkcs1 导出导入测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var pem = rsa.ToPem(false, false);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(pem);
+                using var rsa1 = RSAHelper.FromPem(pem);
+                var encrypted = rsa1.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                rsa.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
+            }
+
+            {
+                // pem pkcs8 导出导入测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var encrypted = rsa.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                var pem = rsa.ToPem(true, true);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(pem);
+                using var rsa1 = RSAHelper.FromPem(pem);
+                rsa1.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
+            }
+
+            {
+                // pem pkcs8 导出导入测试
+                using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
+                var pem = rsa.ToPem(false, true);
+                _testOutputHelper.WriteLine("###############");
+                _testOutputHelper.WriteLine(pem);
+                using var rsa1 = RSAHelper.FromPem(pem);
+                var encrypted = rsa1.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
+                rsa.DecryptBigData(encrypted, RSAEncryptionPadding.OaepSHA256).ShouldBe(data);
             }
         }
 
