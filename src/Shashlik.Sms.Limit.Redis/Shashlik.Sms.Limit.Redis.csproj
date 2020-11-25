@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
         <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
     </ItemGroup>
 

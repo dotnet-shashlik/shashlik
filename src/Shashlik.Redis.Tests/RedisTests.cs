@@ -209,5 +209,13 @@ namespace Shashlik.Redis.Tests
                 cacheObj.ShouldBe(1);
             }
         }
+
+        [Fact]
+        public void Test()
+        {
+            RedisHelper.Set("TEST:A", 1);
+            RedisHelper.Set("TEST:B", 2);
+            var keys = RedisHelper.Keys("TEST:*");
+        }
     }
 }

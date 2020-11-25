@@ -103,6 +103,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.Cap.Tests", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.Limit.DistributedCache", "Shashlik.Sms.Limit.DistributedCache\Shashlik.Sms.Limit.DistributedCache.csproj", "{9A8C2714-E397-4DF9-B05D-E45D3C8210A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.Limit.Redis", "Shashlik.Sms.Limit.Redis\Shashlik.Sms.Limit.Redis.csproj", "{49A24935-4AFF-4BED-BC56-0A0B00F8E967}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -380,6 +382,12 @@ Global
 		{9A8C2714-E397-4DF9-B05D-E45D3C8210A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9A8C2714-E397-4DF9-B05D-E45D3C8210A2}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{9A8C2714-E397-4DF9-B05D-E45D3C8210A2}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{49A24935-4AFF-4BED-BC56-0A0B00F8E967}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
