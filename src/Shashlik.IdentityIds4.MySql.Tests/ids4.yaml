@@ -12,8 +12,6 @@
     SignOptions:
       CredentialType: Rsa
       SigningAlgorithm: RS256
-      RSAKeyType: Pkcs8
-      RsaIsPem: true
       # rsa私钥
       RsaPrivateKey: |
         -----BEGIN PRIVATE KEY-----
