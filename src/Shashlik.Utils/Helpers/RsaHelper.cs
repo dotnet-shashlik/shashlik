@@ -74,7 +74,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="certificateBase64Content">证书内容</param>
         /// <param name="password">证书密码</param>
         /// <returns></returns>
-        public static X509Certificate2 LoadX509FromBase64(string certificateBase64Content, string? password = null)
+        public static X509Certificate2 LoadX509FromFileBase64(string certificateBase64Content, string? password = null)
         {
             return password is null
                 ? new X509Certificate2(Convert.FromBase64String(certificateBase64Content))

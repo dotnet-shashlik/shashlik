@@ -31,7 +31,7 @@ namespace Shashlik.Utils.Test
         public void PfxTest()
         {
             var data = Guid.NewGuid().ToString();
-            using var cer = RsaHelper.LoadX509FromBase64(PfxBase64, "123123");
+            using var cer = RsaHelper.LoadX509FromFileBase64(PfxBase64, "123123");
             var encoded = cer.GetRSAPublicKey().EncryptBigData(data, RSAEncryptionPadding.Pkcs1);
             var decoded = cer.GetRSAPrivateKey().DecryptBigData(encoded, RSAEncryptionPadding.Pkcs1);
             decoded.ShouldBe(data);
