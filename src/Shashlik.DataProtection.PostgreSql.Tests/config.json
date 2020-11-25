@@ -2,7 +2,7 @@
   "Shashlik": {
     "DataProtection": {
       "PostgreSql": {
-        "ConnectionString": "server=192.168.50.178;user id=testuser;password=123123;persistsecurityinfo=true;database=eventbustest;Pooling=True;Minimum Pool Size=3;Maximum Pool Size=5;"
+        "ConnectionString": "server=192.168.50.178;user id=testuser;password=123123;persistsecurityinfo=true;database=data_protection_test;Pooling=True;Minimum Pool Size=3;Maximum Pool Size=5;"
       }
     }
   }

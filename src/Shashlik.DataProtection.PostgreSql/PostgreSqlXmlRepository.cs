@@ -67,10 +67,11 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
 
+            // 9.2及以下不支持CREATE SCHEMA IF NOT EXISTS语法
+            // 只能使用public scheme
             using var cmd = conn.CreateCommand();
             var batchSql = $@"
-CREATE SCHEMA IF NOT EXISTS ""{Options.Scheme}"";
-
+{(Options.Scheme == "public" ? "CREATE SCHEMA IF NOT EXISTS " + Options.Scheme + ";" : "")}
 CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 	""Id"" SERIAL PRIMARY KEY,
 	""Xml"" VARCHAR(4000) NOT NULL,
@@ -84,7 +85,6 @@ CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
         {
             var builder = new NpgsqlConnectionStringBuilder(ConnectionString);
             var database = builder.Database;
-            // ReSharper disable once AssignNullToNotNullAttribute
             builder.Database = "postgres";
             var newConnStr = builder.ToString();
             using var conn = new NpgsqlConnection(newConnStr);

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Shashlik.AspNetCore;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4
 {
