@@ -20,7 +20,7 @@ namespace Shashlik.EfCore
         protected ShashlikDbContext(DbContextOptions<TDbContext> options) : base(options)
         {
             if (typeof(TDbContext) != this.GetType())
-                throw new ArgumentException($"Generic type {typeof(TDbContext)} must be {GetType()}.");
+                throw new ArgumentException($"Generic type {typeof(TDbContext)} must be {GetType()}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

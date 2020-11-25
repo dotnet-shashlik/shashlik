@@ -51,7 +51,7 @@ namespace Shashlik.Sms
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"SmsLimit.UpdateLimit error, phone: {list[0]}, subject: {subject}.");
+                Logger.LogError(ex, $"SmsLimit.UpdateLimit error, phone: {list[0]}, subject: {subject}");
             }
         }
     }

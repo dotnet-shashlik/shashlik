@@ -31,7 +31,7 @@ namespace Shashlik.Sms.Domains
                         args, template.Sign, "",
                         "");
                 if (res.result != 0)
-                    throw new SmsDomainException($"tencent cloud sms send failed, error:{res.errMsg}, phone: {list.Join(",")}.");
+                    throw new SmsDomainException($"tencent cloud sms send failed, error:{res.errMsg}, phone: {list.Join(",")}");
             }
             catch (Exception ex)
             {

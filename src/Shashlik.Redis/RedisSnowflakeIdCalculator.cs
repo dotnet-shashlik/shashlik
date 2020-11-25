@@ -50,7 +50,7 @@ namespace Shashlik.Redis
                         }
                     }
 
-                    if (_workId is null) throw new Exception("未能从redis从计算得到workerId");
+                    if (_workId is null) throw new RedisException("Can't get workerId from redis");
                 }
 
                 if (_dcId.HasValue) return (_workId.Value, _dcId.Value);
@@ -66,7 +66,7 @@ namespace Shashlik.Redis
                     break;
                 }
 
-                if (_dcId is null) throw new Exception("未能从redis从计算得到dcId");
+                if (_dcId is null) throw new RedisException("Can't get datacenterId from redis");
                 return (_workId.Value, _dcId.Value);
             }
         }

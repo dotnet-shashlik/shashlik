@@ -29,7 +29,7 @@ namespace Shashlik.EfCore.Transactional
         {
             if (DefaultDbContextType is null)
                 throw new InvalidOperationException(
-                    $"Must define DefaultTransactionalAttribute on your DbContext Type.");
+                    $"Must define DefaultTransactionalAttribute on your DbContext Type");
 
             DbContextType = DefaultDbContextType;
         }
@@ -41,7 +41,7 @@ namespace Shashlik.EfCore.Transactional
         public TransactionalAttribute(Type dbContextType)
         {
             if (!dbContextType.IsSubTypeOrEqualsOf(typeof(DbContext)))
-                throw new ArgumentException($"{nameof(dbContextType)} must be subtype of DbContext.");
+                throw new ArgumentException($"{nameof(dbContextType)} must be subtype of DbContext");
             DbContextType = dbContextType;
         }
 

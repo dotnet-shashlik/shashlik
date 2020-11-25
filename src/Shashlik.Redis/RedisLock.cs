@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Threading;
 using CSRedis;
 using Shashlik.Kernel;
@@ -27,7 +26,7 @@ namespace Shashlik.Redis
         {
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
             return Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
-                   throw new Exception($"Can't get lock: {key}.");
+                   throw new SynchronizationLockException($"Can't get redis lock: {key}");
         }
 
         // Lock copy from: https://github.com/2881099/csredis/blob/master/src/CSRedisCore/CSRedisClient.cs
@@ -41,7 +40,7 @@ namespace Shashlik.Redis
         /// <param name="name">锁名称</param>
         /// <param name="lockSeconds">锁定时长,区分官方的Lock方法</param>
         /// <param name="timeoutSeconds">超时（秒）</param>
-        /// <param name="autoDelay">自动延长锁超时时间，看门狗线程的超时时间为timeoutSeconds/2 ， 在看门狗线程超时时间时自动延长锁的时间为timeoutSeconds。除非程序意外退出，否则永不超时。</param>
+        /// <param name="autoDelay">自动延长锁超时时间，看门狗线程的超时时间为lockSeconds/2 ， 在看门狗线程超时时间时自动延长锁的时间为lockSeconds。除非程序意外退出，否则永不超时。</param>
         /// <returns></returns>
         private CSRedisClientLock? Lock(string name, int lockSeconds, int timeoutSeconds, bool autoDelay = true)
         {

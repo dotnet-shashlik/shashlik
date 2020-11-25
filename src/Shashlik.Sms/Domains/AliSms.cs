@@ -57,7 +57,7 @@ namespace Shashlik.Sms.Domains
                 SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
                 if (!sendSmsResponse.Code.EqualsIgnoreCase("OK"))
                     throw new SmsDomainException(
-                        $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}.");
+                        $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}");
             }
             catch (ServerException ex)
             {

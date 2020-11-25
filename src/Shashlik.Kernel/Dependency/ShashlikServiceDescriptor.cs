@@ -16,7 +16,7 @@ namespace Shashlik.Kernel.Dependency
             originalServiceDescriptor.ImplementationType, originalServiceDescriptor.Lifetime)
         {
             if (ImplementationType == null)
-                throw new KernelServiceException("ShashlikServiceDescriptor implementation type can't be null.");
+                throw new KernelServiceException("ShashlikServiceDescriptor implementation type can't be null");
 
             Conditions = conditions;
         }

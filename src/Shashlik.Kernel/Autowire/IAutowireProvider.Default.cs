@@ -28,7 +28,7 @@ namespace Shashlik.Kernel.Autowire
                     return;
                 // 递归中发现挂起的服务那就是有循环依赖
                 case AutowireStatus.Hangup:
-                    throw new KernelAutowireException($"Exists loop dependencies on {descriptor.ImplementationType}");
+                    throw new KernelAutowireException($"Exists recursive dependencies on {descriptor.ImplementationType}");
             }
 
             // 在这个类型之前存在依赖项

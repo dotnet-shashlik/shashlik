@@ -48,7 +48,7 @@ namespace Shashlik.Ids4.Identity
             if (signInSources.IsNullOrEmpty())
             {
                 Logger.LogWarning(
-                    "SignInSource is empty, check your configuration: Shashlik.Ids4.Identity.PasswordSignInSources/Shashlik.Ids4.Identity.CaptchaSignInSources.");
+                    "SignInSource is empty, check your configuration: Shashlik.Ids4.Identity.PasswordSignInSources/Shashlik.Ids4.Identity.CaptchaSignInSources");
                 return null;
             }
 

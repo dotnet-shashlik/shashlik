@@ -1,4 +1,5 @@
-﻿using Shashlik.Utils.Helpers;
+﻿using System;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Redis
 {
@@ -10,7 +11,7 @@ namespace Shashlik.Redis
         static RedisSnowflakeId()
         {
             if (RedisHelper.Instance is null)
-                throw new System.Exception($"redis not initialized.");
+                throw new InvalidOperationException($"Redis not initialized");
             var (workId, dcId) = RedisSnowflakeIdCalculator.GetIdFromRedis();
 
             WorkerId = workId;
@@ -19,7 +20,6 @@ namespace Shashlik.Redis
         }
 
         public static SnowflakeId IdWorker { get; }
-
         public static long? WorkerId { get; }
         public static long? DatacenterId { get; }
 

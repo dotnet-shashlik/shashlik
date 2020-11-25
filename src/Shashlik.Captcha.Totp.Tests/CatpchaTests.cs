@@ -35,7 +35,7 @@ namespace Shashlik.Captcha.Totp.Tests
                 .Unprotect(s2).ShouldBe("123");
 
             var options = GetService<IOptions<CaptchaOptions>>();
-            _testOutputHelper.WriteLine($"totp容忍时间: {options.Value.LifeTimeSecond}秒.");
+            _testOutputHelper.WriteLine($"totp容忍时间: {options.Value.LifeTimeSecond}秒");
 
             var captcha = GetService<ICaptcha>();
             var securityStamp = "123";

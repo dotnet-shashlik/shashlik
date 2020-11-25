@@ -31,12 +31,12 @@ namespace Shashlik.Sms.Cap.Tests
             }
             catch (SmsDomainException e)
             {
-                Logger.LogError(e, "sms send failed, domain error.");
+                Logger.LogError(e, "sms send failed, domain error");
                 throw;
             }
             catch (SmsOptionsException e)
             {
-                Logger.LogError(e, "sms send failed, options error.");
+                Logger.LogError(e, "sms send failed, options error");
                 throw;
             }
 

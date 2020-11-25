@@ -36,16 +36,16 @@ namespace Shashlik.Sms
         public static void Valid(IEnumerable<string> phones, string subject, SmsOptions smsOptions, ISmsLimit smsLimit, params string[] args)
         {
             if (string.IsNullOrWhiteSpace(subject))
-                throw new SmsArgException("subject can't be empty.");
+                throw new SmsArgException("subject can't be empty");
             var enumerable = phones?.ToList();
             if (enumerable.IsNullOrEmpty())
-                throw new SmsArgException($"phone number can't be empty.");
+                throw new SmsArgException($"phone number can't be empty");
             if (enumerable!.Count > smsOptions.BatchMax)
-                throw new SmsArgException($"batch send max count: {smsOptions.BatchMax}.");
+                throw new SmsArgException($"batch send max count: {smsOptions.BatchMax}");
             foreach (var phone in enumerable)
             {
                 if (phone.IsNullOrWhiteSpace() || !phone.IsMatch(Consts.Regexs.MobilePhoneNumber))
-                    throw new SmsArgException($"invalid phone number: {phone}.");
+                    throw new SmsArgException($"invalid phone number: {phone}");
             }
 
             var configs = smsOptions.DomainConfigs.OrderBy(r => r.Priority);
@@ -53,13 +53,13 @@ namespace Shashlik.Sms
             {
                 var template = item.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
                 if (template is null)
-                    throw new SmsOptionsException($"not found sms subject: {item.Domain}.{subject}.");
+                    throw new SmsOptionsException($"not found sms subject: {item.Domain}.{subject}");
                 if (template.TemplateId.IsNullOrWhiteSpace())
-                    throw new SmsOptionsException($"template id is empty of {item.Domain}.{subject}.");
+                    throw new SmsOptionsException($"template id is empty of {item.Domain}.{subject}");
             }
 
             if (enumerable.Count == 1 && !smsLimit.CanSend(enumerable[0], subject))
-                throw new SmsLimitException("frequency limitation.");
+                throw new SmsLimitException("frequency limitation");
         }
 
         public void ValidSend(IEnumerable<string> phones, string subject, params string[] args)
@@ -86,7 +86,7 @@ namespace Shashlik.Sms
                 {
                     var domainSms = invokerList.LastOrDefault(r => r.SmsDomain == item.Domain);
                     if (domainSms is null)
-                        throw new SmsOptionsException($"not found sms domain: {item.Domain}.");
+                        throw new SmsOptionsException($"not found sms domain: {item.Domain}");
                     try
                     {
                         domainSms.Send(item, list, subject, args);
@@ -114,7 +114,7 @@ namespace Shashlik.Sms
             }
             catch (Exception ex)
             {
-                Logger.LogError(ex, $"SmsLimit.UpdateLimit error, phone: {list[0]}, subject: {subject}.");
+                Logger.LogError(ex, $"SmsLimit.UpdateLimit error, phone: {list[0]}, subject: {subject}");
             }
         }
     }

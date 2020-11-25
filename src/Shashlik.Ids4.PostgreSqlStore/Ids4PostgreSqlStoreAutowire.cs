@@ -36,7 +36,7 @@ namespace Shashlik.Ids4.PostgreSqlStore
                 }
 
                 if (string.IsNullOrWhiteSpace(conn))
-                    throw new InvalidOperationException($"ConnectionString can not be empty.");
+                    throw new InvalidOperationException($"ConnectionString can not be empty");
             }
 
 
