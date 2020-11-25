@@ -1,21 +1,23 @@
 ﻿// copy and modified from: https://github.com/xiangyuecn/RSA-csharp
 
 using System;
+using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Shashlik.Utils.Helpers.RsaInner
 {
     public class RSAParametersConvert
     {
-        private static readonly Regex PemCode = new Regex(@"--+.+?--+|\s+");
+        internal static readonly Regex PemCode = new Regex(@"--+.+?--+|\s+");
 
-        private static readonly byte[] SeqOid = new byte[]
+        internal static readonly byte[] SeqOid = new byte[]
             {0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00};
 
-        private static readonly byte[] Ver = new byte[] {0x02, 0x01, 0x00};
-        private static readonly Regex XmlExp = new Regex("\\s*<RSAKeyValue>([<>\\/\\+=\\w\\s]+)</RSAKeyValue>\\s*");
-        private static readonly Regex XmlTagExp = new Regex("<(.+?)>\\s*([^<]+?)\\s*</");
+        internal static readonly byte[] Ver = new byte[] {0x02, 0x01, 0x00};
+        internal static readonly Regex XmlExp = new Regex("\\s*<RSAKeyValue>([<>\\/\\+=\\w\\s]+)</RSAKeyValue>\\s*");
+        internal static readonly Regex XmlTagExp = new Regex("<(.+?)>\\s*([^<]+?)\\s*</");
 
         /// <summary>
         /// 某些密钥参数可能会少一位（32个byte只有31个，目测是密钥生成器的问题，只在c#生成的密钥中发现这种参数，java中生成的密钥没有这种现象），直接修正一下就行；这个问题与BigB有本质区别，不能动BigB
@@ -259,6 +261,233 @@ namespace Shashlik.Utils.Helpers.RsaInner
             }
 
             return rsaParameters;
+        }
+
+
+        /// <summary>
+        /// 导出为xml key
+        /// </summary>
+        /// <param name="rsaParameters"></param>
+        /// <param name="includePrivateKey">是否导出私钥</param>
+        /// <returns></returns>
+        public static string ToXml(RSAParameters rsaParameters, bool includePrivateKey)
+        {
+            StringBuilder str = new StringBuilder();
+            str.Append("<RSAKeyValue>");
+            str.Append("<Modulus>" + Convert.ToBase64String(rsaParameters.Modulus) + "</Modulus>");
+            str.Append("<Exponent>" + Convert.ToBase64String(rsaParameters.Exponent) + "</Exponent>");
+            if (rsaParameters.D != null && includePrivateKey)
+            {
+                str.Append("<P>" + Convert.ToBase64String(rsaParameters.P) + "</P>");
+                str.Append("<Q>" + Convert.ToBase64String(rsaParameters.Q) + "</Q>");
+                str.Append("<DP>" + Convert.ToBase64String(rsaParameters.DP) + "</DP>");
+                str.Append("<DQ>" + Convert.ToBase64String(rsaParameters.DQ) + "</DQ>");
+                str.Append("<InverseQ>" + Convert.ToBase64String(rsaParameters.InverseQ) + "</InverseQ>");
+                str.Append("<D>" + Convert.ToBase64String(rsaParameters.D) + "</D>");
+            }
+
+            str.Append("</RSAKeyValue>");
+            return str.ToString();
+        }
+
+        /// <summary>
+        /// 导出为pem key
+        /// </summary>
+        /// <param name="rsaParameters"></param>
+        /// <param name="includePrivateKey">是否导出私钥</param>
+        /// <param name="isPkcs8">是否导出为pkcs8格式</param>
+        /// <returns></returns>
+        public static string ToPem(RSAParameters rsaParameters, bool includePrivateKey, bool isPkcs8)
+        {
+            var ms = new MemoryStream();
+            //写入一个长度字节码
+            Action<int> writeLenByte = (len) =>
+            {
+                if (len < 0x80)
+                {
+                    ms.WriteByte((byte) len);
+                }
+                else if (len <= 0xff)
+                {
+                    ms.WriteByte(0x81);
+                    ms.WriteByte((byte) len);
+                }
+                else
+                {
+                    ms.WriteByte(0x82);
+                    ms.WriteByte((byte) (len >> 8 & 0xff));
+                    ms.WriteByte((byte) (len & 0xff));
+                }
+            };
+            //写入一块数据
+            Action<byte[]> writeBlock = (byts) =>
+            {
+                var addZero = (byts[0] >> 4) >= 0x8;
+                ms.WriteByte(0x02);
+                var len = byts.Length + (addZero ? 1 : 0);
+                writeLenByte(len);
+
+                if (addZero)
+                {
+                    ms.WriteByte(0x00);
+                }
+
+                ms.Write(byts, 0, byts.Length);
+            };
+            //根据后续内容长度写入长度数据
+            Func<int, byte[], byte[]> writeLen = (index, byts) =>
+            {
+                var len = byts.Length - index;
+
+                ms.SetLength(0);
+                ms.Write(byts, 0, index);
+                writeLenByte(len);
+                ms.Write(byts, index, len);
+
+                return ms.ToArray();
+            };
+            Action<MemoryStream, byte[]> writeAll = (stream, byts) => { stream.Write(byts, 0, byts.Length); };
+            Func<string, int, string> textBreak = (text, line) =>
+            {
+                var idx = 0;
+                var len = text.Length;
+                var str = new StringBuilder();
+                while (idx < len)
+                {
+                    if (idx > 0)
+                    {
+                        str.Append('\n');
+                    }
+
+                    if (idx + line >= len)
+                    {
+                        str.Append(text.Substring(idx));
+                    }
+                    else
+                    {
+                        str.Append(text.Substring(idx, line));
+                    }
+
+                    idx += line;
+                }
+
+                return str.ToString();
+            };
+
+            if (rsaParameters.D == null || !includePrivateKey)
+            {
+                /****生成公钥****/
+
+                //写入总字节数，不含本段长度，额外需要24字节的头，后续计算好填入
+                ms.WriteByte(0x30);
+                var index1 = (int) ms.Length;
+
+                //PKCS8 多一段数据
+                int index2 = -1, index3 = -1;
+                if (isPkcs8)
+                {
+                    //固定内容
+                    // encoded OID sequence for PKCS #1 rsaEncryption szOID_RSA_RSA = "1.2.840.113549.1.1.1"
+                    writeAll(ms, RSAParametersConvert.SeqOid);
+
+                    //从0x00开始的后续长度
+                    ms.WriteByte(0x03);
+                    index2 = (int) ms.Length;
+                    ms.WriteByte(0x00);
+
+                    //后续内容长度
+                    ms.WriteByte(0x30);
+                    index3 = (int) ms.Length;
+                }
+
+                //写入Modulus
+                writeBlock(rsaParameters.Modulus);
+
+                //写入Exponent
+                writeBlock(rsaParameters.Exponent);
+
+
+                //计算空缺的长度
+                var byts = ms.ToArray();
+
+                if (index2 != -1)
+                {
+                    byts = writeLen(index3, byts);
+                    byts = writeLen(index2, byts);
+                }
+
+                byts = writeLen(index1, byts);
+
+
+                var flag = " PUBLIC KEY";
+                if (!isPkcs8)
+                {
+                    flag = " RSA" + flag;
+                }
+
+                return "-----BEGIN" + flag + "-----\n" + textBreak(Convert.ToBase64String(byts), 64) + "\n-----END" + flag + "-----";
+            }
+            else
+            {
+                /****生成私钥****/
+
+                //写入总字节数，后续写入
+                ms.WriteByte(0x30);
+                int index1 = (int) ms.Length;
+
+                //写入版本号
+                writeAll(ms, RSAParametersConvert.Ver);
+
+                //PKCS8 多一段数据
+                int index2 = -1, index3 = -1;
+                if (isPkcs8)
+                {
+                    //固定内容
+                    writeAll(ms, RSAParametersConvert.SeqOid);
+
+                    //后续内容长度
+                    ms.WriteByte(0x04);
+                    index2 = (int) ms.Length;
+
+                    //后续内容长度
+                    ms.WriteByte(0x30);
+                    index3 = (int) ms.Length;
+
+                    //写入版本号
+                    writeAll(ms, RSAParametersConvert.Ver);
+                }
+
+                //写入数据
+                writeBlock(rsaParameters.Modulus);
+                writeBlock(rsaParameters.Exponent);
+                writeBlock(rsaParameters.D);
+                writeBlock(rsaParameters.P);
+                writeBlock(rsaParameters.Q);
+                writeBlock(rsaParameters.DP);
+                writeBlock(rsaParameters.DQ);
+                writeBlock(rsaParameters.InverseQ);
+
+
+                //计算空缺的长度
+                var byts = ms.ToArray();
+
+                if (index2 != -1)
+                {
+                    byts = writeLen(index3, byts);
+                    byts = writeLen(index2, byts);
+                }
+
+                byts = writeLen(index1, byts);
+
+
+                var flag = " PRIVATE KEY";
+                if (!isPkcs8)
+                {
+                    flag = " RSA" + flag;
+                }
+
+                return "-----BEGIN" + flag + "-----\n" + textBreak(Convert.ToBase64String(byts), 64) + "\n-----END" + flag + "-----";
+            }
         }
     }
 }

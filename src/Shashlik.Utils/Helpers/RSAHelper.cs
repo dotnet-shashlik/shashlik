@@ -30,7 +30,7 @@ namespace Shashlik.Utils.Helpers
      */
     public static class RSAHelper
     {
-        static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic =
+        private static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic =
             new Dictionary<RSAEncryptionPadding, int>()
             {
                 [RSAEncryptionPadding.Pkcs1] = 11,
@@ -314,6 +314,29 @@ namespace Shashlik.Utils.Helpers
             var signBytes = Convert.FromBase64String(sign);
             var res = rsa.VerifyData(dataBytes, signBytes, hashAlgorithmName, padding);
             return res;
+        }
+
+        /// <summary>
+        /// 导出为xml key
+        /// </summary>
+        /// <param name="rsa"></param>
+        /// <param name="includePrivateKey"></param>
+        /// <returns></returns>
+        public static string ToXml(this RSA rsa, bool includePrivateKey)
+        {
+            return RSAParametersConvert.ToXml(rsa.ExportParameters(includePrivateKey), includePrivateKey);
+        }
+
+        /// <summary>
+        /// 导出为pem key
+        /// </summary>
+        /// <param name="rsa"></param>
+        /// <param name="includePrivateKey">是否导出私钥</param>
+        /// <param name="isPkcs8">是否导出为pkcs8格式</param>
+        /// <returns></returns>
+        public static string ToPem(this RSA rsa, bool includePrivateKey, bool isPkcs8)
+        {
+            return RSAParametersConvert.ToPem(rsa.ExportParameters(includePrivateKey), includePrivateKey, isPkcs8);
         }
     }
 }
