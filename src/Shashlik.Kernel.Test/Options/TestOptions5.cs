@@ -3,9 +3,9 @@ using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Test.Options
 {
-    [AutoOptions("TestOptions4")]
-    public class TestOptions4
+    [AutoOptions("TestOptions5")]
+    public class TestOptions5
     {
-        public string Name { get; set; }
+        [Required] [StringLength(1)] public string Name { get; set; }
     }
 }
