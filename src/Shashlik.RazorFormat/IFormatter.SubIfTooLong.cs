@@ -9,7 +9,7 @@ namespace Shashlik.RazorFormat
      *    subIfTooLong(3,...) -> result: "123..." 
      */
     /// <summary>
-    /// switch格式化器
+    /// subIfTooLong格式化器
     /// </summary>
     public class SubIfTooLongFormatter : IFormatter
     {

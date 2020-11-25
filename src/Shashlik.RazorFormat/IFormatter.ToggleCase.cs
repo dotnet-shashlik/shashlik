@@ -15,7 +15,7 @@ namespace Shashlik.RazorFormat
      * toggleCase(firstLower) -> "aBC"
      */
     /// <summary>
-    /// switch格式化器
+    /// toggleCase 大小写切换格式化器
     /// </summary>
     public class ToggleCaseFormatter : IFormatter
     {

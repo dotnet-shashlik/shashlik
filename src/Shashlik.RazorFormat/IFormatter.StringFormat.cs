@@ -2,12 +2,12 @@
 {
     /**
      * 
-     * addSuffix格式化器
+     * stringFormat格式化器
      * e.g.  value = 1.1
      * stringFormat(f2) -> "1.10"
      */
     /// <summary>
-    /// switch格式化器
+    /// stringFormat格式化器
     /// </summary>
     public class StringFormatFormatter : IFormatter
     {

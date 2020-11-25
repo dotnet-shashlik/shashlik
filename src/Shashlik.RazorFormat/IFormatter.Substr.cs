@@ -10,7 +10,7 @@ namespace Shashlik.RazorFormat
      *    substr(3)-> result: "4567890"
      */
     /// <summary>
-    /// switch格式化器
+    /// substr格式化器
     /// </summary>
     public class SubstrFormatter : IFormatter
     {

@@ -7,7 +7,7 @@
      * addPrefix(demo:) -> "demo:abc"
      */
     /// <summary>
-    /// switch格式化器
+    /// addPrefix格式化器
     /// </summary>
     public class AddPrefixFormatter : IFormatter
     {

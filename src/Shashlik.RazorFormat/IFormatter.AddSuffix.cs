@@ -7,7 +7,7 @@
      * addSuffix(...) -> "abc..."
      */
     /// <summary>
-    /// switch格式化器
+    /// addSuffix格式化器
     /// </summary>
     public class AddSuffixFormatter : IFormatter
     {
