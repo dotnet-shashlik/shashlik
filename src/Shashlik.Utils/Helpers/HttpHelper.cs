@@ -70,7 +70,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -101,7 +101,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -161,7 +161,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -191,7 +191,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -226,7 +226,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -256,7 +256,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -343,7 +343,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -377,7 +377,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -416,7 +416,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -452,7 +452,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: post, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -558,7 +558,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Content;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -587,7 +587,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.Data;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -615,7 +615,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return new MemoryStream(response.RawBytes);
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
@@ -644,7 +644,7 @@ namespace Shashlik.Utils.Helpers
             if (response.IsSuccessful)
                 return response.RawBytes;
             throw new HttpRequestException(
-                $"Http request error, url:  {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
+                $"Http request error, url: {url}, method: get, http code: {response.StatusCode}, result: {response.Content}",
                 response.ErrorException);
         }
 
