@@ -1,29 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Shashlik.Utils.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Dependency
 {
-    public static class Utils
+    internal static class Utils
     {
-        /// <summary>
-        /// 获取类所有的注册条件
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        public static List<ConditionDescriptor> GetConditions(Type type)
-        {
-            return type.GetCustomAttributes<ConditionBaseAttribute>(false)
-                .Select(r =>
-                    new ConditionDescriptor(r,
-                        r.GetType().GetCustomAttribute<OrderAttribute>(false)?.Order ?? int.MaxValue))
-                .ToList();
-        }
-
         /// <summary>
         /// 服务集合是否已经存在<typeparamref name="TType"/>服务类型
         /// </summary>
@@ -51,11 +33,11 @@ namespace Shashlik.Kernel.Dependency
         /// </summary>
         /// <param name="services"></param>
         /// <param name="serviceType"></param>
-        /// <param name="impleType"></param>
+        /// <param name="implType"></param>
         /// <returns></returns>
-        public static bool AnyService(this IServiceCollection services, Type serviceType, Type impleType)
+        public static bool AnyService(this IServiceCollection services, Type serviceType, Type implType)
         {
-            return services.Any(r => r.ServiceType == serviceType && r.ImplementationType == impleType);
+            return services.Any(r => r.ServiceType == serviceType && r.ImplementationType == implType);
         }
     }
 }

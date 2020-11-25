@@ -20,7 +20,7 @@ namespace Shashlik.Kernel.Autowire
             IDictionary<Type, AutowireDescriptor<T>> autoServices,
             Action<AutowireDescriptor<T>> initAction)
         {
-            if (descriptor == null) throw new ArgumentNullException(nameof(descriptor));
+            if (descriptor is null) throw new ArgumentNullException(nameof(descriptor));
 
             switch (descriptor.Status)
             {
@@ -28,7 +28,7 @@ namespace Shashlik.Kernel.Autowire
                     return;
                 // 递归中发现挂起的服务那就是有循环依赖
                 case AutowireStatus.Hangup:
-                    throw new Exception($"exists circular dependencies on {descriptor.ImplementationType}.");
+                    throw new KernelAutowireException($"Exists loop dependencies on {descriptor.ImplementationType}");
             }
 
             // 在这个类型之前存在依赖项
@@ -46,6 +46,8 @@ namespace Shashlik.Kernel.Autowire
         public void Autowire(IDictionary<Type, AutowireDescriptor<T>> autowiredService,
             Action<AutowireDescriptor<T>> autowiredAction)
         {
+            if (autowiredService == null) throw new ArgumentNullException(nameof(autowiredService));
+            if (autowiredAction == null) throw new ArgumentNullException(nameof(autowiredAction));
             foreach (var autowiredServiceValue in autowiredService.Values.OrderBy(r => r.Order))
             {
                 Invoke(autowiredServiceValue as InnerAutowiredDescriptor<T>, autowiredService, autowiredAction);
@@ -55,11 +57,11 @@ namespace Shashlik.Kernel.Autowire
         public IDictionary<Type, AutowireDescriptor<T>> Load(IKernelServices kernelServices,
             IServiceProvider serviceProvider)
         {
+            if (kernelServices == null) throw new ArgumentNullException(nameof(kernelServices));
+            if (serviceProvider == null) throw new ArgumentNullException(nameof(serviceProvider));
             var type = typeof(T);
 
             var instances = serviceProvider.GetServices<T>();
-            // var serviceDescriptors
-            //     = kernelServices.Services.Where(r => r.ServiceType == type).ToList();
 
             var dic = new Dictionary<Type, AutowireDescriptor<T>>();
             foreach (var instance in instances)

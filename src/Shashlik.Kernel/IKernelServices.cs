@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyModel;
-using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel
 {

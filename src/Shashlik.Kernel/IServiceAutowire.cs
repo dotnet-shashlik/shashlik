@@ -1,6 +1,4 @@
-﻿using Shashlik.Kernel.Dependency;
-
-namespace Shashlik.Kernel
+﻿namespace Shashlik.Kernel
 {
     /// <summary>
     /// 服务装配器

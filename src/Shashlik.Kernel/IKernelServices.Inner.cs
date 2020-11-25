@@ -19,16 +19,7 @@ namespace Shashlik.Kernel
         }
 
         public IServiceCollection Services { get; }
-
-        public List<ShashlikServiceDescriptor> ShashlikServiceDescriptors { get; } =
-            new List<ShashlikServiceDescriptor>();
-
         public DependencyContext ScanFromDependencyContext { get; }
         public IConfiguration RootConfiguration { get; }
-
-        public void AddShashlikServiceDescriptors(IEnumerable<ShashlikServiceDescriptor> descriptors)
-        {
-            ShashlikServiceDescriptors.AddRange(descriptors);
-        }
     }
 }

@@ -15,13 +15,14 @@ namespace Shashlik.Kernel.Autowire
         public void ConfigureAll(IKernelServices kernelServices, IEnumerable<Type> disabledAutoOptionTypes)
         {
             if (kernelServices is null) throw new ArgumentNullException(nameof(kernelServices));
-            if (disabledAutoOptionTypes is null) throw new ArgumentNullException(nameof(disabledAutoOptionTypes));
+            var autoOptionTypes = disabledAutoOptionTypes?.ToList() ?? new List<Type>();
 
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
                 .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(IConfiguration)});
             if (method is null)
-                throw new MethodAccessException(
-                    "Cannot find method: OptionsConfigurationServiceCollectionExtensions.Configure<TOptions>(this IServiceCollection services, IConfiguration config).");
+                throw new MissingMethodException(
+                    "OptionsConfigurationServiceCollectionExtensions",
+                    "Configure<TOptions>(this IServiceCollection services, IConfiguration config)");
 
             var services = kernelServices.Services;
             services.AddOptions();
@@ -31,8 +32,7 @@ namespace Shashlik.Kernel.Autowire
 
             foreach (var (key, value) in dic)
             {
-                // ReSharper disable once PossibleMultipleEnumeration
-                if (disabledAutoOptionTypes.Contains(key))
+                if (autoOptionTypes.Contains(key))
                     continue;
 
                 var sectionName = value.Section;
@@ -52,7 +52,7 @@ namespace Shashlik.Kernel.Autowire
             {
                 var optionsTypes = typeof(IOptions<>).MakeGenericType(key);
                 // ReSharper disable once PossibleMultipleEnumeration
-                if (disabledAutoOptionTypes.Contains(key))
+                if (autoOptionTypes.Contains(key))
                     continue;
 
                 var optionValue = serviceProvider.GetService(optionsTypes).GetPropertyValue("Value");
