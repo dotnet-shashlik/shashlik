@@ -14,7 +14,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Sms.Domains
 {
     /// <summary>
-    /// 模板参数规则请使用 ${p1}/${p2},配置模板时按参数顺序来定义.
+    /// 模板参数规则请使用 ${p1},${p2},配置模板时按参数顺序来定义.
     /// </summary>
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class AliSms : ISmsDomain

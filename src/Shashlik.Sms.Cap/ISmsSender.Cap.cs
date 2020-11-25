@@ -7,7 +7,6 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Sms.Cap
 {
     [ConditionDependsOn(typeof(ISms))]
-    [ConditionDependsOnMissing(typeof(ISmsSender))]
     [Singleton]
     public class CapSmsSender : ISmsSender
     {

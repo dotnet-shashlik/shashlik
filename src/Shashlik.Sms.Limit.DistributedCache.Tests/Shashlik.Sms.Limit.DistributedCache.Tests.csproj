@@ -21,13 +21,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.Cap.Rabbit\Shashlik.Cap.Rabbit.csproj" />
-        <ProjectReference Include="..\Shashlik.Cap\Shashlik.Cap.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
         <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
-        <ProjectReference Include="..\Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj" />
-        <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
+        <ProjectReference Include="..\Shashlik.Sms.Limit.DistributedCache\Shashlik.Sms.Limit.DistributedCache.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,7 +32,7 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="config.yaml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

@@ -26,24 +26,22 @@ namespace Shashlik.Sms.EventBus
 
         public async Task Execute(SendSmsEvent @event, IDictionary<string, string> items)
         {
-            await Task.CompletedTask;
             try
             {
-                if (@event.Phones.Count == 1)
-                    // 只有一个的时候使用单一手机号码发送
-                    Sms.Send(@event.Phones[0], @event.Subject, @event.Args.ToArray());
-                else
-                    Sms.Send(@event.Phones, @event.Subject, @event.Args.ToArray());
-            }
-            catch (SmsArgException e)
-            {
-                Logger.LogError(e, "短信发送失败");
+                Sms.Send(@event.Phones, @event.Subject, @event.Args.ToArray());
             }
             catch (SmsDomainException e)
             {
-                Logger.LogError(e, "短信发送失败, 服务商错误");
+                Logger.LogError(e, "sms send failed, domain error");
                 throw;
             }
+            catch (SmsOptionsException e)
+            {
+                Logger.LogError(e, "sms send failed, options error");
+                throw;
+            }
+
+            await Task.CompletedTask;
         }
     }
 }

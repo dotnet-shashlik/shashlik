@@ -14,9 +14,9 @@ namespace Shashlik.Sms.Limit.Redis
     [ConditionDependsOn(typeof(CSRedisClient))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.EnableRedisLimit", true, DefaultValue = true)]
-    public class RedisCacheSmsLimit : ISmsLimit
+    public class RedisSmsLimit : ISmsLimit
     {
-        public RedisCacheSmsLimit(IOptionsMonitor<SmsOptions> options, CSRedisClient redisClient)
+        public RedisSmsLimit(IOptionsMonitor<SmsOptions> options, CSRedisClient redisClient)
         {
             Options = options;
             RedisClient = redisClient;
@@ -26,10 +26,10 @@ namespace Shashlik.Sms.Limit.Redis
         private CSRedisClient RedisClient { get; }
 
         // 0:phone,1:subject,2:hour,3:minute
-        private const string CachePrefix = "SMS_LIMIT:{0}:{1}:{2}:{3}";
+        private const string CachePrefix = "SMS_REDIS_LIMIT:{0}:{1}:{2}:{3}";
 
         // 0:phone,1:subject
-        private const string CachePrefixKeys = "SMS_LIMIT:{0}:{1}";
+        private const string CachePrefixKeys = "SMS_REDIS_LIMIT:{0}:{1}";
 
         public bool CanSend(string phone, string subject)
         {
@@ -58,19 +58,19 @@ namespace Shashlik.Sms.Limit.Redis
                 if (data.Value.minute == minute)
                 {
                     minuteTotal += 1;
-                    if (limit.MinuteLimitCount >= minuteTotal)
+                    if (limit.MinuteLimitCount <= minuteTotal)
                         return false;
                 }
 
                 if (data.Value.hour == hour)
                 {
                     hourTotal += 1;
-                    if (limit.HourLimitCount >= hourTotal)
+                    if (limit.HourLimitCount <= hourTotal)
                         return false;
                 }
 
                 dayTotal += 1;
-                if (limit.DayLimitCount >= dayTotal)
+                if (limit.DayLimitCount <= dayTotal)
                     return false;
             }
 
