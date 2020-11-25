@@ -672,18 +672,18 @@ namespace Shashlik.Utils.Helpers
         }
 
         /// <summary>
-        /// 通用http调方法
+        /// 通用http调用方法
         /// </summary>
-        /// <param name="method"></param>
-        /// <param name="url"></param>
-        /// <param name="body"></param>
-        /// <param name="contentType"></param>
-        /// <param name="queryStringData"></param>
-        /// <param name="headers"></param>
-        /// <param name="cookies"></param>
-        /// <param name="timeout"></param>
-        /// <param name="proxy"></param>
-        /// <param name="encoding"></param>
+        /// <param name="method">http method</param>
+        /// <param name="url">url</param>
+        /// <param name="body">request body</param>
+        /// <param name="contentType">content type, default text/plain</param>
+        /// <param name="queryStringData">query string</param>
+        /// <param name="headers">header</param>
+        /// <param name="cookies">cookie</param>
+        /// <param name="timeout">request timeout seconds, default 30s</param>
+        /// <param name="proxy">request proxy</param>
+        /// <param name="encoding">encoding default utf-8</param>
         /// <returns></returns>
         public static async Task<IRestResponse> DoRequest(
             Method method,
@@ -693,7 +693,9 @@ namespace Shashlik.Utils.Helpers
             IEnumerable<KeyValuePair<string, string>>? queryStringData = null,
             IDictionary<string, string>? headers = null,
             IDictionary<string, string>? cookies = null,
-            int timeout = 30, IWebProxy? proxy = null, Encoding? encoding = null)
+            int timeout = 30,
+            IWebProxy? proxy = null,
+            Encoding? encoding = null)
         {
             var client = GetClient(url, proxy, encoding);
             var request = GetRequest(headers, cookies, timeout);
