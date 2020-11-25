@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Shashlik.Utils.Helpers;
 using Xunit;
-using RSAKeyType = RSAExtensions.RSAKeyType;
 
 namespace Shashlik.Utils.Test
 {
@@ -31,7 +30,7 @@ namespace Shashlik.Utils.Test
         public void PfxTest()
         {
             var data = Guid.NewGuid().ToString();
-            using var cer = RsaHelper.LoadX509FromFileBase64(PfxBase64, "123123");
+            using var cer = RSAHelper.LoadX509FromFileBase64(PfxBase64, "123123");
             var encoded = cer.GetRSAPublicKey().EncryptBigData(data, RSAEncryptionPadding.Pkcs1);
             var decoded = cer.GetRSAPrivateKey().DecryptBigData(encoded, RSAEncryptionPadding.Pkcs1);
             decoded.ShouldBe(data);
@@ -44,48 +43,48 @@ namespace Shashlik.Utils.Test
             var data = Guid.NewGuid().ToString();
 
             {
-                var a1 = RsaHelper.LoadX509FromPublicCertificate(PublicKeyCer)
+                var a1 = RSAHelper.LoadX509FromPublicCertificate(PublicKeyCer)
                     .GetRSAPublicKey().EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
-                var a2 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                var a2 = RSAHelper.FromPem(PublicKeyPem)
                     .EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
-                var a3 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                var a3 = RSAHelper.FromPem(PublicKeyPem)
                     .Encrypt(data, RSAEncryptionPadding.Pkcs1);
-                var a4 = RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                var a4 = RSAHelper.FromPem(PublicKeyPem)
                     .EncryptBigDataWithSplit(data, RSAEncryptionPadding.Pkcs1);
-                var d1 = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
+                var d1 = RSAHelper.FromPem(PrivateKeyPkcs8)
                     .DecryptBigData(a1, RSAEncryptionPadding.OaepSHA256);
-                var d28 = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
+                var d28 = RSAHelper.FromPem(PrivateKeyPkcs8)
                     .DecryptBigData(a2, RSAEncryptionPadding.OaepSHA256);
-                var d21 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                var d21 = RSAHelper.FromPem(PrivateKeyPkcs1)
                     .DecryptBigData(a1, RSAEncryptionPadding.OaepSHA256);
-                var d3 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                var d3 = RSAHelper.FromPem(PrivateKeyPkcs1)
                     .Decrypt(a3, RSAEncryptionPadding.Pkcs1);
-                var d4 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                var d4 = RSAHelper.FromPem(PrivateKeyPkcs1)
                     .DecryptBigDataWithSplit(a4, RSAEncryptionPadding.Pkcs1);
 
                 d1.ShouldBe(d28);
                 d1.ShouldBe(d21);
                 d1.ShouldBe(d3);
 
-                var signature = RsaHelper.FromPrivateKey(PrivateKeyPkcs8, RSAKeyType.Pkcs8, true)
+                var signature = RSAHelper.FromPem(PrivateKeyPkcs8)
                     .SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
 
-                var signature1 = RsaHelper.FromPrivateKey(PrivateKeyPkcs1, RSAKeyType.Pkcs1, true)
+                var signature1 = RSAHelper.FromPem(PrivateKeyPkcs1)
                     .SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
 
-                RsaHelper.LoadX509FromPublicCertificate(PublicKeyCer)
+                RSAHelper.LoadX509FromPublicCertificate(PublicKeyCer)
                     .GetRSAPublicKey().VerifySignData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
 
-                RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                RSAHelper.FromPem(PublicKeyPem)
                     .VerifySignData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
 
-                RsaHelper.LoadX509FromPublicCertificate(PublicKeyCer)
+                RSAHelper.LoadX509FromPublicCertificate(PublicKeyCer)
                     .GetRSAPublicKey().VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
 
-                RsaHelper.FromPublicKey(PublicKeyPem, RSAKeyType.Pkcs8, true)
+                RSAHelper.FromPem(PublicKeyPem)
                     .VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
             }

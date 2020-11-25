@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using Shashlik.Kernel.Attributes;

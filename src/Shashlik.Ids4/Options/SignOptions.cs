@@ -1,6 +1,4 @@
-﻿using RSAExtensions;
-
-// ReSharper disable CheckNamespace
+﻿// ReSharper disable CheckNamespace
 
 namespace Shashlik.Ids4
 {
@@ -20,27 +18,17 @@ namespace Shashlik.Ids4
         public string? SigningAlgorithm { get; set; } = "RS256";
 
         /// <summary>
-        /// rsa: rsa私钥(JWT token签名用)
+        /// rsa: rsa私钥 pem格式，需要带有BEGIN/END(JWT token签名用)
         /// </summary>
         public string? RsaPrivateKey { get; set; }
 
         /// <summary>
-        /// rsa: 私钥类型,默认PKCS8,支持PKCS1/PKCS8/XML
-        /// </summary>
-        public RSAKeyType RsaKeyType { get; set; } = RSAKeyType.Pkcs8;
-
-        /// <summary>
-        /// rsa: 私钥是不是pem格式,默认true
-        /// </summary>
-        public bool RsaIsPem { get; set; } = true;
-
-        /// <summary>
         /// x509: x509证书内容,文件base64后,一般pfx格式,和<see cref="X509CertificateFilePath"/>选择配置一个就可以,优先使用此配置
         /// </summary>
-        public string? X509CertificateFileContent { get; set; }
+        public string? X509CertificateFileBase64 { get; set; }
 
         /// <summary>
-        /// x509: 证书文件地址,和<see cref="X509CertificateFileContent"/>选择配置一个就可以
+        /// x509: 证书文件地址,和<see cref="X509CertificateFileBase64"/>选择配置一个就可以
         /// </summary>
         public string? X509CertificateFilePath { get; set; }
 

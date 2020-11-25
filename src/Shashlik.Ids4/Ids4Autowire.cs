@@ -1,14 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using RSAExtensions;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Ids4
 {
@@ -30,7 +31,6 @@ namespace Shashlik.Ids4
             if (!Options.Enable)
                 return;
 
-
             var builder = kernelService.Services
                 .AddIdentityServer(options =>
                 {
@@ -45,19 +45,18 @@ namespace Shashlik.Ids4
                 builder.AddDeveloperSigningCredential();
             else if (Options.SignOptions.CredentialType == CredentialType.Rsa)
             {
-                if (string.IsNullOrWhiteSpace(Options.SignOptions.RsaPrivateKey))
+                if (string.IsNullOrWhiteSpace(Options.SignOptions.RsaPrivateKey)
+                    || !Options.SignOptions.RsaPrivateKey.Contains("PRIVATE KEY"))
                     throw new ArgumentException($"Invalid rsa private key");
-                var rsa = RSA.Create();
-                rsa.ImportPrivateKey(Options.SignOptions.RsaKeyType, Options.SignOptions.RsaPrivateKey,
-                    Options.SignOptions.RsaIsPem);
+                var rsa = RSAHelper.FromPem(Options.SignOptions.RsaPrivateKey);
                 builder.AddSigningCredential(new RsaSecurityKey(rsa), Options.SignOptions.SigningAlgorithm);
             }
             else if (Options.SignOptions.CredentialType == CredentialType.X509)
             {
                 X509Certificate2 certificate;
-                if (!string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificateFileContent))
+                if (!string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificateFileBase64))
                 {
-                    var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateFileContent!);
+                    var bytes = Convert.FromBase64String(Options.SignOptions.X509CertificateFileBase64!);
                     if (string.IsNullOrWhiteSpace(Options.SignOptions.X509CertificatePassword))
                         certificate = new X509Certificate2(bytes);
                     else

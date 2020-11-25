@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using RSAExtensions;
+using Shashlik.Utils.Helpers.RsaInner;
 
 namespace Shashlik.Utils.Helpers
 {
@@ -28,7 +28,7 @@ namespace Shashlik.Utils.Helpers
      *     # 私钥导出pem公钥
      *     openssl rsa -in private_pkcs1.pem -pubout -out public.pem
      */
-    public static class RsaHelper
+    public static class RSAHelper
     {
         static readonly Dictionary<RSAEncryptionPadding, int> PaddingLimitDic =
             new Dictionary<RSAEncryptionPadding, int>()
@@ -41,30 +41,28 @@ namespace Shashlik.Utils.Helpers
             };
 
         /// <summary>
-        /// 从私钥构建RSA对象
+        /// 从rsa pem key构建RSA对象
         /// </summary>
-        /// <param name="privateKey">私钥内容</param>
-        /// <param name="keyType">私钥类型</param>
-        /// <param name="isPem">是否为pem格式</param>
+        /// <param name="pemKey">私钥内容</param>
         /// <returns></returns>
-        public static RSA FromPrivateKey(string privateKey, RSAKeyType keyType, bool isPem)
+        public static RSA FromPem(string pemKey)
         {
             var rsa = RSA.Create();
-            rsa.ImportPrivateKey(keyType, privateKey, isPem);
+            var ps = RSAParametersConvert.PemToRSAParameters(pemKey);
+            rsa.ImportParameters(ps);
             return rsa;
         }
 
         /// <summary>
-        /// 从公钥构建RSA对象
+        /// 将xml rsa key 转换位RSA实例
         /// </summary>
-        /// <param name="publicKey">公钥内容</param>
-        /// <param name="keyType">公钥类型</param>
-        /// <param name="isPem">是否为pem格式</param>
+        /// <param name="xmlKey"></param>
         /// <returns></returns>
-        public static RSA FromPublicKey(string publicKey, RSAKeyType keyType, bool isPem)
+        public static RSA FromXml(string xmlKey)
         {
             var rsa = RSA.Create();
-            rsa.ImportPublicKey(keyType, publicKey, isPem);
+            var ps = RSAParametersConvert.XmlToRSAParameters(xmlKey);
+            rsa.ImportParameters(ps);
             return rsa;
         }
 
