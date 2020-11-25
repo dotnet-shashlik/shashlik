@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shashlik.Kernel;
 
 namespace Shashlik.Sms.Cap.Tests
 {
@@ -6,7 +7,7 @@ namespace Shashlik.Sms.Cap.Tests
     {
         public void Configure(IKernelServices kernelServices)
         {
-          
+            kernelServices.Services.AddMemoryCache();
         }
     }
 }

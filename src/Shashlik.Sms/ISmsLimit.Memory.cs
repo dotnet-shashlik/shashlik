@@ -14,6 +14,7 @@ namespace Shashlik.Sms
     /// 内存缓存短信发送限制
     /// </summary>
     [ConditionDependsOn(typeof(IMemoryCache))]
+    [ConditionDependsOnMissing(typeof(ISmsLimit))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class MemorySmsLimit : ISmsLimit
     {
@@ -29,7 +30,7 @@ namespace Shashlik.Sms
         private ILock Locker { get; }
 
         // 0:phone,1:subject
-        private const string CachePrefix = "SMS_LIMIT:{0}:{1}";
+        private const string CachePrefix = "SMS_MEMORYCAHCHE_LIMIT:{0}:{1}";
 
         public bool CanSend(string phone, string subject)
         {
