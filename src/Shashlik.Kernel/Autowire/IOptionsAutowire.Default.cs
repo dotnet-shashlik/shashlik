@@ -55,11 +55,12 @@ namespace Shashlik.Kernel.Autowire
                 if (autoOptionTypes.Contains(key))
                     continue;
 
-                var optionValue = serviceProvider.GetService(optionsTypes).GetPropertyValue("Value");
+                (_, object obj) = serviceProvider.GetService(optionsTypes).GetPropertyValue("Value");
 
-                var res = ValidationHelper.Validate(optionValue, serviceProvider);
+                var res = ValidationHelper.Validate(obj, serviceProvider);
                 if (res.Count > 0)
-                    throw new OptionsValidationException(value.Section, key, res.Select(r => r.ErrorMessage));
+                    throw new KernelAutowireException(
+                        $"Invalid option, section: {value.Section}, option type: {key}, errors:{Environment.NewLine}{res.Select(r => r.ErrorMessage).Join(Environment.NewLine)}");
             }
         }
     }
