@@ -121,9 +121,9 @@ namespace Shashlik.Cap
             }
 
             if (types.Count == 0)
-                throw new InvalidOperationException($"Can not find interface of IEventHandler<> on {type}.");
+                throw new InvalidOperationException($"Can not find interface of IEventHandler<> on {type}");
             if (types.Count > 1)
-                throw new InvalidOperationException($"Find more interface of IEventHandler<> on {type}.");
+                throw new InvalidOperationException($"Find more interface of IEventHandler<> on {type}");
             return types[0];
         }
 

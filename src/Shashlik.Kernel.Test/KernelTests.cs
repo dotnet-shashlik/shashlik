@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
-using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Test.Autowired;
@@ -112,8 +111,12 @@ namespace Shashlik.Kernel.Test
 
             {
                 GetService<B16>().ShouldNotBeNull();
-                (GetService<IA16<int>>() is B16).ShouldBeTrue();
-                (GetService<IA16<string>>() is B16).ShouldBeTrue();
+                GetService<C16>().ShouldNotBeNull();
+                GetServices<IA16<int>>().Any(r => r is B16).ShouldBeTrue();
+                GetServices<IA16<int>>().Any(r => r is C16).ShouldBeTrue();
+                GetServices<IA16<string>>().Any(r => r is B16).ShouldBeTrue();
+                GetServices<IA16<string>>().Any(r => r is C16).ShouldBeTrue();
+
                 GetService<IA16<long>>().ShouldBeNull();
             }
 
@@ -121,6 +124,17 @@ namespace Shashlik.Kernel.Test
                 GetService<IA17>().ShouldBeNull();
                 GetService<B17<int>>().ShouldNotBeNull();
                 GetService<B17<string>>().ShouldNotBeNull();
+                GetService<C17<int>>().ShouldNotBeNull();
+                GetService<C17<string>>().ShouldNotBeNull();
+            }
+
+            {
+                GetService<IA18<string>>().ShouldNotBeNull();
+                GetService<IA18<int>>().ShouldNotBeNull();
+                GetService<IA18<long>>().ShouldBeNull();
+                GetService<B18<int>>().ShouldNotBeNull();
+                GetService<B18<string>>().ShouldBeNull();
+                GetService<C18>().ShouldNotBeNull();
             }
 
             {

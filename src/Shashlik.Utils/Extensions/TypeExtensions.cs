@@ -153,7 +153,7 @@ namespace Shashlik.Utils.Extensions
             if (destinationType.IsEnum)
                 return Enum.Parse(destinationType, value.ToString());
 
-            throw new InvalidCastException($"Invalid cast to type {destinationType} from {sourceType}.");
+            throw new InvalidCastException($"Invalid cast to type {destinationType} from {sourceType}");
         }
 
         /// <summary>
@@ -496,7 +496,7 @@ namespace Shashlik.Utils.Extensions
         public static T GetValue<T>(this JsonElement obj, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
-                throw new ArgumentException("Json value kind must be JsonValueKind.Object.");
+                throw new ArgumentException("Json value kind must be JsonValueKind.Object");
             if (obj.TryGetProperty(propertyName, out var value))
             {
                 switch (value.ValueKind)
@@ -529,7 +529,7 @@ namespace Shashlik.Utils.Extensions
         public static object GetValue(this JsonElement obj, Type type, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
-                throw new ArgumentException("Json value kind must be JsonValueKind.Object.");
+                throw new ArgumentException("Json value kind must be JsonValueKind.Object");
             if (obj.TryGetProperty(propertyName, out var value))
                 return GetValue(value, type);
 

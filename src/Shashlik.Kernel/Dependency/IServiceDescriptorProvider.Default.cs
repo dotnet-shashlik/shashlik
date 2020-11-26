@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
@@ -92,6 +93,19 @@ namespace Shashlik.Kernel.Dependency
         }
 
         /// <summary>
+        /// 获取类所有的注册条件
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static List<ConditionDescriptor> GetConditions(Type type)
+        {
+            return type.GetCustomAttributes<ConditionBaseAttribute>(false)
+                .Select(r =>
+                    new ConditionDescriptor(r, r.GetType().GetCustomAttribute<OrderAttribute>(false)?.Order ?? int.MaxValue))
+                .ToList();
+        }
+
+        /// <summary>
         /// 获取继承链所有的ignores
         /// </summary>
         /// <param name="type"></param>
@@ -117,7 +131,7 @@ namespace Shashlik.Kernel.Dependency
                 return new ShashlikServiceDescriptor[0];
 
             var res = new List<ShashlikServiceDescriptor>();
-            var conditions = Utils.GetConditions(type);
+            var conditions = GetConditions(type);
 
             // 注册整个继承链
             if (serviceAttribute.RequireRegistryInheritedChain)
@@ -141,8 +155,8 @@ namespace Shashlik.Kernel.Dependency
                         foreach (var serviceType in serviceTypeList)
                         {
                             var serviceDescriptor = ServiceDescriptor.Describe(serviceType, item1, serviceAttribute.ServiceLifetime);
-                            var conditions1 = Utils.GetConditions(item1);
-                            var conditions2 = Utils.GetConditions(serviceType);
+                            var conditions1 = GetConditions(item1);
+                            var conditions2 = GetConditions(serviceType);
                             res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions1.Concat(conditions2).ToList()));
                         }
                     }
@@ -162,7 +176,7 @@ namespace Shashlik.Kernel.Dependency
                     // 只注册最下面的没有子类的最终类
                     if (IsLastFinalType(finalSubTypes, finalSubType))
                     {
-                        var currentConditions = conditions.Concat(Utils.GetConditions(finalSubType)).ToList();
+                        var currentConditions = conditions.Concat(GetConditions(finalSubType)).ToList();
                         ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, serviceAttribute.ServiceLifetime);
                         res.Add(new ShashlikServiceDescriptor(self, currentConditions));
                         if (CanAddService(finalSubType, type, out var serviceTypeList))
@@ -199,7 +213,7 @@ namespace Shashlik.Kernel.Dependency
                     if (CanAddService(type, baseType))
                     {
                         var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
-                        var currentConditions = conditions.Concat(Utils.GetConditions(baseType)).ToList();
+                        var currentConditions = conditions.Concat(GetConditions(baseType)).ToList();
                         res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
                     }
                 }

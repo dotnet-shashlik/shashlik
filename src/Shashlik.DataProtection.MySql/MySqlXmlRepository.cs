@@ -12,13 +12,13 @@ namespace Shashlik.DataProtection
 {
     public class MySqlXmlRepository : IXmlRepository
     {
-        private MySqlDataProtectionOptions Option { get; }
+        private MySqlDataProtectionOptions Options { get; }
         private string ConnectionString { get; }
 
-        public MySqlXmlRepository(MySqlDataProtectionOptions option)
+        public MySqlXmlRepository(MySqlDataProtectionOptions options)
         {
-            Option = option;
-            ConnectionString = option.ConnectionString;
+            Options = options;
+            ConnectionString = options.ConnectionString;
             InitDb();
         }
 
@@ -33,7 +33,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM `{Option.TableName}`;";
+            cmd.CommandText = $"SELECT * FROM `{Options.TableName}`;";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
@@ -50,7 +50,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $@"insert into `{Option.TableName}`(`xml`,`createtime`) values(@xml,now());";
+            var sql = $@"insert into `{Options.TableName}`(`xml`,`createtime`) values(@xml,now());";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new MySqlParameter("@xml", MySqlDbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
@@ -59,6 +59,8 @@ namespace Shashlik.DataProtection
 
         private void InitDb()
         {
+            if (Options.EnableAutoCreateDataBase)
+                CreateDataBaseIfNoExists();
             using var conn = new MySqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
@@ -66,7 +68,7 @@ namespace Shashlik.DataProtection
             using var cmd = conn.CreateCommand();
             // 创建架构和数据表
             var batchSql = $@"
-CREATE TABLE IF NOT EXISTS `{Option.TableName}`(
+CREATE TABLE IF NOT EXISTS `{Options.TableName}`(
 	`id` INT AUTO_INCREMENT NOT NULL,
     `xml` VARCHAR(4000) NOT NULL,
 	`createtime` DATETIME NOT NULL,
@@ -74,6 +76,20 @@ CREATE TABLE IF NOT EXISTS `{Option.TableName}`(
 );
 ";
             cmd.CommandText = batchSql;
+            cmd.ExecuteNonQuery();
+        }
+
+        private void CreateDataBaseIfNoExists()
+        {
+            var builder = new MySqlConnectionStringBuilder(ConnectionString);
+            var database = builder.Database;
+            // ReSharper disable once AssignNullToNotNullAttribute
+            builder.Database = null;
+            var newConnStr = builder.ToString();
+            using var conn = new MySqlConnection(newConnStr);
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"CREATE DATABASE IF NOT EXISTS `{database}` DEFAULT CHARACTER  SET utf8mb4 COLLATE =utf8mb4_general_ci;";
             cmd.ExecuteNonQuery();
         }
     }

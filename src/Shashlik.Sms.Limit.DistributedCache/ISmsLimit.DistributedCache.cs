@@ -30,7 +30,7 @@ namespace Shashlik.Sms.Limit.DistributedCache
         private ILock Locker { get; }
 
         // 0:phone,1:subject
-        private const string CachePrefix = "SMS_LIMIT:{0}:{1}";
+        private const string CachePrefix = "SMS_CACHE_LIMIT:{0}:{1}";
 
         public bool CanSend(string phone, string subject)
         {

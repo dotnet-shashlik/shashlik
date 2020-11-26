@@ -13,6 +13,11 @@ namespace Shashlik.DataProtection
         public bool Enable { get; set; } = true;
 
         /// <summary>
+        /// 允许自动创建数据库
+        /// </summary>
+        public bool EnableAutoCreateDataBase = true;
+
+        /// <summary>
         /// 数据库连接字符串
         /// </summary>
         public string ConnectionString { get; set; }

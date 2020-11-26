@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.xml" />
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.9" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.9" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+        <PackageReference Include="MySqlConnector" Version="0.69.9" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
+        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
+        <ProjectReference Include="..\Shashlik.Sms.Limit.DistributedCache\Shashlik.Sms.Limit.DistributedCache.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="settings\appsettings.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="config.yaml">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

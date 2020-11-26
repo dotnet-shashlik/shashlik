@@ -14,7 +14,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Sms.Domains
 {
     /// <summary>
-    /// 模板参数规则请使用 ${p1}/${p2},配置模板时按参数顺序来定义.
+    /// 模板参数规则请使用 ${p1},${p2},配置模板时按参数顺序来定义.
     /// </summary>
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms.Enable", true, DefaultValue = true)]
     public class AliSms : ISmsDomain
@@ -57,7 +57,7 @@ namespace Shashlik.Sms.Domains
                 SendSmsResponse sendSmsResponse = acsClient.GetAcsResponse(request);
                 if (!sendSmsResponse.Code.EqualsIgnoreCase("OK"))
                     throw new SmsDomainException(
-                        $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}.");
+                        $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}");
             }
             catch (ServerException ex)
             {

@@ -9,7 +9,7 @@ namespace Shashlik.Sms.Cap
     /// <summary>
     /// 发送短信事件,执行真正的短信发送
     /// </summary>
-    [ConditionDependsOn(typeof(ISms))]
+    [ConditionDependsOn(typeof(ISms), typeof(ISmsSender))]
     public class SendSmsEventForExecuteHandler : IEventHandler<SendSmsEvent>
     {
         public SendSmsEventForExecuteHandler(ISms sms, ILogger<SendSmsEventForExecuteHandler> logger)
@@ -29,12 +29,12 @@ namespace Shashlik.Sms.Cap
             }
             catch (SmsDomainException e)
             {
-                Logger.LogError(e, "sms send failed, domain error.");
+                Logger.LogError(e, "sms send failed, domain error");
                 throw;
             }
             catch (SmsOptionsException e)
             {
-                Logger.LogError(e, "sms send failed, options error.");
+                Logger.LogError(e, "sms send failed, options error");
                 throw;
             }
 

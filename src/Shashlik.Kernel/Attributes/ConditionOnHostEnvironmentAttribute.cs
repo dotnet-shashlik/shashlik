@@ -20,10 +20,7 @@ namespace Shashlik.Kernel.Attributes
         public ConditionOnHostEnvironmentAttribute(string envName)
         {
             if (string.IsNullOrWhiteSpace(envName))
-            {
-                throw new ArgumentException($"“{nameof(envName)}”不能为 Null 或空白", nameof(envName));
-            }
-
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(envName));
             EnvName = envName;
         }
 

@@ -69,7 +69,7 @@ namespace Shashlik.EfCore
 
                 if (_topTransaction == null)
                     throw new TransactionException(
-                        $"DbContext.Database.CurrentTransaction is null, and inner top transaction is null.");
+                        $"DbContext.Database.CurrentTransaction is null, and inner top transaction is null");
                 return new ShashlikDbContextTransaction(_topTransaction);
             }
         }

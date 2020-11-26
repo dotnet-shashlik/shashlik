@@ -13,7 +13,6 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Sms.EventBus
 {
     [ConditionDependsOn(typeof(ISms))]
-    [ConditionDependsOnMissing(typeof(ISmsSender))]
     [Singleton]
     public class EventBusSmsSender : ISmsSender
     {

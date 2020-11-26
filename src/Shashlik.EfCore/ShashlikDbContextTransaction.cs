@@ -47,9 +47,9 @@ namespace Shashlik.EfCore
         {
             if (TopTransaction is ShashlikDbContextTransaction shashlikDbContextTransaction
                 && shashlikDbContextTransaction.IsDone)
-                throw new TransactionException("Top transaction has been done.");
+                throw new TransactionException("Top transaction has been done");
             if (IsDone)
-                throw new TransactionException("Top transaction has been done.");
+                throw new TransactionException("Top transaction has been done");
         }
 
         public void Dispose()

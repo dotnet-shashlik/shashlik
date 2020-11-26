@@ -22,37 +22,37 @@ namespace Shashlik.Identity
             _invalidExpirationTime = LoggerMessage.Define(
                 eventId: new EventId(0, "InvalidExpirationTime"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: the expiration time is invalid.");
+                formatString: "ValidateAsync failed: the expiration time is invalid");
 
             _userIdsNotEquals = LoggerMessage.Define(
                 eventId: new EventId(1, "UserIdsNotEquals"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: did not find expected UserId.");
+                formatString: "ValidateAsync failed: did not find expected UserId");
 
             _purposeNotEquals = LoggerMessage.Define<string, string>(
                 eventId: new EventId(2, "PurposeNotEquals"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: did not find expected purpose. '{ActualPurpose}' does not match the expected purpose '{ExpectedPurpose}'.");
+                formatString: "ValidateAsync failed: did not find expected purpose. '{ActualPurpose}' does not match the expected purpose '{ExpectedPurpose}'");
 
             _unexpectedEndOfInput = LoggerMessage.Define(
                 eventId: new EventId(3, "UnexpectedEndOfInput"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: unexpected end of input.");
+                formatString: "ValidateAsync failed: unexpected end of input");
 
             _securityStampNotEquals = LoggerMessage.Define(
                 eventId: new EventId(4, "SecurityStampNotEquals"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: did not find expected security stamp.");
+                formatString: "ValidateAsync failed: did not find expected security stamp");
 
             _securityStampIsNotEmpty = LoggerMessage.Define(
                 eventId: new EventId(5, "SecurityStampIsNotEmpty"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: the expected stamp is not empty.");
+                formatString: "ValidateAsync failed: the expected stamp is not empty");
 
             _unhandledException = LoggerMessage.Define(
                 eventId: new EventId(6, "UnhandledException"),
                 logLevel: LogLevel.Debug,
-                formatString: "ValidateAsync failed: unhandled exception was thrown.");
+                formatString: "ValidateAsync failed: unhandled exception was thrown");
         }
 
         public static void InvalidExpirationTime(this ILogger logger)

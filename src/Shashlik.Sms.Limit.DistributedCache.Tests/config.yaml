@@ -1,0 +1,24 @@
+﻿Shashlik:
+  Redis:
+    ConnectionString: 192.168.50.178:6380,password=123123,defaultDatabase=0
+    Sentinels: [ ]
+    Readonly: false
+  Sms:
+    Enable: true
+    UseEmptySms: true
+    EnableDistributedCacheLimit: true
+    BatchMax: 999
+    Limits:
+      - Subject: Login
+        DayLimitCount: 15
+        HourLimitCount: 15
+        MinuteLimitCount: 1
+    DomainConfigs:
+      - Priority: 1
+        Domain: aliyun
+        AppId: a
+        AppKey: a
+        Templates:
+          - Subject: Login
+            TemplateId: aaaa
+            Sign: Shashlik

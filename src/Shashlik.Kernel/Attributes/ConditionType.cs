@@ -1,4 +1,5 @@
-﻿namespace Shashlik.Kernel.Attributes
+﻿// ReSharper disable InconsistentNaming
+namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
     /// 条件类型

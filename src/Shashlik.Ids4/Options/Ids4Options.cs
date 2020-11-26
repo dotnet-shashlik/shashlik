@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using IdentityServer4;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
 using Shashlik.Kernel.Attributes;
@@ -15,6 +14,16 @@ namespace Shashlik.Ids4
         /// 是否启用
         /// </summary>
         public bool Enable { get; set; } = true;
+
+        /// <summary>
+        /// PublicOrigin
+        /// </summary>
+        public string? PublicOrigin { get; set; }
+        
+        /// <summary>
+        /// Base Path
+        /// </summary>
+        public  string? BasePath { get; set; }
 
         /// <summary>
         /// ids4配置参数
@@ -40,7 +49,7 @@ namespace Shashlik.Ids4
         /// api resources 内存配置
         /// </summary>
         public List<ApiResource>? ApiResources { get; set; }
-        
+
         /// <summary>
         /// api scopes 内存配置
         /// </summary>

@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel.Test;
 using Shashlik.Sms.Exceptions;
-using Shashlik.Sms.Limit.DistributedCache;
 using Shashlik.Utils.Extensions;
 using Xunit;
 using Xunit.Abstractions;
@@ -21,7 +21,7 @@ namespace Shashlik.Sms.Cap.Tests
 
         private readonly string _testPhone1 = "13000000001";
         private readonly string _testPhone2 = "13000000002";
-        private const string CachePrefix = "SMS_LIMIT:{0}:{1}";
+        private const string CachePrefix = "SMS_MEMORYCAHCHE_LIMIT:{0}:{1}";
 
         [Fact]
         public void IntegrationTest()
@@ -29,8 +29,8 @@ namespace Shashlik.Sms.Cap.Tests
             var sms = GetService<ISms>();
             var smsSender = GetService<ISmsSender>();
             var smsLimit = GetService<ISmsLimit>();
-            smsLimit.GetType().ShouldBe(typeof(DistributedCacheSmsLimit));
-            var cache = GetService<IDistributedCache>();
+            smsLimit.GetType().ShouldBe(typeof(MemorySmsLimit));
+            var cache = GetService<IMemoryCache>();
             cache.Remove(CachePrefix.Format(_testPhone1, "Login"));
             cache.Remove(CachePrefix.Format(_testPhone2, "Login"));
 

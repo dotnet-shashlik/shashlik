@@ -39,8 +39,7 @@ namespace Shashlik.Utils.Helpers
             }
 
             using var aes = Aes.Create();
-            Debug.Assert(aes != null, nameof(aes) + " != null");
-            aes.Key = keyBytes;
+            aes!.Key = keyBytes;
             aes.IV = ivBytes;
             aes.Padding = paddingMode;
             aes.Mode = cipherMode;
@@ -83,7 +82,7 @@ namespace Shashlik.Utils.Helpers
 
             var bytes = Convert.FromBase64String(text);
             using var aes = Aes.Create();
-            aes.Padding = paddingMode;
+            aes!.Padding = paddingMode;
             aes.Mode = cipherMode;
             using var ms = new MemoryStream();
             using var csDecrypt = new CryptoStream(ms,

@@ -23,7 +23,7 @@ namespace Shashlik.RazorFormat
         private static readonly Regex actionReg = new Regex("^[a-zA-Z]{1}\\w{0,15}$");
 
         /// <summary>
-        /// 注册格式化器,不要多线程注册,非线程安全,默认已注册switch格式化器,注册时不会验证action的正确性!!!
+        /// 注册格式化器,不要多线程注册,非线程安全
         /// </summary>
         /// <param name="formater"></param>
         public static void Registry(IFormatter formater)

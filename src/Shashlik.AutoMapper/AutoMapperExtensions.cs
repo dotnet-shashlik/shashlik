@@ -107,12 +107,12 @@ namespace Shashlik.AutoMapper
                             catch
                             {
                                 throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             }
 
                             if (obj is null)
                                 throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             try
                             {
                                 configMethod.Invoke(obj, new object[] {expression});
@@ -171,12 +171,12 @@ namespace Shashlik.AutoMapper
                             catch
                             {
                                 throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             }
 
                             if (obj is null)
                                 throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor.");
+                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             try
                             {
                                 configMethod.Invoke(obj, new object[] {expression});
@@ -211,7 +211,7 @@ namespace Shashlik.AutoMapper
         public static IQueryable<TDest> QueryTo<TDest>(this IQueryable source)
         {
             if (ShashlikAutoMapper.Instance is null)
-                throw new InvalidOperationException("shashlik mapper hasn't been initialized.");
+                throw new InvalidOperationException("shashlik mapper hasn't been initialized");
             return source.ProjectTo<TDest>(ShashlikAutoMapper.Instance.ConfigurationProvider);
         }
 
@@ -223,7 +223,7 @@ namespace Shashlik.AutoMapper
         public static TDest MapTo<TDest>(this object obj)
         {
             if (ShashlikAutoMapper.Instance != null) return ShashlikAutoMapper.Instance.Map<TDest>(obj);
-            throw new NullReferenceException($"Make sure AutoMapper initialized.");
+            throw new NullReferenceException($"Make sure AutoMapper initialized");
         }
 
         /// <summary>
@@ -236,7 +236,7 @@ namespace Shashlik.AutoMapper
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
             if (ShashlikAutoMapper.Instance != null) ShashlikAutoMapper.Instance.Map(obj, destObj);
-            else throw new NullReferenceException($"Make sure AutoMapper initialized.");
+            else throw new NullReferenceException($"Make sure AutoMapper initialized");
         }
     }
 }

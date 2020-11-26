@@ -27,9 +27,7 @@
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
         <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
         <ProjectReference Include="..\Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj" />
-        <ProjectReference Include="..\Shashlik.Sms.Limit.DistributedCache\Shashlik.Sms.Limit.DistributedCache.csproj" />
         <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
-        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -37,7 +35,7 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="config.yaml">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>
 

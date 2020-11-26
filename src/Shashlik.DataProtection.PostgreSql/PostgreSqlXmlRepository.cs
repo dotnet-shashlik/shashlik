@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
 using Npgsql;
+
 // ReSharper disable CheckNamespace
 
 namespace Shashlik.DataProtection
@@ -32,7 +33,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM \"{Options.TableName}\";";
+            cmd.CommandText = $"SELECT * FROM \"{Options.Scheme}\".\"{Options.TableName}\";";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
@@ -49,7 +50,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $"insert into \"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
+            var sql = $"insert into \"{Options.Scheme}\".\"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new NpgsqlParameter("@xml", DbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
@@ -60,12 +61,17 @@ namespace Shashlik.DataProtection
 
         private void InitDb()
         {
+            if (Options.EnableAutoCreateDataBase)
+                CreateDataBaseIfNoExists();
             using var conn = new NpgsqlConnection(ConnectionString);
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
 
+            // 9.2及以下不支持CREATE SCHEMA IF NOT EXISTS语法
+            // 只能使用public scheme
             using var cmd = conn.CreateCommand();
             var batchSql = $@"
+{(Options.Scheme == "public" ? "CREATE SCHEMA IF NOT EXISTS " + Options.Scheme + ";" : "")}
 CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 	""Id"" SERIAL PRIMARY KEY,
 	""Xml"" VARCHAR(4000) NOT NULL,
@@ -73,6 +79,31 @@ CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 );";
             cmd.CommandText = batchSql;
             cmd.ExecuteNonQuery();
+        }
+
+        private void CreateDataBaseIfNoExists()
+        {
+            var builder = new NpgsqlConnectionStringBuilder(ConnectionString);
+            var database = builder.Database;
+            builder.Database = "postgres";
+            var newConnStr = builder.ToString();
+            using var conn = new NpgsqlConnection(newConnStr);
+            conn.Open();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = $"SELECT COUNT(*) FROM pg_database WHERE datname = '{database}'";
+            var count = cmd.ExecuteScalar();
+            if (count.ToString() == "0")
+            {
+                try
+                {
+                    cmd.CommandText = $@"CREATE DATABASE {database};";
+                    cmd.ExecuteNonQuery();
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Shashlik.Ids4.MySqlStore
                 }
 
                 if (string.IsNullOrWhiteSpace(conn))
-                    throw new InvalidOperationException($"ConnectionString can not be empty.");
+                    throw new InvalidOperationException($"ConnectionString can not be empty");
             }
 
             if (Options.EnableConfigurationStore)

@@ -31,7 +31,7 @@ namespace Shashlik.Identity.Int32.PostgreSql
             }
 
             if (string.IsNullOrWhiteSpace(conn))
-                throw new InvalidOperationException($"ConnectionString can not be empty.");
+                throw new InvalidOperationException($"ConnectionString can not be empty");
 
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
             {

@@ -12,7 +12,7 @@ namespace Shashlik.Kernel
         internal static void InitServiceProvider(IKernelServiceProvider serviceProvider)
         {
             if (KernelServiceProvider != null)
-                throw new InvalidOperationException("Kernel ServiceProvider cannot repeat initialization.");
+                throw new InvalidOperationException("Kernel ServiceProvider cannot repeat initialization");
 
             KernelServiceProvider = serviceProvider;
         }

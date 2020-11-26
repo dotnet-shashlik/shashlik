@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Test.Options
 {

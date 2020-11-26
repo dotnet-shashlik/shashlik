@@ -28,7 +28,7 @@ namespace Shashlik.Kernel.Test
             services.AddAuthentication();
             services.AddAuthorization();
 
-            services.AddShashlik(Configuration);
+            services.AddShashlik(Configuration, null, typeof(TestOptions5));
         }
 
         public void Configure(IApplicationBuilder app)
