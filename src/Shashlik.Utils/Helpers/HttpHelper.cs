@@ -117,7 +117,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="proxy">代理设置</param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static async Task<IRestResponse> PostJsonForOriginResponse<TResult>(string url, object? jsonData,
+        public static async Task<IRestResponse<TResult>> PostJsonForOriginResponse<TResult>(string url, object? jsonData,
             IDictionary<string, string>? headers = null, IDictionary<string, string>? cookies = null, int timeout = 30,
             IWebProxy? proxy = null, Encoding? encoding = null)
             where TResult : class
