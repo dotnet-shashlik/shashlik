@@ -197,7 +197,16 @@ namespace Shashlik.Kernel.Test
                 GetServices<C61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
 
                 GetServices<D6>().Any(r => r is D6).ShouldBeTrue();
+                
+                GetServices<IA61<int>>().Any(r=>r is E6).ShouldBeFalse();
+                GetServices<IA61<int>>().Any(r=>r is F6).ShouldBeFalse();
             }
+
+            {
+                GetService<IA27>().ShouldBeNull();
+                GetService<B27>().ShouldNotBeNull();
+            }
+            
         }
 
         [Fact]

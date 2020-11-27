@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections;
 using Shashlik.Kernel.Dependency;
 
@@ -194,6 +193,28 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
 
     [Singleton()]
     public class D6 : C6
+    {
+    }
+
+    [Singleton(typeof(IA61<>))]
+    public class E6 : C6
+    {
+    }
+
+    [Singleton(typeof(IA61<int>))]
+    public class F6 : C6
+    {
+    }
+
+    //############################
+
+    [Singleton()]
+    public abstract class IA27
+    {
+    }
+
+    [Singleton(typeof(IA27))]
+    public class B27 : IA27
     {
     }
 }

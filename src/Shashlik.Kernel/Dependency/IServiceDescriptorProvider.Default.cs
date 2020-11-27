@@ -113,7 +113,7 @@ namespace Shashlik.Kernel.Dependency
         private static HashSet<Type> GetIgnoresFromInheritedChain(Type type)
         {
             List<Type> res = new List<Type>();
-            foreach (var item in type.GetAllBaseTypesAndInterfaces())
+            foreach (var item in type.GetAllBaseTypesAndInterfaces().Concat(new[] {type}))
             {
                 var serviceAttribute = item.GetCustomAttribute<ServiceAttribute>();
                 if (serviceAttribute == null)
@@ -122,6 +122,14 @@ namespace Shashlik.Kernel.Dependency
             }
 
             return res.ToHashSet();
+        }
+
+        private static bool IsIgnored(Type serviceType, HashSet<Type> ignores)
+        {
+            if (ignores.IsNullOrEmpty())
+                return false;
+            return ignores.Any(r =>
+                r == serviceType || (r.IsGenericTypeDefinition && serviceType.IsGenericType && serviceType.GetGenericTypeDefinition() == r));
         }
 
         public IEnumerable<ShashlikServiceDescriptor> GetDescriptor(TypeInfo type)
@@ -146,7 +154,7 @@ namespace Shashlik.Kernel.Dependency
                     var ignores = GetIgnoresFromInheritedChain(item1);
                     foreach (var item2 in allTypes)
                     {
-                        if (ignores.Contains(item2))
+                        if (IsIgnored(item2, ignores))
                             continue;
 
                         if (!CanAddService(item1, item2, out var serviceTypeList))
@@ -154,6 +162,8 @@ namespace Shashlik.Kernel.Dependency
 
                         foreach (var serviceType in serviceTypeList)
                         {
+                            if (IsIgnored(serviceType, ignores))
+                                continue;
                             var serviceDescriptor = ServiceDescriptor.Describe(serviceType, item1, serviceAttribute.ServiceLifetime);
                             var conditions1 = GetConditions(item1);
                             var conditions2 = GetConditions(serviceType);
@@ -169,8 +179,10 @@ namespace Shashlik.Kernel.Dependency
 
                 foreach (var finalSubType in finalSubTypes)
                 {
-                    if (GetIgnoresFromInheritedChain(finalSubType).Contains(finalSubType))
+                    var ignores = GetIgnoresFromInheritedChain(finalSubType);
+                    if (IsIgnored(finalSubType, ignores))
                         continue;
+
                     ValidServiceLifetime(serviceAttribute.ServiceLifetime, finalSubType);
 
                     // 只注册最下面的没有子类的最终类
@@ -183,6 +195,8 @@ namespace Shashlik.Kernel.Dependency
                         {
                             foreach (var serviceType in serviceTypeList)
                             {
+                                if (IsIgnored(serviceType, ignores))
+                                    continue;
                                 ServiceDescriptor @base = ServiceDescriptor.Describe(serviceType, finalSubType, serviceAttribute.ServiceLifetime);
                                 // 每一个服务都使用服务类和实现的条件并集
                                 res.Add(new ShashlikServiceDescriptor(@base, currentConditions));
@@ -195,7 +209,7 @@ namespace Shashlik.Kernel.Dependency
             else if (type.IsClass && !type.IsAbstract)
             {
                 var ignores = GetIgnoresFromInheritedChain(type);
-                if (!ignores.Contains(type))
+                if (!IsIgnored(type, ignores))
                 {
                     // 注册自身
                     var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
@@ -205,7 +219,7 @@ namespace Shashlik.Kernel.Dependency
                 var baseTypes = type.GetAllBaseTypesAndInterfaces();
                 foreach (var baseType in baseTypes)
                 {
-                    if (ignores.Contains(baseType))
+                    if (IsIgnored(baseType, ignores))
                         continue;
 
                     ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
