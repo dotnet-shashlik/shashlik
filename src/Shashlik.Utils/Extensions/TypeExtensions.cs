@@ -92,7 +92,21 @@ namespace Shashlik.Utils.Extensions
         public static ConstructorInfo GetDeclaredConstructor(this Type type, params Type[] types)
         {
             if (types is null) throw new ArgumentNullException(nameof(types));
-            return type.GetConstructor(types);
+            return type.GetTypeInfo()
+                .DeclaredConstructors
+                .SingleOrDefault(r =>
+                {
+                    var ps = r.GetParameters();
+                    if (ps.Length != types.Length)
+                        return false;
+                    for (int i = 0; i < ps.Length; i++)
+                    {
+                        if (ps[i].ParameterType != types[i])
+                            return false;
+                    }
+
+                    return true;
+                });
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException("invalid expire.", nameof(expire));
 
             var timer = new Timer {Interval = expire.TotalMilliseconds};
-            timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            timer.Elapsed += (sender, e) =>
             {
                 try
                 {
@@ -74,7 +74,7 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException("invalid interval.", nameof(interval));
 
             var timer = new Timer {Interval = interval.TotalMilliseconds};
-            timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+            timer.Elapsed += (sender, e) =>
             {
                 if (!cancellationToken.Value.IsCancellationRequested)
                     action();
