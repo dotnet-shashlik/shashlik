@@ -11,10 +11,9 @@ namespace Shashlik.Captcha.Totp
     /// <summary>
     /// totp验证码,使用 DataProtection的当前密钥keyId作为secret混淆,需要依赖DataProtection
     /// </summary>
-    [ConditionDependsOnMissing(typeof(ICaptcha))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]
     [Singleton]
-    internal class TotpCatpcha : ICaptcha
+    public class TotpCatpcha : ICaptcha
     {
         public TotpCatpcha(IOptionsMonitor<CaptchaOptions> options)
         {
@@ -26,6 +25,12 @@ namespace Shashlik.Captcha.Totp
         private IOptionsMonitor<CaptchaOptions> Options { get; }
         private TotpGenerator TotpGenerator { get; }
         private TotpValidator TotpValidator { get; }
+
+        public Task Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
+        {
+            var key = GetKey(purpose, target, securityStamp);
+            return Task.FromResult(TotpGenerator.Generate(key).ToString());
+        }
 
         /// <summary>
         /// 验证码是否正确
@@ -39,7 +44,7 @@ namespace Shashlik.Captcha.Totp
         public Task<bool> IsValid(string purpose, string target, string code, string securityStamp = null,
             bool isDeleteOnSucceed = true)
         {
-            var key = BuildTokenString(purpose, target, securityStamp);
+            var key = GetKey(purpose, target, securityStamp);
 
             return Task.FromResult(
                 code.TryParse<int>(out var codeInt)
@@ -54,24 +59,15 @@ namespace Shashlik.Captcha.Totp
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
         /// <param name="codeLength">验证码长度,totp无效</param>
         /// <returns></returns>
-        public Task<CodeModel> Build(string purpose, string target, string securityStamp = null, int codeLength = 6)
+        public Task<string> Build(string purpose, string target, string securityStamp = null, int codeLength = 6)
         {
-            var key = BuildTokenString(purpose, target, securityStamp);
-            var code = TotpGenerator.Generate(key);
-            return Task.FromResult(new CodeModel
-            {
-                Purpose = purpose,
-                Target = target,
-                Code = code.ToString("D6"),
-                ErrorCount = 0,
-                SendTime = DateTimeOffset.Now,
-                ExpiresAt = DateTimeOffset.Now.AddSeconds(Options.CurrentValue.LifeTimeSecond)
-            });
+            var key = GetKey(purpose, target, securityStamp);
+            return Task.FromResult(TotpGenerator.Generate(key).ToString());
         }
 
-        private string BuildTokenString(string purpose, string target, string securityStamp = null)
+        private static string GetKey(string purpose, string target, string securityStamp = null)
         {
-            if (securityStamp.IsNullOrWhiteSpace())
+            if (securityStamp!.IsNullOrWhiteSpace())
                 return ($"{purpose}:{target}");
             return $"{purpose}:{target}:{securityStamp}";
         }

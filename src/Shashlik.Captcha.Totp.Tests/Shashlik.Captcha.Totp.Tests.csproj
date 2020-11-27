@@ -24,7 +24,7 @@
     <ProjectReference Include="..\Shashlik.Captcha.Totp\Shashlik.Captcha.Totp.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+    
   </ItemGroup>
 
   <ItemGroup>

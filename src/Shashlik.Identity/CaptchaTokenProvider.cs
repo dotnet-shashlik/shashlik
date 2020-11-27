@@ -39,7 +39,7 @@ namespace Shashlik.Identity
             if (securityStamp is null) throw new ArgumentNullException(nameof(securityStamp));
             var target = GetTarget(await manager.GetUserIdAsync(user));
             var code = await Captcha.Build(purpose, target, securityStamp, Options.Value.CaptchaLength);
-            return code.Code;
+            return code;
         }
 
         /// <summary>

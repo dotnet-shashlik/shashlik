@@ -1,33 +1,31 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Caching.Distributed;
+using CSRedis;
 using Microsoft.Extensions.Options;
-using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.Captcha.DistributedCache
+namespace Shashlik.Captcha.Redis
 {
     /// <summary>
     /// 验证码
     /// </summary>
-    [ConditionDependsOn(typeof(IDistributedCache))]
+    [ConditionDependsOn(typeof(CSRedisClient))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]
     [Singleton]
-    public class DistributedCacheCatpcha : ICaptcha
+    public class RedisCacheCatpcha : ICaptcha
     {
-        public DistributedCacheCatpcha(IDistributedCache cache, IOptionsMonitor<CaptchaOptions> options, ILock @lock)
+        public RedisCacheCatpcha(CSRedisClient redisClient, IOptionsMonitor<CaptchaOptions> options)
         {
-            Cache = cache;
+            RedisClient = redisClient;
             Options = options;
-            Locker = @lock;
         }
 
-        private IDistributedCache Cache { get; }
+        private CSRedisClient RedisClient { get; }
         private IOptionsMonitor<CaptchaOptions> Options { get; }
-        private ILock Locker { get; }
 
         public async Task Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
         {
@@ -40,14 +38,13 @@ namespace Shashlik.Captcha.DistributedCache
             if (string.IsNullOrWhiteSpace(code)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(code));
 
             var key = GetKey(purpose, target, securityStamp);
-            var codeModel = new CaptchaModel
-            {
-                Code = code,
-                ErrorCount = 0,
-                MaxErrorCount = Options.CurrentValue.MaxErrorCount,
-                ExpireAt = DateTimeOffset.Now.AddSeconds(lifeTimeSeconds)
-            };
-            await Cache.SetObjectWithJsonAsync(key, codeModel, DateTimeOffset.Now.AddSeconds(lifeTimeSeconds));
+            var errorKey = $"{key}:ERROR";
+            code = $"TOLERATE:{maxErrorCount:D2}:{code}";
+            RedisClient.StartPipe()
+                .Set(errorKey, 0, lifeTimeSeconds)
+                .Set(key, code, lifeTimeSeconds)
+                .EndPipe();
+            await Task.CompletedTask;
         }
 
         /// <summary>
@@ -63,26 +60,47 @@ namespace Shashlik.Captcha.DistributedCache
             bool isDeleteOnSucceed = true)
         {
             var key = GetKey(purpose, target, securityStamp);
-            using var lck = Locker.Lock(key, 3);
-            var codeModel = await Cache.GetObjectWithJsonAsync<CaptchaModel>(key);
-            if (codeModel is null)
+            var errorKey = $"{key}:ERROR";
+            var redisCode = RedisClient.Get<string>(key);
+            if (redisCode is null)
                 return false;
 
-            if (code == codeModel.Code)
+            int maxErrorCount = Options.CurrentValue.MaxErrorCount;
+            var reg = new Regex("^TOLERATE:(\\d\\d):(.*)");
+            var match = reg.Match(redisCode);
+            if (match.Success && match.Groups.Count == 3)
+            {
+                redisCode = match.Groups[2].Value;
+                maxErrorCount = match.Groups[1].Value.ParseTo<int>();
+            }
+
+            if (code == redisCode)
             {
                 if (isDeleteOnSucceed)
-                    await Cache.RemoveAsync(key);
+                {
+                    RedisClient.StartPipe()
+                        .Del(key)
+                        .Del(errorKey)
+                        .EndPipe();
+                }
+
                 return true;
             }
 
-            codeModel.ErrorCount += 1;
-            if (codeModel.ErrorCount >= codeModel.MaxErrorCount)
+            if (maxErrorCount == 0)
+                return false;
+
+            // 加1次错误数量
+            var errorCount = await RedisClient.IncrByAsync(errorKey);
+            if (errorCount >= maxErrorCount)
             {
-                await Cache.RemoveAsync(key);
+                RedisClient.StartPipe()
+                    .Del(key)
+                    .Del(errorKey)
+                    .EndPipe();
                 return false;
             }
 
-            await Cache.SetObjectWithJsonAsync(key, codeModel, codeModel.ExpireAt);
             return false;
         }
 
@@ -102,7 +120,7 @@ namespace Shashlik.Captcha.DistributedCache
             return code;
         }
 
-        private string GetKey(string purpose, string target, string securityStamp = null)
+        private static string GetKey(string purpose, string target, string securityStamp = null)
         {
             if (string.IsNullOrWhiteSpace(securityStamp))
                 return "CAPTCHA:{0}:{1}".Format(purpose, target);

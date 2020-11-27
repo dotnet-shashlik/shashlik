@@ -23,7 +23,7 @@
     <ProjectReference Include="..\Shashlik.DataProtection.MySql\Shashlik.DataProtection.MySql.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-    <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+    
   </ItemGroup>
 
   <ItemGroup>

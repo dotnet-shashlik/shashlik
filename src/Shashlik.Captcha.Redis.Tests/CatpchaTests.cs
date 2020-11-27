@@ -5,7 +5,7 @@ using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Shashlik.Captcha.DistributedCache.Tests
+namespace Shashlik.Captcha.Redis.Tests
 {
     public class CatpchaTests : KernelTestBase
     {
@@ -21,7 +21,7 @@ namespace Shashlik.Captcha.DistributedCache.Tests
         public async Task CaptchaTests1()
         {
             var captcha = GetService<ICaptcha>();
-            captcha.ShouldBeOfType<DistributedCacheCatpcha>();
+            captcha.ShouldBeOfType<RedisCacheCatpcha>();
             var securityStamp = "123";
 
             // 直接验证

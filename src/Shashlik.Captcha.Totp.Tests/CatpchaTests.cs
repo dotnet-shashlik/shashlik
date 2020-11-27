@@ -42,8 +42,8 @@ namespace Shashlik.Captcha.Totp.Tests
 
             var createTime = DateTime.Now;
             var code = await captcha.Build("login", "13000000000", securityStamp);
-            _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code.Code}");
-            (await captcha.IsValid("login", "13000000000", code.Code, securityStamp)).ShouldBeTrue();
+            _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code}");
+            (await captcha.IsValid("login", "13000000000", code, securityStamp)).ShouldBeTrue();
 
             int count = 1;
             while (true)
@@ -51,7 +51,7 @@ namespace Shashlik.Captcha.Totp.Tests
                 if (count > 18)
                     break;
                 await Task.Delay(10_000);
-                var res = (await captcha.IsValid("login", "13000000000", code.Code, securityStamp));
+                var res = (await captcha.IsValid("login", "13000000000", code, securityStamp));
                 _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】{count * 10}秒后验证: {res}");
                 if ((DateTime.Now - createTime).TotalSeconds > 120 + 30)
                     res.ShouldBeFalse();
