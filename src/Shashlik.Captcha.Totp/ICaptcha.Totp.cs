@@ -26,8 +26,15 @@ namespace Shashlik.Captcha.Totp
         private TotpGenerator TotpGenerator { get; }
         private TotpValidator TotpValidator { get; }
 
-        public Task Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
+        public Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
         {
+            if (purpose is null) throw new ArgumentNullException(nameof(purpose));
+            if (target is null) throw new ArgumentNullException(nameof(target));
+            if (Options.CurrentValue.LifeTimeSecond <= 0)
+                throw new InvalidOperationException("Invalid options: Shashlik.Captcha.LifeTimeSecond");
+            if (Options.CurrentValue.MaxErrorCount < 0 || Options.CurrentValue.MaxErrorCount > 99)
+                throw new InvalidOperationException("Invalid options: Shashlik.Captcha.MaxErrorCount, should be 0~99");
+
             var key = GetKey(purpose, target, securityStamp);
             return Task.FromResult(TotpGenerator.Generate(key).ToString());
         }
@@ -61,8 +68,7 @@ namespace Shashlik.Captcha.Totp
         /// <returns></returns>
         public Task<string> Build(string purpose, string target, string securityStamp = null, int codeLength = 6)
         {
-            var key = GetKey(purpose, target, securityStamp);
-            return Task.FromResult(TotpGenerator.Generate(key).ToString());
+            return Build(purpose, target, 0, 0, null, securityStamp);
         }
 
         private static string GetKey(string purpose, string target, string securityStamp = null)

@@ -27,7 +27,8 @@ namespace Shashlik.Captcha.Redis
         private CSRedisClient RedisClient { get; }
         private IOptionsMonitor<CaptchaOptions> Options { get; }
 
-        public async Task Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
+        public async Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code,
+            string securityStamp = null)
         {
             if (purpose is null) throw new ArgumentNullException(nameof(purpose));
             if (target is null) throw new ArgumentNullException(nameof(target));
@@ -44,7 +45,7 @@ namespace Shashlik.Captcha.Redis
                 .Set(errorKey, 0, lifeTimeSeconds)
                 .Set(key, code, lifeTimeSeconds)
                 .EndPipe();
-            await Task.CompletedTask;
+            return await Task.FromResult(code);
         }
 
         /// <summary>

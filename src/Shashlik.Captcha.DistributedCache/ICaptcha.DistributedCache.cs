@@ -29,7 +29,8 @@ namespace Shashlik.Captcha.DistributedCache
         private IOptionsMonitor<CaptchaOptions> Options { get; }
         private ILock Locker { get; }
 
-        public async Task Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
+        public async Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code,
+            string securityStamp = null)
         {
             if (purpose is null) throw new ArgumentNullException(nameof(purpose));
             if (target is null) throw new ArgumentNullException(nameof(target));
@@ -48,6 +49,7 @@ namespace Shashlik.Captcha.DistributedCache
                 ExpireAt = DateTimeOffset.Now.AddSeconds(lifeTimeSeconds)
             };
             await Cache.SetObjectWithJsonAsync(key, codeModel, DateTimeOffset.Now.AddSeconds(lifeTimeSeconds));
+            return code;
         }
 
         /// <summary>
