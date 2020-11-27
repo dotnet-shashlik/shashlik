@@ -34,43 +34,43 @@ namespace Shashlik.Redis.Tests
         public void OriginalLockTest()
         {
             {
-                using var locker1 = RedisHelper.Lock("TestLock1", 5);
+                using var locker1 = RedisHelper.Lock("OriginTestLock1", 5);
                 locker1.ShouldNotBeNull();
-                using var locker2 = RedisHelper.Lock("TestLock1", 5);
+                using var locker2 = RedisHelper.Lock("OriginTestLock1", 5);
                 locker2.ShouldBeNull();
             }
 
             {
-                var locker1 = RedisHelper.Lock("TestLock2", 5, false);
+                var locker1 = RedisHelper.Lock("OriginTestLock2", 5, false);
                 locker1.ShouldNotBeNull();
-                var locker2 = RedisHelper.Lock("TestLock2", 5);
+                var locker2 = RedisHelper.Lock("OriginTestLock2", 5);
                 locker2.ShouldBeNull();
                 locker1.Dispose();
-                using var locker3 = RedisHelper.Lock("TestLock2", 5);
+                using var locker3 = RedisHelper.Lock("OriginTestLock2", 5);
                 locker3.ShouldNotBeNull();
             }
 
             {
-                using var locker1 = RedisHelper.Lock("TestLock3", 5);
+                using var locker1 = RedisHelper.Lock("OriginTestLock3", 5);
                 locker1.ShouldNotBeNull();
 
                 var count = 5;
                 for (var i = 0; i < count; i++)
                 {
                     Thread.Sleep(5000);
-                    using var locker2 = RedisHelper.Lock("TestLock3", 5);
+                    using var locker2 = RedisHelper.Lock("OriginTestLock3", 5);
                     locker2.ShouldBeNull();
                 }
             }
 
             {
-                using var locker1 = RedisHelper.Lock("TestLock4", 5);
+                using var locker1 = RedisHelper.Lock("OriginTestLock4", 5);
                 locker1.ShouldNotBeNull();
 
                 var lockers = new ConcurrentBag<CSRedis.CSRedisClientLock>();
                 Parallel.For(1, 10, index =>
                 {
-                    using var locker2 = RedisHelper.Lock("TestLock4", 5);
+                    using var locker2 = RedisHelper.Lock("OriginTestLock4", 5);
                     lockers.Add(locker2);
                 });
 
@@ -81,7 +81,7 @@ namespace Shashlik.Redis.Tests
                 var lockers = new ConcurrentBag<CSRedis.CSRedisClientLock>();
                 Parallel.For(1, 10, index =>
                 {
-                    var locker2 = RedisHelper.Lock("TestLock5", 5);
+                    var locker2 = RedisHelper.Lock("OriginTestLock5", 5);
                     lockers.Add(locker2);
                 });
 
@@ -92,7 +92,7 @@ namespace Shashlik.Redis.Tests
                     csRedisClientLock?.Dispose();
                 }
 
-                using var locker1 = RedisHelper.Lock("TestLock5", 5);
+                using var locker1 = RedisHelper.Lock("OriginTestLock5", 5);
                 locker1.ShouldNotBeNull();
             }
         }
@@ -185,6 +185,15 @@ namespace Shashlik.Redis.Tests
 
                 using var locker1 = locker.Lock("TestLock5", 5, true, 5);
                 locker1.ShouldNotBeNull();
+            }
+
+
+            {
+                using var locker1 = locker.Lock("TestLock6", 5, true, 1);
+                locker1.ShouldNotBeNull();
+                // 锁5秒，自动延期，10秒后仍然是锁定状态
+                Thread.Sleep(10_000);
+                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock6", 5, true, 5));
             }
         }
 
