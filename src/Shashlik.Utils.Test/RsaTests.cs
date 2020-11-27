@@ -98,6 +98,11 @@ namespace Shashlik.Utils.Test
             }
 
             {
+                using var rsa = RSAHelper.FromPem(PublicKeyPem);
+                Should.Throw<Exception>(() => rsa.ToPem(true, true));
+            }
+
+            {
                 // xml 私钥导出测试
                 using var rsa = RSAHelper.FromPem(PrivateKeyPkcs8);
                 var encrypted = rsa.EncryptBigData(data, RSAEncryptionPadding.OaepSHA256);
