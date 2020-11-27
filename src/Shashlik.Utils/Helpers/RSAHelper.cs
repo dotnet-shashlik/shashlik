@@ -41,7 +41,7 @@ namespace Shashlik.Utils.Helpers
             };
 
         /// <summary>
-        /// 从rsa pem key构建RSA对象
+        /// 从rsa pem key构建RSA对象, 自动判断是pkcs1还是pkcs8格式
         /// </summary>
         /// <param name="pemKey">私钥内容</param>
         /// <returns></returns>
