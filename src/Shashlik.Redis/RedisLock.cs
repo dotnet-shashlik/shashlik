@@ -23,6 +23,7 @@ namespace Shashlik.Redis
         /// <returns></returns>
         public IDisposable Lock(string key, int lockSeconds, bool autoDelay = true, int waitTimeoutSeconds = 60)
         {
+            if (lockSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(lockSeconds));
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
             return RedisClient.Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
                    throw new InvalidOperationException($"Can't get redis lock: {key}");

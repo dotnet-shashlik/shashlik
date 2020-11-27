@@ -19,6 +19,9 @@ namespace Shashlik.Redis
                     typeof(string),
                     typeof(int),
                     typeof(bool));
+
+            if (CSRedisClientLockConstructorInfo is null)
+                throw new MissingMemberException(nameof(CSRedisClientLock), ".ctor");
         }
 
         // Lock copy from: https://github.com/2881099/csredis/blob/master/src/CSRedisCore/CSRedisClient.cs
@@ -41,6 +44,8 @@ namespace Shashlik.Redis
             int timeoutSeconds,
             bool autoDelay = true)
         {
+            if (redisClient == null) throw new ArgumentNullException(nameof(redisClient));
+            if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
             name = $"ShashlikCSRedisClientLock:{name}";
             var startTime = DateTime.Now;
             while (DateTime.Now.Subtract(startTime).TotalSeconds < timeoutSeconds)
