@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Test;
 using Shashlik.Utils.Extensions;
+using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
 using Xunit.Abstractions;
@@ -103,17 +104,25 @@ namespace Shashlik.Redis.Tests
         public void RedisLockTest()
         {
             var locker = GetService<ILock>();
+            locker.ShouldBeOfType<RedisLock>();
+
+            {
+                using var locker1 = locker.Lock("TestLock0", 5, true, 10);
+                locker1.ShouldNotBeNull();
+                TimerHelper.SetTimeout(locker1.Dispose, TimeSpan.FromSeconds(10));
+                locker.Lock("TestLock0", 5, true, 11).ShouldNotBeNull();
+            }
 
             {
                 using var locker1 = locker.Lock("TestLock1", 5, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<Exception>(() => locker.Lock("TestLock1", 5, true, 5));
+                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock1", 5, true, 5));
             }
 
             {
                 var locker1 = locker.Lock("TestLock2", 5, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<Exception>(() => locker.Lock("TestLock2", 5, true, 5));
+                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock2", 5, true, 5));
                 locker1.Dispose();
                 using var locker3 = locker.Lock("TestLock2", 5, true, 5);
                 locker3.ShouldNotBeNull();
@@ -127,7 +136,7 @@ namespace Shashlik.Redis.Tests
                 for (var i = 0; i < count; i++)
                 {
                     Thread.Sleep(5000);
-                    Should.Throw<Exception>(() => locker.Lock("TestLock3", 5, true, 5));
+                    Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock3", 5, true, 5));
                 }
             }
 
