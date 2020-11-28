@@ -9,6 +9,7 @@
     <ItemGroup>
         <PackageReference Include="DotNetCore.CAP.RabbitMQ" Version="3.0.4"/>
     </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\Shashlik.Cap\Shashlik.Cap.csproj"/>
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
