@@ -20,6 +20,7 @@ namespace Shashlik.Identity
         {
             base.OnModelCreating(modelBuilder);
 
+            //TODO: 使用IDesignTimeDbContextFactory生成迁移时无法GetService
             IdentityUserExtendsOptions options = this.GetService<IOptions<IdentityUserExtendsOptions>>().Value;
 
             modelBuilder.Entity<Users>().Property(r => r.IdCard).HasMaxLength(32).IsRequired(options.RequireIdCard);

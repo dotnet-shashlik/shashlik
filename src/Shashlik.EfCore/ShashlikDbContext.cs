@@ -26,7 +26,8 @@ namespace Shashlik.EfCore
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            
+
+            //TODO: 使用IDesignTimeDbContextFactory生成迁移时无法GetService
             var kernelServices = this.GetService<IKernelServices>();
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             modelBuilder.RegisterEntities<IEntity>(
