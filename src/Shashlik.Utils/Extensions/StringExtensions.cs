@@ -19,7 +19,7 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static bool IsNullOrWhiteSpace(this string str)
+        public static bool IsNullOrWhiteSpace(this string? str)
         {
             return string.IsNullOrWhiteSpace(str);
         }
@@ -45,7 +45,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="str"></param>
         /// <param name="separators"></param>
         /// <returns></returns>
-        public static List<T> Split<T>(this string str, params string[] separators) where T : struct
+        public static List<T> Split<T>(this string? str, params string[] separators) where T : struct
         {
             if (string.IsNullOrWhiteSpace(str))
                 return new List<T>();
@@ -62,7 +62,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="str"></param>
         /// <param name="separators"></param>
         /// <returns></returns>
-        public static List<T> SplitSkipError<T>(this string str, params string[] separators) where T : struct
+        public static List<T> SplitSkipError<T>(this string? str, params string[] separators) where T : struct
         {
             if (string.IsNullOrWhiteSpace(str))
                 return new List<T>();
@@ -102,7 +102,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="length">保留长度</param>
         /// <param name="suffix">后缀字符</param>
         /// <returns></returns>
-        public static string SubStringIfTooLong(this string str, int length, string suffix = "...")
+        public static string SubStringIfTooLong(this string? str, int length, string suffix = "...")
         {
             if (length <= 0) throw new ArgumentOutOfRangeException(nameof(length));
 
@@ -177,7 +177,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="endLength">后面保留几位</param>
         /// <param name="mixStr">混淆字符</param>
         /// <returns></returns>
-        public static string ConfidentialData(this string value, int beginLength, int endLength, string mixStr = "****")
+        public static string ConfidentialData(this string? value, int beginLength, int endLength, string mixStr = "****")
         {
             if (mixStr == null) throw new ArgumentNullException(nameof(mixStr));
             if (beginLength < 0)
@@ -185,7 +185,7 @@ namespace Shashlik.Utils.Extensions
             if (endLength < 0)
                 throw new ArgumentOutOfRangeException(nameof(endLength));
 
-            if (value.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(value))
                 return string.Empty;
 
             var span = value.AsSpan();
@@ -277,7 +277,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="url">url</param>
         /// <param name="values">key/value键值对参数</param>
         /// <returns></returns>
-        public static string UrlArgsCombine(this string url, IEnumerable<KeyValuePair<string, object>>? values)
+        public static string? UrlArgsCombine(this string? url, IEnumerable<KeyValuePair<string, object>>? values)
         {
             if (values is null) return url;
             var keyValuePairs = values.ToList();
@@ -399,11 +399,11 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static string LowerFirstCase(this string str)
+        public static string? LowerFirstCase(this string? str)
         {
             if (str.IsNullOrWhiteSpace())
                 return str;
-            var ch = str[0];
+            var ch = str![0];
             if (ch >= 65 && ch <= 90)
             {
                 var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch + 32)};
@@ -418,11 +418,11 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
-        public static string UpperFirstCase(this string str)
+        public static string? UpperFirstCase(this string? str)
         {
             if (str.IsNullOrWhiteSpace())
                 return str;
-            var ch = str[0];
+            var ch = str![0];
             if (ch >= 97 && ch <= 122)
             {
                 var s = new Span<char>(str.ToCharArray()) {[0] = (char) (ch - 32)};
