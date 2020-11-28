@@ -11,7 +11,7 @@ namespace Shashlik.Sms.Inner
         internal static bool IsPhone(this string phone)
         {
             return !string.IsNullOrWhiteSpace(phone)
-                   && Regex.IsMatch(phone, Consts.Regexs.MobilePhoneNumber);
+                   && Regex.IsMatch(phone, @"^[1][0-9]{10}$");
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Shashlik.Sms
                 throw new SmsArgException($"batch send max count: {smsOptions.BatchMax}");
             foreach (var phone in enumerable)
             {
-                if (phone.IsNullOrWhiteSpace() || !phone.IsMatch(Consts.Regexs.MobilePhoneNumber))
+                if (phone.IsNullOrWhiteSpace() || !phone.IsMatch(@"^[1][0-9]{10}$"))
                     throw new SmsArgException($"invalid phone number: {phone}");
             }
 

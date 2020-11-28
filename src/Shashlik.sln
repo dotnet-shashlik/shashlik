@@ -75,8 +75,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Cap.Rabbit", "Shas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.Cap", "Shashlik.Sms.Cap\Shashlik.Sms.Cap.csproj", "{A9197FCC-20C4-4BF3-A188-D43DDE346B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Sms.EventBus", "Shashlik.Sms.EventBus\Shashlik.Sms.EventBus.csproj", "{C8920538-5F15-4CEB-83BA-4A1ACD463905}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Totp.Tests", "Shashlik.Captcha.Totp.Tests\Shashlik.Captcha.Totp.Tests.csproj", "{1B2DFF53-9618-44BF-BD8F-50058A1B604D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.DistributedCache.Tests", "Shashlik.Captcha.DistributedCache.Tests\Shashlik.Captcha.DistributedCache.Tests.csproj", "{B57C2798-37BB-4926-B3B1-8437FA62E998}"
@@ -306,12 +304,6 @@ Global
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9197FCC-20C4-4BF3-A188-D43DDE346B70}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.ActiveCfg = Release|Any CPU
-		{C8920538-5F15-4CEB-83BA-4A1ACD463905}.Test|Any CPU.Build.0 = Release|Any CPU
 		{1B2DFF53-9618-44BF-BD8F-50058A1B604D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1B2DFF53-9618-44BF-BD8F-50058A1B604D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B2DFF53-9618-44BF-BD8F-50058A1B604D}.Release|Any CPU.ActiveCfg = Release|Any CPU
