@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Options;
 using Shashlik.EventBus;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
-using Shashlik.Sms.Exceptions;
-using Shashlik.Sms.Options;
-using Shashlik.Utils;
-using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Sms.EventBus
 {
@@ -16,38 +11,32 @@ namespace Shashlik.Sms.EventBus
     [Singleton]
     public class EventBusSmsSender : ISmsSender
     {
-        public EventBusSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options,
-            IEventPublisher eventPublisher)
+        public EventBusSmsSender(
+            IEventPublisher eventPublisher, ISms sms)
         {
-            SmsLimit = smsLimit;
-            Options = options;
             EventPublisher = eventPublisher;
+            Sms = sms;
         }
 
-        private ISmsLimit SmsLimit { get; }
-        private IOptionsMonitor<SmsOptions> Options { get; }
+        private ISms Sms { get; }
         private IEventPublisher EventPublisher { get; }
 
-        public void Send(IEnumerable<string> phones, string subject, TransactionContext transactionContext,
+        public void Send(IEnumerable<string> phones, string subject, ITransactionContext? transactionContext,
             params string[] args)
         {
-            if (phones is null) throw new ArgumentNullException(nameof(phones));
-            var list = phones.ToList();
-            if (list.Count > Options.CurrentValue.BatchMax)
-                throw new SmsArgException($"批量发送短信最多{Options.CurrentValue.BatchMax}个号码");
-            if (list.Any(m => m.IsNullOrWhiteSpace() || !m.IsMatch(Consts.Regexs.MobilePhoneNumber)))
-                throw new SmsArgException($"{list.Join(",")} 存在手机号码格式错误");
-            if (list.Count == 1 && !SmsLimit.CanSend(list.First(), subject))
-                throw new SmsArgException("短信发送过于频繁");
+            var list = phones?.ToList();
+            if (list is null || !list.Any())
+                throw new ArgumentException($"phones can't be null or empty", nameof(phones));
+            Sms.ValidSend(list, subject, args);
             EventPublisher.PublishAsync(new SendSmsEvent
             {
-                Phones = list.ToList(),
+                Phones = list,
                 Subject = subject,
                 Args = args.ToList()
             }, transactionContext).Wait();
         }
 
-        public void Send(string phone, string subject, TransactionContext transactionContext, params string[] args)
+        public void Send(string phone, string subject, ITransactionContext? transactionContext, params string[] args)
         {
             Send(new[] {phone}, subject, transactionContext, args);
         }

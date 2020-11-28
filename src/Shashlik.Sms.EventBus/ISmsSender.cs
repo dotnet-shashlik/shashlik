@@ -15,7 +15,7 @@ namespace Shashlik.Sms.EventBus
         /// <param name="subject">短信类型</param>
         /// <param name="transactionContext"></param>
         /// <param name="args">模板参数,注意参数顺序</param>
-        void Send(IEnumerable<string> phones, string subject, TransactionContext transactionContext, params string[] args);
+        void Send(IEnumerable<string> phones, string subject, ITransactionContext? transactionContext, params string[] args);
 
         /// <summary>
         /// 短信发送,单个手机发送,会检查发送频率
@@ -24,6 +24,6 @@ namespace Shashlik.Sms.EventBus
         /// <param name="subject">短信类型</param>
         /// <param name="transactionContext"></param>
         /// <param name="args">模板参数,注意参数顺序</param>
-        void Send(string phone, string subject, TransactionContext transactionContext, params string[] args);
+        void Send(string phone, string subject, ITransactionContext? transactionContext, params string[] args);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Shashlik.Cap;
+﻿using System;
+using Shashlik.Cap;
 using Shashlik.Kernel.Attributes;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,13 @@ namespace Shashlik.Sms.Cap
 
         public void Send(IEnumerable<string> phones, string subject, params string[] args)
         {
-            var list = phones as string[] ?? phones.ToArray();
+            var list = phones?.ToList();
+            if (list is null || !list.Any())
+                throw new ArgumentException($"phones can't be null or empty", nameof(phones));
             Sms.ValidSend(list, subject, args);
             EventPublisher.Publish(new SendSmsEvent
             {
-                Phones = list.ToList(),
+                Phones = list,
                 Subject = subject,
                 Args = args.ToList()
             });
