@@ -96,6 +96,7 @@ namespace Shashlik.Utils.Extensions
         /// 如2016/12/27为周2, 获取下一个周2,2017/1/3,下一个周3就是2016/12/28
         /// </summary>
         /// <param name="dt"></param>
+        /// <param name="dayOfWeek">那一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetNextSpecificDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek)
         {
@@ -111,6 +112,7 @@ namespace Shashlik.Utils.Extensions
         /// 如2016/12/27为周2, 获取下一个周2,2016/12/27,下一个周3就是2016/12/28
         /// </summary>
         /// <param name="dt"></param>
+        /// <param name="dayOfWeek">那一天是一周的开始</param>
         /// <returns></returns>
         public static DateTime GetCurrentOrNextSpecificDayOfWeek(this DateTime dt, DayOfWeek dayOfWeek)
         {
@@ -195,9 +197,9 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="datetime"></param>
         /// <returns></returns>
-        public static int GetIntDate(this DateTime datetime)
+        public static long GetLongDate(this DateTime datetime)
         {
-            return (int) new DateTimeOffset(datetime).ToUnixTimeSeconds();
+            return new DateTimeOffset(datetime).ToUnixTimeSeconds();
         }
 
         /// <summary>
@@ -205,9 +207,9 @@ namespace Shashlik.Utils.Extensions
         /// </summary>
         /// <param name="datetime"></param>
         /// <returns></returns>
-        public static long GetLongDate(this DateTime datetime)
+        public static long GetLongDate(this DateTimeOffset datetime)
         {
-            return new DateTimeOffset(datetime).ToUnixTimeSeconds();
+            return datetime.ToUnixTimeSeconds();
         }
 
         /// <summary>
@@ -282,7 +284,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 获取季度
+        /// 获取季度值,1/2/3/4
         /// </summary>
         /// <param name="today"></param>
         /// <returns></returns>
@@ -291,25 +293,26 @@ namespace Shashlik.Utils.Extensions
             return (today.Month - 1) / 3 + 1;
         }
 
-        /// <summary>
-        /// int转换为datetime,本地时间
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static DateTime IntToDateTime(this int value)
-        {
-            DateTime startTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return startTime.AddSeconds(value).ToLocalTime();
-        }
 
         /// <summary>
-        /// int转换为datetime,本地时间
+        /// long转换为DateTime,本地时间
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public static DateTime LongToDateTime(this long value)
         {
             DateTime startTime = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            return startTime.AddSeconds(value).ToLocalTime();
+        }
+
+        /// <summary>
+        /// long转换为DateTimeOffset,本地时间
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static DateTimeOffset LongToDateTimeOffset(this long value)
+        {
+            var startTime = new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero);
             return startTime.AddSeconds(value).ToLocalTime();
         }
     }

@@ -42,7 +42,6 @@ namespace Shashlik.Utils.Test
             time.IsSameDay(new DateTime(2020, 8, 1, 13, 1, 2)).ShouldBeTrue();
             time.IsSameDay(new DateTime(2020, 8, 2, 13, 1, 2)).ShouldBeFalse();
             
-            time.GetIntDate().IntToDateTime().ShouldBe(time);
             time.GetLongDate().LongToDateTime().ShouldBe(time);
             var longTime = new DateTime(2048, 8, 1, 12, 0, 0);
             longTime.GetLongDate().LongToDateTime().ShouldBe(longTime);
