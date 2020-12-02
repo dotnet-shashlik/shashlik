@@ -26,7 +26,7 @@ namespace Shashlik.Captcha.Totp
         private TotpGenerator TotpGenerator { get; }
         private TotpValidator TotpValidator { get; }
 
-        public Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null)
+        public Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string? securityStamp = null)
         {
             if (purpose is null) throw new ArgumentNullException(nameof(purpose));
             if (target is null) throw new ArgumentNullException(nameof(target));
@@ -48,7 +48,7 @@ namespace Shashlik.Captcha.Totp
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
         /// <param name="isDeleteOnSucceed">验证成功后是否删除,totp无效</param>
         /// <returns></returns>
-        public Task<bool> IsValid(string purpose, string target, string code, string securityStamp = null,
+        public Task<bool> IsValid(string purpose, string target, string code, string? securityStamp = null,
             bool isDeleteOnSucceed = true)
         {
             var key = GetKey(purpose, target, securityStamp);
@@ -66,12 +66,12 @@ namespace Shashlik.Captcha.Totp
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
         /// <param name="codeLength">验证码长度,totp无效</param>
         /// <returns></returns>
-        public Task<string> Build(string purpose, string target, string securityStamp = null, int codeLength = 6)
+        public Task<string> Build(string purpose, string target, string? securityStamp = null, int codeLength = 6)
         {
-            return Build(purpose, target, 0, 0, null, securityStamp);
+            return Build(purpose, target, 0, 0, string.Empty, securityStamp);
         }
 
-        private static string GetKey(string purpose, string target, string securityStamp = null)
+        private static string GetKey(string purpose, string target, string? securityStamp = null)
         {
             if (securityStamp!.IsNullOrWhiteSpace())
                 return ($"{purpose}:{target}");
