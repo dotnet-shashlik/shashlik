@@ -55,7 +55,7 @@ namespace Shashlik.Kernel.Autowire
                 if (autoOptionTypes.Contains(key))
                     continue;
 
-                (_, object obj) = serviceProvider.GetService(optionsTypes).GetPropertyValue("Value");
+                (_, object? obj) = serviceProvider.GetRequiredService(optionsTypes).GetPropertyValue("Value")!;
 
                 var res = ValidationHelper.Validate(obj, serviceProvider);
                 if (res.Count > 0)

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -20,7 +19,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="maxValidationDepth">最大递归验证深度,null全部验证</param>
         /// <returns></returns>
         public static List<ValidationResult> Validate(
-            object model,
+            object? model,
             IServiceProvider? validationServiceProvider = null,
             int? maxErrorCount = null,
             int? maxValidationDepth = null)

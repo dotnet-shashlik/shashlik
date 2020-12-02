@@ -848,7 +848,7 @@ namespace Shashlik.Utils.Extensions
                     if (type == typeof(char) || type == typeof(char?))
                     {
                         var str = obj.GetString();
-                        if (str.Length == 0)
+                        if (str is null || str.Length == 0)
                             return GetDefaultValue(type);
                         if (str.Length == 1)
                             return str[0];
