@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel;
@@ -22,6 +23,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static int GetIndex<T>(this IEnumerable<T> source, T value)
         {
+            if (source == null) throw new ArgumentNullException(nameof(source));
             var i = 0;
             foreach (var item in source)
             {
@@ -42,10 +44,8 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string Join<T>(this IEnumerable<T> source, string separator)
         {
-            if (separator is null)
-            {
-                throw new ArgumentNullException(nameof(separator));
-            }
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (separator is null) throw new ArgumentNullException(nameof(separator));
 
             return string.Join(separator, source);
         }
@@ -58,10 +58,8 @@ namespace Shashlik.Utils.Extensions
         /// <param name="action"></param>
         public static void ForEachItem<T>(this IEnumerable<T> list, Action<T> action)
         {
-            if (action is null)
-            {
-                throw new ArgumentNullException(nameof(action));
-            }
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (action == null) throw new ArgumentNullException(nameof(action));
 
             foreach (var item in list)
             {
@@ -77,10 +75,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IReadOnlyList<T> ToReadOnly<T>(this IEnumerable<T> list)
         {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
+            if (list == null) throw new ArgumentNullException(nameof(list));
 
             return list.ToImmutableList();
         }
@@ -91,7 +86,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> list)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T>? list)
         {
             return list is null || !list.Any();
         }
@@ -103,12 +98,9 @@ namespace Shashlik.Utils.Extensions
         /// <param name="list"></param>
         /// <param name="keyComparer"></param>
         /// <returns></returns>
-        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T> keyComparer = null)
+        public static bool HasRepeat<T>(this IEnumerable<T> list, IEqualityComparer<T>? keyComparer = null)
         {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
+            if (list is null) throw new ArgumentNullException(nameof(list));
 
             if (keyComparer is null)
                 return list.GroupBy(r => r).Any(g => g.Count() > 1);
@@ -126,17 +118,10 @@ namespace Shashlik.Utils.Extensions
         /// <param name="keyComparer"></param>
         /// <returns></returns>
         public static bool HasRepeat<T, TP>(this IEnumerable<T> list, Func<T, TP> selectProperty,
-            IEqualityComparer<TP> keyComparer = null)
+            IEqualityComparer<TP>? keyComparer = null)
         {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            if (selectProperty is null)
-            {
-                throw new ArgumentNullException(nameof(selectProperty));
-            }
+            if (list is null) throw new ArgumentNullException(nameof(list));
+            if (selectProperty is null) throw new ArgumentNullException(nameof(selectProperty));
 
             if (keyComparer is null)
                 return list.GroupBy(selectProperty).Any(g => g.Count() > 1);
@@ -155,15 +140,8 @@ namespace Shashlik.Utils.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> list, bool condition, Func<T, bool> where)
         {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            if (where is null)
-            {
-                throw new ArgumentNullException(nameof(where));
-            }
+            if (list is null) throw new ArgumentNullException(nameof(list));
+            if (where is null) throw new ArgumentNullException(nameof(where));
 
             if (condition)
                 return list.Where(where);
@@ -181,15 +159,8 @@ namespace Shashlik.Utils.Extensions
         /// <exception cref="ArgumentNullException"></exception>
         public static IQueryable<T> WhereIf<T>(this IQueryable<T> list, bool condition, Expression<Func<T, bool>> where)
         {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            if (where is null)
-            {
-                throw new ArgumentNullException(nameof(where));
-            }
+            if (list is null) throw new ArgumentNullException(nameof(list));
+            if (where is null) throw new ArgumentNullException(nameof(where));
 
             if (condition)
                 return list.Where(where);
@@ -205,10 +176,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IQueryable<T> DoPage<T>(this IQueryable<T> query, int pageIndex, int pageSize)
         {
-            if (query is null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
+            if (query is null) throw new ArgumentNullException(nameof(query));
 
             return
                 query
@@ -225,10 +193,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static IEnumerable<T> DoPage<T>(this IEnumerable<T> query, int pageIndex, int pageSize)
         {
-            if (query is null)
-            {
-                throw new ArgumentNullException(nameof(query));
-            }
+            if (query is null) throw new ArgumentNullException(nameof(query));
 
             return
                 query
@@ -244,6 +209,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="dic"></param>
         /// <param name="key"></param>
         /// <returns></returns>
+#nullable disable
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
             if (key is null)
@@ -253,6 +219,7 @@ namespace Shashlik.Utils.Extensions
 
             return default;
         }
+#nullable enable
 
         /// <summary>
         /// 是否为空行
@@ -262,6 +229,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static bool IsEmptyRow(this DataRow row, bool whiteSpaceIs = true)
         {
+            if (row == null) throw new ArgumentNullException(nameof(row));
             for (int j = 0; j < row.Table.Columns.Count; j++)
             {
                 var value = row[j]?.ToString();
@@ -287,7 +255,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="TValue"></typeparam>
         /// <param name="to"></param>
         /// <param name="from"></param>
-        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue> from)
+        public static void Merge<TKey, TValue>(this IDictionary<TKey, TValue> to, IDictionary<TKey, TValue>? from)
         {
             if (to == null) throw new ArgumentNullException(nameof(to));
             if (from is null) return;
@@ -312,6 +280,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static DataTable ToDataTable<T>(this IEnumerable<T> data)
         {
+            if (data == null) throw new ArgumentNullException(nameof(data));
             PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
 
             DataTable table = new DataTable();
@@ -321,7 +290,7 @@ namespace Shashlik.Utils.Extensions
                 table.Columns.Add(prop.Name, prop.PropertyType);
             }
 
-            object[] values = new object[props.Count];
+            object?[] values = new object?[props.Count];
             foreach (T item in data)
             {
                 if (item is null)
