@@ -46,7 +46,9 @@ namespace Shashlik.Ids4.MySqlStore
                 {
                     options.ConfigureDbContext = dbOptions =>
                     {
-                        dbOptions.UseMySql(conn!,
+                        dbOptions.UseMySql(
+                            conn!,
+                            ServerVersion.FromString(Options.DbVersion),
                             mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
                     };
                 });
@@ -58,7 +60,9 @@ namespace Shashlik.Ids4.MySqlStore
                 {
                     options.ConfigureDbContext = dbOptions =>
                     {
-                        dbOptions.UseMySql(conn!,
+                        dbOptions.UseMySql(
+                            conn!,
+                            ServerVersion.FromString(Options.DbVersion),
                             mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
                     };
                     // 每小时清除已过期的token
