@@ -18,7 +18,7 @@ namespace Shashlik.Redis
                     typeof(string),
                     typeof(string),
                     typeof(int),
-                    typeof(bool));
+                    typeof(bool))!;
 
             if (CSRedisClientLockConstructorInfo is null)
                 throw new MissingMemberException(nameof(CSRedisClientLock), ".ctor");

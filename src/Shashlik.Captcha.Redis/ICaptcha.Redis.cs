@@ -28,7 +28,7 @@ namespace Shashlik.Captcha.Redis
         private IOptionsMonitor<CaptchaOptions> Options { get; }
 
         public async Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code,
-            string securityStamp = null)
+            string? securityStamp = null)
         {
             if (purpose is null) throw new ArgumentNullException(nameof(purpose));
             if (target is null) throw new ArgumentNullException(nameof(target));
@@ -57,7 +57,7 @@ namespace Shashlik.Captcha.Redis
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
         /// <param name="isDeleteOnSucceed">验证成功后是否删除,totp无效</param>
         /// <returns></returns>
-        public async Task<bool> IsValid(string purpose, string target, string code, string securityStamp = null,
+        public async Task<bool> IsValid(string purpose, string target, string code, string? securityStamp = null,
             bool isDeleteOnSucceed = true)
         {
             var key = GetKey(purpose, target, securityStamp);
@@ -113,7 +113,7 @@ namespace Shashlik.Captcha.Redis
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效</param>
         /// <param name="codeLength">验证码长度,totp无效</param>
         /// <returns></returns>
-        public async Task<string> Build(string purpose, string target, string securityStamp = null,
+        public async Task<string> Build(string purpose, string target, string? securityStamp = null,
             int codeLength = 6)
         {
             var code = RandomHelper.GetRandomCode(codeLength);
@@ -121,7 +121,7 @@ namespace Shashlik.Captcha.Redis
             return code;
         }
 
-        private static string GetKey(string purpose, string target, string securityStamp = null)
+        private static string GetKey(string purpose, string target, string? securityStamp = null)
         {
             if (string.IsNullOrWhiteSpace(securityStamp))
                 return "CAPTCHA:{0}:{1}".Format(purpose, target);
