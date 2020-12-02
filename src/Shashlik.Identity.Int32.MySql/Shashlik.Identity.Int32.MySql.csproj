@@ -7,12 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.2.3" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Shashlik.Identity.Int32\Shashlik.Identity.Int32.csproj" />
-        <ProjectReference Include="..\Shashlik.Identity\Shashlik.Identity.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     </ItemGroup>
 

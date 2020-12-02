@@ -35,7 +35,9 @@ namespace Shashlik.Identity.Int32.MySql
 
             kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
             {
-                options.UseMySql(conn!,
+                options.UseMySql(
+                    conn,
+                    ServerVersion.FromString(Options.DbVersion),
                     db =>
                     {
                         db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??

@@ -274,14 +274,14 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        Task<IIdentityUser> FindIdentityUserByPhoneNumberAsync(string phoneNumber);
+        Task<IIdentityUser?> FindIdentityUserByPhoneNumberAsync(string phoneNumber);
 
         /// <summary>
         /// 根据身份证查找用户,身份证号码唯一有效
         /// </summary>
         /// <param name="idCard"></param>
         /// <returns></returns>
-        Task<IIdentityUser> FindIdentityUserByIdCardAsync(string idCard);
+        Task<IIdentityUser?> FindIdentityUserByIdCardAsync(string idCard);
 
         /// <summary>
         /// 获取totp算法两阶段登录的二维码内容

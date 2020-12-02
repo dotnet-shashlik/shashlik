@@ -17,6 +17,11 @@ namespace Shashlik.Identity.Options
         public string? ConnectionString { get; set; }
 
         /// <summary>
+        /// 数据库版本，目前mysql需要
+        /// </summary>
+        public string? DbVersion { get; set; }
+
+        /// <summary>
         /// 是否自动迁移
         /// </summary>
         public bool AutoMigration { get; set; }

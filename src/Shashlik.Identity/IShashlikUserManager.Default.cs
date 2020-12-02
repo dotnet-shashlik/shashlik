@@ -4,7 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Utils.Extensions;
@@ -433,9 +432,9 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="phoneNumber"></param>
         /// <returns></returns>
-        public async Task<IIdentityUser> FindIdentityUserByPhoneNumberAsync(string phoneNumber)
+        public async Task<IIdentityUser?> FindIdentityUserByPhoneNumberAsync(string phoneNumber)
         {
-            return await Users.SingleOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            return await Task.FromResult(Users.SingleOrDefault(u => u.PhoneNumber == phoneNumber));
         }
 
         /// <summary>
@@ -443,10 +442,10 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="idCard"></param>
         /// <returns></returns>
-        public async Task<IIdentityUser> FindIdentityUserByIdCardAsync(string idCard)
+        public async Task<IIdentityUser?> FindIdentityUserByIdCardAsync(string idCard)
         {
             idCard = idCard.ToUpperInvariant();
-            return await Users.SingleOrDefaultAsync(u => u.IdCard == idCard);
+            return await Task.FromResult(Users.SingleOrDefault(u => u.IdCard == idCard));
         }
 
         /// <summary>
