@@ -1,4 +1,5 @@
-﻿namespace Shashlik.Sms.Options
+﻿#nullable disable
+namespace Shashlik.Sms.Options
 {
     public class SmsLimitConfig
     {

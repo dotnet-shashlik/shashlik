@@ -7,7 +7,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Shashlik.Cap\Shashlik.Cap.csproj"/>
-        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
         <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj"/>
     </ItemGroup>
 

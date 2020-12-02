@@ -8,8 +8,8 @@
     <ItemGroup>
         <PackageReference Include="aliyun-net-sdk-core" Version="1.5.10" />
         <PackageReference Include="aliyun-net-sdk-dysmsapi" Version="1.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.1.9" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
         <PackageReference Include="qcloud.qcloudsms_csharp" Version="0.1.6" />
     </ItemGroup>
     <ItemGroup>
