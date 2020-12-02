@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Shashlik.Cap;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Sms.Cap
 {
@@ -27,15 +28,13 @@ namespace Shashlik.Sms.Cap
             {
                 Sms.Send(@event.Phones, @event.Subject, @event.Args.ToArray());
             }
-            catch (SmsDomainException e)
+            catch (SmsLimitException e)
             {
-                Logger.LogError(e, "sms send failed, domain error");
-                throw;
+                Logger.LogError(e, "Sms send failed of limited.");
             }
-            catch (SmsOptionsException e)
+            catch (SmsArgException e)
             {
-                Logger.LogError(e, "sms send failed, options error");
-                throw;
+                Logger.LogError(e, $"Sms send failed, arguments error: {@event.ToJson()}");
             }
 
             await Task.CompletedTask;
