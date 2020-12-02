@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
             using var cmd = conn.CreateCommand();
             cmd.CommandText = $"SELECT COUNT(*) FROM pg_database WHERE datname = '{database}'";
             var count = cmd.ExecuteScalar();
-            if (count.ToString() == "0")
+            if (count is null || count.ToString() == "0")
             {
                 try
                 {

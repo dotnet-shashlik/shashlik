@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel.Attributes;
+﻿#nullable disable
+using Shashlik.Kernel.Attributes;
 
 // ReSharper disable CheckNamespace
 
