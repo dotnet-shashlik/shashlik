@@ -7,7 +7,6 @@ Shashlik:
     MaxErrorCount: 3
   Identity:
     Enable: true
-    AutoMigration: true
     DataProtectionTokenProviderOptions:
       # 默认token有效期2个小时
       TokenLifespan: "2:00:00"
@@ -21,6 +20,9 @@ Shashlik:
         RequireLowercase: false
         RequireUppercase: false
         RequireDigit: false
+    MySql:
+      AutoMigration: true
+      DbVersion: "5.7"
   DataProtection:
     MySql:
       Enable: true
