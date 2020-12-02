@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
 using Timer = System.Timers.Timer;
 
 namespace Shashlik.Utils.Helpers

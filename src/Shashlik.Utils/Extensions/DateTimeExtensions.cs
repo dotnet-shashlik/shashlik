@@ -1,4 +1,5 @@
 ﻿using System;
+// ReSharper disable IdentifierTypo
 
 // ReSharper disable ConvertIfStatementToReturnStatement
 // ReSharper disable RedundantIfElseBlock

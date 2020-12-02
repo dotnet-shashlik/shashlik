@@ -16,7 +16,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="encoding">encode, default utf8</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static string ToXmlString<T>(this T value, bool omitXmlDeclaration = false, Encoding encoding = null)
+        public static string ToXmlString<T>(this T value, bool omitXmlDeclaration = false, Encoding? encoding = null)
         {
             if (value is null)
                 return string.Empty;

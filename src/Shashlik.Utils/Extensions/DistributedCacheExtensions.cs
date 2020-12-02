@@ -1,10 +1,7 @@
-﻿#nullable disable
-
-using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Shashlik.Utils.Extensions
 {
@@ -17,11 +14,14 @@ namespace Shashlik.Utils.Extensions
         /// <param name="key">缓存key</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+#nullable disable
         public static async Task<T> GetObjectWithJsonAsync<T>(this IDistributedCache cache, string key)
         {
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             var content = await cache.GetStringAsync(key);
-            return string.IsNullOrWhiteSpace(content) ? default : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default : JsonConvert.DeserializeObject<T>(content);
         }
+#nullable enable
 
         /// <summary>
         /// 设置json数据缓存
@@ -31,10 +31,11 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj">缓存对象</param>
         /// <param name="expireAt">绝对过期时间,null不过期</param>
         /// <returns></returns>
-        public static async Task SetObjectWithJsonAsync(this IDistributedCache cache, string key, object obj,
+        public static async Task SetObjectWithJsonAsync(this IDistributedCache cache, string key, object? obj,
             DateTimeOffset? expireAt)
         {
-            await cache.SetStringAsync(key, JsonSerializer.Serialize(obj), new DistributedCacheEntryOptions
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+            await cache.SetStringAsync(key, JsonConvert.SerializeObject(obj), new DistributedCacheEntryOptions
             {
                 AbsoluteExpiration = expireAt
             });
@@ -47,11 +48,14 @@ namespace Shashlik.Utils.Extensions
         /// <param name="key">缓存key</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+#nullable disable
         public static T GetObjectWithJson<T>(this IDistributedCache cache, string key)
         {
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             var content = cache.GetString(key);
-            return string.IsNullOrWhiteSpace(content) ? default : JsonSerializer.Deserialize<T>(content);
+            return string.IsNullOrWhiteSpace(content) ? default : JsonConvert.DeserializeObject<T>(content);
         }
+#nullable enable
 
         /// <summary>
         /// 设置json数据缓存
@@ -61,10 +65,11 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj">缓存对象</param>
         /// <param name="expireAt">绝对过期时间,null不过期</param>
         /// <returns></returns>
-        public static void SetObjectWithJson(this IDistributedCache cache, string key, object obj,
+        public static void SetObjectWithJson(this IDistributedCache cache, string key, object? obj,
             DateTimeOffset? expireAt)
         {
-            cache.SetString(key, JsonSerializer.Serialize(obj), new DistributedCacheEntryOptions
+            if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
+            cache.SetString(key, JsonConvert.SerializeObject(obj), new DistributedCacheEntryOptions
             {
                 AbsoluteExpiration = expireAt
             });

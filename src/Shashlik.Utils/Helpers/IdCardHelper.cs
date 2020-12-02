@@ -84,7 +84,7 @@ namespace Shashlik.Utils.Helpers
         /// </summary>
         /// <param name="idCard"></param>
         /// <returns></returns>
-        public static IdCardModel GetIdCardModel(string idCard)
+        public static IdCardModel? GetIdCardModel(string idCard)
         {
             if (!IsIdCard(idCard))
                 return null;
@@ -131,6 +131,6 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// 身份证号
         /// </summary>
-        public string IdCard { get; set; }
+        public string? IdCard { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace Shashlik.Utils.Helpers.RSAInner
         {
             var rsaParameters = new RSAParameters();
             var base64 = PemCode.Replace(pem, "");
-            byte[] data = null;
+            byte[]? data = null;
             try
             {
                 data = Convert.FromBase64String(base64);

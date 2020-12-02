@@ -13,7 +13,7 @@ namespace Shashlik.Kernel.Dependency
 
         public ShashlikServiceDescriptor(ServiceDescriptor originalServiceDescriptor,
             List<ConditionDescriptor> conditions) : base(originalServiceDescriptor.ServiceType,
-            originalServiceDescriptor.ImplementationType, originalServiceDescriptor.Lifetime)
+            originalServiceDescriptor.ImplementationType!, originalServiceDescriptor.Lifetime)
         {
             if (ImplementationType == null)
                 throw new KernelServiceException("ShashlikServiceDescriptor implementation type can't be null");

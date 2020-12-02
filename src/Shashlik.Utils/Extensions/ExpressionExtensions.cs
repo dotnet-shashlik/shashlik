@@ -9,6 +9,7 @@ namespace Shashlik.Utils.Extensions
     {
         private static string GetPropertyInner(Expression expression)
         {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
             return expression.NodeType switch
             {
                 ExpressionType.MemberAccess => ((MemberExpression) expression).Member.Name,
@@ -24,6 +25,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string GetPropertyName(this Expression expression)
         {
+            if (expression == null) throw new ArgumentNullException(nameof(expression));
             if (expression is LambdaExpression lambda)
             {
                 return GetPropertyInner(lambda.Body);

@@ -95,7 +95,7 @@ namespace Shashlik.Kernel
         public static IKernelServices RegistryConventionServices(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var serviceDescriptorProvider = serviceProvider.GetService<IServiceDescriptorProvider>();
+            var serviceDescriptorProvider = serviceProvider.GetRequiredService<IServiceDescriptorProvider>();
 
             var types
                 = ReflectionHelper.GetTypesAndAttribute<ServiceAttribute>(kernelServices.ScanFromDependencyContext, false);
@@ -105,7 +105,7 @@ namespace Shashlik.Kernel
                 var services = serviceDescriptorProvider.GetDescriptor(item.Key);
                 foreach (var shashlikServiceDescriptor in services)
                 {
-                    if (!kernelServices.Services.AnyService(shashlikServiceDescriptor.ServiceType, shashlikServiceDescriptor.ImplementationType))
+                    if (!kernelServices.Services.AnyService(shashlikServiceDescriptor.ServiceType, shashlikServiceDescriptor.ImplementationType!))
                         kernelServices.Services.Add(shashlikServiceDescriptor);
                 }
             }
@@ -138,8 +138,8 @@ namespace Shashlik.Kernel
         public static IServiceCollection DoFilter(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var filterProvider = serviceProvider.GetService<IFilterProvider>();
-            var hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
+            var filterProvider = serviceProvider.GetRequiredService<IFilterProvider>();
+            var hostEnvironment = serviceProvider.GetRequiredService<IHostEnvironment>();
 
             // 按条件过滤服务注册
             filterProvider.DoFilter(
@@ -207,7 +207,7 @@ namespace Shashlik.Kernel
         {
             if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));
             var autowireProvider = kernelServiceProvider.GetRequiredService<IAutowireProvider<T>>();
-            var kernelServices = kernelServiceProvider.GetService<IKernelServices>();
+            var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
             autowireProvider.Autowire(dic, r => { autowireAction(r.ServiceInstance); });
             return kernelServiceProvider;
