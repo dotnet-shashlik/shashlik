@@ -11,23 +11,27 @@ namespace Shashlik.Identity.Int32.PostgreSql
 {
     public class IdentityPostgreSqlAutowire : IServiceAutowire
     {
-        public IdentityPostgreSqlAutowire(IOptions<ShashlikIdentityOptions> options)
+        public IdentityPostgreSqlAutowire(
+            IOptions<ShashlikIdentityOptions> options,
+            IOptions<ShashlikIdentityPostgreSqlOptions> postgreSqlOptions)
         {
             Options = options.Value;
+            PostgreSqlOptions = postgreSqlOptions.Value;
         }
 
         private ShashlikIdentityOptions Options { get; }
+        private ShashlikIdentityPostgreSqlOptions PostgreSqlOptions { get; }
 
         public void Configure(IKernelServices kernelService)
         {
             if (!Options.Enable)
                 return;
 
-            var conn = Options.ConnectionString;
+            var conn = PostgreSqlOptions.ConnectionString;
             if (string.IsNullOrWhiteSpace(conn))
             {
                 conn = kernelService.RootConfiguration.GetConnectionString("Default");
-                kernelService.Services.Configure<ShashlikIdentityOptions>(r => { r.ConnectionString = conn; });
+                kernelService.Services.Configure<ShashlikIdentityPostgreSqlOptions>(r => { r.ConnectionString = conn; });
             }
 
             if (string.IsNullOrWhiteSpace(conn))
@@ -38,7 +42,7 @@ namespace Shashlik.Identity.Int32.PostgreSql
                 options.UseNpgsql(conn!,
                     db =>
                     {
-                        db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??
+                        db.MigrationsAssembly(PostgreSqlOptions.MigrationAssembly.EmptyToNull() ??
                                               typeof(IdentityPostgreSqlAutowire).Assembly.FullName);
                     });
             });

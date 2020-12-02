@@ -11,23 +11,27 @@ namespace Shashlik.Identity.Int32.MySql
 {
     public class IdentityMySqlAutowire : IServiceAutowire
     {
-        public IdentityMySqlAutowire(IOptions<ShashlikIdentityOptions> options)
+        public IdentityMySqlAutowire(
+            IOptions<ShashlikIdentityOptions> options,
+            IOptions<ShashlikIdentityMySqlOptions> mysqlOptions)
         {
             Options = options.Value;
+            MySqlOptions = mysqlOptions.Value;
         }
 
         private ShashlikIdentityOptions Options { get; }
+        private ShashlikIdentityMySqlOptions MySqlOptions { get; }
 
         public void Configure(IKernelServices kernelService)
         {
             if (!Options.Enable)
                 return;
 
-            var conn = Options.ConnectionString;
+            var conn = MySqlOptions.ConnectionString;
             if (string.IsNullOrWhiteSpace(conn))
             {
                 conn = kernelService.RootConfiguration.GetConnectionString("Default");
-                kernelService.Services.Configure<ShashlikIdentityOptions>(r => { r.ConnectionString = conn; });
+                kernelService.Services.Configure<ShashlikIdentityMySqlOptions>(r => { r.ConnectionString = conn; });
             }
 
             if (string.IsNullOrWhiteSpace(conn))
@@ -37,11 +41,10 @@ namespace Shashlik.Identity.Int32.MySql
             {
                 options.UseMySql(
                     conn,
-                    ServerVersion.FromString(Options.DbVersion),
+                    ServerVersion.FromString(MySqlOptions.DbVersion),
                     db =>
                     {
-                        db.MigrationsAssembly(Options.MigrationAssembly.EmptyToNull() ??
-                                              typeof(IdentityMySqlAutowire).Assembly.FullName);
+                        db.MigrationsAssembly(MySqlOptions.MigrationAssembly.EmptyToNull() ?? typeof(IdentityMySqlAutowire).Assembly.FullName);
                     });
             });
         }
