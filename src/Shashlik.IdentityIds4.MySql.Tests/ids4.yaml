@@ -3,6 +3,7 @@
     Enable: true
     MySql:
       AutoMigration: true
+      DbVersion: "5.7"
       EnableOperationalStore: true
     Identity:
       CaptchaSignInSources: [ phone ]

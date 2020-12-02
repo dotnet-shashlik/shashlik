@@ -16,9 +16,9 @@ namespace Shashlik.Ids4.MySqlStore
         public string? ConnectionString { get; set; }
 
         /// <summary>
-        /// 数据库版本
+        /// 数据库版本,默认5.7
         /// </summary>
-        public string? DbVersion { get; set; }
+        public string? DbVersion { get; set; } = "5.7";
 
         /// <summary>
         /// 是否使用配置efcore存储,如果系统的客户端数据比较固定,推荐使用内存配置;如果系统的客户端数据需要动态删减,最好使用efcore数据库配置
