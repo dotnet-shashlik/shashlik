@@ -3,7 +3,6 @@ using System.Data;
 using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.DataProtection.Repositories;
-using MySql.Data.MySqlClient;
 using MySqlConnector;
 
 // ReSharper disable CheckNamespace
