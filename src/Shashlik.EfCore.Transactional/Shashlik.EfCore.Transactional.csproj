@@ -8,8 +8,6 @@
     <ItemGroup>
         <PackageReference Include="AspectCore.Core" Version="2.1.0" />
         <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="2.1.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.9" />
     </ItemGroup>
 
     <ItemGroup>

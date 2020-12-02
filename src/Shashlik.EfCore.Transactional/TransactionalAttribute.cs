@@ -20,18 +20,15 @@ namespace Shashlik.EfCore.Transactional
         /// <summary>
         /// 默认的特性事务上下文类型
         /// </summary>
-        internal static Type DefaultDbContextType { get; set; }
+        internal static Type? DefaultDbContextType { get; set; }
 
         /// <summary>
         /// 使用默认的数据库上下文作为特性事务
         /// </summary>
         public TransactionalAttribute()
         {
-            if (DefaultDbContextType is null)
-                throw new InvalidOperationException(
-                    $"Must define DefaultTransactionalAttribute on your DbContext Type");
-
-            DbContextType = DefaultDbContextType;
+            DbContextType = DefaultDbContextType ?? throw new InvalidOperationException(
+                $"Must define DefaultTransactionalAttribute on your DbContext Type");
         }
 
         /// <summary>
