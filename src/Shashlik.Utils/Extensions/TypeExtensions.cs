@@ -528,6 +528,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T">value type</typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
+#nullable disable
         public static T GetValue<T>(this JsonElement obj, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
@@ -538,20 +539,17 @@ namespace Shashlik.Utils.Extensions
                 {
                     case JsonValueKind.Null:
                     case JsonValueKind.Undefined:
-#pragma warning disable 8603
                         return default;
-#pragma warning restore 8603
                 }
 
                 var res = GetValue(value, typeof(T));
-#pragma warning disable 8603
                 if (res is null) return default;
-#pragma warning restore 8603
                 return (T) res;
             }
 
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
+#nullable enable
 
         /// <summary>
         /// get json object property value and parse to: <paramref name="type"/>
