@@ -17,10 +17,10 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// 判断给定的类型是否继承自<paramref name="genericType"/>泛型类型,
         /// <para>
-        /// 例: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// e.g.: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
         /// </para>
         /// <para>
-        /// 例: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// e.g.: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
         /// </para>
         /// </summary>
         /// <param name="childType">子类型</param>
@@ -52,10 +52,10 @@ namespace Shashlik.Utils.Extensions
         /// <summary>
         /// 判断给定的类型是否继承自<paramref name="genericType"/>泛型类型,
         /// <para>
-        /// 例: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// e.g.: typeof(Child&lt;&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
         /// </para>
         /// <para>
-        /// 例: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->true 
+        /// e.g.: typeof(Child&lt;int&gt;).IsSubTypeOfGenericType(typeof(IParent&lt;&gt;));  result->false 
         /// </para>
         /// </summary>
         /// <param name="childType">子类型</param>
