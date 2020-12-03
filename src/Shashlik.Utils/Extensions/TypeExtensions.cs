@@ -575,9 +575,9 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
+#nullable disable
         public static T GetValue<T>(this JsonElement obj)
         {
-#pragma warning disable 8603
             switch (obj.ValueKind)
             {
                 case JsonValueKind.Null:
@@ -590,8 +590,8 @@ namespace Shashlik.Utils.Extensions
             if (res is null) return default;
 
             return (T) res;
-#pragma warning restore 8603
         }
+#nullable enable
 
         /// <summary>
         /// get json value to <paramref name="type"/>
