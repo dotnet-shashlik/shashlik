@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shashlik.AspNetCore\Shashlik.AspNetCore.csproj" />
+    <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
     <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     
   </ItemGroup>

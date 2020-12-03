@@ -375,7 +375,7 @@ namespace Shashlik.EfCore
         /// 执行自动迁移
         /// </summary>
         /// <param name="serviceProvider"></param>
-        public static void DoAutoMigration(this IServiceProvider serviceProvider)
+        public static IServiceProvider DoAutoMigration(this IServiceProvider serviceProvider)
         {
             var instances = serviceProvider.GetServices<IAutoMigration>();
             var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("EfCoreAutoMigration");
@@ -395,6 +395,18 @@ namespace Shashlik.EfCore
                     }
                 }
             }
+
+            return serviceProvider;
+        }
+
+        /// <summary>
+        /// 执行自动迁移
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public static IKernelServiceProvider DoAutoMigration(this IKernelServiceProvider serviceProvider)
+        {
+            DoAutoMigration((IServiceProvider) serviceProvider);
+            return serviceProvider;
         }
     }
 }

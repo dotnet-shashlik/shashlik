@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.AspNetCore;
+using Shashlik.EfCore;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
 
@@ -34,6 +35,7 @@ namespace Shashlik.Kernel.Test
         public void Configure(IApplicationBuilder app)
         {
             app.ApplicationServices.UseShashlik()
+                .DoAutoMigration()
                 .AutowireServiceProvider()
                 .AutowireAspNet(app)
                 .Autowire<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
