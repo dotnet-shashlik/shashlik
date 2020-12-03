@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Shashlik.Kernel.Dependency
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public abstract class ServiceAttribute : Attribute
     {
         protected ServiceAttribute(ServiceLifetime serviceLifetime, Type[] ignoreServices)

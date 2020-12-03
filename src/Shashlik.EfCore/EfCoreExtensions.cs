@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Shashlik.Utils.Helpers;
 
 // ReSharper disable UnusedMethodReturnValue.Global
@@ -161,6 +162,35 @@ namespace Shashlik.EfCore
                         builder.HasQueryFilter(lambda);
                     }
                 });
+        }
+
+        /// <summary>
+        /// 增加自动迁移类型
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <typeparam name="TDbContext"></typeparam>
+        public static void AddAutoMigration<TDbContext>(this IServiceCollection serviceCollection)
+            where TDbContext : DbContext
+        {
+            serviceCollection.AddTransient<IAutoMigration, AutoMigration<TDbContext>>();
+        }
+
+        /// <summary>
+        /// 增加自动迁移类型
+        /// </summary>
+        /// <param name="serviceCollection"></param>
+        /// <param name="dbContextType">上下文类型</param>
+        public static void AddAutoMigration(this IServiceCollection serviceCollection, Type dbContextType)
+        {
+            if (dbContextType.IsClass
+                && dbContextType.IsAbstract
+                && dbContextType.IsSubType<DbContext>())
+            {
+                serviceCollection.AddTransient(typeof(IAutoMigration),
+                    typeof(AutoMigration<>).MakeGenericType(dbContextType));
+            }
+
+            throw new ArgumentException(nameof(dbContextType));
         }
 
         /// <summary>
@@ -339,6 +369,32 @@ namespace Shashlik.EfCore
             using var scope = provider.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             await dbContext!.Database.MigrateAsync();
+        }
+
+        /// <summary>
+        /// 执行自动迁移
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        public static void DoAutoMigration(this IServiceProvider serviceProvider)
+        {
+            var instances = serviceProvider.GetServices<IAutoMigration>();
+            var logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("EfCoreAutoMigration");
+            foreach (var item in instances)
+            {
+                var type = item.GetType();
+                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(AutoMigration<>))
+                {
+                    var dbContextType = type.GetGenericArguments()[0];
+                    try
+                    {
+                        serviceProvider.Migration(dbContextType);
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        logger.LogError(ex, $"Migration DbContext of {dbContextType} occur error");
+                    }
+                }
+            }
         }
     }
 }

@@ -111,6 +111,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Redis", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Captcha.Redis.Tests", "Shashlik.Captcha.Redis.Tests\Shashlik.Captcha.Redis.Tests.csproj", "{A126F632-63D9-43F6-8F7B-369D757A5B3F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.IdentityIds4.PostgreSql.Tests", "Shashlik.IdentityIds4.PostgreSql.Tests\Shashlik.IdentityIds4.PostgreSql.Tests.csproj", "{AA2A88DB-D276-4A7E-9466-0F068D27C08F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -412,6 +414,12 @@ Global
 		{A126F632-63D9-43F6-8F7B-369D757A5B3F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A126F632-63D9-43F6-8F7B-369D757A5B3F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{A126F632-63D9-43F6-8F7B-369D757A5B3F}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -436,6 +444,7 @@ Global
 		{C5AB9F8B-E960-4199-B895-2FD427319A7E} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{B28EC289-E876-4FE6-9FA0-66B13B10AAE7} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{A126F632-63D9-43F6-8F7B-369D757A5B3F} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{AA2A88DB-D276-4A7E-9466-0F068D27C08F} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

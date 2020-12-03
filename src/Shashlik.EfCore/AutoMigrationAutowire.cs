@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Shashlik.Kernel;
@@ -11,34 +9,31 @@ using Shashlik.Utils.Helpers;
 namespace Shashlik.EfCore
 {
     /// <summary>
-    /// DbContext自动迁移装配,IApplicationStartAutowire装配顺序100
+    /// DbContext自动迁移装配, 自动注册[AutoMigration]
     /// </summary>
-    [Order(100)]
-    public class AutoMigrationAutowire : IApplicationStartAutowire
+    public class AutoMigrationAutowire : IServiceAutowire
     {
-        public AutoMigrationAutowire(IServiceProvider serviceProvider, IConfiguration configuration)
+        public AutoMigrationAutowire(IConfiguration configuration)
         {
-            ServiceProvider = serviceProvider;
             Configuration = configuration;
         }
 
-        private IServiceProvider ServiceProvider { get; }
         private IConfiguration Configuration { get; }
-
-        public async Task OnStart(CancellationToken cancellationToken)
-        {
-            var dbContexts = ReflectionHelper.GetFinalSubTypes<DbContext>();
-            foreach (var dbContext in dbContexts)
-            {
-                if (GetEnableAutoMigration(dbContext))
-                    await ServiceProvider.MigrationAsync(dbContext);
-            }
-        }
 
         private bool GetEnableAutoMigration(Type type)
         {
             var autoMigrationAttribute = type.GetCustomAttribute<AutoMigrationAttribute>();
             return autoMigrationAttribute != null && autoMigrationAttribute.GetEnableAutoMigration(Configuration);
+        }
+
+        public void Configure(IKernelServices kernelServices)
+        {
+            var dbContexts = ReflectionHelper.GetFinalSubTypes<DbContext>();
+            foreach (var dbContext in dbContexts)
+            {
+                if (GetEnableAutoMigration(dbContext))
+                    kernelServices.Services.AddAutoMigration(dbContext);
+            }
         }
     }
 }

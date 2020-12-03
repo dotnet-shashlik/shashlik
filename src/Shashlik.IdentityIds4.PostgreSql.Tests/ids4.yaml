@@ -1,9 +1,8 @@
 ﻿Shashlik:
   Ids4:
     Enable: true
-    MySql:
+    PostgreSql:
       AutoMigration: true
-      DbVersion: "5.7"
       EnableOperationalStore: true
     Identity:
       CaptchaSignInSources: [ phone ]

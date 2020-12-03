@@ -52,6 +52,9 @@ namespace Shashlik.Ids4.MySqlStore
                             mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
                     };
                 });
+
+                if (Options.AutoMigration)
+                    builder.Services.AddAutoMigration<ConfigurationDbContext>();
             }
 
             if (Options.EnableOperationalStore)
@@ -68,6 +71,9 @@ namespace Shashlik.Ids4.MySqlStore
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
+
+                if (Options.AutoMigration)
+                    builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }
         }
     }

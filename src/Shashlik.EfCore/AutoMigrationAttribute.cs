@@ -9,7 +9,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 允许自动迁移
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class AutoMigrationAttribute : Attribute
     {
         public AutoMigrationAttribute(bool enableAutoMigration = true)

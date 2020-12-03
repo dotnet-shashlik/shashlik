@@ -306,6 +306,28 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
+        /// 是否为类型<paramref name="parentType"/>的子类
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="parentType">父类</param>
+        /// <returns></returns>
+        public static bool IsSubType(this Type type, Type parentType)
+        {
+            return type != parentType && parentType.IsAssignableFrom(type);
+        }
+
+        /// <summary>
+        /// 是否为类型<typeparamref name="T"/>的子类
+        /// </summary>
+        /// <typeparam name="T">父类</typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static bool IsSubType<T>(this Type type)
+        {
+            return type != typeof(T) && type.IsSubTypeOrEqualsOf(typeof(T));
+        }
+
+        /// <summary>
         /// 是否为类型<paramref name="parentType"/>的子类或自身
         /// </summary>
         /// <param name="type"></param>

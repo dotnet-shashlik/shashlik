@@ -1,8 +1,10 @@
 ﻿using System;
+using IdentityServer4.EntityFramework.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shashlik.EfCore;
 using Shashlik.Kernel;
 using Shashlik.Utils.Extensions;
 
@@ -54,8 +56,10 @@ namespace Shashlik.Ids4.PostgreSqlStore
                             });
                     };
                 });
-            }
 
+                if (Options.AutoMigration)
+                    builder.Services.AddAutoMigration<ConfigurationDbContext>();
+            }
 
             if (Options.EnableOperationalStore)
             {
@@ -73,6 +77,9 @@ namespace Shashlik.Ids4.PostgreSqlStore
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
+
+                if (Options.AutoMigration)
+                    builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }
         }
     }
