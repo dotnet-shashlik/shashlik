@@ -6,7 +6,7 @@
         <RepositoryUrl>https://github.com/dotnet-shashlik/shashlik</RepositoryUrl>
         <PackageTags>shashlik</PackageTags>
         <Authors>dotnet-shashlik</Authors>
-        <Version>1.0.0-rc2</Version>
+        <Version>1.0.0-rc3</Version>
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
