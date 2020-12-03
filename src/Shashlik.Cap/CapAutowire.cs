@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Cap
 {
@@ -31,19 +32,7 @@ namespace Shashlik.Cap
 
             kernelService.Services.AddCap(r =>
             {
-                if (CapOptions.Version != null)
-                    r.Version = CapOptions.Version;
-                if (CapOptions.ConsumerThreadCount.HasValue)
-                    r.ConsumerThreadCount = CapOptions.ConsumerThreadCount.Value;
-                if (CapOptions.DefaultGroup != null)
-                    r.DefaultGroup = CapOptions.DefaultGroup;
-                if (CapOptions.FailedRetryCount.HasValue)
-                    r.FailedRetryCount = CapOptions.FailedRetryCount.Value;
-                if (CapOptions.FailedRetryInterval.HasValue)
-                    r.FailedRetryInterval = CapOptions.FailedRetryInterval.Value;
-                if (CapOptions.SucceedMessageExpiredAfter.HasValue)
-                    r.SucceedMessageExpiredAfter = CapOptions.SucceedMessageExpiredAfter.Value;
-
+                CapOptions.CopyTo(r, true);
                 kernelService.Autowire<ICapAutowire>(a => a.Configure(r));
             });
 

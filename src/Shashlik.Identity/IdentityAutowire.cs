@@ -11,6 +11,8 @@ using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Utils.Extensions;
 
+// ReSharper disable ConditionIsAlwaysTrueOrFalse
+
 namespace Shashlik.Identity
 {
     /// <summary>
@@ -39,10 +41,10 @@ namespace Shashlik.Identity
             kernelService.Services.AddDataProtection();
 
             // configure IdentityOptions
-            kernelService.Services.Configure<IdentityOptions>(r => { IdentityOptions.Value.CopyTo(r); });
+            kernelService.Services.Configure<IdentityOptions>(r => { IdentityOptions.Value.CopyTo(r, true); });
 
             using var serviceProvider = kernelService.Services.BuildServiceProvider();
-            var identityTypeConfigure = serviceProvider.GetRequiredService<IIdentityTypeConfigure>();
+            var identityTypeConfigure = serviceProvider.GetService<IIdentityTypeConfigure>();
             Type userType, roleType, keyType;
             if (identityTypeConfigure != null)
             {
