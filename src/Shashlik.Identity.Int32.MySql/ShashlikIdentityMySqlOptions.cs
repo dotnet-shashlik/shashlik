@@ -18,9 +18,9 @@ namespace Shashlik.Identity
         public string? DbVersion { get; set; } = "5.7";
 
         /// <summary>
-        /// 数据库上下文池大小
+        /// 数据库上下文池大小, 注意尽量小于连接字符设置的连接池大小，默认值64
         /// </summary>
-        public int DbContextPoolSize { get; set; } = 5;
+        public int DbContextPoolSize { get; set; } = 64;
 
         /// <summary>
         /// 是否自动迁移

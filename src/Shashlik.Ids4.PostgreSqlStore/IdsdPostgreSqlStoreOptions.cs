@@ -16,9 +16,9 @@ namespace Shashlik.Ids4.PostgreSqlStore
         public string? ConnectionString { get; set; }
 
         /// <summary>
-        /// 数据库上下文池大小, 注意尽量小于连接字符设置的连接池大小
+        /// 数据库上下文池大小, 注意尽量小于连接字符设置的连接池大小，默认值64
         /// </summary>
-        public int DbContextPoolSize { get; set; } = 5;
+        public int DbContextPoolSize { get; set; } = 64;
 
         /// <summary>
         /// 是否使用配置efcore存储,如果系统的客户端数据比较固定,推荐使用内存配置;如果系统的客户端数据需要动态删减,最好使用efcore数据库配置
