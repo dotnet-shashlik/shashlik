@@ -40,18 +40,19 @@ namespace Shashlik.Ids4.MySqlStore
                     throw new InvalidOperationException($"ConnectionString can not be empty");
             }
 
+            Action<DbContextOptionsBuilder> action =
+                dbOptions =>
+                {
+                    dbOptions.UseMySql(
+                        conn!,
+                        ServerVersion.FromString(Options.DbVersion),
+                        mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
+                };
+
             if (Options.EnableConfigurationStore)
             {
-                builder.AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = dbOptions =>
-                    {
-                        dbOptions.UseMySql(
-                            conn!,
-                            ServerVersion.FromString(Options.DbVersion),
-                            mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
-                    };
-                });
+                builder.AddConfigurationStore(options => { options.ConfigureDbContext = action; });
+                builder.Services.AddDbContextPool<ConfigurationDbContext>(action, Options.DbContextPoolSize);
 
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<ConfigurationDbContext>();
@@ -61,17 +62,12 @@ namespace Shashlik.Ids4.MySqlStore
             {
                 builder.AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext = dbOptions =>
-                    {
-                        dbOptions.UseMySql(
-                            conn!,
-                            ServerVersion.FromString(Options.DbVersion),
-                            mig => { mig.MigrationsAssembly(typeof(Ids4MySqlStoreAutowire).Assembly.GetName().FullName); });
-                    };
+                    options.ConfigureDbContext = action;
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
 
+                builder.Services.AddDbContextPool<PersistedGrantDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }

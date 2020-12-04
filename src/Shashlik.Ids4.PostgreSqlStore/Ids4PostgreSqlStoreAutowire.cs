@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.EfCore;
 using Shashlik.Kernel;
-using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Ids4.PostgreSqlStore
 {
@@ -41,22 +40,17 @@ namespace Shashlik.Ids4.PostgreSqlStore
                     throw new InvalidOperationException($"ConnectionString can not be empty");
             }
 
+            Action<DbContextOptionsBuilder> action =
+                dbOptions =>
+                {
+                    dbOptions.UseNpgsql(conn!,
+                        mig => { mig.MigrationsAssembly(typeof(Ids4PostgreSqlStoreAutowire).Assembly.GetName().FullName); });
+                };
 
             if (Options.EnableConfigurationStore)
             {
-                builder.AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = dbOptions =>
-                    {
-                        dbOptions.UseNpgsql(conn!,
-                            mig =>
-                            {
-                                mig.MigrationsAssembly(typeof(Ids4PostgreSqlStoreAutowire).Assembly.GetName()
-                                    .FullName);
-                            });
-                    };
-                });
-
+                builder.AddConfigurationStore(options => { options.ConfigureDbContext = action; });
+                builder.Services.AddDbContextPool<ConfigurationDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<ConfigurationDbContext>();
             }
@@ -65,19 +59,11 @@ namespace Shashlik.Ids4.PostgreSqlStore
             {
                 builder.AddOperationalStore(options =>
                 {
-                    options.ConfigureDbContext = dbOptions =>
-                    {
-                        dbOptions.UseNpgsql(conn!,
-                            mig =>
-                            {
-                                mig.MigrationsAssembly(typeof(Ids4PostgreSqlStoreAutowire).Assembly.GetName()
-                                    .FullName);
-                            });
-                    };
+                    options.ConfigureDbContext = action;
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
-
+                builder.Services.AddDbContextPool<PersistedGrantDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }

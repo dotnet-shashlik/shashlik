@@ -18,7 +18,7 @@ namespace Shashlik.Identity
         public bool AutoMigration { get; set; }
         
         /// <summary>
-        /// 数据库上下文次大小
+        /// 数据库上下文池大小
         /// </summary>
         public int DbContextPoolSize { get; set; } = 5;
 
