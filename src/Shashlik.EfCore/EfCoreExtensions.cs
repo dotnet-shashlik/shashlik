@@ -189,8 +189,8 @@ namespace Shashlik.EfCore
                 serviceCollection.AddTransient(typeof(IAutoMigration),
                     typeof(AutoMigration<>).MakeGenericType(dbContextType));
             }
-
-            throw new ArgumentException(nameof(dbContextType));
+            else
+                throw new ArgumentException(nameof(dbContextType));
         }
 
         /// <summary>
