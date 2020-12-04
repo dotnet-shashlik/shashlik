@@ -108,12 +108,17 @@ namespace Shashlik.EfCore
                 throw new ArgumentNullException(nameof(assembly));
 
             //反射得到ModelBuilder的ApplyConfiguration<TEntity>(...)方法
-            var applyConfigurationMethod = modelBuilder.GetType().GetMethods().First(r =>
-            {
-                var genericArguments = r.GetGenericArguments();
-                return r.Name == "ApplyConfiguration" && genericArguments.Length == 1 &&
-                       genericArguments[0].Name == "TEntity";
-            });
+            var applyConfigurationMethod = modelBuilder.GetType().GetMethods()
+                .Single(r =>
+                    {
+                        if (r.Name != nameof(modelBuilder.ApplyConfiguration))
+                            return false;
+                        var ps = r.GetParameters();
+                        return ps.Length == 1
+                               && ps[0].ParameterType.IsGenericType
+                               && ps[0].ParameterType.GetGenericTypeDefinition() == typeof(IEntityTypeConfiguration<>);
+                    }
+                );
 
             //所有fluent api配置类
             var configTypes = assembly
