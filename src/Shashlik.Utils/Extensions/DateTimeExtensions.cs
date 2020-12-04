@@ -1,4 +1,5 @@
 ﻿using System;
+
 // ReSharper disable IdentifierTypo
 
 // ReSharper disable ConvertIfStatementToReturnStatement
@@ -224,11 +225,11 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// 计算年龄
-        /// 默认返回：xx岁xx月xx天
+        /// 计算年龄数据
         /// </summary>
-        /// <param name="birthday">第1个日期参数</param>
-        private static (int year, int month, int day) GetAgeData(DateTime birthday)
+        /// <param name="birthday"></param>
+        /// <returns></returns>
+        public static (int year, int month, int day) GetAgeData(this DateTime birthday)
         {
             if (birthday > DateTime.Now)
                 return (0, 0, 0);
