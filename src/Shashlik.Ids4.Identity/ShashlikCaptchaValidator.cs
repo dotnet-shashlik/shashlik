@@ -41,7 +41,7 @@ namespace Shashlik.Ids4.Identity
                 return;
             }
 
-            var user = await IdentityUserFinder.FindByIdentityAsync(identity,
+            var user = await IdentityUserFinder.FindByIdentityAsync(identity!,
                 ShashlikIds4IdentityOptions.Value.CaptchaSignInSources!, UserManager, context.Request.Raw);
             if (user is null)
             {
@@ -50,7 +50,7 @@ namespace Shashlik.Ids4.Identity
             }
 
             var sub = await UserManager.GetUserIdAsync(user);
-            if (await UserManager.IsValidLoginCaptcha(user, captcha))
+            if (await UserManager.IsValidLoginCaptcha(user, captcha!))
             {
                 context.Result = new GrantValidationResult(sub, GrantType);
                 return;

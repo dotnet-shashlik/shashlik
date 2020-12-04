@@ -61,7 +61,7 @@ namespace Shashlik.Ids4.Identity
                 var json = DataProtectionProvider
                     .CreateProtector(ShashlikIds4IdentityConsts.TwoFactorTokenProviderPurpose)
                     .ToTimeLimitedDataProtector()
-                    .Unprotect(security, out _);
+                    .Unprotect(security!, out _);
 
                 model = JsonSerializer.Deserialize<TwoFactorStep1SecurityModel>(json);
             }
@@ -82,7 +82,7 @@ namespace Shashlik.Ids4.Identity
             {
                 // 验证码provider是否可用
                 var providers = await UserManager.GetValidTwoFactorProvidersAsync(user);
-                if (!providers.Contains(provider))
+                if (!providers.Contains(provider!))
                 {
                     context.WriteError(ErrorCodes.ProviderError);
                     return;
@@ -94,7 +94,7 @@ namespace Shashlik.Ids4.Identity
                 return;
             }
 
-            if (!await UserManager.VerifyTwoFactorTokenAsync(user, provider, token))
+            if (!await UserManager.VerifyTwoFactorTokenAsync(user, provider!, token!))
             {
                 context.WriteError(ErrorCodes.TokenError);
                 return;

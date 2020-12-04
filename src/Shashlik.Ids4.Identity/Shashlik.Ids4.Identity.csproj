@@ -2,7 +2,7 @@
 
     <Import Project="..\..\common.xml" />
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFrameworks>netcoreapp3.1;net50</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
