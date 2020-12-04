@@ -38,7 +38,7 @@ namespace Shashlik.Identity.Int32.MySql
             if (string.IsNullOrWhiteSpace(conn))
                 throw new InvalidOperationException($"ConnectionString can not be empty");
 
-            kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
+            kernelService.Services.AddDbContextPool<ShashlikIdentityDbContext>(options =>
             {
                 options.UseMySql(
                     conn,
@@ -47,7 +47,7 @@ namespace Shashlik.Identity.Int32.MySql
                     {
                         db.MigrationsAssembly(MySqlOptions.MigrationAssembly.EmptyToNull() ?? typeof(IdentityMySqlAutowire).Assembly.FullName);
                     });
-            });
+            }, MySqlOptions.DbContextPoolSize);
 
             if (MySqlOptions.AutoMigration)
                 kernelService.Services.AddAutoMigration<ShashlikIdentityDbContext>();

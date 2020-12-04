@@ -38,7 +38,7 @@ namespace Shashlik.Identity.Int32.PostgreSql
             if (string.IsNullOrWhiteSpace(conn))
                 throw new InvalidOperationException($"ConnectionString can not be empty");
 
-            kernelService.Services.AddDbContext<ShashlikIdentityDbContext>(options =>
+            kernelService.Services.AddDbContextPool<ShashlikIdentityDbContext>(options =>
             {
                 options.UseNpgsql(conn!,
                     db =>
@@ -46,7 +46,7 @@ namespace Shashlik.Identity.Int32.PostgreSql
                         db.MigrationsAssembly(PostgreSqlOptions.MigrationAssembly.EmptyToNull() ??
                                               typeof(IdentityPostgreSqlAutowire).Assembly.FullName);
                     });
-            });
+            }, PostgreSqlOptions.DbContextPoolSize);
 
             if (PostgreSqlOptions.AutoMigration)
                 kernelService.Services.AddAutoMigration<ShashlikIdentityDbContext>();

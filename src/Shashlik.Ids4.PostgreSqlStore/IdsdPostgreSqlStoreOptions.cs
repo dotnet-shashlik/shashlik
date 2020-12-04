@@ -15,6 +15,11 @@ namespace Shashlik.Ids4.PostgreSqlStore
         /// </summary>
         public string? ConnectionString { get; set; }
 
+        // /// <summary>
+        // /// 数据库上下文次大小
+        // /// </summary>
+        // public int DbContextPoolSize { get; set; } = 5;
+
         /// <summary>
         /// 是否使用配置efcore存储,如果系统的客户端数据比较固定,推荐使用内存配置;如果系统的客户端数据需要动态删减,最好使用efcore数据库配置
         /// </summary>

@@ -18,6 +18,11 @@ namespace Shashlik.Identity
         public string? DbVersion { get; set; } = "5.7";
 
         /// <summary>
+        /// 数据库上下文次大小
+        /// </summary>
+        public int DbContextPoolSize { get; set; } = 5;
+
+        /// <summary>
         /// 是否自动迁移
         /// </summary>
         public bool AutoMigration { get; set; }
