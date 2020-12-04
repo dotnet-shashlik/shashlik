@@ -5,10 +5,10 @@ namespace Shashlik.EfCore.Tests
 {
     // dotnet ef migrations add init -c TestDbContext  -o Migrations -p ./Shashlik.EfCore.Tests/Shashlik.EfCore.Tests.csproj -s ./Shashlik.EfCore.Tests/Shashlik.EfCore.Tests.csproj
 
-    [AutoMigration]
-    public class TestDbContext1 : ShashlikDbContext<TestDbContext1>
+    [AutoMigration(typeof(bool), "AutoMigrationCondition3", true, false)]
+    public class TestDbContext3 : ShashlikDbContext<TestDbContext3>
     {
-        public TestDbContext1(DbContextOptions<TestDbContext1> options) : base(options)
+        public TestDbContext3(DbContextOptions<TestDbContext3> options) : base(options)
         {
         }
     }

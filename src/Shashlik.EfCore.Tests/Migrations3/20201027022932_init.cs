@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Shashlik.EfCore.Tests.Migrations
+namespace Shashlik.EfCore.Tests.Migrations3
 {
     public partial class init : Migration
     {

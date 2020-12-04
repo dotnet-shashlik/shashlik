@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\common.xml"/>
+    <Import Project="..\..\common.xml" />
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
 
@@ -8,32 +8,32 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.9"/>
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.9"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1"/>
-        <PackageReference Include="xunit" Version="2.4.1"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.9" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="3.1.9" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
+        <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0"/>
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.AspNetCore\Shashlik.AspNetCore.csproj"/>
-        <ProjectReference Include="..\Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj"/>
-        <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj"/>
-        <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj"/>
-        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
+        <ProjectReference Include="..\Shashlik.AspNetCore\Shashlik.AspNetCore.csproj" />
+        <ProjectReference Include="..\Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj" />
+        <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
+        <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="config.json">
+        <None Update="config.yaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

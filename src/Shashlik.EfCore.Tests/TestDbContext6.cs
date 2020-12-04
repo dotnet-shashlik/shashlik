@@ -1,14 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace Shashlik.EfCore.Tests
 {
     // dotnet ef migrations add init -c TestDbContext  -o Migrations -p ./Shashlik.EfCore.Tests/Shashlik.EfCore.Tests.csproj -s ./Shashlik.EfCore.Tests/Shashlik.EfCore.Tests.csproj
 
-    [AutoMigration]
-    public class TestDbContext1 : ShashlikDbContext<TestDbContext1>
+    public class TestDbContext6 : ShashlikDbContext<TestDbContext6>
     {
-        public TestDbContext1(DbContextOptions<TestDbContext1> options) : base(options)
+        public TestDbContext6(DbContextOptions<TestDbContext6> options) : base(options)
         {
         }
     }

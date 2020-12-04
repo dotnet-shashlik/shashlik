@@ -8,7 +8,7 @@ namespace Shashlik.EfCore.Tests
     {
         public void Build(IConfigurationBuilder builder)
         {
-            var file = new FileInfo("./config.json").FullName;
+            var file = new FileInfo("./config.yaml").FullName;
             builder.AddJsonFile(file);
         }
     }
