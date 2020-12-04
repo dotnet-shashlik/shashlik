@@ -183,7 +183,7 @@ namespace Shashlik.EfCore
         public static void AddAutoMigration(this IServiceCollection serviceCollection, Type dbContextType)
         {
             if (dbContextType.IsClass
-                && dbContextType.IsAbstract
+                && !dbContextType.IsAbstract
                 && dbContextType.IsSubType<DbContext>())
             {
                 serviceCollection.AddTransient(typeof(IAutoMigration),

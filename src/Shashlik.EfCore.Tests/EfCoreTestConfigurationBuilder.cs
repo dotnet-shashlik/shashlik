@@ -9,7 +9,7 @@ namespace Shashlik.EfCore.Tests
         public void Build(IConfigurationBuilder builder)
         {
             var file = new FileInfo("./config.yaml").FullName;
-            builder.AddJsonFile(file);
+            builder.AddYamlFile(file);
         }
     }
 }
