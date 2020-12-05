@@ -30,5 +30,8 @@ jobs:
           postgresql user: 'testuser'
           postgresql password: '123123'
 
-      - name: Utils Test
-        run: dotnet test ./src/Shashlik.Utils.Test/Shashlik.Utils.Test.csproj
+      - name: Setup RabbitMQ
+        uses: nijel/rabbitmq-action@v1.0.0
+        
+      - name: Test
+        run: dotnet test ./src/Shashlik.sln

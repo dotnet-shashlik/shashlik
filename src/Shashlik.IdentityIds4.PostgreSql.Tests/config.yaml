@@ -1,5 +1,5 @@
 ﻿Connectionstrings:
-  Default: server=192.168.50.178;database=identity_ids4_test;user id=testuser;password=123123;
+  Default: server=localhost;database=identity_ids4_test;user id=testuser;password=123123;
 Shashlik:
   Captcha:
     Enable: true
@@ -27,7 +27,7 @@ Shashlik:
       Enable: true
       ApplicationName: identity_ids4_test
   Redis:
-    ConnectionString: 192.168.50.178:6380,password=123123,defaultDatabase=0
+    ConnectionString: localhost,password=123123,defaultDatabase=0
     Sentinels: []
     Readonly: false
 
