@@ -1,6 +1,6 @@
 ﻿Shashlik:
   Redis:
-    ConnectionString: localhost,password=123123,defaultDatabase=0
+    ConnectionString: localhost,defaultDatabase=0
     Sentinels: [ ]
     Readonly: false
   Cap:
