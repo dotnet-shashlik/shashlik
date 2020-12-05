@@ -50,7 +50,6 @@ namespace Shashlik.Ids4.PostgreSqlStore
             if (Options.EnableConfigurationStore)
             {
                 builder.AddConfigurationStore(options => { options.ConfigureDbContext = action; });
-                builder.Services.AddDbContextPool<ConfigurationDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<ConfigurationDbContext>();
             }
@@ -63,7 +62,6 @@ namespace Shashlik.Ids4.PostgreSqlStore
                     // 每小时清除已过期的token
                     options.EnableTokenCleanup = true;
                 });
-                builder.Services.AddDbContextPool<PersistedGrantDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }
