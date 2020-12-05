@@ -1,0 +1,34 @@
+name: test
+
+on:
+  push:
+    branches: [ test ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: 5.0.100
+
+      - name: Setup MySql
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql version: '5.7'
+          mysql root password: '123123'
+          mysql user: 'testuser'
+          mysql password: '123123'
+
+      - name: Setup PostgreSql
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql version: '11'
+          postgresql user: 'testuser'
+          postgresql password: '123123'
+
+      - name: Utils Test
+        run: dotnet test ./src/Shashlik.Utils.Test/Shashlik.Utils.Test.csproj
