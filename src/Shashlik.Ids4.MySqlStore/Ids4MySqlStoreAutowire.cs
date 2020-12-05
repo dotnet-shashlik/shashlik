@@ -52,7 +52,7 @@ namespace Shashlik.Ids4.MySqlStore
             if (Options.EnableConfigurationStore)
             {
                 builder.AddConfigurationStore(options => { options.ConfigureDbContext = action; });
-                builder.Services.AddDbContextPool<ConfigurationDbContext>(action, Options.DbContextPoolSize);
+                //builder.Services.AddDbContextPool<ConfigurationDbContext>(action, Options.DbContextPoolSize);
 
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<ConfigurationDbContext>();
@@ -67,7 +67,7 @@ namespace Shashlik.Ids4.MySqlStore
                     options.EnableTokenCleanup = true;
                 });
 
-                builder.Services.AddDbContextPool<PersistedGrantDbContext>(action, Options.DbContextPoolSize);
+                //builder.Services.AddDbContextPool<PersistedGrantDbContext>(action, Options.DbContextPoolSize);
                 if (Options.AutoMigration)
                     builder.Services.AddAutoMigration<PersistedGrantDbContext>();
             }
