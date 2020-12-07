@@ -1,5 +1,5 @@
 ﻿Connectionstrings:
-  Default: server=localhost;database=identity_ids4_test;user id=testuser;password=123123;
+  Default: server=localhost;database=identity_ids4_test;user id=root;password=123123;
 Shashlik:
   Captcha:
     Enable: true
