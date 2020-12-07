@@ -8,6 +8,7 @@ using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Locker.Memory
 {
+    [ConditionDependsOnMissing(typeof(ILock))]
     public class MemoryLock : ILock
     {
         private static readonly ConcurrentDictionary<string, AsyncLock> Lockers =

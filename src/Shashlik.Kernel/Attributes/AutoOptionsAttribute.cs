@@ -21,7 +21,7 @@ namespace Shashlik.Kernel.Attributes
             if (string.IsNullOrWhiteSpace(section))
                 throw new ArgumentNullException(nameof(section));
             SupportDot = supportDot;
-            Section = !SupportDot ? section : section.Replace(".", ":");
+            Section = SupportDot ? section.Replace(".", ":") : section;
         }
 
         /// <summary>

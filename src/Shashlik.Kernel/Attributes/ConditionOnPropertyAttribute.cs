@@ -19,13 +19,15 @@ namespace Shashlik.Kernel.Attributes
         /// <param name="valueType"><paramref name="value"/>值的类型</param>
         /// <param name="property">属性名称</param>
         /// <param name="value">属性值</param>
+        /// <param name="supportDot">是否支持小数点作为连接符</param>
         /// <exception cref="ArgumentException"></exception>
-        public ConditionOnPropertyAttribute(Type valueType, string property, object? value)
+        public ConditionOnPropertyAttribute(Type valueType, string property, object? value, bool supportDot = true)
         {
             if (property is null) throw new ArgumentNullException(nameof(property));
             ValueType = valueType ?? throw new ArgumentNullException(nameof(valueType));
-            Property = property.Replace(".", ":");
+            Property = supportDot ? property.Replace(".", ":") : property;
             Value = value;
+            SupportDot = supportDot;
         }
 
         /// <summary>
@@ -52,6 +54,11 @@ namespace Shashlik.Kernel.Attributes
         /// 是否区分大小写,string类型比较时用
         /// </summary>
         public bool IgnoreCase { get; set; } = true;
+
+        /// <summary>
+        /// 是否支持小数点作为路径连接符,默认true
+        /// </summary>
+        public bool SupportDot { get; }
 
         public override bool ConditionOn(
             IServiceCollection services,

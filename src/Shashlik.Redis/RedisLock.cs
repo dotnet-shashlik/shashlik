@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using CSRedis;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Exceptions;
 
 namespace Shashlik.Redis
 {
+    [ConditionOnProperty(typeof(bool), "Shashlik.Redis.Enable", true, DefaultValue = true)]
     public class RedisLock : ILock
     {
         public RedisLock(CSRedisClient redisClient)

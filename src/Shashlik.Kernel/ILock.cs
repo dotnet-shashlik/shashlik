@@ -1,10 +1,12 @@
 ﻿using System;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel
 {
     /// <summary>
     /// 抽象的分布式锁,kernel内部内存锁实现
     /// </summary>
+    [Singleton]
     public interface ILock
     {
         /// <summary>
