@@ -67,6 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{22AD
 	ProjectSection(SolutionItems) = preProject
 		..\common.xml = ..\common.xml
 		..\.github\workflows\nuget-push.yml = ..\.github\workflows\nuget-push.yml
+		..\.github\workflows\test.yml = ..\.github\workflows\test.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Cap", "Shashlik.Cap\Shashlik.Cap.csproj", "{14D568F1-0AF6-4568-A483-E71B17E81DA6}"

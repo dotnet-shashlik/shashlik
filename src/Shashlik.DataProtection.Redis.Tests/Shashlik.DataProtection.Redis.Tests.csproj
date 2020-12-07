@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\common.xml" />
+    <Import Project="..\..\common.xml"/>
     <PropertyGroup>
         <TargetFramework>net5</TargetFramework>
 
+        <Nullable>disable</Nullable>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3" />
-        <PackageReference Include="xunit" Version="2.4.1" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="5.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.8.3"/>
+        <PackageReference Include="xunit" Version="2.4.1"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -20,11 +21,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.DataProtection.Redis\Shashlik.DataProtection.Redis.csproj" />
-        <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
-        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
-        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj" />
+        <ProjectReference Include="..\Shashlik.DataProtection.Redis\Shashlik.DataProtection.Redis.csproj"/>
+        <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj"/>
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
+        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj"/>
+        <ProjectReference Include="..\Shashlik.Utils\Shashlik.Utils.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

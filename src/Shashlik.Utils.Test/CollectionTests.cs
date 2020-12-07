@@ -27,7 +27,7 @@ namespace Shashlik.Utils.Test
 
             public int GetHashCode(TestClass obj)
             {
-                return (obj.Str != null ? obj.Str.GetHashCode() : 0);
+                return obj.Str.GetHashCode();
             }
         }
 

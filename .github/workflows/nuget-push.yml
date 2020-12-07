@@ -1,4 +1,4 @@
-name: shashlik-nuget
+name: build and test
 
 on:
   push:
@@ -45,6 +45,6 @@ jobs:
       - name: Test
         run: dotnet test ./src/Shashlik.sln
       - name: Pack      
-        run: dotnet pack ./src/Shashlik.Package.sln  -p:SymbolPackageFormat=snupkg --include-symbols  --include-source --configuration Release --no-restore --output ./nugetPackages
+        run: dotnet pack ./src/Shashlik.Package.sln --configuration Release --output ./nugetPackages
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
