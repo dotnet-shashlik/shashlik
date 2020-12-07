@@ -40,4 +40,4 @@ jobs:
         uses: nijel/rabbitmq-action@v1.0.0
 
       - name: Test
-        run: dotnet test ./src/Shashlik.IdentityIds4.MySql.Tests/Shashlik.IdentityIds4.MySql.Tests.csproj
+        run: dotnet test ./src/Shashlik.sln
