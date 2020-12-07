@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.Kernel
+namespace Shashlik.Kernel.Exceptions
 {
     public class KernelAutowireException : Exception
     {

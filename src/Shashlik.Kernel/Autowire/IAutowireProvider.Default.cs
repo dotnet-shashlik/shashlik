@@ -5,6 +5,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Autowire.Inner;
+using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable SwitchStatementMissingSomeEnumCasesNoDefault

@@ -1,6 +1,7 @@
 ﻿using System;
 using CSRedis;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Exceptions;
 
 namespace Shashlik.Redis
 {
@@ -26,7 +27,7 @@ namespace Shashlik.Redis
             if (lockSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(lockSeconds));
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
             return RedisClient.Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
-                   throw new InvalidOperationException($"Can't get redis lock: {key}");
+                   throw new LockFailureException(key);
         }
     }
 }

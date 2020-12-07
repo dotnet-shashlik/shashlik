@@ -8,6 +8,7 @@ using CSRedis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Exceptions;
 using Shashlik.Kernel.Test;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
@@ -107,6 +108,7 @@ namespace Shashlik.Redis.Tests
             locker.ShouldBeOfType<RedisLock>();
 
             {
+                // 锁5秒，自动续期，10秒后释放，另一个锁等待11秒
                 using var locker1 = locker.Lock("TestLock0", 5, true, 10);
                 locker1.ShouldNotBeNull();
                 TimerHelper.SetTimeout(locker1.Dispose, TimeSpan.FromSeconds(10));
@@ -114,15 +116,15 @@ namespace Shashlik.Redis.Tests
             }
 
             {
-                using var locker1 = locker.Lock("TestLock1", 5, true, 5);
+                using var locker1 = locker.Lock("TestLock1", 30, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock1", 5, true, 5));
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock1", 5, true, 5));
             }
 
             {
-                var locker1 = locker.Lock("TestLock2", 5, true, 5);
+                var locker1 = locker.Lock("TestLock2", 30, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock2", 5, true, 5));
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock2", 5, true, 5));
                 locker1.Dispose();
                 using var locker3 = locker.Lock("TestLock2", 5, true, 5);
                 locker3.ShouldNotBeNull();
@@ -136,12 +138,12 @@ namespace Shashlik.Redis.Tests
                 for (var i = 0; i < count; i++)
                 {
                     Thread.Sleep(5000);
-                    Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock3", 5, true, 5));
+                    Should.Throw<LockFailureException>(() => locker.Lock("TestLock3", 5, true, 5));
                 }
             }
 
             {
-                using var locker1 = locker.Lock("TestLock4", 5, true, 5);
+                using var locker1 = locker.Lock("TestLock4", 30, true, 5);
                 locker1.ShouldNotBeNull();
 
                 var lockers = new ConcurrentBag<IDisposable>();
@@ -158,7 +160,7 @@ namespace Shashlik.Redis.Tests
                     }
                 });
 
-                lockers.Count(r => r != null).ShouldBe(0);
+                lockers.Count.ShouldBe(0);
             }
 
             {
@@ -167,7 +169,7 @@ namespace Shashlik.Redis.Tests
                 {
                     try
                     {
-                        var locker2 = locker.Lock("TestLock5", 5, true, 5);
+                        var locker2 = locker.Lock("TestLock5", 30, true, 5);
                         lockers.Add(locker2);
                     }
                     catch
@@ -176,12 +178,8 @@ namespace Shashlik.Redis.Tests
                     }
                 });
 
-                lockers.Count(r => r != null).ShouldBe(1);
-
-                foreach (var csRedisClientLock in lockers)
-                {
-                    csRedisClientLock?.Dispose();
-                }
+                lockers.Count.ShouldBe(1);
+                lockers.First().Dispose();
 
                 using var locker1 = locker.Lock("TestLock5", 5, true, 5);
                 locker1.ShouldNotBeNull();
@@ -193,7 +191,7 @@ namespace Shashlik.Redis.Tests
                 locker1.ShouldNotBeNull();
                 // 锁5秒，自动延期，10秒后仍然是锁定状态
                 Thread.Sleep(10_000);
-                Should.Throw<InvalidOperationException>(() => locker.Lock("TestLock6", 5, true, 5));
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock6", 5, true, 5));
             }
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
+using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Locker.Memory
@@ -17,8 +18,15 @@ namespace Shashlik.Kernel.Locker.Memory
             key = $"ShashlikMemoryLock:{key}";
             using var source = new CancellationTokenSource(TimeSpan.FromSeconds(waitTimeout));
             var asyncLock = Lockers.GetOrAdd(key, new AsyncLock());
-            var releaser = asyncLock.Lock(source.Token);
-            return new MemoryLocker(key, lockSecond, autoDelay, releaser);
+            try
+            {
+                var releaser = asyncLock.Lock(source.Token);
+                return new MemoryLocker(key, lockSecond, autoDelay, releaser);
+            }
+            catch (OperationCanceledException)
+            {
+                throw new LockFailureException(key);
+            }
         }
     }
 }

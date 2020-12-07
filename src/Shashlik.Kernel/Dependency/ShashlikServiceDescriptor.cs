@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Exceptions;
 
 namespace Shashlik.Kernel.Dependency
 {

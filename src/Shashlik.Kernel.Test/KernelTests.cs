@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
+using Shashlik.Kernel.Exceptions;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
 using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1;
 using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2;
+using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
 
@@ -197,32 +202,111 @@ namespace Shashlik.Kernel.Test
                 GetServices<C61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
 
                 GetServices<D6>().Any(r => r is D6).ShouldBeTrue();
-                
-                GetServices<IA61<int>>().Any(r=>r is E6).ShouldBeFalse();
-                GetServices<IA61<int>>().Any(r=>r is F6).ShouldBeFalse();
+
+                GetServices<IA61<int>>().Any(r => r is E6).ShouldBeFalse();
+                GetServices<IA61<int>>().Any(r => r is F6).ShouldBeFalse();
             }
 
             {
                 GetService<IA27>().ShouldBeNull();
                 GetService<B27>().ShouldNotBeNull();
             }
-            
         }
 
+        /// <summary>
+        /// MemoryLock测试
+        /// </summary>
         [Fact]
         public void MemoryLockTest()
         {
             var locker = GetService<ILock>();
-            var key = "lock_test";
 
-            // 第一次直接锁没问题
-            using var _ = locker.Lock(key, 3, false, 60);
+            {
+                // 锁5秒，自动续期，10秒后释放，另一个锁等待11秒
+                using var locker1 = locker.Lock("TestLock0", 5, true, 10);
+                locker1.ShouldNotBeNull();
+                TimerHelper.SetTimeout(locker1.Dispose, TimeSpan.FromSeconds(10));
+                locker.Lock("TestLock0", 5, true, 11).ShouldNotBeNull();
+            }
 
-            // 同步再来锁,异常
-            Should.Throw<OperationCanceledException>(() => locker.Lock(key, 3, false, 1));
+            {
+                using var locker1 = locker.Lock("TestLock1", 30, true, 5);
+                locker1.ShouldNotBeNull();
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock1", 5, true, 5));
+            }
 
-            // 3秒后可以锁
-            using var @lock = locker.Lock(key, 1, false, 3);
+            {
+                var locker1 = locker.Lock("TestLock2", 30, true, 5);
+                locker1.ShouldNotBeNull();
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock2", 5, true, 5));
+                locker1.Dispose();
+                using var locker3 = locker.Lock("TestLock2", 5, true, 5);
+                locker3.ShouldNotBeNull();
+            }
+
+            {
+                using var locker1 = locker.Lock("TestLock3", 5, true, 5);
+                locker1.ShouldNotBeNull();
+
+                var count = 5;
+                for (var i = 0; i < count; i++)
+                {
+                    Thread.Sleep(5000);
+                    Should.Throw<LockFailureException>(() => locker.Lock("TestLock3", 5, true, 5));
+                }
+            }
+
+            {
+                using var locker1 = locker.Lock("TestLock4", 30, true, 5);
+                locker1.ShouldNotBeNull();
+
+                var lockers = new ConcurrentBag<IDisposable>();
+                Parallel.For(1, 10, index =>
+                {
+                    try
+                    {
+                        using var locker2 = locker.Lock("TestLock4", 5, true, 5);
+                        lockers.Add(locker2);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                });
+
+                lockers.Count.ShouldBe(0);
+            }
+
+            {
+                var lockers = new ConcurrentBag<IDisposable>();
+                Parallel.For(1, 10, index =>
+                {
+                    try
+                    {
+                        var locker2 = locker.Lock("TestLock5", 30, true, 5);
+                        lockers.Add(locker2);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                });
+
+                lockers.Count.ShouldBe(1);
+                lockers.First().Dispose();
+
+                using var locker1 = locker.Lock("TestLock5", 5, true, 5);
+                locker1.ShouldNotBeNull();
+            }
+
+
+            {
+                using var locker1 = locker.Lock("TestLock6", 5, true, 1);
+                locker1.ShouldNotBeNull();
+                // 锁5秒，自动延期，10秒后仍然是锁定状态
+                Thread.Sleep(10_000);
+                Should.Throw<LockFailureException>(() => locker.Lock("TestLock6", 5, true, 5));
+            }
         }
     }
 }
