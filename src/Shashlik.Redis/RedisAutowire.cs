@@ -33,8 +33,6 @@ namespace Shashlik.Redis
             kernelService.Services.TryAddSingleton<IRedisSnowflakeId, DefaultRedisSnowflakeId>();
             kernelService.Services.AddSingleton<IDistributedCache>(
                 new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
-            if (Options.EnableRedisLock)
-                kernelService.Services.AddSingleton<ILock, RedisLock>();
         }
     }
 }
