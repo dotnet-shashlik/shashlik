@@ -786,7 +786,7 @@ namespace Shashlik.Utils.Test
                 jt["key"] = "value";
                 (exists, value) = jt.GetPropertyValue("key");
                 exists.ShouldBeTrue();
-                value.ShouldBe(jt["key"]);
+                value.ShouldBe(jt["key"].ToString());
 
                 var ja = new JArray();
                 ja.Add(jt);
