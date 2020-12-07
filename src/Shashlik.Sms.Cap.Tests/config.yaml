@@ -1,6 +1,6 @@
 ﻿Shashlik:
   Redis:
-    ConnectionString: 192.168.50.178:6380,password=123123,defaultDatabase=0
+    ConnectionString: localhost,defaultDatabase=0
     Sentinels: [ ]
     Readonly: false
   Cap:
@@ -8,10 +8,7 @@
     Version: test
     Rabbit:
       ExchangeName: sms_cap_test
-      HostName: 192.168.50.178
-      UserName: rabbit
-      Password: 8NnT2nUNoOwpBAue
-      Port: 5672
+      HostName: localhost
   Sms:
     Enable: true
     UseEmptySms: true

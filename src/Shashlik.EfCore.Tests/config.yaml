@@ -1,10 +1,10 @@
 ﻿ConnectionStrings:
-  Conn1: server=192.168.50.178;database=efcore_test1;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
-  Conn2: server=192.168.50.178;database=efcore_test2;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
-  Conn3: server=192.168.50.178;database=efcore_test3;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
-  Conn4: server=192.168.50.178;database=efcore_test4;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
-  Conn5: server=192.168.50.178;database=efcore_test5;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
-  Conn6: server=192.168.50.178;database=efcore_test6;user=testuser;password=123123;Pooling=True;Min Pool Size=5;Max Pool Size=10;
+  Conn1: server=localhost;database=efcore_test1;user id=root;password=123123;
+  Conn2: server=localhost;database=efcore_test2;user id=root;password=123123;
+  Conn3: server=localhost;database=efcore_test3;user id=root;password=123123;
+  Conn4: server=localhost;database=efcore_test4;user id=root;password=123123;
+  Conn5: server=localhost;database=efcore_test5;user id=root;password=123123;
+  Conn6: server=localhost;database=efcore_test6;user id=root;password=123123;
   
 AutoMigrationCondition2: true
 AutoMigrationCondition3: false
