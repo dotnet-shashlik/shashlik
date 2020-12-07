@@ -20,16 +20,23 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void getId_test()
         {
-            var worker = new SnowflakeId(1, 1);
+            var worker1 = new SnowflakeId(1, 1);
+            var worker2 = new SnowflakeId(1, 2);
+            var worker3 = new SnowflakeId(2, 1);
+            var worker4 = new SnowflakeId(2, 2);
 
             HashSet<long> ids = new HashSet<long>();
 
             for (int i = 0; i < 1000000; i++)
-            {
-                ids.Add(worker.NextId());
-            }
+                ids.Add(worker1.NextId());
+            for (int i = 0; i < 1000000; i++)
+                ids.Add(worker2.NextId());
+            for (int i = 0; i < 1000000; i++)
+                ids.Add(worker3.NextId());
+            for (int i = 0; i < 1000000; i++)
+                ids.Add(worker4.NextId());
 
-            ids.Count.ShouldBe(1000000);
+            ids.Count.ShouldBe(1000000 * 4);
 
             Should.Throw<Exception>((() => new SnowflakeId(-54, 1)));
             Should.Throw<Exception>((() => new SnowflakeId(1, -6)));

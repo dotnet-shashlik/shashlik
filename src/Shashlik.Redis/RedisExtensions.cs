@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Reflection;
-using System.Threading;
+using System.Threading.Tasks;
 using CSRedis;
 using Shashlik.Utils.Extensions;
 
@@ -34,7 +34,7 @@ namespace Shashlik.Redis
         /// <param name="redisClient"></param>
         /// <param name="name">锁名称</param>
         /// <param name="lockSeconds">锁定时长,区分官方的Lock方法</param>
-        /// <param name="timeoutSeconds">超时（秒）</param>
+        /// <param name="timeoutSeconds">等待锁超时（秒）</param>
         /// <param name="autoDelay">自动延长锁超时时间，看门狗线程的超时时间为lockSeconds/2 ， 在看门狗线程超时时间时自动延长锁的时间为lockSeconds。除非程序意外退出，否则永不超时。</param>
         /// <returns></returns>
         public static CSRedisClientLock? Lock(
@@ -57,7 +57,7 @@ namespace Shashlik.Redis
                         new object[] {redisClient, name, value, lockSeconds, autoDelay});
                 }
 
-                Thread.CurrentThread.Join(3);
+                Task.Delay(3).ConfigureAwait(false).GetAwaiter().GetResult();
             }
 
             return null;

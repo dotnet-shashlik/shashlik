@@ -202,7 +202,25 @@ namespace Shashlik.Redis.Tests
         {
             RedisSnowflakeId.DatacenterId.ShouldNotBeNull();
             RedisSnowflakeId.WorkerId.ShouldNotBeNull();
-            RedisSnowflakeId.IdWorker.NextId().ToString().Length.ShouldBe(19);
+            RedisSnowflakeId.IdWorker.NextId().ToString().ShouldNotBeNullOrWhiteSpace();
+
+            var snowflakeId = GetService<IRedisSnowflakeId>();
+            HashSet<int> ids = new HashSet<int>();
+            HashSet<string> ids1 = new HashSet<string>();
+            for (int i = 0; i < 2048; i++)
+            {
+                var (workId, dcId) = snowflakeId.GetId();
+                (workId >= 0 && workId <= SnowflakeId.MaxWorkerId).ShouldBeTrue();
+                (dcId >= 0 && dcId <= SnowflakeId.MaxDatacenterId).ShouldBeTrue();
+
+                var redisId = (workId << 5) + dcId;
+                (redisId >= 0 && dcId <= SnowflakeId.MaxDatacenterId * SnowflakeId.MaxWorkerId).ShouldBeTrue();
+                ids.Add(redisId);
+                ids1.Add($"{workId:D2}:{dcId:D2}");
+            }
+
+            ids.Count.ShouldBe(1024);
+            ids1.Count.ShouldBe(1024);
         }
 
         [Fact]

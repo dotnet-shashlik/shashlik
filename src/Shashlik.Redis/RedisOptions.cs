@@ -1,4 +1,6 @@
-﻿using Shashlik.Kernel.Attributes;
+﻿using System;
+using CSRedis;
+using Shashlik.Kernel.Attributes;
 
 // ReSharper disable All
 
@@ -37,5 +39,10 @@ namespace Shashlik.Redis
         /// 只读
         /// </summary>
         public bool Readonly { get; set; }
+
+        /// <summary>
+        /// 自定义Client创建，高优先级
+        /// </summary>
+        public Func<CSRedisClient>? CSRedisClientFactory { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using Shashlik.Kernel;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Redis
@@ -11,12 +13,12 @@ namespace Shashlik.Redis
         static RedisSnowflakeId()
         {
             if (RedisHelper.Instance is null)
-                throw new InvalidOperationException($"Redis not initialized");
-            var (workId, dcId) = RedisSnowflakeIdCalculator.GetIdFromRedis();
-
-            WorkerId = workId;
-            DatacenterId = dcId;
-            IdWorker = new SnowflakeId(workId, dcId);
+                throw new InvalidOperationException($"Redis uninitialized");
+            var redisSnowflakeId = GlobalKernelServiceProvider.KernelServiceProvider!.GetRequiredService<IRedisSnowflakeId>();
+            var id = redisSnowflakeId.GetId();
+            WorkerId = id.workId;
+            DatacenterId = id.dcId;
+            IdWorker = new SnowflakeId(WorkerId.Value, DatacenterId.Value);
         }
 
         public static SnowflakeId IdWorker { get; }
