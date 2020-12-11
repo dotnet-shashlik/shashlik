@@ -15,7 +15,7 @@ namespace Shashlik.Captcha
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效,totp方式最好传入此参数</param>
         /// <param name="codeLength">验证码长度,totp固定6位</param>
         /// <returns></returns>
-        Task<string> Build(string purpose, string target, string securityStamp = null, int codeLength = 6);
+        Task<string> Build(string purpose, string target, string? securityStamp = null, int codeLength = 6);
 
         /// <summary>
         /// 自定义生成验证码数据
@@ -27,7 +27,7 @@ namespace Shashlik.Captcha
         /// <param name="code">自行生成验证码并传入</param>
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效,totp方式最好传入此参数</param>
         /// <returns></returns>
-        Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string securityStamp = null);
+        Task<string> Build(string purpose, string target, int lifeTimeSeconds, int maxErrorCount, string code, string? securityStamp = null);
 
         /// <summary>
         /// 验证码是否正确
@@ -38,7 +38,7 @@ namespace Shashlik.Captcha
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等验证码需要失效,totp方式最好传入此参数</param>
         /// <param name="isDeleteOnSucceed">验证成功后是否删除,totp无效</param>
         /// <returns></returns>
-        Task<bool> IsValid(string purpose, string target, string code, string securityStamp = null,
+        Task<bool> IsValid(string purpose, string target, string code, string? securityStamp = null,
             bool isDeleteOnSucceed = true);
     }
 }
