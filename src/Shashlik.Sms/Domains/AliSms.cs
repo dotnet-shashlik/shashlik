@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Aliyun.Acs.Core;
-using Aliyun.Acs.Core.Exceptions;
 using Aliyun.Acs.Core.Profile;
 using Aliyun.Acs.Dysmsapi.Model.V20170525;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Sms.Exceptions;
@@ -36,10 +35,10 @@ namespace Shashlik.Sms.Domains
             profile.AddEndpoint(options.Region, options.Region, product, domain);
             IAcsClient acsClient = new DefaultAcsClient(profile);
             SendSmsRequest request = new SendSmsRequest();
+            var list = phones.ToList();
             try
             {
                 //必填:待发送手机号码。支持以逗号分隔的形式进行批量调用，批量上限为1000个手机号码,批量调用相对于单条调用及时性稍有延迟,验证码类型的短信推荐使用单条调用的方式，发送国际/港澳台消息时，接收号码格式为00+国际区号+号码，如“0085200000000”
-                var list = phones.ToList();
                 request.PhoneNumbers = list.Join(",");
                 //必填:短信签名-可在短信控制台中找到
                 request.SignName = template!.Sign;
@@ -59,13 +58,9 @@ namespace Shashlik.Sms.Domains
                     throw new SmsDomainException(
                         $"aliyun sms send failed, error: {sendSmsResponse.Message}, response error code:{sendSmsResponse.Code}, phone: {list.Join(",")}");
             }
-            catch (ServerException ex)
+            catch (Exception ex)
             {
-                throw new SmsDomainException(ex.Message, ex);
-            }
-            catch (ClientException ex)
-            {
-                throw new SmsDomainException(ex.Message, ex);
+                throw new SmsDomainException($"aliyun sms send failed, phones: {list.Join(",")}", ex);
             }
         }
     }

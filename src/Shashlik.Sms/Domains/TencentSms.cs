@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 using qcloudsms_csharp;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Exceptions;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
@@ -23,9 +21,9 @@ namespace Shashlik.Sms.Domains
             params string[] args)
         {
             var template = options.Templates.FirstOrDefault(r => r.Subject.EqualsIgnoreCase(subject));
+            var list = phones.ToList();
             try
             {
-                var list = phones.ToList();
                 var res = new SmsMultiSender(options.AppId.ParseTo<int>(), options.AppKey)
                     .sendWithParam(options.Region.IsNullOrWhiteSpace() ? "86" : options.Region, list.ToArray(), template!.TemplateId.ParseTo<int>(),
                         args, template.Sign, "",
@@ -35,7 +33,7 @@ namespace Shashlik.Sms.Domains
             }
             catch (Exception ex)
             {
-                throw new SmsDomainException(ex.Message, ex);
+                throw new SmsDomainException($"tencent cloud sms send failed, phones: {list.Join(",")}", ex);
             }
         }
     }
