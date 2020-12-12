@@ -47,7 +47,7 @@ namespace Shashlik.AspNetCore.Filters
 
 
                 var options = context.HttpContext.RequestServices
-                    .GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
+                    .GetRequiredService<IOptionsSnapshot<AspNetCoreOptions>>().Value;
                 context.HttpContext.Response.StatusCode =
                     ModelError2HttpOk ? (int) HttpStatusCode.OK : (int) HttpStatusCode.BadRequest;
 
@@ -99,6 +99,9 @@ namespace Shashlik.AspNetCore.Filters
                         if (result.DeclaredType != typeof(ResponseResult))
                             result.Value = new ResponseResult(options.ResponseCode.Success, true,
                                 options.ResponseCode.SuccessDefaultMessage, result.Value, null);
+                        else if (!options.IsDebug)
+                            (result.Value as ResponseResult)!.Debug = null;
+
                         break;
                     }
                     case ContentResult contentResult:

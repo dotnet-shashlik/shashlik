@@ -37,7 +37,7 @@ namespace Shashlik.AspNetCore.Filters
 
                 base.OnException(context);
                 var options = context.HttpContext.RequestServices
-                    .GetRequiredService<IOptions<AspNetCoreOptions>>().Value;
+                    .GetRequiredService<IOptionsSnapshot<AspNetCoreOptions>>().Value;
 
                 var exception = context.Exception;
                 for (var i = 0; i < FindDepthResponseException; i++)
