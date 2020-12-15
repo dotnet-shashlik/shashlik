@@ -55,8 +55,7 @@ namespace Shashlik.EfCore.Transactional
                 throw new InvalidOperationException(
                     $"Transactional must used on virtual method, please check your method definition: {context.ProxyMethod}");
             var efNestedTransactionType = typeof(IEfNestedTransaction<>).MakeGenericType(DbContextType);
-            var efNestedTransaction =
-                context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
+            var efNestedTransaction = context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
 
             await using var tran = efNestedTransaction!.Begin(IsolationLevel);
             try
