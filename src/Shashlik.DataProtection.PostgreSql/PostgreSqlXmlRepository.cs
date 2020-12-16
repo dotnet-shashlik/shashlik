@@ -33,7 +33,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM \"{Options.Scheme}\".\"{Options.TableName}\";";
+            cmd.CommandText = $"SELECT * FROM \"{Options.Schema}\".\"{Options.TableName}\";";
             var reader = cmd.ExecuteReader();
             var table = new DataTable();
             table.Load(reader);
@@ -50,7 +50,7 @@ namespace Shashlik.DataProtection
             if (conn.State == ConnectionState.Closed)
                 conn.Open();
             using var cmd = conn.CreateCommand();
-            var sql = $"insert into \"{Options.Scheme}\".\"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
+            var sql = $"insert into \"{Options.Schema}\".\"{Options.TableName}\"(\"Xml\",\"CreateTime\") values(@xml,@now);";
             cmd.CommandText = sql;
             cmd.Parameters.Add(new NpgsqlParameter("@xml", DbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
@@ -71,7 +71,7 @@ namespace Shashlik.DataProtection
             // 只能使用public scheme
             using var cmd = conn.CreateCommand();
             var batchSql = $@"
-{(Options.Scheme == "public" ? "CREATE SCHEMA IF NOT EXISTS " + Options.Scheme + ";" : "")}
+{(Options.Schema == "public" ? "CREATE SCHEMA IF NOT EXISTS " + Options.Schema + ";" : "")}
 CREATE TABLE IF NOT EXISTS ""{Options.TableName}""(
 	""Id"" SERIAL PRIMARY KEY,
 	""Xml"" VARCHAR(4000) NOT NULL,

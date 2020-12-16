@@ -42,7 +42,7 @@ namespace Shashlik.Identity.Int32.MySql
             {
                 options.UseMySql(
                     conn,
-                    ServerVersion.FromString(MySqlOptions.DbVersion),
+                    ServerVersion.AutoDetect(conn),
                     db =>
                     {
                         db.MigrationsAssembly(MySqlOptions.MigrationAssembly.EmptyToNull() ?? typeof(IdentityMySqlAutowire).Assembly.FullName);

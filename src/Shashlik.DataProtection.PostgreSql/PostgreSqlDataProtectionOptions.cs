@@ -26,7 +26,7 @@ namespace Shashlik.DataProtection
         /// <summary>
         /// scheme
         /// </summary>
-        public string Scheme { get; set; } = "public";
+        public string Schema { get; set; } = "public";
 
         /// <summary>
         /// 表名
