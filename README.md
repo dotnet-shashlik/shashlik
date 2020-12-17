@@ -110,7 +110,9 @@ public class DfaultAMap
 
 ```
 
-是的，就这样完了，一个可复用的地理信息逆编码功能库就完成了，简化了大量的配置处理（搭配[Shashlik.RC](https://github.com/dotnet-shashlik/rcconfig)远程配置管理，可以爽翻天哦）、服务注册代码。怎么用？
+是的，就这样完了，一个可复用的地理信息逆编码功能库就完成了，简化了大量的配置处理（搭配[Shashlik.RC](https://github.com/dotnet-shashlik/rcconfig)远程配置管理，可以爽翻天哦）、服务注册代码。
+
+使用：
 
 1. 定义配置文件
 ```yaml
