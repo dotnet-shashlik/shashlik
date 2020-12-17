@@ -10,7 +10,7 @@ namespace Shashlik.Kernel.Attributes
     /// 属性值条件,优先级20, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(20)]
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ConditionOnPropertyAttribute : ConditionBaseAttribute
     {
         /// <summary>

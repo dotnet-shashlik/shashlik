@@ -10,6 +10,7 @@ namespace Shashlik.Kernel.Attributes
     /// 环境名称判断,优先级0, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(0)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ConditionOnHostEnvironmentAttribute : ConditionBaseAttribute
     {
         /// <summary>

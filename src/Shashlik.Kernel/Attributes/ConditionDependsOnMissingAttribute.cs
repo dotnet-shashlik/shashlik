@@ -10,6 +10,7 @@ namespace Shashlik.Kernel.Attributes
     /// 条件依赖,服务不存在时,优先级100, 自动装配类IServiceAutowire无效
     /// </summary>
     [Order(100)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class ConditionDependsOnMissingAttribute : ConditionBaseAttribute
     {
         /// <summary>
