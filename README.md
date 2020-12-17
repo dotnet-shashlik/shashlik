@@ -49,12 +49,12 @@ Shashlik.Kernel是整个Shashlik的核心程序集，几乎所有的Shashlik组�
 
 ## Getting Started
 
-让我们来开发一个使用高德地图来处理地理位置逆信息功能吧。
+让我们来开发一个使用高德地图来处理地理位置逆信息的功能吧。
 
 1. 安装Shashlik.Kernel
 
 ```
-    Install-Package Shashlik.RC.Config
+    Install-Package Shashlik.Kernel
 ```
 
 2. 定义配置类
