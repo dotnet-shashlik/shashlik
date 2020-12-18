@@ -5,7 +5,7 @@ namespace Shashlik.Kernel.Attributes
     /// <summary>
     /// 在指定类型之前进行装配, 装配类型有效
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class AfterAtAttribute : Attribute
     {
         public AfterAtAttribute(Type type)
