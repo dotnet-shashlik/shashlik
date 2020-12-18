@@ -11,6 +11,7 @@ using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
+using Shashlik.Kernel.Test.TestClasses.ServiceTests.LatestTestClasses;
 using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1;
 using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2;
 using Shashlik.Utils.Helpers;
@@ -210,6 +211,10 @@ namespace Shashlik.Kernel.Test
             {
                 GetService<IA27>().ShouldBeNull();
                 GetService<B27>().ShouldNotBeNull();
+            }
+
+            {
+                GetService<ILatest>().ShouldBeOfType<LatestB>();
             }
         }
 
