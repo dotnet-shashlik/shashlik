@@ -156,6 +156,7 @@ namespace Shashlik.Kernel
         public static IKernelServiceProvider UseShashlik(this IServiceProvider serviceProvider)
         {
             var kernelServiceProvider = new InnerKernelServiceProvider(serviceProvider);
+            kernelServiceProvider.AutowireServiceProvider();
             GlobalKernelServiceProvider.InitServiceProvider(kernelServiceProvider);
             return kernelServiceProvider;
         }
