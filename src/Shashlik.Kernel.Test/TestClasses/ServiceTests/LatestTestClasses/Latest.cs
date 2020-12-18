@@ -8,16 +8,16 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.LatestTestClasses
     {
     }
 
-    public class LatestA
+    public class LatestA : ILatest
     {
     }
 
     [LatestImplementation]
-    public class LatestB
+    public class LatestB : ILatest
     {
     }
 
-    public class LatestC
+    public class LatestC : ILatest
     {
     }
 }
