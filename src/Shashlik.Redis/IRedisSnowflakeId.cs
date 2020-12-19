@@ -7,5 +7,10 @@
         /// </summary>
         /// <returns></returns>
         (int workId, int dcId) GetId();
+
+        /// <summary>
+        /// 程序退出时清理id值
+        /// </summary>
+        void Clean();
     }
 }

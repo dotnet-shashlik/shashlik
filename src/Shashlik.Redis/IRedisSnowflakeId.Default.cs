@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using CSRedis;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
@@ -17,6 +18,8 @@ namespace Shashlik.Redis
         }
 
         private CSRedisClient RedisClient { get; }
+
+        private int? CurrentId { get; set; }
 
         public (int workId, int dcId) GetId()
         {
@@ -40,11 +43,21 @@ namespace Shashlik.Redis
                     // 设置值，2小时有效期，每小时刷新1次
                     RedisHelper.Set(valueKey, CurrentValue, TimeSpan.FromHours(2));
                     TimerHelper.SetInterval(() => RedisHelper.Set(valueKey, CurrentValue, TimeSpan.FromHours(2)), TimeSpan.FromHours(1));
+                    CurrentId = id;
                     return (id >> 5, id % 32);
                 }
             }
 
             throw new InvalidOperationException("Can't get workId and dataCenterId from redis.");
+        }
+
+        public void Clean()
+        {
+            if (CurrentId.HasValue)
+            {
+                var valueKey = ValueCacheKey.Format(CurrentId);
+                RedisHelper.DelAsync(valueKey);
+            }
         }
     }
 }
