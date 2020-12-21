@@ -41,10 +41,9 @@ namespace Shashlik.Captcha.Redis
             var key = GetKey(purpose, target, securityStamp);
             var errorKey = $"{key}:ERROR";
             code = $"TOLERATE:{maxErrorCount:D2}:{code}";
-            RedisClient.StartPipe()
-                .Set(errorKey, 0, lifeTimeSeconds)
-                .Set(key, code, lifeTimeSeconds)
-                .EndPipe();
+
+            await RedisClient.SetAsync(errorKey, 0, lifeTimeSeconds);
+            await RedisClient.SetAsync(key, code, lifeTimeSeconds);
             return await Task.FromResult(code);
         }
 
@@ -78,12 +77,7 @@ namespace Shashlik.Captcha.Redis
             if (code == redisCode)
             {
                 if (isDeleteOnSucceed)
-                {
-                    RedisClient.StartPipe()
-                        .Del(key)
-                        .Del(errorKey)
-                        .EndPipe();
-                }
+                    await RedisClient.DelAsync(key, errorKey);
 
                 return true;
             }
@@ -95,10 +89,7 @@ namespace Shashlik.Captcha.Redis
             var errorCount = await RedisClient.IncrByAsync(errorKey);
             if (errorCount >= maxErrorCount)
             {
-                RedisClient.StartPipe()
-                    .Del(key)
-                    .Del(errorKey)
-                    .EndPipe();
+                await RedisClient.DelAsync(key, errorKey);
                 return false;
             }
 
