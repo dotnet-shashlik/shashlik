@@ -100,6 +100,7 @@ namespace Shashlik.Kernel
 
             foreach (var item in types)
             {
+                
                 var services = serviceDescriptorProvider.GetDescriptor(item.Key);
                 foreach (var shashlikServiceDescriptor in services)
                 {

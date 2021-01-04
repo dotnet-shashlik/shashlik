@@ -45,7 +45,7 @@ namespace Shashlik.Kernel.Dependency
                                 services.Remove(item);
                         });
 
-                    if (item.ImplementationType!.IsDefinedAttribute<LatestImplementationAttribute>(true))
+                    if (item.ImplementationType!.IsDefinedAttribute<PrimaryAttribute>(true))
                     {
                         services.Remove(item);
                         latest.Add(item);

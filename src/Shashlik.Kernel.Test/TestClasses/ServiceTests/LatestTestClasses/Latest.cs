@@ -12,7 +12,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.LatestTestClasses
     {
     }
 
-    [LatestImplementation]
+    [Primary]
     public class LatestB : ILatest
     {
     }
