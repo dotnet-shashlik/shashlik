@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.Kernel;
@@ -26,6 +27,66 @@ namespace Shashlik.EfCore.Tests
         private TestDbContext1 DbContext => GetService<TestDbContext1>();
 
         [Fact]
+        public async Task CustomTransactionBeginFunctionTest()
+        {
+            var name = Guid.NewGuid().ToString();
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            await using var tran = DbContext.BeginNestedTransactionWithGeneral();
+
+            try
+            {
+                await testManager.CreateUserWithEfNestTransaction(name, roles, false);
+
+                await tran.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await tran.RollbackAsync();
+                throw;
+            }
+
+            var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+            userEntity.ShouldNotBeNull();
+            var roleEntity = DbContext.Set<Roles>().FirstOrDefault(r => r.UserId == userEntity.Id && r.Name == role);
+            roleEntity.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void NestedTransactionSyncLogicTest()
+        {
+            using var tran = DbContext.BeginNestedTransaction();
+            DbContext.GetCurrentNestedTransaction().ShouldBe(tran);
+
+            AsyncMethod(tran).GetAwaiter().GetResult();
+            SyncMethod(tran);
+        }
+
+        [Fact]
+        public async Task NestedTransactionAsyncLogicTest()
+        {
+            await using var tran = DbContext.BeginNestedTransactionWithAsync();
+            DbContext.GetCurrentNestedTransaction().ShouldBe(tran);
+
+            await AsyncMethod(tran);
+            SyncMethod(tran);
+        }
+
+        private async Task AsyncMethod(IDbContextTransaction topTran)
+        {
+            await using var tran2 = DbContext.BeginNestedTransactionWithAsync();
+            DbContext.GetCurrentNestedTransaction().ShouldBe(topTran);
+        }
+
+        private void SyncMethod(IDbContextTransaction topTran)
+        {
+            using var tran2 = DbContext.BeginNestedTransaction();
+            DbContext.GetCurrentNestedTransaction().ShouldBe(topTran);
+        }
+
+        [Fact]
         public void TransactionForeachCommitSyncTest()
         {
             var role = "add_user_test_role";
@@ -36,6 +97,8 @@ namespace Shashlik.EfCore.Tests
             for (int i = 0; i < new Random().Next(5, 10); i++)
             {
                 using var tran = DbContext.BeginNestedTransaction();
+                DbContext.GetCurrentNestedTransaction().ShouldBe(tran);
+
                 try
                 {
                     for (int j = 0; j < new Random().Next(5, 10); j++)
