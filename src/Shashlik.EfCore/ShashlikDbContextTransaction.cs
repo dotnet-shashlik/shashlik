@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Shashlik.EfCore
 {
     internal class ShashlikDbContextTransaction : IDbContextTransaction
     {
+        private volatile bool _isRollback;
+        private volatile bool _isDispose;
+        private volatile bool _isCommit;
+
         public ShashlikDbContextTransaction(IDbContextTransaction topTransaction, bool isTop)
         {
             TopTransaction = topTransaction;
@@ -20,17 +23,29 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 是否已dispose
         /// </summary>
-        public bool IsDispose { get; private set; }
+        public bool IsDispose
+        {
+            get => _isDispose;
+            private set => _isDispose = value;
+        }
 
         /// <summary>
         /// 是否已提交
         /// </summary>
-        public bool IsCommit { get; private set; }
+        public bool IsCommit
+        {
+            get => _isCommit;
+            private set => _isCommit = value;
+        }
 
         /// <summary>
         /// 是否已回滚
         /// </summary>
-        public bool IsRollback { get; private set; }
+        public bool IsRollback
+        {
+            get => _isRollback;
+            private set => _isRollback = value;
+        }
 
         /// <summary>
         /// 是否已完成
