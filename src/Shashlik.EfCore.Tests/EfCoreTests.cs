@@ -32,11 +32,10 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
-            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
             var names = new List<string>();
             for (int i = 0; i < new Random().Next(5, 10); i++)
             {
-                using var tran = nestTran.Begin();
+                using var tran = DbContext.BeginNestedTransaction();
                 try
                 {
                     for (int j = 0; j < new Random().Next(5, 10); j++)
@@ -71,11 +70,11 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
-            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
             var names = new List<string>();
+
             for (int i = 0; i < new Random().Next(5, 10); i++)
             {
-                using var tran = nestTran.Begin();
+                using var tran = DbContext.BeginNestedTransaction();
                 try
                 {
                     for (int j = 0; j < new Random().Next(5, 10); j++)
@@ -109,14 +108,13 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
-            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
             var names = new List<string>();
-            for (int i = 0; i < new Random().Next(5, 10); i++)
+            for (int i = 0; i < 1; i++)
             {
-                await using var tran = nestTran.Begin();
+                await using var tran = DbContext.BeginNestedTransactionWithAsync();
                 try
                 {
-                    for (int j = 0; j < new Random().Next(5, 10); j++)
+                    for (int j = 0; j < 1; j++)
                     {
                         var name = Guid.NewGuid().ToString();
                         names.Add(name);
@@ -148,11 +146,10 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
-            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
             var names = new List<string>();
             for (int i = 0; i < new Random().Next(5, 10); i++)
             {
-                await using var tran = nestTran.Begin();
+                await using var tran = DbContext.BeginNestedTransactionWithAsync();
                 try
                 {
                     for (int j = 0; j < new Random().Next(5, 10); j++)
@@ -187,9 +184,8 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
+            await using var tran = DbContext.BeginNestedTransaction();
 
-            var nestTran = GetService<IEfNestedTransaction<TestDbContext1>>();
-            await using var tran = nestTran.Begin();
 
             try
             {

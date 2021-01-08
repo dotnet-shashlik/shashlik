@@ -17,5 +17,8 @@
     <ItemGroup>
       <Compile Remove="IEfNestedTransactionWrapper.cs" />
       <Compile Remove="IEfNestedTransactionWrapper.Default.cs" />
+      <Compile Remove="IEfNestedTransaction.Default.cs" />
+      <Compile Remove="IEfNestedTransaction.cs" />
+      <Compile Remove="EfCoreAutowire.cs" />
     </ItemGroup>
 </Project>

@@ -12,14 +12,12 @@ namespace Shashlik.EfCore.Tests
     [Transient]
     public class TestManager
     {
-        public TestManager(TestDbContext1 dbContext, IEfNestedTransaction<TestDbContext1> transaction)
+        public TestManager(TestDbContext1 dbContext)
         {
             DbContext = dbContext;
-            Transaction = transaction;
         }
 
         public TestDbContext1 DbContext { get; }
-        public IEfNestedTransaction<TestDbContext1> Transaction { get; }
 
         [Transactional]
         public virtual async Task CreateUser(string name, IEnumerable<string> roles, bool throwEx)
@@ -34,7 +32,7 @@ namespace Shashlik.EfCore.Tests
 
             if (throwEx) throw new Exception("事务应该回滚");
 
-            DbContext.AddRange(roles.Select(r => new Roles
+            await DbContext.AddRangeAsync(roles.Select(r => new Roles
             {
                 UserId = user.Id,
                 Name = r
@@ -44,7 +42,7 @@ namespace Shashlik.EfCore.Tests
 
         public virtual async Task CreateUserWithEfTransaction(string name, IEnumerable<string> roles, bool throwEx)
         {
-            using var tran = DbContext.Database.BeginTransaction();
+            await using var tran = await DbContext.Database.BeginTransactionAsync();
 
             try
             {
@@ -58,7 +56,7 @@ namespace Shashlik.EfCore.Tests
 
                 if (throwEx) throw new Exception("事务应该回滚");
 
-                DbContext.AddRange(roles.Select(r => new Roles
+                await DbContext.AddRangeAsync(roles.Select(r => new Roles
                 {
                     UserId = user.Id,
                     Name = r
@@ -70,13 +68,13 @@ namespace Shashlik.EfCore.Tests
             catch (Exception)
             {
                 await tran.RollbackAsync();
-                throw;
             }
         }
 
-        public virtual async Task CreateUserWithEfNestTransaction(string name, IEnumerable<string> roles, bool throwEx)
+        public virtual async Task CreateUserWithEfNestTransaction(string name, IEnumerable<string> roles, bool rollback)
         {
-            using var tran = Transaction.Begin();
+            var tran11 = DbContext.GetCurrentNestedTransaction();
+            await using var tran = DbContext.BeginNestedTransaction();
             try
             {
                 var user = new Users
@@ -87,9 +85,9 @@ namespace Shashlik.EfCore.Tests
                 DbContext.Add(user);
                 await DbContext.SaveChangesAsync();
 
-                if (throwEx) throw new Exception("事务应该回滚");
+                if (rollback) throw new Exception("事务应该回滚");
 
-                DbContext.AddRange(roles.Select(r => new Roles
+                await DbContext.AddRangeAsync(roles.Select(r => new Roles
                 {
                     UserId = user.Id,
                     Name = r
@@ -101,7 +99,6 @@ namespace Shashlik.EfCore.Tests
             catch (Exception)
             {
                 await tran.RollbackAsync();
-                throw;
             }
         }
 

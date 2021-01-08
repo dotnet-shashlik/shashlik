@@ -8,10 +8,14 @@ namespace Shashlik.EfCore
 {
     internal class ShashlikDbContextTransaction : IDbContextTransaction
     {
-        public ShashlikDbContextTransaction(IDbContextTransaction topTransaction)
+        public ShashlikDbContextTransaction(IDbContextTransaction topTransaction, bool isTop)
         {
             TopTransaction = topTransaction;
+            TransactionId = topTransaction.TransactionId;
+            IsTop = isTop;
         }
+
+        public Guid TransactionId { get; }
 
         /// <summary>
         /// 是否已dispose
@@ -36,35 +40,37 @@ namespace Shashlik.EfCore
         /// <summary>
         /// 是否为顶层事务
         /// </summary>
-        public bool IsTop => !(TopTransaction is ShashlikDbContextTransaction);
+        public bool IsTop { get; }
 
         /// <summary>
         /// 原始/顶层事务数据
         /// </summary>
-        private IDbContextTransaction TopTransaction { get; }
+        private IDbContextTransaction? TopTransaction { get; set; }
 
         private void Valid()
         {
             if (TopTransaction is ShashlikDbContextTransaction shashlikDbContextTransaction
                 && shashlikDbContextTransaction.IsDone)
-                throw new TransactionException("Top transaction has been done");
+                throw new InvalidOperationException("Top transaction has been done");
             if (IsDone)
-                throw new TransactionException("Top transaction has been done");
+                throw new InvalidOperationException("Already committed or rolled back.");
         }
 
         public void Dispose()
         {
             if (IsTop)
-                TopTransaction.Dispose();
+                TopTransaction!.Dispose();
 
+            TopTransaction = null;
             IsDispose = true;
         }
 
         public async ValueTask DisposeAsync()
         {
             if (IsTop)
-                await TopTransaction.DisposeAsync();
+                await TopTransaction!.DisposeAsync();
 
+            TopTransaction = null;
             IsDispose = true;
         }
 
@@ -72,7 +78,7 @@ namespace Shashlik.EfCore
         {
             Valid();
             if (IsTop)
-                TopTransaction.Commit();
+                TopTransaction!.Commit();
             IsCommit = true;
         }
 
@@ -81,24 +87,22 @@ namespace Shashlik.EfCore
         {
             Valid();
             if (IsTop)
-                await TopTransaction.CommitAsync(cancellationToken);
+                await TopTransaction!.CommitAsync(cancellationToken);
             IsCommit = true;
         }
 
         public void Rollback()
         {
             if (!IsRollback)
-                TopTransaction.Rollback();
+                TopTransaction!.RollbackAsync();
             IsRollback = true;
         }
 
         public async Task RollbackAsync(CancellationToken cancellationToken = new CancellationToken())
         {
             if (!IsRollback)
-                await TopTransaction.RollbackAsync(cancellationToken);
+                await TopTransaction!.RollbackAsync(cancellationToken);
             IsRollback = true;
         }
-
-        public Guid TransactionId => TopTransaction.TransactionId;
     }
 }

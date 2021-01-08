@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Shashlik.Kernel.Dependency;
@@ -12,6 +12,6 @@ namespace Shashlik.EfCore
     public interface IEfNestedTransactionBeginFunction<in TDbContext>
         where TDbContext : DbContext
     {
-        IDbContextTransaction BeginTransaction(TDbContext dbContext, IsolationLevel? isolationLevel = null);
+        Task<IDbContextTransaction> BeginTransactionAsync(TDbContext dbContext);
     }
 }

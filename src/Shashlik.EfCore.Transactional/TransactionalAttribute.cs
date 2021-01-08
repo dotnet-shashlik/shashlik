@@ -28,7 +28,7 @@ namespace Shashlik.EfCore.Transactional
         public TransactionalAttribute()
         {
             DbContextType = DefaultDbContextType ?? throw new InvalidOperationException(
-                $"Must define DefaultTransactionalAttribute on your DbContext Type");
+                $"invalid default DbContext type, make sure invoke method of \"EfCoreTransactionalExtensions.UseEfCoreTransactional\"");
         }
 
         /// <summary>
@@ -42,6 +42,9 @@ namespace Shashlik.EfCore.Transactional
             DbContextType = dbContextType;
         }
 
+        /// <summary>
+        /// 数据库上下文类型
+        /// </summary>
         public Type DbContextType { get; }
 
         /// <summary>
@@ -51,18 +54,22 @@ namespace Shashlik.EfCore.Transactional
 
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
-            var efNestedTransactionType = typeof(IEfNestedTransaction<>).MakeGenericType(DbContextType);
-            var efNestedTransaction = context.ServiceProvider.GetRequiredService(efNestedTransactionType) as IEfNestedTransaction;
+            await using var tran =
+                EfNestedTransactionContext.BeginNestedTransaction(
+                    DbContextType,
+                    context.ServiceProvider,
+                    r => IsolationLevel.HasValue
+                        ? r.Database.BeginTransactionAsync(IsolationLevel.Value).GetAwaiter().GetResult()
+                        : r.Database.BeginTransactionAsync().GetAwaiter().GetResult());
 
-            await using var tran = efNestedTransaction!.Begin(IsolationLevel);
             try
             {
                 await next(context);
-                tran.Commit();
+                await tran.CommitAsync();
             }
             catch
             {
-                tran.Rollback();
+                await tran.RollbackAsync();
                 throw;
             }
         }

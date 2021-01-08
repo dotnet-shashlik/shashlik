@@ -27,7 +27,6 @@ namespace Shashlik.EfCore
         {
             base.OnModelCreating(modelBuilder);
 
-            //TODO: 使用IDesignTimeDbContextFactory生成迁移时无法GetService
             var kernelServices = this.GetService<IKernelServices>();
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             modelBuilder.RegisterEntities<IEntity>(
