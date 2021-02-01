@@ -19,7 +19,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
 
-        <ProjectReference Include="..\Shashlik.Captcha.DistributedCache\Shashlik.Captcha.DistributedCache.csproj"/>
+        <ProjectReference Include="..\Shashlik.Captcha.Redis\Shashlik.Captcha.Redis.csproj" />
         <ProjectReference Include="..\Shashlik.Captcha\Shashlik.Captcha.csproj"/>
         <ProjectReference Include="..\Shashlik.Identity.Int32.MySql\Shashlik.Identity.Int32.MySql.csproj"/>
         <ProjectReference Include="..\Shashlik.Identity.Int32\Shashlik.Identity.Int32.csproj"/>
