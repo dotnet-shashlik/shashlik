@@ -34,7 +34,7 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] {role};
 
             var testManager = GetService<TestManager>();
-            await using var tran = DbContext.BeginNestedTransactionWithGeneral();
+            await using var tran = DbContext.BeginNestedTransactionWithBeginFunction();
 
             try
             {

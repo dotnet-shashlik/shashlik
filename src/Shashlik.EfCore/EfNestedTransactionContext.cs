@@ -78,7 +78,7 @@ namespace Shashlik.EfCore
         /// <param name="dbContext">DbContext上下文</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static IDbContextTransaction BeginNestedTransactionWithGeneral<TDbContext>(this TDbContext dbContext)
+        public static IDbContextTransaction BeginNestedTransactionWithBeginFunction<TDbContext>(this TDbContext dbContext)
             where TDbContext : DbContext
         {
             var beginFunction = GlobalKernelServiceProvider.KernelServiceProvider!
