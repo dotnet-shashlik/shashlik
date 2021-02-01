@@ -25,18 +25,6 @@ namespace Shashlik.EfCore
         /// </summary>
         public const string MigrationLockKey = "EFCORE_MIGRATION";
 
-        // /// <summary>
-        // /// 增加efcore嵌套事务
-        // /// </summary>
-        // /// <param name="serviceCollection"></param>
-        // /// <returns></returns>
-        // public static IServiceCollection AddNestedTransaction(this IServiceCollection serviceCollection)
-        // {
-        //     serviceCollection.AddScoped(typeof(IEfNestedTransaction<>), typeof(DefaultEfNestedTransaction<>));
-        //
-        //     return serviceCollection;
-        // }
-
         /// <summary>
         /// 获取上下文所有的已注册的实体类型
         /// </summary>
