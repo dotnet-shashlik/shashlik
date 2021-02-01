@@ -13,21 +13,22 @@ namespace Shashlik.Utils.Helpers
         /// <param name="expire">过期时间</param>
         /// <param name="cancellationToken">撤销</param>
         /// <return>返回timer对象</return>
-        public static void SetTimeout(Action action, TimeSpan expire, CancellationToken? cancellationToken = null)
+        public static void SetTimeout(Action action, TimeSpan expire, CancellationToken cancellationToken = default)
         {
-            cancellationToken ??= CancellationToken.None;
-            if (cancellationToken.Value.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
                 return;
 
             if (expire <= TimeSpan.Zero)
                 throw new ArgumentException("invalid expire.", nameof(expire));
 
-            var timer = new Timer {Interval = expire.TotalMilliseconds};
+            var timer = new Timer {Interval = expire.TotalMilliseconds, AutoReset = false};
             timer.Elapsed += (sender, e) =>
             {
                 try
                 {
-                    timer.Enabled = false;
+                    if (!cancellationToken.IsCancellationRequested)
+                        action();
+                    
                     timer.Stop();
                     timer.Close();
                     timer.Dispose();
@@ -36,9 +37,6 @@ namespace Shashlik.Utils.Helpers
                 {
                     // ignored
                 }
-
-                if (!cancellationToken.Value.IsCancellationRequested)
-                    action();
             };
             timer.Start();
         }
@@ -51,7 +49,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cancellationToken">撤销</param>
         /// <return>返回timer对象</return>
         public static void SetTimeout(Action action, DateTimeOffset runAt,
-            CancellationToken? cancellationToken = null)
+            CancellationToken cancellationToken = default)
         {
             SetTimeout(action, (runAt - DateTimeOffset.Now), cancellationToken);
         }
@@ -63,23 +61,21 @@ namespace Shashlik.Utils.Helpers
         /// <param name="interval">间隔时间</param>
         /// <param name="cancellationToken">撤销</param>
         /// <return>返回timer对象</return>
-        public static void SetInterval(Action action, TimeSpan interval, CancellationToken? cancellationToken = null)
+        public static void SetInterval(Action action, TimeSpan interval, CancellationToken cancellationToken = default)
         {
-            cancellationToken ??= CancellationToken.None;
-            if (cancellationToken.Value.IsCancellationRequested)
+            if (cancellationToken.IsCancellationRequested)
                 return;
             if (interval <= TimeSpan.Zero)
                 throw new ArgumentException("invalid interval.", nameof(interval));
 
-            var timer = new Timer {Interval = interval.TotalMilliseconds};
+            var timer = new Timer {Interval = interval.TotalMilliseconds, AutoReset = true};
             timer.Elapsed += (sender, e) =>
             {
-                if (!cancellationToken.Value.IsCancellationRequested)
+                if (!cancellationToken.IsCancellationRequested)
                     action();
                 else
                     try
                     {
-                        timer.Enabled = false;
                         timer.Stop();
                         timer.Close();
                         timer.Dispose();

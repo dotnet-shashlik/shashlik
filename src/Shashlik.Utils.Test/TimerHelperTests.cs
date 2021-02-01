@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 using Shouldly;
@@ -22,7 +24,6 @@ namespace Shashlik.Utils.Test
         }
 
         [Theory]
-        [InlineData(0)]
         [InlineData(1)]
         [InlineData(2)]
         [InlineData(3)]
@@ -30,50 +31,35 @@ namespace Shashlik.Utils.Test
         [InlineData(5)]
         public async Task SetTimeout_test(int i)
         {
-            var origin = i;
-            TimerHelper.SetTimeout(() =>
+            ConcurrentBag<object> list = new ConcurrentBag<object>();
+
+            for (int j = 1; j <= i; j++)
             {
-                _testOutputHelper.WriteLine("first run, i: " + i);
-                i++;
-            }, TimeSpan.FromSeconds(1));
+                TimerHelper.SetTimeout(() => { list.Add(new object()); }, TimeSpan.FromSeconds(i));
+            }
 
-            await Task.Delay(2 * 1000);
+            await Task.Delay(i * 1000 + 1000);
 
-            _testOutputHelper.WriteLine("first run done, i: " + i);
-            i.ShouldBe(origin + 1);
-
-            var runAt = DateTimeOffset.Now.AddSeconds(1);
-            TimerHelper.SetTimeout(() =>
-            {
-                _testOutputHelper.WriteLine("second run, i: " + i);
-                i++;
-            }, runAt);
-
-            await Task.Delay(2 * 1000);
-
-            _testOutputHelper.WriteLine("second run done, i: " + i);
-            i.ShouldBe(origin + 2);
+            list.Count.ShouldBe(i);
         }
 
         [Fact]
-        public void SetInterval_test()
+        public async Task SetInterval_test()
         {
             var source = new CancellationTokenSource();
-            var counter = 0;
-            TimerHelper.SetInterval(() =>
-            {
-                counter++;
-                _testOutputHelper.WriteLine(counter.ToString());
-            }, TimeSpan.FromSeconds(1), source.Token);
+            ConcurrentBag<object> list = new ConcurrentBag<object>();
+            TimerHelper.SetInterval(() => { list.Add(new object()); }, TimeSpan.FromSeconds(1), source.Token);
 
             while (true)
             {
-                if (counter != 10) continue;
+                if (list.Count != 10) continue;
                 source.Cancel();
                 break;
             }
 
-            counter.ShouldBe(10);
+            await Task.Delay(1000);
+
+            list.Count.ShouldBe(10);
         }
 
         [Fact]
