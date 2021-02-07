@@ -6,9 +6,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Caching.CSRedis" Version="3.6.50" />
+        <PackageReference Include="Caching.CSRedis" Version="3.6.60" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-        <PackageReference Include="CSRedisCore" Version="3.6.5" />
+        <PackageReference Include="CSRedisCore" Version="3.6.6" />
     </ItemGroup>
 
     <ItemGroup>
