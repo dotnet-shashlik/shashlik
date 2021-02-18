@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Data;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel;
 using Shashlik.Utils.Extensions;
+using IsolationLevel = System.Data.IsolationLevel;
 
 namespace Shashlik.EfCore
 {
@@ -44,43 +45,12 @@ namespace Shashlik.EfCore
         /// <param name="isolationLevel">事务隔离级别，null保持默认</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static async Task<IDbContextTransaction> BeginNestedTransactionAsync<TDbContext>(
+        public static IDbContextTransaction BeginNestedTransactionByAsync<TDbContext>(
             this TDbContext dbContext,
             IsolationLevel? isolationLevel = null)
             where TDbContext : DbContext
         {
-            var asyncLocal = TransactionContext.GetOrAdd(typeof(TDbContext), _ => new AsyncLocal<ShashlikDbContextTransaction>());
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDispose)
-            {
-                var newAsyncLocal = new AsyncLocal<ShashlikDbContextTransaction>();
-                if (TransactionContext.TryUpdate(typeof(TDbContext), newAsyncLocal, asyncLocal))
-                    asyncLocal = newAsyncLocal;
-                else
-                    throw new InvalidOperationException();
-            }
-
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDone)
-                throw new InvalidOperationException("Already committed or rolled back.");
-            if (asyncLocal.Value is null)
-            {
-                var beginFunction = GlobalKernelServiceProvider.KernelServiceProvider!.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
-                IDbContextTransaction originalTransaction;
-                if (beginFunction is null)
-                {
-                    originalTransaction = isolationLevel.HasValue
-                        ? await dbContext.Database.BeginTransactionAsync(isolationLevel.Value)
-                        : await dbContext.Database.BeginTransactionAsync();
-                }
-                else
-                {
-                    originalTransaction = await beginFunction.BeginTransactionAsync(dbContext);
-                }
-
-                asyncLocal.Value = new ShashlikDbContextTransaction(originalTransaction, true);
-                return asyncLocal.Value;
-            }
-
-            return new ShashlikDbContextTransaction(asyncLocal.Value, false);
+            return Begin(dbContext, true, isolationLevel);
         }
 
         /// <summary>
@@ -93,38 +63,7 @@ namespace Shashlik.EfCore
         public static IDbContextTransaction BeginNestedTransaction<TDbContext>(this TDbContext dbContext, IsolationLevel? isolationLevel = null)
             where TDbContext : DbContext
         {
-            var asyncLocal = TransactionContext.GetOrAdd(typeof(TDbContext), _ => new AsyncLocal<ShashlikDbContextTransaction>());
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDispose)
-            {
-                var newAsyncLocal = new AsyncLocal<ShashlikDbContextTransaction>();
-                if (TransactionContext.TryUpdate(typeof(TDbContext), newAsyncLocal, asyncLocal))
-                    asyncLocal = newAsyncLocal;
-                else
-                    throw new InvalidOperationException();
-            }
-
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDone)
-                throw new InvalidOperationException("Already committed or rolled back.");
-            if (asyncLocal.Value is null)
-            {
-                var beginFunction = GlobalKernelServiceProvider.KernelServiceProvider!.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
-                IDbContextTransaction originalTransaction;
-                if (beginFunction is null)
-                {
-                    originalTransaction = isolationLevel.HasValue
-                        ? dbContext.Database.BeginTransaction(isolationLevel.Value)
-                        : dbContext.Database.BeginTransaction();
-                }
-                else
-                {
-                    originalTransaction = beginFunction.BeginTransactionAsync(dbContext).GetAwaiter().GetResult();
-                }
-
-                asyncLocal.Value = new ShashlikDbContextTransaction(originalTransaction, true);
-                return asyncLocal.Value;
-            }
-
-            return new ShashlikDbContextTransaction(asyncLocal.Value, false);
+            return Begin(dbContext, false, isolationLevel);
         }
 
         /// <summary>
@@ -162,5 +101,64 @@ namespace Shashlik.EfCore
 
             return new ShashlikDbContextTransaction(asyncLocal.Value, false);
         }
+
+        #region private method
+
+        private static IDbContextTransaction Begin<TDbContext>(this TDbContext dbContext, bool useAsync, IsolationLevel? isolationLevel)
+            where TDbContext : DbContext
+        {
+            var asyncLocal = TransactionContext.GetOrAdd(typeof(TDbContext), _ => new AsyncLocal<ShashlikDbContextTransaction>());
+            if (asyncLocal.Value != null && asyncLocal.Value.IsDispose)
+            {
+                var newAsyncLocal = new AsyncLocal<ShashlikDbContextTransaction>();
+                if (TransactionContext.TryUpdate(typeof(TDbContext), newAsyncLocal, asyncLocal))
+                    asyncLocal = newAsyncLocal;
+                else
+                    throw new InvalidOperationException();
+            }
+
+            if (asyncLocal.Value != null && asyncLocal.Value.IsDone)
+                throw new InvalidOperationException("Already committed or rolled back.");
+            if (asyncLocal.Value is null)
+            {
+                var originalTransaction = useAsync ? BeginByAsync(dbContext, isolationLevel) : BeginBySync(dbContext, isolationLevel);
+                asyncLocal.Value = new ShashlikDbContextTransaction(originalTransaction, true);
+                return asyncLocal.Value;
+            }
+
+            return new ShashlikDbContextTransaction(asyncLocal.Value, false);
+        }
+
+        private static IDbContextTransaction BeginBySync<TDbContext>(TDbContext dbContext, IsolationLevel? isolationLevel)
+            where TDbContext : DbContext
+        {
+            var beginFunction = GlobalKernelServiceProvider.KernelServiceProvider!.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
+            IDbContextTransaction originalTransaction;
+            if (beginFunction is null)
+                originalTransaction = isolationLevel.HasValue
+                    ? dbContext.Database.BeginTransaction(isolationLevel.Value)
+                    : dbContext.Database.BeginTransaction();
+            else
+                originalTransaction = beginFunction.BeginTransactionAsync(dbContext).GetAwaiter().GetResult();
+
+            return originalTransaction;
+        }
+
+        private static IDbContextTransaction BeginByAsync<TDbContext>(TDbContext dbContext, IsolationLevel? isolationLevel)
+            where TDbContext : DbContext
+        {
+            var beginFunction = GlobalKernelServiceProvider.KernelServiceProvider!.GetService<IEfNestedTransactionBeginFunction<TDbContext>>();
+            IDbContextTransaction originalTransaction;
+            if (beginFunction is null)
+                originalTransaction = isolationLevel.HasValue
+                    ? dbContext.Database.BeginTransactionAsync(isolationLevel.Value).ConfigureAwait(false).GetAwaiter().GetResult()
+                    : dbContext.Database.BeginTransactionAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            else
+                originalTransaction = beginFunction.BeginTransactionAsync(dbContext).ConfigureAwait(false).GetAwaiter().GetResult();
+
+            return originalTransaction;
+        }
+
+        #endregion
     }
 }
