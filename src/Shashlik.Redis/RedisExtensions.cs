@@ -8,7 +8,7 @@ namespace Shashlik.Redis
 {
     public static class RedisExtensions
     {
-        private static ConstructorInfo CSRedisClientLockConstructorInfo { get; }
+        private static ConstructorInfo? CSRedisClientLockConstructorInfo { get; }
 
         static RedisExtensions()
         {
@@ -18,10 +18,11 @@ namespace Shashlik.Redis
                     typeof(string),
                     typeof(string),
                     typeof(int),
-                    typeof(bool))!;
+                    typeof(double),
+                    typeof(bool));
 
             if (CSRedisClientLockConstructorInfo is null)
-                throw new MissingMemberException(nameof(CSRedisClientLock), ".ctor");
+                throw new MissingMemberException(nameof(CSRedisClientLock), "ctor");
         }
 
         // Lock copy from: https://github.com/2881099/csredis/blob/master/src/CSRedisCore/CSRedisClient.cs
@@ -53,8 +54,9 @@ namespace Shashlik.Redis
                 var value = Guid.NewGuid().ToString();
                 if (redisClient.Set(name, value, lockSeconds, RedisExistence.Nx))
                 {
-                    return (CSRedisClientLock) CSRedisClientLockConstructorInfo.Invoke(
-                        new object[] {redisClient, name, value, lockSeconds, autoDelay});
+                    var refreshSeconds = lockSeconds / 2.0;
+                    return (CSRedisClientLock) CSRedisClientLockConstructorInfo!.Invoke(
+                        new object[] {redisClient, name, value, lockSeconds, refreshSeconds, autoDelay});
                 }
 
                 Task.Delay(3).ConfigureAwait(false).GetAwaiter().GetResult();

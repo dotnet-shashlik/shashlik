@@ -29,6 +29,8 @@ namespace Shashlik.Redis
         {
             if (lockSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(lockSeconds));
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
+
+            RedisClient.Lock("", 1, true);
             return RedisClient.Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
                    throw new LockFailureException(key);
         }
