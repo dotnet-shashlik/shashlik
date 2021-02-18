@@ -3,7 +3,7 @@
     <Import Project="..\..\common.xml" />
     <PropertyGroup>
         <TargetFramework>net5</TargetFramework>
-
+        <Nullable>disable</Nullable>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

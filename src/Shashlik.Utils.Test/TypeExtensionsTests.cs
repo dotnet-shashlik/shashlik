@@ -32,7 +32,7 @@ namespace Shashlik.Utils.Test
             {
             }
 
-            public int Compare(object? x, object? y)
+            public int Compare(object x, object y)
             {
                 throw new NotImplementedException();
             }
@@ -55,12 +55,12 @@ namespace Shashlik.Utils.Test
             {
             }
 
-            public int CompareTo(object? obj)
+            public int CompareTo(object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public int Compare(object? x, object? y)
+            public int Compare(object x, object y)
             {
                 throw new NotImplementedException();
             }
@@ -82,12 +82,12 @@ namespace Shashlik.Utils.Test
                 throw new NotImplementedException();
             }
 
-            public int CompareTo(object? obj)
+            public int CompareTo(object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public int Compare(object? x, object? y)
+            public int Compare(object x, object y)
             {
                 throw new NotImplementedException();
             }
@@ -115,12 +115,12 @@ namespace Shashlik.Utils.Test
                 throw new NotImplementedException();
             }
 
-            public int CompareTo(object? obj)
+            public int CompareTo(object obj)
             {
                 throw new NotImplementedException();
             }
 
-            public int Compare(object? x, object? y)
+            public int Compare(object x, object y)
             {
                 throw new NotImplementedException();
             }
@@ -157,10 +157,6 @@ namespace Shashlik.Utils.Test
             }
 
             public TestB(string str, int number)
-            {
-            }
-
-            public void Dispose()
             {
             }
 
