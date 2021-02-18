@@ -42,7 +42,7 @@ namespace Shashlik.EfCore.Tests
 
                 await tran.CommitAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await tran.RollbackAsync();
                 throw;
@@ -110,7 +110,7 @@ namespace Shashlik.EfCore.Tests
 
                     tran.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     tran.Rollback();
                 }
@@ -149,7 +149,7 @@ namespace Shashlik.EfCore.Tests
 
                     tran.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     tran.Rollback();
                 }
@@ -186,7 +186,7 @@ namespace Shashlik.EfCore.Tests
 
                     await tran.CommitAsync();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await tran.RollbackAsync();
                 }
@@ -224,7 +224,7 @@ namespace Shashlik.EfCore.Tests
 
                     await tran.CommitAsync();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     await tran.RollbackAsync();
                 }
@@ -256,7 +256,7 @@ namespace Shashlik.EfCore.Tests
 
                 await tran.CommitAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await tran.RollbackAsync();
                 throw;

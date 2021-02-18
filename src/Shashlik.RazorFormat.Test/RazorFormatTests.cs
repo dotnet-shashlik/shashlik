@@ -52,7 +52,7 @@ namespace Shashlik.RazorFormat.Test
                 .ShouldBe(
                     $"仍然让人人@@{{Age|d5}}啊啊啊啊啊@{{NotMatch}}啪啪啪{model.Age:d5}嘎嘎嘎{model.Birthday:yyyy-MM-dd HH:mm:ss}宝贝宝贝宝贝呢{model.Money:f2}惆怅长岑长{model.Company.CompanyName}对方的等待{model.Company.Address.Code:d6}诶诶诶诶诶@{{NotMatch}}呵呵呵呵");
 
-            string? emptyStr = null;
+            string emptyStr = null;
             emptyStr.RazorFormat(model).ShouldBeNull();
 
             "".RazorFormat(model).ShouldBeNullOrWhiteSpace();

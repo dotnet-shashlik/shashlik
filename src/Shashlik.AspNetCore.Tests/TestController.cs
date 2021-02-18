@@ -26,7 +26,6 @@ namespace Shashlik.AspNetCore.Tests
         public string Test2()
         {
             throw new Exception("api2_ex");
-            return "api2";
         }
 
         [HttpPost("api3")]
@@ -45,7 +44,6 @@ namespace Shashlik.AspNetCore.Tests
         public string Test4()
         {
             throw new Exception("api4_ex");
-            return "api4";
         }
 
         [HttpPost("api5")]
@@ -62,7 +60,6 @@ namespace Shashlik.AspNetCore.Tests
         public string Test6()
         {
             throw ResponseException.ArgError();
-            return "api6";
         }
 
         [HttpPost("api7")]
@@ -71,7 +68,6 @@ namespace Shashlik.AspNetCore.Tests
         public string Test7()
         {
             throw ResponseException.ArgError();
-            return "api7";
         }
     }
 

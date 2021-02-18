@@ -15,7 +15,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +44,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
@@ -73,7 +73,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
@@ -103,7 +103,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
@@ -133,7 +133,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
@@ -168,7 +168,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
         {
         }
 
-        public int Compare(object? x, object? y)
+        public int Compare(object x, object y)
         {
             throw new NotImplementedException();
         }
