@@ -288,14 +288,14 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GetTotpTwoFactorQrcode(string userId);
+        Task<string> GetTotpTwoFactorQrcodeAsync(string userId);
 
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GenerateLoginCaptcha(string userId);
+        Task<string> GenerateLoginCaptchaAsync(string userId);
 
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
@@ -303,14 +303,14 @@ namespace Shashlik.Identity
         /// <param name="userId"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
-        Task<bool> IsValidLoginCaptcha(string userId, string catpcha);
+        Task<bool> IsValidLoginCaptchaAsync(string userId, string catpcha);
 
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<string> GenerateLoginCaptcha(IIdentityUser user);
+        Task<string> GenerateLoginCaptchaAsync(IIdentityUser user);
 
         /// <summary>
         /// 生成用于登录的验证码,使用Captcha
@@ -318,7 +318,7 @@ namespace Shashlik.Identity
         /// <param name="user"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
-        Task<bool> IsValidLoginCaptcha(IIdentityUser user, string catpcha);
+        Task<bool> IsValidLoginCaptchaAsync(IIdentityUser user, string catpcha);
 
         /// <summary>
         /// 检查密码并获取登录结果

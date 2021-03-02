@@ -453,7 +453,7 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetTotpTwoFactorQrcode(string userId)
+        public async Task<string> GetTotpTwoFactorQrcodeAsync(string userId)
         {
             // qrcode rules see-> https://github.com/google/google-authenticator/wiki/Key-Uri-Format
             const string authenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
@@ -472,7 +472,7 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GenerateLoginCaptcha(string userId)
+        public async Task<string> GenerateLoginCaptchaAsync(string userId)
         {
             var user = await this.FindByIdAsync(userId);
             return await this.GenerateUserTokenAsync(user, ShashlikIdentityConsts.CaptchaTokenProvider,
@@ -485,7 +485,7 @@ namespace Shashlik.Identity
         /// <param name="userId"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
-        public async Task<bool> IsValidLoginCaptcha(string userId, string catpcha)
+        public async Task<bool> IsValidLoginCaptchaAsync(string userId, string catpcha)
         {
             var user = await this.FindByIdAsync(userId);
             return await this.VerifyUserTokenAsync(user, ShashlikIdentityConsts.CaptchaTokenProvider,
@@ -497,7 +497,7 @@ namespace Shashlik.Identity
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public async Task<string> GenerateLoginCaptcha(IIdentityUser user)
+        public async Task<string> GenerateLoginCaptchaAsync(IIdentityUser user)
         {
             return await this.GenerateUserTokenAsync(AsUser(user), ShashlikIdentityConsts.CaptchaTokenProvider,
                 ShashlikIdentityConsts.LoginPurpose);
@@ -509,7 +509,7 @@ namespace Shashlik.Identity
         /// <param name="user"></param>
         /// <param name="catpcha"></param>
         /// <returns></returns>
-        public async Task<bool> IsValidLoginCaptcha(IIdentityUser user, string catpcha)
+        public async Task<bool> IsValidLoginCaptchaAsync(IIdentityUser user, string catpcha)
         {
             return await this.VerifyUserTokenAsync(AsUser(user), ShashlikIdentityConsts.CaptchaTokenProvider,
                 ShashlikIdentityConsts.LoginPurpose, catpcha);

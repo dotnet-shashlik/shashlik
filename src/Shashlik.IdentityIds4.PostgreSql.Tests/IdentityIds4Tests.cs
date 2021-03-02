@@ -83,10 +83,10 @@ namespace Shashlik.IdentityIds4.PostgreSql.Tests
 
             // 登录验证码测试
             {
-                var captcha = await _userManager.GenerateLoginCaptcha(user);
+                var captcha = await _userManager.GenerateLoginCaptchaAsync(user);
                 captcha.IsNullOrWhiteSpace().ShouldBeFalse();
-                (await _userManager.IsValidLoginCaptcha(user, captcha)).ShouldBeTrue();
-                (await _userManager.IsValidLoginCaptcha(user, "absolute_error")).ShouldBeFalse();
+                (await _userManager.IsValidLoginCaptchaAsync(user, captcha)).ShouldBeTrue();
+                (await _userManager.IsValidLoginCaptchaAsync(user, "absolute_error")).ShouldBeFalse();
             }
 
             // 密码登录测试
@@ -127,14 +127,14 @@ namespace Shashlik.IdentityIds4.PostgreSql.Tests
 
             // totp 二维码生成
             {
-                var qrcode = await _userManager.GetTotpTwoFactorQrcode(user.IdString);
+                var qrcode = await _userManager.GetTotpTwoFactorQrcodeAsync(user.IdString);
                 _testOutputHelper.WriteLine(qrcode);
                 qrcode.StartsWith("otpauth://").ShouldBeTrue();
             }
 
             // ids4 captcha登录
             {
-                var captcha = await _userManager.GenerateLoginCaptcha(user);
+                var captcha = await _userManager.GenerateLoginCaptchaAsync(user);
                 captcha.IsNullOrWhiteSpace().ShouldBeFalse();
 
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>()
@@ -156,7 +156,7 @@ namespace Shashlik.IdentityIds4.PostgreSql.Tests
 
             // ids4 captcha登录,错误登录
             {
-                var captcha = await _userManager.GenerateLoginCaptcha(user);
+                var captcha = await _userManager.GenerateLoginCaptchaAsync(user);
                 captcha.IsNullOrWhiteSpace().ShouldBeFalse();
 
                 var content = new FormUrlEncodedContent(new Dictionary<string, string>()
