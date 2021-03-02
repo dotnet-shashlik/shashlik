@@ -44,7 +44,7 @@ namespace Shashlik.Identity
 
         string? RealName { get; set; }
 
-        Gender Gender { get; set; }
+        int Gender { get; set; }
 
         long CreateTime { get; set; }
 

@@ -18,7 +18,7 @@ namespace Shashlik.Identity
         public string? NickName { get; set; }
         public string? IdCard { get; set; }
         public string? RealName { get; set; }
-        public Gender Gender { get; set; }
+        public int Gender { get; set; }
         public long CreateTime { get; set; }
         public long LastTime { get; set; }
         public bool IsDeleted { get; set; }
