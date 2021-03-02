@@ -23,7 +23,7 @@ namespace Shashlik.Ids4.Identity
         public ShashlikPasswordValidator(
             IShashlikUserManager userManager,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions,
-            IDataProtectionProvider dataProtectionProvider, IIdentityUserFinder identityUserFinder)
+            IDataProtectionProvider dataProtectionProvider, IIdentityUserProvider identityUserFinder)
         {
             UserManager = userManager;
             ShashlikIds4IdentityOptions = shashlikIds4IdentityOptions;
@@ -34,7 +34,7 @@ namespace Shashlik.Ids4.Identity
         private IShashlikUserManager UserManager { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
         private IDataProtectionProvider DataProtectionProvider { get; }
-        private IIdentityUserFinder IdentityUserFinder { get; }
+        private IIdentityUserProvider IdentityUserFinder { get; }
 
         /// <summary>
         /// Validates the resource owner password credential

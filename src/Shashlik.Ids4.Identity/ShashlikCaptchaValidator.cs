@@ -13,7 +13,7 @@ namespace Shashlik.Ids4.Identity
     {
         public ShashlikCaptchaValidator(
             IShashlikUserManager userManager,
-            IIdentityUserFinder userFinder,
+            IIdentityUserProvider userFinder,
             IOptions<ShashlikIds4IdentityOptions> shashlikIds4IdentityOptions)
         {
             UserManager = userManager;
@@ -22,7 +22,7 @@ namespace Shashlik.Ids4.Identity
         }
 
         private IShashlikUserManager UserManager { get; }
-        private IIdentityUserFinder IdentityUserFinder { get; }
+        private IIdentityUserProvider IdentityUserFinder { get; }
         private IOptions<ShashlikIds4IdentityOptions> ShashlikIds4IdentityOptions { get; }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)

@@ -16,12 +16,12 @@ namespace Shashlik.Ids4.Identity
     /// <summary>
     /// 默认的用户查找类,依次根据手机号码/邮件地址/身份证号码/用户名查找用户
     /// </summary>
-    [ConditionDependsOnMissing(typeof(IIdentityUserFinder))]
+    [ConditionDependsOnMissing(typeof(IIdentityUserProvider))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Ids4.Identity.Enable", true, DefaultValue = true)]
-    public class DefaultIIdentityUserFinder : IIdentityUserFinder
+    public class DefaultIIdentityUserProvider : IIdentityUserProvider
     {
-        public DefaultIIdentityUserFinder(IOptions<IdentityOptions> identityOptions,
-            IOptions<IdentityUserExtendsOptions> identityOptionsExtends, ILogger<DefaultIIdentityUserFinder> logger)
+        public DefaultIIdentityUserProvider(IOptions<IdentityOptions> identityOptions,
+            IOptions<IdentityUserExtendsOptions> identityOptionsExtends, ILogger<DefaultIIdentityUserProvider> logger)
         {
             IdentityOptions = identityOptions;
             IdentityOptionsExtends = identityOptionsExtends;
@@ -30,7 +30,7 @@ namespace Shashlik.Ids4.Identity
 
         private IOptions<IdentityOptions> IdentityOptions { get; }
         private IOptions<IdentityUserExtendsOptions> IdentityOptionsExtends { get; }
-        private ILogger<DefaultIIdentityUserFinder> Logger { get; }
+        private ILogger<DefaultIIdentityUserProvider> Logger { get; }
 
         public async Task<IIdentityUser?> FindByIdentityAsync(
             string identity,
