@@ -100,7 +100,6 @@ namespace Shashlik.Kernel
 
             foreach (var item in types)
             {
-                
                 var services = serviceDescriptorProvider.GetDescriptor(item.Key);
                 foreach (var shashlikServiceDescriptor in services)
                 {
@@ -157,8 +156,8 @@ namespace Shashlik.Kernel
         public static IKernelServiceProvider UseShashlik(this IServiceProvider serviceProvider)
         {
             var kernelServiceProvider = new InnerKernelServiceProvider(serviceProvider);
-            kernelServiceProvider.AutowireServiceProvider();
             GlobalKernelServiceProvider.InitServiceProvider(kernelServiceProvider);
+            kernelServiceProvider.AutowireServiceProvider();
             return kernelServiceProvider;
         }
 
@@ -170,8 +169,7 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IKernelServiceProvider AutowireServiceProvider(this IKernelServiceProvider kernelServiceProvider)
         {
-            var autowireProvider =
-                kernelServiceProvider.GetRequiredService<IAutowireProvider<IServiceProviderAutowire>>();
+            var autowireProvider = kernelServiceProvider.GetRequiredService<IAutowireProvider<IServiceProviderAutowire>>();
             var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
             autowireProvider.Autowire(dic, r => { r.ServiceInstance.Configure(kernelServiceProvider); });

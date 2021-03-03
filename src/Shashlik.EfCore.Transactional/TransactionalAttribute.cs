@@ -55,12 +55,7 @@ namespace Shashlik.EfCore.Transactional
         public override async Task Invoke(AspectContext context, AspectDelegate next)
         {
             await using var tran =
-                EfNestedTransactionContext.BeginNestedTransaction(
-                    DbContextType,
-                    context.ServiceProvider,
-                    r => IsolationLevel.HasValue
-                        ? r.Database.BeginTransactionAsync(IsolationLevel.Value).GetAwaiter().GetResult()
-                        : r.Database.BeginTransactionAsync().GetAwaiter().GetResult());
+                EfNestedTransactionContext.BeginNestedTransaction(DbContextType, context.ServiceProvider, IsolationLevel);
 
             try
             {

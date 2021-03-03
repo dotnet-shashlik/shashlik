@@ -18,10 +18,7 @@ namespace Shashlik.EfCore.Tests.Migrations2
                     IsDeleted = table.Column<bool>(nullable: false),
                     DeleteTime = table.Column<DateTime>(nullable: true)
                 },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
+                constraints: table => { table.PrimaryKey("PK_Users", x => x.Id); });
 
             migrationBuilder.CreateTable(
                 name: "Roles",

@@ -5,13 +5,17 @@ using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.EfCore
 {
+    public interface IEfNestedTransactionBeginFunction
+    {
+        Task<IDbContextTransaction> BeginTransactionAsync(DbContext dbContext);
+    }
+
     /// <summary>
     /// 定义开启事务的方式,不定义就使用默认的DbContext.Database.BeginTransaction(),已自动注册为单例
     /// </summary>
     [Singleton]
-    public interface IEfNestedTransactionBeginFunction<in TDbContext>
+    public interface IEfNestedTransactionBeginFunction<in TDbContext> : IEfNestedTransactionBeginFunction
         where TDbContext : DbContext
     {
-        Task<IDbContextTransaction> BeginTransactionAsync(TDbContext dbContext);
     }
 }
