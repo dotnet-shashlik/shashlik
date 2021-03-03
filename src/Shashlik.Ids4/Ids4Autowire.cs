@@ -45,8 +45,7 @@ namespace Shashlik.Ids4
                 builder.AddDeveloperSigningCredential();
             else if (Options.SignOptions.CredentialType == CredentialType.Rsa)
             {
-                if (string.IsNullOrWhiteSpace(Options.SignOptions.RsaPrivateKey)
-                    || !Options.SignOptions.RsaPrivateKey.Contains("PRIVATE KEY"))
+                if (string.IsNullOrWhiteSpace(Options.SignOptions.RsaPrivateKey))
                     throw new ArgumentException($"Invalid rsa private key");
                 var rsa = RSAHelper.FromPem(Options.SignOptions.RsaPrivateKey);
                 builder.AddSigningCredential(new RsaSecurityKey(rsa), Options.SignOptions.SigningAlgorithm);
