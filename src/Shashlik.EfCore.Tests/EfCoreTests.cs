@@ -281,7 +281,7 @@ namespace Shashlik.EfCore.Tests
             }
             catch (Exception ex)
             {
-                ex.InnerException!.Message.ShouldBe("事务应该回滚");
+                ex.Message.ShouldBe("事务应该回滚");
             }
 
             var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
