@@ -26,9 +26,9 @@ namespace Shashlik.AspNetCore.Filters
         public bool ModelError2HttpOk { get; set; } = true;
 
         /// <summary>
-        /// 是否输出所有的模型验证错误
+        /// 是否输出所有的模型验证错误, 默认false
         /// </summary>
-        public bool ResponseAllModelError { get; set; } = false;
+        public bool ResponseAllModelError { get; set; }
 
         public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {
@@ -44,7 +44,6 @@ namespace Shashlik.AspNetCore.Filters
                         return;
                     }
                 }
-
 
                 var options = context.HttpContext.RequestServices
                     .GetRequiredService<IOptionsSnapshot<AspNetCoreOptions>>().Value;

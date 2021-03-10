@@ -1,5 +1,4 @@
-﻿using System;
-using Shashlik.Utils.Extensions;
+﻿using Shashlik.Utils.Extensions;
 using ResponseStatus = Shashlik.Response.ResponseStatus;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -84,16 +83,16 @@ namespace Shashlik.AspNetCore
         /// <param name="status"></param>
         /// <param name="otherErrorCode"></param>
         /// <returns></returns>
-        public int FormatCode(Response.ResponseStatus status, int otherErrorCode)
+        public int FormatCode(ResponseStatus status, int otherErrorCode)
         {
             return status switch
             {
-                ResponseStatus.ArgError => this.ArgError,
-                ResponseStatus.LogicalError => this.LogicalError,
-                ResponseStatus.UnAuthentication => this.UnAuthentication,
-                ResponseStatus.Forbidden => this.Forbidden,
-                ResponseStatus.NotFound => this.NotFound,
-                ResponseStatus.SystemError => this.SystemError,
+                ResponseStatus.ArgError => ArgError,
+                ResponseStatus.LogicalError => LogicalError,
+                ResponseStatus.UnAuthentication => UnAuthentication,
+                ResponseStatus.Forbidden => Forbidden,
+                ResponseStatus.NotFound => NotFound,
+                ResponseStatus.SystemError => SystemError,
                 ResponseStatus.Other => otherErrorCode,
                 _ => (int) status
             };
@@ -105,7 +104,7 @@ namespace Shashlik.AspNetCore
         /// <param name="status"></param>
         /// <param name="inputMessage">`</param>
         /// <returns></returns>
-        public string FormatMessage(Response.ResponseStatus status, string inputMessage)
+        public string FormatMessage(ResponseStatus status, string inputMessage)
         {
             return status switch
             {
