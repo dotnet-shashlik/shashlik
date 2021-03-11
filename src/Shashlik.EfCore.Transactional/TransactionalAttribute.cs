@@ -3,12 +3,7 @@ using System.Data;
 using System.Threading.Tasks;
 using AspectCore.DynamicProxy;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Utils.Extensions;
-
-// ReSharper disable MethodHasAsyncOverload
-
-// ReSharper disable MemberCanBePrivate.Global
 
 namespace Shashlik.EfCore.Transactional
 {

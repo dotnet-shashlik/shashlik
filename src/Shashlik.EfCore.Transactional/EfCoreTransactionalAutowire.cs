@@ -15,6 +15,10 @@ namespace Shashlik.EfCore.Transactional
                 r.Interceptors.AddTyped<TransactionalAttribute>(
                     method => method.IsDefinedAttribute<TransactionalAttribute>(true)
                 );
+
+                r.Interceptors.AddTyped<TransactionScopeAttribute>(
+                    method => method.IsDefinedAttribute<TransactionScopeAttribute>(true)
+                );
             });
         }
     }
