@@ -19,14 +19,13 @@ namespace Shashlik.Kernel.Autowire
             var autoOptionTypes = disabledAutoOptionTypes?.ToList() ?? new List<Type>();
 
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
-                .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(IConfiguration)});
+                .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(string), typeof(IConfiguration)});
             if (method is null)
                 throw new MissingMethodException(
                     "OptionsConfigurationServiceCollectionExtensions",
                     "Configure<TOptions>(this IServiceCollection services, IConfiguration config)");
 
             var services = kernelServices.Services;
-            services.AddOptions();
 
             var dic =
                 ReflectionHelper.GetTypesAndAttribute<AutoOptionsAttribute>(kernelServices.ScanFromDependencyContext);
@@ -42,7 +41,7 @@ namespace Shashlik.Kernel.Autowire
                 method.MakeGenericMethod(key)
                     .Invoke(null, new object[]
                     {
-                        services, section
+                        services, value.Name, section
                     });
             }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable RedundantAttributeUsageProperty
 
@@ -23,6 +24,8 @@ namespace Shashlik.Kernel.Attributes
             SupportDot = supportDot;
             Section = SupportDot ? section.Replace(".", ":") : section;
         }
+
+        public string Name { get; set; } = Options.DefaultName;
 
         /// <summary>
         /// 配置节点名称，例：Logger.Microsoft
