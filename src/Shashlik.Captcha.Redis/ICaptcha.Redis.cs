@@ -11,7 +11,7 @@ using Shashlik.Utils.Helpers;
 namespace Shashlik.Captcha.Redis
 {
     /// <summary>
-    /// 验证码
+    /// Redis验证码
     /// </summary>
     [ConditionDependsOn(typeof(CSRedisClient))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]

@@ -9,7 +9,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.Captcha.Totp
 {
     /// <summary>
-    /// totp验证码,使用 DataProtection的当前密钥keyId作为secret混淆,需要依赖DataProtection
+    /// totp验证码
     /// </summary>
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha.Enable", true, DefaultValue = true)]
     [Singleton]
