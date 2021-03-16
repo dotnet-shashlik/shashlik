@@ -23,7 +23,7 @@ namespace Shashlik.Kernel.Autowire
             if (method is null)
                 throw new MissingMethodException(
                     "OptionsConfigurationServiceCollectionExtensions",
-                    "Configure<TOptions>(this IServiceCollection services, IConfiguration config)");
+                    "Configure<TOptions>(this IServiceCollection services, string name, IConfiguration config)");
 
             var services = kernelServices.Services;
 
