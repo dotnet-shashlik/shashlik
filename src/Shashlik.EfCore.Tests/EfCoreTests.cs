@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Extensions.DependencyInjection;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Test;
@@ -412,6 +411,41 @@ namespace Shashlik.EfCore.Tests
             var dbContext1 = GetService<TestDbContext1>();
             dbContext1.GetAllEntityTypes().ShouldContain(typeof(Roles));
             dbContext1.GetAllEntityTypes().ShouldContain(typeof(Users));
+        }
+
+        [Fact]
+        public async Task TransactionScopeTest()
+        {
+            var role = "add_user_test_role";
+            var roles = new[] {role};
+
+            var testManager = GetService<TestManager>();
+            var names = new List<string>();
+
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    var name = Guid.NewGuid().ToString();
+                    names.Add(name);
+                    await testManager.CreateUserByTransactionScope(name, roles, i % 2 == 0);
+                }
+                catch (Exception)
+                {
+                    // ignore
+                }
+            }
+
+
+            for (int i = 0; i < 10; i++)
+            {
+                var name = names[i];
+                var userEntity = DbContext.Set<Users>().FirstOrDefault(r => r.Name == name);
+                if (i % 2 == 0)
+                    userEntity.ShouldBeNull();
+                else
+                    userEntity.ShouldNotBeNull();
+            }
         }
     }
 }

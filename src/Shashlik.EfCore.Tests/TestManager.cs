@@ -102,6 +102,27 @@ namespace Shashlik.EfCore.Tests
             }
         }
 
+        [TransactionScope]
+        public virtual async Task CreateUserByTransactionScope(string name, IEnumerable<string> roles, bool throwEx)
+        {
+            var user = new Users
+            {
+                Name = name,
+            };
+
+            DbContext.Add(user);
+            await DbContext.SaveChangesAsync();
+
+            if (throwEx) throw new Exception("事务应该回滚");
+
+            await DbContext.AddRangeAsync(roles.Select(r => new Roles
+            {
+                UserId = user.Id,
+                Name = r
+            }));
+            await DbContext.SaveChangesAsync();
+        }
+
         public virtual void ClearDatas()
         {
             DbContext.Database.ExecuteSqlRaw("DELETE FROM `ROLES`");
