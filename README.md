@@ -20,7 +20,6 @@ Shashlik.Kernel是整个Shashlik的核心程序集，几乎所有的Shashlik组�
 | Shashlik.Cap        | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Cap.svg)](https://www.nuget.org/packages/Shashlik.Cap)        | [CAP](https://github.com/dotnetcore/CAP)框架基于事件总线机制集成，简化事件的发布与订阅                            |
 | Shashlik.Cap.Rabbit        | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Cap.Rabbit.svg)](https://www.nuget.org/packages/Shashlik.Cap.Rabbit)        | CAP框架RabbitMQ消息中间件的简单集成                           |
 | Shashlik.Captcha         | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Captcha.svg)](https://www.nuget.org/packages/Shashlik.Captcha)         | 通用验证码接口抽象                             |
-| Shashlik.Captcha.DistributedCache             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Captcha.DistributedCache.svg)](https://www.nuget.org/packages/Shashlik.Captcha.DistributedCache)             | 验证码的分布式缓存实现                                 |
 | Shashlik.Captcha.Redis             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Captcha.Redis.svg)](https://www.nuget.org/packages/Shashlik.Captcha.Redis)             | 验证码的Redis实现                                 |
 | Shashlik.Captcha.Totp             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Captcha.Totp.svg)](https://www.nuget.org/packages/Shashlik.Captcha.Totp)             | 验证码的Totp实现                                 |
 | Shashlik.DataProtection.MySql          | [![nuGet](https://img.shields.io/nuget/v/Shashlik.DataProtection.MySql.svg)](https://www.nuget.org/packages/Shashlik.DataProtection.MySql)          | DataProtection的MySql密钥储存实现                              |
@@ -41,7 +40,6 @@ Shashlik.Kernel是整个Shashlik的核心程序集，几乎所有的Shashlik组�
 | Shashlik.Response             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Response.svg)](https://www.nuget.org/packages/Shashlik.Response)             | 统一结果输出、异常式输出，常用于AspNetCore                                 |
 | Shashlik.Sms             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Sms.svg)](https://www.nuget.org/packages/Shashlik.Sms)             | 短信工具库，已集成阿里云、腾讯云                                 |
 | Shashlik.Sms.Cap             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Sms.Cap.svg)](https://www.nuget.org/packages/Shashlik.Sms.Cap)             | 基于Cap方式的异步短信发送                                 |
-| Shashlik.Sms.Limit.DistributedCache             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Sms.Limit.DistributedCache.svg)](https://www.nuget.org/packages/Shashlik.Sms.Limit.DistributedCache)             | 短信频率限制基于分布式缓存的实现                                 |
 | Shashlik.Sms.Limit.Redis             | [![nuGet](https://img.shields.io/nuget/v/Shashlik.Sms.Cap.svg)](https://www.nuget.org/packages/Shashlik.Sms.Cap)             | 短信频率限制基于Redis的实现                                 |
 
 ## WIKI
