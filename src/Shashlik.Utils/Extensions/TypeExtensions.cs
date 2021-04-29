@@ -938,7 +938,7 @@ namespace Shashlik.Utils.Extensions
                 case JTokenType.Object:
                 {
                     var dic = new Dictionary<string, object>();
-                    foreach (var item in token.Value<JObject>())
+                    foreach (var item in token.Value<JObject>()!)
                     {
                         dic[item.Key] = JToken2Object(item.Value!);
                     }
@@ -949,7 +949,7 @@ namespace Shashlik.Utils.Extensions
                 case JTokenType.Array:
                 {
                     var children = new List<object>();
-                    foreach (var item in token.Value<JArray>())
+                    foreach (var item in token.Value<JArray>()!)
                         children.Add(JToken2Object(item));
                     return children;
                 }
@@ -1092,7 +1092,7 @@ namespace Shashlik.Utils.Extensions
                 JToken? json;
                 if (jToken.Type == JTokenType.Array && int.TryParse(proName, out var index))
                 {
-                    var jsonArr = jToken.Value<JArray>();
+                    var jsonArr = jToken.Value<JArray>()!;
                     if (jsonArr.Count < index + 1)
                         return (false, null);
                     json = jsonArr.ElementAt(index);

@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DotNetCore.CAP" Version="3.1.2" />
+        <PackageReference Include="DotNetCore.CAP" Version="5.0.2" />
 
     </ItemGroup>
     <ItemGroup>

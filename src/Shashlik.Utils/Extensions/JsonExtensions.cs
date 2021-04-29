@@ -16,7 +16,9 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static T DeserializeJson<T>(this string json)
         {
+#nullable disable
             return JsonConvert.DeserializeObject<T>(json);
+#nullable enable
         }
 
         /// <summary>
