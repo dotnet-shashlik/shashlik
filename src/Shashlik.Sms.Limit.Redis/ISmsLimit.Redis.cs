@@ -55,7 +55,7 @@ namespace Shashlik.Sms.Limit.Redis
                 var data = Convert(item);
                 if (data is null)
                     continue;
-                if (data.Value.minute == minute)
+                if (data.Value.minute == minute && data.Value.hour == hour)
                 {
                     minuteTotal += 1;
                     if (limit.MinuteLimitCount <= minuteTotal)
