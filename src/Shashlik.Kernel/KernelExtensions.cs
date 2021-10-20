@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowire;
+using Shashlik.Kernel.Assembler;
+using Shashlik.Kernel.Options;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel
@@ -32,11 +33,11 @@ namespace Shashlik.Kernel
         {
             return services.AddShashlikCore(rootConfiguration, dependencyContext)
                 // 配置装载
-                .AutowireOptions(disableAutoOptionTypes)
+                .LoadAutoOptions(disableAutoOptionTypes)
                 // 注册约定的服务
                 .RegistryConventionServices()
                 // 自动服务装配
-                .AutowireServices()
+                .AssembleServices()
                 // 执行服务过滤
                 .DoFilter();
         }
@@ -63,8 +64,9 @@ namespace Shashlik.Kernel
 
             services.TryAddSingleton<IServiceDescriptorProvider, DefaultServiceDescriptorProvider>();
             services.TryAddSingleton<IFilterProvider, DefaultFilterAddProvider>();
-            services.TryAddSingleton(typeof(IAutowireProvider<>), typeof(DefaultAutowireProvider<>));
-            services.TryAddSingleton<IOptionsAutowire, DefaultOptionsAutowire>();
+            services.TryAddSingleton(typeof(IAssemblerProvider<>), typeof(DefaultAssemblerProvider<>));
+            services.TryAddSingleton(typeof(IAssemblerExecutor<>), typeof(DefaultAssemblerExecutor<>));
+            services.TryAddTransient<IOptionsAssembler, DefaultOptionsAssembler>();
             services.AddHostedService<ApplicationLifetimeHostedService>();
 
             return kernelService;
@@ -76,17 +78,17 @@ namespace Shashlik.Kernel
         /// <param name="kernelServices"></param>
         /// <param name="disableTypes"></param>
         /// <returns></returns>
-        public static IKernelServices AutowireOptions(this IKernelServices kernelServices,
+        public static IKernelServices LoadAutoOptions(this IKernelServices kernelServices,
             params Type[] disableTypes)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var optionsAutowire = serviceProvider.GetRequiredService<IOptionsAutowire>();
+            var optionsAutowire = serviceProvider.GetRequiredService<IOptionsAssembler>();
             optionsAutowire.ConfigureAll(kernelServices, disableTypes);
             return kernelServices;
         }
 
         /// <summary>
-        /// 注册约定的服务
+        /// 注册约定的服务: Scoped/Singleton/Transient
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
@@ -112,20 +114,17 @@ namespace Shashlik.Kernel
         }
 
         /// <summary>
-        /// 自动装配服务配置: <see cref="IServiceAutowire"/>, **服务装配类所有的条件特性都不可用**
+        /// 自动装配服务配置: <see cref="IServiceAssembler"/>, **服务装配类所有的条件特性都不可用**
         /// </summary>
         /// <param name="kernelServices"></param>
         /// <returns></returns>
-        public static IKernelServices AutowireServices(this IKernelServices kernelServices)
+        public static IKernelServices AssembleServices(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<IServiceAutowire>>();
-            var dic = autowireProvider.Load(kernelServices, serviceProvider);
-            autowireProvider.Autowire(dic, r => { r.ServiceInstance.Configure(kernelServices); });
-
+            var autowireProvider = serviceProvider.GetRequiredService<IAssemblerExecutor<IServiceAssembler>>();
+            autowireProvider.Execute(serviceProvider, r => { r.Configure(kernelServices); });
             return kernelServices;
         }
-
 
         /// <summary>
         /// 执行条件过滤
@@ -157,25 +156,23 @@ namespace Shashlik.Kernel
         {
             var kernelServiceProvider = new InnerKernelServiceProvider(serviceProvider);
             GlobalKernelServiceProvider.InitServiceProvider(kernelServiceProvider);
-            kernelServiceProvider.AutowireServiceProvider();
+            kernelServiceProvider.AssembleServiceProvider();
             return kernelServiceProvider;
         }
 
-
         /// <summary>
-        /// 自动装配服务配置: <see cref="IServiceProviderAutowire"/>
+        /// 自动装配服务配置: <see cref="IServiceProviderAssembler"/>
         /// </summary>
         /// <param name="kernelServiceProvider"></param>
         /// <returns></returns>
-        public static IKernelServiceProvider AutowireServiceProvider(this IKernelServiceProvider kernelServiceProvider)
+        public static IKernelServiceProvider AssembleServiceProvider(this IKernelServiceProvider kernelServiceProvider)
         {
-            var autowireProvider = kernelServiceProvider.GetRequiredService<IAutowireProvider<IServiceProviderAutowire>>();
+            var autowireProvider = kernelServiceProvider.GetRequiredService<IAssemblerProvider<IServiceProviderAssembler>>();
             var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
-            autowireProvider.Autowire(dic, r => { r.ServiceInstance.Configure(kernelServiceProvider); });
+            autowireProvider.Execute(dic, r => { r.ServiceInstance.Configure(kernelServiceProvider); });
             return kernelServiceProvider;
         }
-
 
         /// <summary>
         /// 自定义装配<typeparamref name="T"/>类型
@@ -183,31 +180,28 @@ namespace Shashlik.Kernel
         /// <param name="kernelServices"></param>
         /// <param name="autowireAction"></param>
         /// <returns></returns>
-        public static IKernelServices Autowire<T>(this IKernelServices kernelServices,
-            Action<T> autowireAction) where T : IAutowire
+        public static IKernelServices Assemble<T>(this IKernelServices kernelServices,
+            Action<T> autowireAction) where T : IAssembler
         {
             if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            var autowireProvider = serviceProvider.GetRequiredService<IAutowireProvider<T>>();
-            var dic = autowireProvider.Load(kernelServices, serviceProvider);
-            autowireProvider.Autowire(dic, r => { autowireAction(r.ServiceInstance); });
+            var autowireProvider = serviceProvider.GetRequiredService<IAssemblerExecutor<T>>();
+            autowireProvider.Execute(serviceProvider, autowireAction);
             return kernelServices;
         }
 
         /// <summary>
-        /// 自动装配服务配置: <see cref="IServiceAutowire"/>
+        /// 自动装配服务配置: <see cref="IServiceAssembler"/>
         /// </summary>
         /// <param name="kernelServiceProvider"></param>
         /// <param name="autowireAction"></param>
         /// <returns></returns>
         public static IKernelServiceProvider Autowire<T>(this IKernelServiceProvider kernelServiceProvider,
-            Action<T> autowireAction) where T : IAutowire
+            Action<T> autowireAction) where T : IAssembler
         {
             if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));
-            var autowireProvider = kernelServiceProvider.GetRequiredService<IAutowireProvider<T>>();
-            var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();
-            var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
-            autowireProvider.Autowire(dic, r => { autowireAction(r.ServiceInstance); });
+            var autowireProvider = kernelServiceProvider.GetRequiredService<IAssemblerExecutor<T>>();
+            autowireProvider.Execute(kernelServiceProvider, autowireAction);
             return kernelServiceProvider;
         }
     }

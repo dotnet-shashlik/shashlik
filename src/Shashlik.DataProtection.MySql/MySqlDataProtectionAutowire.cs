@@ -13,7 +13,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtection
 {
-    public class MySqlDataProtectionAutowire : IServiceAutowire
+    public class MySqlDataProtectionAutowire : IServiceAssembler
     {
         public MySqlDataProtectionAutowire(IOptions<MySqlDataProtectionOptions> options)
         {

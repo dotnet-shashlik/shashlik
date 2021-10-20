@@ -9,9 +9,9 @@ using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Options
 {
-    public class DefaultOptionsAutowire : IOptionsAutowire
+    public class DefaultOptionsAssembler : IOptionsAssembler
     {
         public void ConfigureAll(IKernelServices kernelServices, IEnumerable<Type> disabledAutoOptionTypes)
         {

@@ -16,7 +16,7 @@ namespace Shashlik.DataProtection
     /// 使用CSRedisCore共享DataProtector的密钥存储,解决集群缓存密钥存储问题
     /// </summary>
     [AfterAt(typeof(RedisAutowire))]
-    public class RedisDataProtectorAutowire : IServiceAutowire
+    public class RedisDataProtectorAutowire : IServiceAssembler
     {
         public RedisDataProtectorAutowire(IOptions<RedisDataProtectorOptions> options)
         {

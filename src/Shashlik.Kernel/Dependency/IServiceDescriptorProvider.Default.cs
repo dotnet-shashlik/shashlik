@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Extensions;
-using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Kernel.Dependency
 {
@@ -15,58 +14,6 @@ namespace Shashlik.Kernel.Dependency
     /// </summary>
     public class DefaultServiceDescriptorProvider : IServiceDescriptorProvider
     {
-        public DefaultServiceDescriptorProvider(IKernelServices kernelServices)
-        {
-            KernelServices = kernelServices;
-        }
-
-        private IKernelServices KernelServices { get; }
-
-        /// <summary>
-        /// 是不是没有子类的最终类
-        /// </summary>
-        /// <param name="types"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private static bool IsLastFinalType(IEnumerable<TypeInfo> types, Type type)
-        {
-            foreach (var typeInfo in types)
-            {
-                if (typeInfo == type)
-                    continue;
-                if (typeInfo.IsSubTypeOrEqualsOf(type))
-                    return false;
-                if (typeInfo.IsSubTypeOfGenericType(type))
-                    return false;
-            }
-
-            return true;
-        }
-
-        private static bool CanAddService(Type subType, Type parentType, out List<Type> serviceTypeList)
-        {
-            serviceTypeList = new List<Type>() {parentType};
-            if (subType == parentType)
-                return true;
-            if (!subType.IsGenericTypeDefinition && parentType.IsGenericTypeDefinition)
-            {
-                // 子类不是泛型定义,父类是,注册父类的泛型实现类为服务类
-                serviceTypeList = subType.GetAllBaseTypesAndInterfaces()
-                    .Where(r => !r.IsGenericTypeDefinition && r.IsSubTypeOfGenericType(parentType))
-                    .ToList();
-
-                if (serviceTypeList.IsNullOrEmpty())
-                    return false;
-                return true;
-            }
-
-            if (subType.IsGenericTypeDefinition != parentType.IsGenericTypeDefinition)
-                return false;
-            if (!subType.IsGenericTypeDefinition && !parentType.IsGenericTypeDefinition)
-                return subType.IsSubTypeOrEqualsOf(parentType);
-            return subType.IsSubTypeOfGenericDefinitionType(parentType);
-        }
-
         private static bool CanAddService(Type subType, Type parentType)
         {
             if (subType == parentType)
@@ -106,26 +53,8 @@ namespace Shashlik.Kernel.Dependency
                 .ToList();
         }
 
-        /// <summary>
-        /// 获取继承链所有的ignores
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        private static HashSet<Type> GetIgnoresFromInheritedChain(Type type)
-        {
-            List<Type> res = new List<Type>();
-            foreach (var item in type.GetAllBaseTypesAndInterfaces().Concat(new[] {type}))
-            {
-                var serviceAttribute = item.GetCustomAttribute<ServiceAttribute>();
-                if (serviceAttribute == null)
-                    continue;
-                res.AddRange(serviceAttribute.IgnoreServices);
-            }
 
-            return res.ToHashSet();
-        }
-
-        private static bool IsIgnored(Type serviceType, HashSet<Type> ignores)
+        private static bool IsIgnored(Type serviceType, Type[] ignores)
         {
             if (ignores.IsNullOrEmpty())
                 return false;
@@ -142,95 +71,41 @@ namespace Shashlik.Kernel.Dependency
             var res = new List<ShashlikServiceDescriptor>();
             var conditions = GetConditions(type);
 
-            // 注册整个继承链
-            if (serviceAttribute.RequireRegistryInheritedChain)
-            {
-                var baseTypes = type.GetAllBaseTypesAndInterfaces().ToList();
-                var subTypes = ReflectionHelper.GetSubTypes(type);
-                var finalSubTypes = subTypes.Where(r => r.IsClass && !r.IsAbstract).ToList();
-                var allTypes = baseTypes.Concat(subTypes).ToList();
-
-                foreach (var item1 in finalSubTypes)
-                {
-                    var ignores = GetIgnoresFromInheritedChain(item1);
-                    foreach (var item2 in allTypes)
-                    {
-                        if (IsIgnored(item2, ignores))
-                            continue;
-
-                        if (!CanAddService(item1, item2, out var serviceTypeList))
-                            continue;
-
-                        foreach (var serviceType in serviceTypeList)
-                        {
-                            if (IsIgnored(serviceType, ignores))
-                                continue;
-                            var serviceDescriptor = ServiceDescriptor.Describe(serviceType, item1, serviceAttribute.ServiceLifetime);
-                            var conditions1 = GetConditions(item1);
-                            var conditions2 = GetConditions(serviceType);
-                            res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions1.Concat(conditions2).ToList()));
-                        }
-                    }
-                }
-            }
             // 如果是抽象类或接口,只注册最终实现类和自身
-            else if (type.IsAbstract || type.IsInterface)
+            if (type.IsAbstract || type.IsInterface)
             {
-                var finalSubTypes = ReflectionHelper.GetFinalSubTypes(type, KernelServices.ScanFromDependencyContext);
-
-                foreach (var finalSubType in finalSubTypes)
-                {
-                    var ignores = GetIgnoresFromInheritedChain(finalSubType);
-                    if (IsIgnored(finalSubType, ignores))
-                        continue;
-
-                    ValidServiceLifetime(serviceAttribute.ServiceLifetime, finalSubType);
-
-                    // 只注册最下面的没有子类的最终类
-                    if (IsLastFinalType(finalSubTypes, finalSubType))
-                    {
-                        var currentConditions = conditions.Concat(GetConditions(finalSubType)).ToList();
-                        ServiceDescriptor self = ServiceDescriptor.Describe(finalSubType, finalSubType, serviceAttribute.ServiceLifetime);
-                        res.Add(new ShashlikServiceDescriptor(self, currentConditions));
-                        if (CanAddService(finalSubType, type, out var serviceTypeList))
-                        {
-                            foreach (var serviceType in serviceTypeList)
-                            {
-                                if (IsIgnored(serviceType, ignores))
-                                    continue;
-                                ServiceDescriptor @base = ServiceDescriptor.Describe(serviceType, finalSubType, serviceAttribute.ServiceLifetime);
-                                // 每一个服务都使用服务类和实现的条件并集
-                                res.Add(new ShashlikServiceDescriptor(@base, currentConditions));
-                            }
-                        }
-                    }
-                }
+                throw new KernelServiceException($"[Scoped]/[Singleton]/[Transient] can not used on type \"{type}\".");
             }
-            // 最终实现类，往上查找服务
-            else if (type.IsClass && !type.IsAbstract)
+
+            var ignores = serviceAttribute.IgnoreServiceType;
+            if (!IsIgnored(type, ignores))
             {
-                var ignores = GetIgnoresFromInheritedChain(type);
-                if (!IsIgnored(type, ignores))
+                // 注册自身
+                var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
+                res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions));
+            }
+
+            var baseTypes = type.GetAllInterfaces(false).ToHashSet();
+            if (type.BaseType != typeof(object))
+                baseTypes.Add(type.BaseType);
+            foreach (var additionServiceType in serviceAttribute.AdditionServiceType)
+            {
+                if (type.IsSubType(additionServiceType))
+                    baseTypes.Add(additionServiceType);
+            }
+
+            foreach (var baseType in baseTypes)
+            {
+                if (IsIgnored(baseType, ignores))
+                    continue;
+
+                ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
+
+                if (CanAddService(type, baseType))
                 {
-                    // 注册自身
-                    var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
-                    res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions));
-                }
-
-                var baseTypes = type.GetAllBaseTypesAndInterfaces();
-                foreach (var baseType in baseTypes)
-                {
-                    if (IsIgnored(baseType, ignores))
-                        continue;
-
-                    ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
-
-                    if (CanAddService(type, baseType))
-                    {
-                        var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
-                        var currentConditions = conditions.Concat(GetConditions(baseType)).ToList();
-                        res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
-                    }
+                    var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
+                    var currentConditions = conditions.Concat(GetConditions(baseType)).ToList();
+                    res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
                 }
             }
 

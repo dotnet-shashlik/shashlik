@@ -2,7 +2,6 @@
 using Shashlik.Kernel;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
 
@@ -12,7 +11,7 @@ namespace Shashlik.Redis
     /// redis自动装配,装配顺序200
     /// </summary>
     [Order(200)]
-    public class RedisAutowire : IServiceAutowire
+    public class RedisAutowire : IServiceAssembler
     {
         public RedisAutowire(IOptions<RedisOptions> options)
         {
@@ -30,7 +29,6 @@ namespace Shashlik.Redis
 
             RedisHelper.Initialization(csRedis);
             kernelService.Services.AddSingleton(csRedis);
-            kernelService.Services.TryAddSingleton<IRedisSnowflakeId, DefaultRedisSnowflakeId>();
             kernelService.Services.AddSingleton<IDistributedCache>(
                 new Microsoft.Extensions.Caching.Redis.CSRedisCache(RedisHelper.Instance));
         }

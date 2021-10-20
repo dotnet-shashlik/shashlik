@@ -3,22 +3,28 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Shashlik.Kernel.Dependency
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
     public abstract class ServiceAttribute : Attribute
     {
-        protected ServiceAttribute(ServiceLifetime serviceLifetime, Type[] ignoreServices)
+        protected ServiceAttribute(ServiceLifetime serviceLifetime, Type[] additionServiceType, Type[] ignoreServiceType)
         {
             ServiceLifetime = serviceLifetime;
-            IgnoreServices = ignoreServices ?? throw new ArgumentNullException(nameof(ignoreServices));
+            AdditionServiceType = additionServiceType ?? throw new ArgumentNullException(nameof(additionServiceType));
+            IgnoreServiceType = ignoreServiceType;
         }
 
+        /// <summary>
+        /// 服务生命周期
+        /// </summary>
         public ServiceLifetime ServiceLifetime { get; }
 
-        public Type[] IgnoreServices { get; }
+        /// <summary>
+        /// 附加服务类
+        /// </summary>
+        public Type[] AdditionServiceType { get; }
 
         /// <summary>
-        /// 是否注册整个继承链
+        /// 需要忽略的服务类型
         /// </summary>
-        public bool RequireRegistryInheritedChain { get; set; }
+        public Type[] IgnoreServiceType { get; }
     }
 }

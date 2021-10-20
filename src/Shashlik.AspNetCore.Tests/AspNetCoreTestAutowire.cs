@@ -5,7 +5,7 @@ using Shashlik.Kernel;
 
 namespace Shashlik.AspNetCore.Tests
 {
-    public class AspNetCoreTestAutowire : IServiceAutowire
+    public class AspNetCoreTestAutowire : IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

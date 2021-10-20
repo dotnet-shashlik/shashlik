@@ -3,7 +3,7 @@ using Shashlik.Kernel.Attributes;
 
 namespace Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses
 {
-    public class FailConditionAutowire : IServiceAutowire
+    public class FailConditionAutowire : IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

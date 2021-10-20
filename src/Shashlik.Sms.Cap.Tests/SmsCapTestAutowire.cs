@@ -3,7 +3,7 @@ using Shashlik.Kernel;
 
 namespace Shashlik.Sms.Cap.Tests
 {
-    public class SmsCapTestAutowire: IServiceAutowire
+    public class SmsCapTestAutowire: IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

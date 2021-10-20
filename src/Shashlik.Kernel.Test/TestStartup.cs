@@ -36,7 +36,7 @@ namespace Shashlik.Kernel.Test
         {
             app.ApplicationServices.UseShashlik()
                 .DoAutoMigration()
-                .AutowireServiceProvider()
+                .AssembleServiceProvider()
                 .AutowireAspNet(app)
                 .Autowire<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
                 ;

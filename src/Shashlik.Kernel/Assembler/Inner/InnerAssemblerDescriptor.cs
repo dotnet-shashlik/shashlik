@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace Shashlik.Kernel.Autowire.Inner
+namespace Shashlik.Kernel.Assembler.Inner
 {
     /// <summary>
     /// 内部描述器,执行状态不应该暴露出去
     /// </summary>
-    internal class InnerAutowiredDescriptor<T> : AutowireDescriptor<T> where T : IAutowire
+    internal class InnerAssemblerDescriptor<T> : AssemblerDescriptor<T> where T : IAssembler
     {
         public AutowireStatus Status { get; set; }
 
-        public InnerAutowiredDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance) : base(
+        public InnerAssemblerDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance) : base(
             implementationType, afterAt, beforeAt, order, serviceInstance)
         {
         }

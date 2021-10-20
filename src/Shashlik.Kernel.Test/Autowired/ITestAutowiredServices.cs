@@ -2,7 +2,7 @@
 
 namespace Shashlik.Kernel.Test.Autowired
 {
-    public interface ITestAutowiredServices : IAutowire
+    public interface ITestAutowiredServices : IAssembler
     {
         void ConfigureServices(IServiceCollection serviceCollection);
     }

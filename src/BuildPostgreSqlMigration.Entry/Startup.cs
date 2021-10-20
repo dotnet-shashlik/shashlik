@@ -28,9 +28,9 @@ namespace BuildPostgreSqlMigration.Entry
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddShashlikCore(Configuration)
-                .AutowireOptions()
+                .LoadAutoOptions()
                 .RegistryConventionServices()
-                .AutowireServices()
+                .AssembleServices()
                 .DoFilter();
         }
 

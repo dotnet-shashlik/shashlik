@@ -25,7 +25,7 @@ namespace Shashlik.Kernel.Attributes
             Section = SupportDot ? section.Replace(".", ":") : section;
         }
 
-        public string Name { get; set; } = Options.DefaultName;
+        public string Name { get; set; } = Microsoft.Extensions.Options.Options.DefaultName;
 
         /// <summary>
         /// 配置节点名称，例：Logger.Microsoft

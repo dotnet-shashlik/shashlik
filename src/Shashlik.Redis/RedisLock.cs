@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
 using CSRedis;
-using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Kernel.Exceptions;
 
 namespace Shashlik.Redis
 {
     [ConditionOnProperty(typeof(bool), "Shashlik.Redis.Enable", true, DefaultValue = true)]
-    public class RedisLock : ILock
+    [Singleton]
+    public class RedisLock
     {
         public RedisLock(CSRedisClient redisClient)
         {
@@ -30,7 +30,6 @@ namespace Shashlik.Redis
             if (lockSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(lockSeconds));
             if (waitTimeoutSeconds <= 0) throw new ArgumentOutOfRangeException(nameof(waitTimeoutSeconds));
 
-            RedisClient.Lock("", 1, true);
             return RedisClient.Lock(key, lockSeconds, waitTimeoutSeconds, autoDelay) ??
                    throw new LockFailureException(key);
         }

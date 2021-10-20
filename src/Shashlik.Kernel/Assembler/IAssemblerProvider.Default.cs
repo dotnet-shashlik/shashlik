@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using Shashlik.Kernel.Assembler.Inner;
 using Shashlik.Kernel.Attributes;
-using Shashlik.Kernel.Autowire.Inner;
 using Shashlik.Kernel.Exceptions;
 using Shashlik.Utils.Extensions;
 
@@ -13,13 +13,13 @@ using Shashlik.Utils.Extensions;
 // ReSharper disable UseDeconstruction
 // ReSharper disable MemberCanBeMadeStatic.Local
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Assembler
 {
-    public class DefaultAutowireProvider<T> : IAutowireProvider<T> where T : IAutowire
+    public class DefaultAssemblerProvider<T> : IAssemblerProvider<T> where T : IAssembler
     {
-        private void Invoke(InnerAutowiredDescriptor<T>? descriptor,
-            IDictionary<Type, AutowireDescriptor<T>> autoServices,
-            Action<AutowireDescriptor<T>> initAction)
+        private void Invoke(InnerAssemblerDescriptor<T>? descriptor,
+            IDictionary<Type, AssemblerDescriptor<T>> autoServices,
+            Action<AssemblerDescriptor<T>> initAction)
         {
             if (descriptor is null) throw new ArgumentNullException(nameof(descriptor));
 
@@ -37,25 +37,25 @@ namespace Shashlik.Kernel.Autowire
             {
                 descriptor.Status = AutowireStatus.Hangup;
                 foreach (var item in descriptor.Prevs)
-                    Invoke(autoServices[item] as InnerAutowiredDescriptor<T>, autoServices, initAction);
+                    Invoke(autoServices[item] as InnerAssemblerDescriptor<T>, autoServices, initAction);
             }
 
             initAction(descriptor);
             descriptor.Status = AutowireStatus.Done;
         }
 
-        public void Autowire(IDictionary<Type, AutowireDescriptor<T>> autowiredService,
-            Action<AutowireDescriptor<T>> autowiredAction)
+        public void Execute(IDictionary<Type, AssemblerDescriptor<T>> autowiredService,
+            Action<AssemblerDescriptor<T>> autowiredAction)
         {
             if (autowiredService == null) throw new ArgumentNullException(nameof(autowiredService));
             if (autowiredAction == null) throw new ArgumentNullException(nameof(autowiredAction));
             foreach (var autowiredServiceValue in autowiredService.Values.OrderBy(r => r.Order))
             {
-                Invoke(autowiredServiceValue as InnerAutowiredDescriptor<T>, autowiredService, autowiredAction);
+                Invoke(autowiredServiceValue as InnerAssemblerDescriptor<T>, autowiredService, autowiredAction);
             }
         }
 
-        public IDictionary<Type, AutowireDescriptor<T>> Load(IKernelServices kernelServices,
+        public IDictionary<Type, AssemblerDescriptor<T>> Load(IKernelServices kernelServices,
             IServiceProvider serviceProvider)
         {
             if (kernelServices == null) throw new ArgumentNullException(nameof(kernelServices));
@@ -64,7 +64,7 @@ namespace Shashlik.Kernel.Autowire
 
             var instances = serviceProvider.GetServices<T>();
 
-            var dic = new Dictionary<Type, AutowireDescriptor<T>>();
+            var dic = new Dictionary<Type, AssemblerDescriptor<T>>();
             foreach (var instance in instances)
             {
                 var implementationType = instance.GetType();
@@ -72,7 +72,7 @@ namespace Shashlik.Kernel.Autowire
                 var beforeAtAttribute = implementationType.GetCustomAttribute<BeforeAtAttribute>(false);
                 var orderAttribute = implementationType.GetCustomAttribute<OrderAttribute>(false);
 
-                var descriptor = new InnerAutowiredDescriptor<T>(
+                var descriptor = new InnerAssemblerDescriptor<T>(
                     implementationType,
                     afterAtAttribute?.AfterAt,
                     beforeAtAttribute?.BeforeAt,

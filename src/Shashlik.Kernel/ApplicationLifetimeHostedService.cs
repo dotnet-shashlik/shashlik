@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Shashlik.Kernel.Autowire;
+using Shashlik.Kernel.Assembler;
 
 namespace Shashlik.Kernel
 {
@@ -12,8 +12,8 @@ namespace Shashlik.Kernel
     public class ApplicationLifetimeHostedService : IHostedService
     {
         public ApplicationLifetimeHostedService(
-            IAutowireProvider<IApplicationStartAutowire> applicationStartAutowireProvider,
-            IAutowireProvider<IApplicationStopAutowire> applicationStopAutowireProvider,
+            IAssemblerProvider<IApplicationStartAutowire> applicationStartAutowireProvider,
+            IAssemblerProvider<IApplicationStopAutowire> applicationStopAutowireProvider,
             IKernelServices kernelServices,
             IServiceProvider serviceProvider)
         {
@@ -24,14 +24,14 @@ namespace Shashlik.Kernel
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private IAutowireProvider<IApplicationStartAutowire> ApplicationStartAutowireProvider { get; }
-        private IAutowireProvider<IApplicationStopAutowire> ApplicationStopAutowireProvider { get; }
+        private IAssemblerProvider<IApplicationStartAutowire> ApplicationStartAutowireProvider { get; }
+        private IAssemblerProvider<IApplicationStopAutowire> ApplicationStopAutowireProvider { get; }
         private IKernelServices KernelServices { get; }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var dic = ApplicationStartAutowireProvider.Load(KernelServices, ServiceProvider);
-            ApplicationStartAutowireProvider.Autowire(dic,
+            ApplicationStartAutowireProvider.Execute(dic,
                 async r => await r.ServiceInstance.OnStart(cancellationToken));
             return Task.CompletedTask;
         }
@@ -40,7 +40,7 @@ namespace Shashlik.Kernel
         {
             var dic = ApplicationStopAutowireProvider.Load(KernelServices, ServiceProvider);
 
-            ApplicationStopAutowireProvider.Autowire(dic,
+            ApplicationStopAutowireProvider.Execute(dic,
                 async r => await r.ServiceInstance.OnStop(cancellationToken));
             return Task.CompletedTask;
         }

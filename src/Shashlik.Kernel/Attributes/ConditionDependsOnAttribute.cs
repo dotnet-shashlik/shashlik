@@ -8,7 +8,7 @@ using Shashlik.Kernel.Dependency;
 namespace Shashlik.Kernel.Attributes
 {
     /// <summary>
-    /// 条件依赖,服务存在时,优先级200, 自动装配类IServiceAutowire无效
+    /// 条件依赖,服务存在时,优先级200, 自动装配类IServiceAssembler无效
     /// </summary>
     [Order(200)]
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]

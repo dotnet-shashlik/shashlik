@@ -3,7 +3,7 @@ using Shashlik.Kernel;
 
 namespace Shashlik.Captcha.DistributedCache.Tests
 {
-    public class TestConfigure : IServiceAutowire
+    public class TestConfigure : IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

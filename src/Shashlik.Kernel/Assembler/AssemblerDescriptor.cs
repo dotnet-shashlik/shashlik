@@ -7,13 +7,13 @@ using Shashlik.Utils.Extensions;
 // ReSharper disable IdentifierTypo
 // ReSharper disable NonReadonlyMemberInGetHashCode
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Assembler
 {
     /// <summary>
     /// 自动装配
     /// </summary>
     /// <typeparam name="T">装配类型</typeparam>
-    public class AutowireDescriptor<T> where T : IAutowire
+    public class AssemblerDescriptor<T> where T : IAssembler
     {
         /// <summary>
         /// 
@@ -23,7 +23,7 @@ namespace Shashlik.Kernel.Autowire
         /// <param name="beforeAt">在谁之前</param>
         /// <param name="order">装配顺序</param>
         /// <param name="serviceInstance">自动装配类型实例</param>
-        public AutowireDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance)
+        public AssemblerDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance)
         {
             if (afterAt != null && afterAt.IsSubTypeOrEqualsOf<T>())
                 AfterAt = afterAt;

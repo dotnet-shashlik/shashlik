@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Shashlik.Kernel.Autowire
+namespace Shashlik.Kernel.Options
 {
-    public interface IOptionsAutowire
+    public interface IOptionsAssembler
     {
         /// <summary>
         /// 配置options

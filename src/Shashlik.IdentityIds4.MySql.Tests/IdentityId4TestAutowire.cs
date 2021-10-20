@@ -5,7 +5,7 @@ using Shashlik.Kernel;
 
 namespace Shashlik.IdentityIds4.MySql.Tests
 {
-    public class IdentityId4TestAutowire: IServiceAutowire
+    public class IdentityId4TestAutowire: IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

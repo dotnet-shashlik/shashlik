@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.AutoMapper
 {
@@ -8,7 +9,8 @@ namespace Shashlik.AutoMapper
     /// automapper自动装配,装配顺序100
     /// </summary>
     [Order(100)]
-    public class AutoMapperAutowire : IServiceAutowire
+    [Transient]
+    public class AutoMapperAutowire : IServiceAssembler
     {
         public AutoMapperAutowire(IOptions<AutoMapperOptions> options)
         {

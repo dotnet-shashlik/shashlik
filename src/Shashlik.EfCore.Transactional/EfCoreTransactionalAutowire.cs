@@ -1,11 +1,13 @@
 ﻿using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 
 namespace Shashlik.EfCore.Transactional
 {
-    public class EfCoreTransactionalAutowire : IServiceAutowire
+    [Transient]
+    public class EfCoreTransactionalAutowire : IServiceAssembler
     {
         public void Configure(IKernelServices kernelService)
         {

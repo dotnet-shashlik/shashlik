@@ -13,7 +13,7 @@ namespace Shashlik.Cap
     /// event bus自动装配,装配顺序600
     /// </summary>
     [Order(600)]
-    public class CapAutowire : IServiceAutowire
+    public class CapAutowire : IServiceAssembler
     {
         public CapAutowire(IOptions<ShashlikCapOptions> capOptions)
         {
@@ -33,7 +33,7 @@ namespace Shashlik.Cap
             kernelService.Services.AddCap(r =>
             {
                 CapOptions.CopyTo(r, true);
-                kernelService.Autowire<ICapAutowire>(a => a.Configure(r));
+                kernelService.Assemble<ICapAutowire>(a => a.Configure(r));
             });
 
             var exists = kernelService.Services.FirstOrDefault(r => r.ServiceType == typeof(IConsumerServiceSelector));

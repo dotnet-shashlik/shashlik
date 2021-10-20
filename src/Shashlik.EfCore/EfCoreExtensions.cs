@@ -202,7 +202,7 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 无锁执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 无锁执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dbContextType"></param>
@@ -219,13 +219,13 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <typeparam name="TDbContext"></typeparam>
-        public static void Migration<TDbContext>(this IServiceCollection services, ILock? locker = null,
+        public static void Migration<TDbContext>(this IServiceCollection services, IEfMigrationLock? locker = null,
             int lockSecond = 60)
             where TDbContext : DbContext
         {
@@ -235,13 +235,13 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dbContextType"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
-        public static void Migration(this IServiceCollection services, Type dbContextType, ILock? locker = null,
+        public static void Migration(this IServiceCollection services, Type dbContextType, IEfMigrationLock? locker = null,
             int lockSecond = 60)
         {
             var rootServiceProvider = services.BuildServiceProvider();
@@ -252,113 +252,105 @@ namespace Shashlik.EfCore
 
 
         /// <summary>
-        /// 执行迁移,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <typeparam name="TDbContext"></typeparam>
-        public static void Migration<TDbContext>(this IServiceProvider provider, ILock? locker = null,
+        public static void Migration<TDbContext>(this IServiceProvider provider, IEfMigrationLock? locker = null,
             int lockSecond = 60)
             where TDbContext : DbContext
         {
-            locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey.Format(typeof(TDbContext).FullName), lockSecond,
-                waitTimeoutSeconds: lockSecond);
+            locker ??= provider.GetRequiredService<IEfMigrationLock>();
+            using var @lock = locker.Lock(MigrationLockKey.Format(typeof(TDbContext).FullName));
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
             dbContext.Database.Migrate();
         }
 
         /// <summary>
-        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="dbContextType"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <exception cref="InvalidOperationException"></exception>
-        public static void Migration(this IServiceProvider provider, Type dbContextType, ILock? locker = null,
+        public static void Migration(this IServiceProvider provider, Type dbContextType, IEfMigrationLock? locker = null,
             int lockSecond = 60)
         {
             if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
-            locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, lockSecond,
-                waitTimeoutSeconds: lockSecond);
+            locker ??= provider.GetRequiredService<IEfMigrationLock>();
+            using var @lock = locker.Lock(MigrationLockKey);
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             dbContext!.Database.Migrate();
         }
 
         /// <summary>
-        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static async Task MigrationAsync<TDbContext>(this IServiceCollection services, ILock? locker = null,
-            int lockSecond = 60)
+        public static async Task MigrationAsync<TDbContext>(this IServiceCollection services, IEfMigrationLock? locker = null)
             where TDbContext : DbContext
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
 
-            await MigrationAsync<TDbContext>(scope.ServiceProvider, locker, lockSecond);
+            await MigrationAsync<TDbContext>(scope.ServiceProvider, locker);
         }
 
         /// <summary>
-        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,服务注册阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dbContextType"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <returns></returns>
         public static async Task MigrationAsync(this IServiceCollection services, Type dbContextType,
-            ILock? locker = null, int lockSecond = 60)
+            IEfMigrationLock? locker = null)
         {
             var rootServiceProvider = services.BuildServiceProvider();
             var scope = rootServiceProvider.CreateScope();
 
-            await MigrationAsync(scope.ServiceProvider, dbContextType, locker, lockSecond);
+            await MigrationAsync(scope.ServiceProvider, dbContextType, locker);
         }
 
 
         /// <summary>
-        /// 执行迁移,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static async Task MigrationAsync<TDbContext>(this IServiceProvider provider, ILock? locker = null,
-            int lockSecond = 60)
+        public static async Task MigrationAsync<TDbContext>(this IServiceProvider provider, IEfMigrationLock? locker = null
+        )
             where TDbContext : DbContext
         {
-            await MigrationAsync(provider, typeof(TDbContext), locker, lockSecond);
+            await MigrationAsync(provider, typeof(TDbContext), locker);
         }
 
         /// <summary>
-        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="ILock"/>服务
+        /// 执行迁移,应用配置阶段执行,locker为空则需要注册<see cref="IEfMigrationLock"/>服务
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="dbContextType">上下文类型</param>
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public static async Task MigrationAsync(this IServiceProvider provider, Type dbContextType,
-            ILock? locker = null, int lockSecond = 60)
+            IEfMigrationLock? locker = null)
         {
             if (!dbContextType.IsSubTypeOrEqualsOf<DbContext>())
                 throw new InvalidOperationException($"Auto migration type error: {dbContextType}");
-            locker ??= provider.GetRequiredService<ILock>();
-            using var @lock = locker.Lock(MigrationLockKey, lockSecond,
-                waitTimeoutSeconds: lockSecond);
+            locker ??= provider.GetRequiredService<IEfMigrationLock>();
+            using var @lock = locker.Lock(MigrationLockKey);
             using var scope = provider.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetRequiredService(dbContextType) as DbContext;
             await dbContext!.Database.MigrateAsync();

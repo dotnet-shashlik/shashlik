@@ -3,7 +3,7 @@
     /// <summary>
     /// 应用装配器
     /// </summary>
-    public interface IServiceProviderAutowire : IAutowire
+    public interface IServiceProviderAssembler : IAssembler
     {
         void Configure(IKernelServiceProvider kernelServiceProvider);
     }

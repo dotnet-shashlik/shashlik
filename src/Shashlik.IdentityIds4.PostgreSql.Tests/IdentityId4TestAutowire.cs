@@ -5,7 +5,7 @@ using Shashlik.Kernel;
 
 namespace Shashlik.IdentityIds4.PostgreSql.Tests
 {
-    public class IdentityId4TestAutowire: IServiceAutowire
+    public class IdentityId4TestAutowire: IServiceAssembler
     {
         public void Configure(IKernelServices kernelServices)
         {

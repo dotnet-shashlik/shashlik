@@ -6,7 +6,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// 应用退出时装配
     /// </summary>
-    public interface IApplicationStopAutowire : IAutowire
+    public interface IApplicationStopAutowire : IAssembler
     {
         Task OnStop(CancellationToken cancellationToken);
     }

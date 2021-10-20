@@ -5,7 +5,7 @@
 //
 // namespace Shashlik.EfCore.Tests
 // {
-//     public class EfCoreTestAutowire : IServiceAutowire
+//     public class EfCoreTestAutowire : IServiceAssembler
 //     {
 //         public void Configure(IKernelServices kernelServices)
 //         {
