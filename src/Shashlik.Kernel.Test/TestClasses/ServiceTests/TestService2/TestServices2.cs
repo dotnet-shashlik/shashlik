@@ -4,7 +4,6 @@ using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
 {
-    [Singleton]
     public interface IA1 : IDisposable
     {
     }
@@ -126,7 +125,7 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
     {
     }
 
-    [Singleton(typeof(IA5), typeof(IComparer), typeof(IDisposable), RequireRegistryInheritedChain = true)]
+    [Singleton(typeof(IA5), typeof(IComparer), typeof(IDisposable))]
     public abstract class B5 : IA5, IComparer
     {
         public void Dispose()
@@ -156,12 +155,11 @@ namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2
     {
     }
 
-    [Singleton(typeof(IComparer), typeof(IDisposable), typeof(ICloneable), RequireRegistryInheritedChain = true)]
     public interface IA61<T> : IDisposable, ICloneable
     {
     }
 
-    [Singleton(typeof(IA6), typeof(IComparer), typeof(IDisposable), RequireRegistryInheritedChain = true)]
+    [Singleton(typeof(IA6), typeof(IComparer), typeof(IDisposable))]
     public abstract class B6 : IA6, IComparer
     {
         public void Dispose()

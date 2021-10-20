@@ -3,7 +3,6 @@ using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.TestClasses.ServiceTests.LatestTestClasses
 {
-    [Singleton]
     public interface ILatest
     {
     }

@@ -3,6 +3,7 @@ using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Helpers;
 
 namespace Shashlik.EfCore
@@ -10,6 +11,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// DbContext自动迁移装配, 自动注册[AutoMigration]
     /// </summary>
+    [Transient]
     public class AutoMigrationAutowire : IServiceAssembler
     {
         private bool GetEnableAutoMigration(Type type, IConfiguration configuration)

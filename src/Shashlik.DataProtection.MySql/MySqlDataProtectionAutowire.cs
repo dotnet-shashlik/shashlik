@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.AspNetCore.DataProtection;
+﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
-using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 
 // ReSharper disable UnusedType.Global
@@ -13,6 +12,7 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.DataProtection
 {
+    [Transient]
     public class MySqlDataProtectionAutowire : IServiceAssembler
     {
         public MySqlDataProtectionAutowire(IOptions<MySqlDataProtectionOptions> options)
@@ -29,10 +29,7 @@ namespace Shashlik.DataProtection
             if (Options.ConnectionString.IsNullOrWhiteSpace())
             {
                 Options.ConnectionString = kernelService.RootConfiguration.GetConnectionString("Default");
-                kernelService.Services.Configure<MySqlDataProtectionOptions>(r =>
-                {
-                    r.ConnectionString = Options.ConnectionString;
-                });
+                kernelService.Services.Configure<MySqlDataProtectionOptions>(r => { r.ConnectionString = Options.ConnectionString; });
             }
 
             if (Options.ConnectionString.IsNullOrWhiteSpace())
@@ -44,10 +41,7 @@ namespace Shashlik.DataProtection
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName);
 
-            kernelService.Services.Configure<KeyManagementOptions>(options =>
-            {
-                options.XmlRepository = new MySqlXmlRepository(Options);
-            });
+            kernelService.Services.Configure<KeyManagementOptions>(options => { options.XmlRepository = new MySqlXmlRepository(Options); });
         }
     }
 }

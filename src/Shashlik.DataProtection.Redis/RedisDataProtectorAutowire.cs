@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Redis;
 using Shashlik.Utils.Extensions;
 
@@ -16,6 +17,7 @@ namespace Shashlik.DataProtection
     /// 使用CSRedisCore共享DataProtector的密钥存储,解决集群缓存密钥存储问题
     /// </summary>
     [AfterAt(typeof(RedisAutowire))]
+    [Transient]
     public class RedisDataProtectorAutowire : IServiceAssembler
     {
         public RedisDataProtectorAutowire(IOptions<RedisDataProtectorOptions> options)
