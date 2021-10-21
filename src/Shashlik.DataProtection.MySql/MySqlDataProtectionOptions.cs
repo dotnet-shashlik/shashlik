@@ -19,7 +19,7 @@ namespace Shashlik.DataProtection
         public bool EnableAutoCreateDataBase = true;
 
         /// <summary>
-        /// 数据库连接字符串
+        /// 数据库连接字符串, 默认使用ConnectionStrings.Default
         /// </summary>
         public string ConnectionString { get; set; }
 
