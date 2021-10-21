@@ -53,7 +53,6 @@ namespace Shashlik.Kernel.Dependency
                 .ToList();
         }
 
-
         private static bool IsIgnored(Type serviceType, Type[] ignores)
         {
             if (ignores.IsNullOrEmpty())
@@ -71,41 +70,30 @@ namespace Shashlik.Kernel.Dependency
             var res = new List<ShashlikServiceDescriptor>();
             var conditions = GetConditions(type);
 
-            // 如果是抽象类或接口,只注册最终实现类和自身
-            if (type.IsAbstract || type.IsInterface)
+            if (type.IsClass && !type.IsAbstract)
             {
-                throw new KernelServiceException($"[Scoped]/[Singleton]/[Transient] can not used on type \"{type}\".");
-            }
-
-            var ignores = serviceAttribute.IgnoreServiceType;
-            if (!IsIgnored(type, ignores))
-            {
-                // 注册自身
-                var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
-                res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions));
-            }
-
-            var baseTypes = type.GetAllInterfaces(false).ToHashSet();
-            if (type.BaseType != typeof(object))
-                baseTypes.Add(type.BaseType);
-            foreach (var additionServiceType in serviceAttribute.AdditionServiceType)
-            {
-                if (type.IsSubType(additionServiceType))
-                    baseTypes.Add(additionServiceType);
-            }
-
-            foreach (var baseType in baseTypes)
-            {
-                if (IsIgnored(baseType, ignores))
-                    continue;
-
-                ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
-
-                if (CanAddService(type, baseType))
+                var ignores = serviceAttribute.IgnoreServiceType;
+                if (!IsIgnored(type, ignores))
                 {
-                    var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
-                    var currentConditions = conditions.Concat(GetConditions(baseType)).ToList();
-                    res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
+                    // 注册自身
+                    var serviceDescriptor = ServiceDescriptor.Describe(type, type, serviceAttribute.ServiceLifetime);
+                    res.Add(new ShashlikServiceDescriptor(serviceDescriptor, conditions));
+                }
+
+                var baseTypes = type.GetAllBaseTypesAndInterfaces();
+                foreach (var baseType in baseTypes)
+                {
+                    if (IsIgnored(baseType, ignores))
+                        continue;
+
+                    ValidServiceLifetime(serviceAttribute.ServiceLifetime, baseType.GetTypeInfo());
+
+                    if (CanAddService(type, baseType))
+                    {
+                        var serviceDescriptor = ServiceDescriptor.Describe(baseType, type, serviceAttribute.ServiceLifetime);
+                        var currentConditions = conditions.Concat(GetConditions(baseType)).ToList();
+                        res.Add(new ShashlikServiceDescriptor(serviceDescriptor, currentConditions));
+                    }
                 }
             }
 

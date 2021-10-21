@@ -205,7 +205,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// is starts with "<paramref name="starts"/>" with ignore case
+        /// is starts with "<paramref name="starts"/>" ignore case
         /// </summary>
         /// <param name="value"></param>
         /// <param name="starts"></param>
@@ -218,7 +218,7 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
-        /// is ends with "<paramref name="ends"/>" with ignore case
+        /// is ends with "<paramref name="ends"/>" ignore case
         /// </summary>
         /// <param name="value"></param>
         /// <param name="ends"></param>

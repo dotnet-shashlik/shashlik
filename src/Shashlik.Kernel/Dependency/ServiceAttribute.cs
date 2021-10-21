@@ -5,11 +5,9 @@ namespace Shashlik.Kernel.Dependency
 {
     public abstract class ServiceAttribute : Attribute
     {
-        protected ServiceAttribute(ServiceLifetime serviceLifetime, Type[] additionServiceType, Type[] ignoreServiceType)
+        protected ServiceAttribute(ServiceLifetime serviceLifetime)
         {
             ServiceLifetime = serviceLifetime;
-            AdditionServiceType = additionServiceType ?? throw new ArgumentNullException(nameof(additionServiceType));
-            IgnoreServiceType = ignoreServiceType;
         }
 
         /// <summary>
@@ -20,11 +18,11 @@ namespace Shashlik.Kernel.Dependency
         /// <summary>
         /// 附加服务类
         /// </summary>
-        public Type[] AdditionServiceType { get; }
+        public Type[] AdditionServiceType { get; set; } = new Type[0];
 
         /// <summary>
         /// 需要忽略的服务类型
         /// </summary>
-        public Type[] IgnoreServiceType { get; }
+        public Type[] IgnoreServiceType { get; set; } = new Type[0];
     }
 }

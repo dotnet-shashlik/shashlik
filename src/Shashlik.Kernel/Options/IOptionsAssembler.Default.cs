@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,10 +12,9 @@ namespace Shashlik.Kernel.Options
 {
     public class DefaultOptionsAssembler : IOptionsAssembler
     {
-        public void ConfigureAll(IKernelServices kernelServices, IEnumerable<Type> disabledAutoOptionTypes)
+        public void ConfigureAll(IKernelServices kernelServices)
         {
             if (kernelServices is null) throw new ArgumentNullException(nameof(kernelServices));
-            var autoOptionTypes = disabledAutoOptionTypes?.ToList() ?? new List<Type>();
 
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
                 .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(string), typeof(IConfiguration)});
@@ -32,9 +30,6 @@ namespace Shashlik.Kernel.Options
 
             foreach (var (key, value) in dic)
             {
-                if (autoOptionTypes.Contains(key))
-                    continue;
-
                 var sectionName = value.Section;
                 var section = kernelServices.RootConfiguration.GetSection(sectionName);
 
@@ -51,15 +46,12 @@ namespace Shashlik.Kernel.Options
             foreach (var (key, value) in dic)
             {
                 var optionsTypes = typeof(IOptions<>).MakeGenericType(key);
-                // ReSharper disable once PossibleMultipleEnumeration
-                if (autoOptionTypes.Contains(key))
-                    continue;
 
                 (_, object? obj) = serviceProvider.GetRequiredService(optionsTypes).GetPropertyValue("Value")!;
 
                 var res = ValidationHelper.Validate(obj, serviceProvider);
                 if (res.Count > 0)
-                    throw new KernelAutowireException(
+                    throw new KernelAssembleException(
                         $"Invalid option, section: {value.Section}, option type: {key}, errors:{Environment.NewLine}{res.Select(r => r.ErrorMessage).Join(Environment.NewLine)}");
             }
         }

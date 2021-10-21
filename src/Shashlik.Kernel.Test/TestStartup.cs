@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Shashlik.AspNetCore;
 using Shashlik.EfCore;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
@@ -29,7 +28,7 @@ namespace Shashlik.Kernel.Test
             services.AddAuthentication();
             services.AddAuthorization();
 
-            services.AddShashlik(Configuration, null, typeof(TestOptions5));
+            services.AddShashlik(Configuration);
         }
 
         public void Configure(IApplicationBuilder app)
@@ -37,8 +36,7 @@ namespace Shashlik.Kernel.Test
             app.ApplicationServices.UseShashlik()
                 .DoAutoMigration()
                 .AssembleServiceProvider()
-                .AutowireAspNet(app)
-                .Autowire<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
+                .Assemble<ITestAutowiredConfigure>(r => r.Configure(app.ApplicationServices))
                 ;
 
 

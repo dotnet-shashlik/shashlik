@@ -3,7 +3,7 @@
     /// <summary>
     /// 初始化状态
     /// </summary>
-    internal enum AutowireStatus
+    internal enum AssembleStatus
     {
         /// <summary>
         /// 等待执行

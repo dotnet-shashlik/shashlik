@@ -23,17 +23,15 @@ namespace Shashlik.Kernel
         /// <param name="services"></param>
         /// <param name="rootConfiguration">根配置</param>
         /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
-        /// <param name="disableAutoOptionTypes">禁用自动装配的option类型</param>
         /// <returns></returns>
         public static IServiceCollection AddShashlik(
             this IServiceCollection services,
             IConfiguration rootConfiguration,
-            DependencyContext? dependencyContext = null,
-            params Type[] disableAutoOptionTypes)
+            DependencyContext? dependencyContext = null)
         {
             return services.AddShashlikCore(rootConfiguration, dependencyContext)
                 // 配置装载
-                .LoadAutoOptions(disableAutoOptionTypes)
+                .AssembleOptions()
                 // 注册约定的服务
                 .RegistryConventionServices()
                 // 自动服务装配
@@ -78,12 +76,11 @@ namespace Shashlik.Kernel
         /// <param name="kernelServices"></param>
         /// <param name="disableTypes"></param>
         /// <returns></returns>
-        public static IKernelServices LoadAutoOptions(this IKernelServices kernelServices,
-            params Type[] disableTypes)
+        public static IKernelServices AssembleOptions(this IKernelServices kernelServices)
         {
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
             var optionsAutowire = serviceProvider.GetRequiredService<IOptionsAssembler>();
-            optionsAutowire.ConfigureAll(kernelServices, disableTypes);
+            optionsAutowire.ConfigureAll(kernelServices);
             return kernelServices;
         }
 
@@ -196,7 +193,7 @@ namespace Shashlik.Kernel
         /// <param name="kernelServiceProvider"></param>
         /// <param name="autowireAction"></param>
         /// <returns></returns>
-        public static IKernelServiceProvider Autowire<T>(this IKernelServiceProvider kernelServiceProvider,
+        public static IKernelServiceProvider Assemble<T>(this IKernelServiceProvider kernelServiceProvider,
             Action<T> autowireAction) where T : IAssembler
         {
             if (autowireAction is null) throw new ArgumentNullException(nameof(autowireAction));

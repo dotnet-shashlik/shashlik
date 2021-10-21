@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Shashlik.Kernel.Exceptions;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Autowired.TestAutowireConditionClasses;
 using Shashlik.Kernel.Test.Options;
 using Shashlik.Kernel.Test.TestClasses.DependencyCondition;
-using Shashlik.Kernel.Test.TestClasses.ServiceTests.LatestTestClasses;
-using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService1;
-using Shashlik.Kernel.Test.TestClasses.ServiceTests.TestService2;
-using Shashlik.Utils.Helpers;
+using Shashlik.Kernel.Test.TestClasses.ServiceTests;
 using Shouldly;
 using Xunit;
 
@@ -60,7 +52,6 @@ namespace Shashlik.Kernel.Test
                 GetService<DependsOnAll>().ShouldBeNull();
                 GetService<DependsOnAllShouldBeNotNull>().ShouldNotBeNull();
                 GetService<TestCondition>().ShouldBeNull();
-                //GetService<BasedOn>().ShouldNotBeNull();
                 GetService<FailConditionTestClass>().ShouldNotBeNull();
             }
 
@@ -68,153 +59,25 @@ namespace Shashlik.Kernel.Test
             {
                 GetService<IOptions<TestOptions3>>().Value.Name.ShouldBe("张三");
                 AutowiredConfigure.Inited.ShouldBeTrue();
-                AutowiredConfigureAspNetCore.Inited.ShouldBeTrue();
             }
 
             {
-                (GetServices<IA1<int>>().Single() is D1<int>).ShouldBeTrue();
-                GetService<B1<int>>().ShouldBeNull();
-                GetService<C1<int>>().ShouldBeNull();
-                (GetServices<D1<int?>>().Single() is D1<int?>).ShouldBeTrue();
-            }
+                GetService<IA>().ShouldBeOfType<A2>();
+                var enumerable = GetServices<IA>();
+                enumerable.Count().ShouldBe(3);
+                GetServices<A1>().ShouldNotBeNull();
+                GetServices<A2>().ShouldNotBeNull();
+                GetServices<A3>().ShouldNotBeNull();
 
-            {
-                GetService<IA2<int>>().ShouldBeNull();
-                (GetServices<B2<int>>().Single() is D2<int>).ShouldBeTrue();
-                GetService<C2<int>>().ShouldBeNull();
-                (GetServices<D2<int?>>().Single() is D2<int?>).ShouldBeTrue();
-            }
+                GetService<IB<int>>().ShouldBeOfType<B1>();
+                GetService<IB<string>>().ShouldBeOfType<B2<String>>();
+                GetService<B1>().ShouldNotBeNull();
+                GetService<B2<int>>().ShouldNotBeNull();
+                GetService<B2<String>>().ShouldNotBeNull();
 
-            {
-                (GetServices<IA3<int>>().Single() is C3<int>).ShouldBeTrue();
-                (GetServices<B3<int>>().Single() is C3<int>).ShouldBeTrue();
-                (GetServices<C3<int?>>().Single() is C3<int?>).ShouldBeTrue();
-                GetService<D3<int>>().ShouldBeNull();
-            }
-
-            {
-                (GetServices<IA4<int>>().Single() is D4<int>).ShouldBeTrue();
-                (GetServices<B4<int>>().Single() is D4<int>).ShouldBeTrue();
-                (GetServices<C4<int?>>().Single() is D4<int?>).ShouldBeTrue();
-                (GetServices<D4<int?>>().Single() is D4<int?>).ShouldBeTrue();
-            }
-
-            {
-                (GetServices<IComparer>().Any(r => r is C5<int>)).ShouldBeFalse();
-                (GetServices<IDisposable>().Any(r => r is C5<int>)).ShouldBeFalse();
-
-                GetServices<IA5<int>>().Any(r => r is C5<int>).ShouldBeFalse();
-                GetServices<IA5<int>>().Any(r => r is D5<int>).ShouldBeFalse();
-
-                GetServices<B5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
-                GetServices<B5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
-
-                GetServices<C5<int>>().Any(r => r is C5<int>).ShouldBeTrue();
-                GetServices<C5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
-
-                GetServices<D5<int>>().Any(r => r is D5<int>).ShouldBeTrue();
-            }
-
-            {
-                GetService<B16>().ShouldNotBeNull();
-                GetService<C16>().ShouldNotBeNull();
-                GetServices<IA16<int>>().Any(r => r is B16).ShouldBeTrue();
-                GetServices<IA16<int>>().Any(r => r is C16).ShouldBeTrue();
-                GetServices<IA16<string>>().Any(r => r is B16).ShouldBeTrue();
-                GetServices<IA16<string>>().Any(r => r is C16).ShouldBeTrue();
-
-                GetService<IA16<long>>().ShouldBeNull();
-            }
-
-            {
-                GetService<IA17>().ShouldBeNull();
-                GetService<B17<int>>().ShouldNotBeNull();
-                GetService<B17<string>>().ShouldNotBeNull();
-                GetService<C17<int>>().ShouldNotBeNull();
-                GetService<C17<string>>().ShouldNotBeNull();
-            }
-
-            {
-                GetService<IA18<string>>().ShouldNotBeNull();
-                GetService<IA18<int>>().ShouldNotBeNull();
-                GetService<IA18<long>>().ShouldBeNull();
-                GetService<B18<int>>().ShouldNotBeNull();
-                GetService<B18<string>>().ShouldBeNull();
-                GetService<C18>().ShouldNotBeNull();
-            }
-
-            {
-                (GetServices<IA1>().Single() is D1).ShouldBeTrue();
-                GetService<B1>().ShouldBeNull();
-                GetService<C1>().ShouldBeNull();
-                (GetServices<D1>().Single() is D1).ShouldBeTrue();
-            }
-
-            {
-                GetService<IA2>().ShouldBeNull();
-                (GetServices<B2>().Single() is D2).ShouldBeTrue();
-                GetService<C2>().ShouldBeNull();
-                (GetServices<D2>().Single() is D2).ShouldBeTrue();
-            }
-
-            {
-                (GetServices<IA3>().Single() is C3).ShouldBeTrue();
-                (GetServices<B3>().Single() is C3).ShouldBeTrue();
-                (GetServices<C3>().Single() is C3).ShouldBeTrue();
-                GetService<D3>().ShouldBeNull();
-            }
-
-            {
-                (GetServices<IA4>().Single() is D4).ShouldBeTrue();
-                (GetServices<B4>().Single() is D4).ShouldBeTrue();
-                (GetServices<C4>().Single() is D4).ShouldBeTrue();
-                (GetServices<D4>().Single() is D4).ShouldBeTrue();
-            }
-
-            {
-                (GetServices<IComparer>().Any(r => r is C5)).ShouldBeFalse();
-                (GetServices<IDisposable>().Any(r => r is C5)).ShouldBeFalse();
-
-                GetService<IA5>().ShouldBeNull();
-                GetServices<B5>().Any(r => r is C5).ShouldBeTrue();
-                GetServices<B5>().Any(r => r is D5).ShouldBeTrue();
-
-                GetServices<C5>().Any(r => r is C5).ShouldBeTrue();
-                GetServices<C5>().Any(r => r is D5).ShouldBeTrue();
-
-                GetServices<D5>().Any(r => r is D5).ShouldBeTrue();
-            }
-
-            {
-                (GetServices<IComparer>().Any(r => r is C6)).ShouldBeFalse();
-                (GetServices<IDisposable>().Any(r => r is D6)).ShouldBeFalse();
-                (GetServices<ICloneable>().Any(r => r is C6)).ShouldBeFalse();
-
-                GetService<IA6>().ShouldBeNull();
-                GetServices<IA61<int>>().Any(r => r is C6).ShouldBeTrue();
-                GetServices<IA61<string>>().Any(r => r is C6).ShouldBeFalse();
-                GetServices<IA61<int>>().Any(r => r is C61<int>).ShouldBeTrue();
-                GetServices<IA61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
-
-                GetServices<B6>().Any(r => r is C6).ShouldBeTrue();
-                GetServices<B6>().Any(r => r is C61<int>).ShouldBeFalse();
-
-                GetServices<C6>().Any(r => r is C6).ShouldBeTrue();
-                GetServices<C61<string>>().Any(r => r is C61<string>).ShouldBeTrue();
-
-                GetServices<D6>().Any(r => r is D6).ShouldBeTrue();
-
-                GetServices<IA61<int>>().Any(r => r is E6).ShouldBeFalse();
-                GetServices<IA61<int>>().Any(r => r is F6).ShouldBeFalse();
-            }
-
-            {
-                GetService<IA27>().ShouldBeNull();
-                GetService<B27>().ShouldNotBeNull();
-            }
-
-            {
-                GetService<ILatest>().ShouldBeOfType<LatestB>();
+                GetService<IC>().ShouldBeNull();
+                GetService<C<int>>().ShouldNotBeNull();
+                GetService<C<String>>().ShouldNotBeNull();
             }
         }
     }

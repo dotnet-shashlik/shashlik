@@ -25,23 +25,23 @@ namespace Shashlik.Kernel.Assembler
 
             switch (descriptor.Status)
             {
-                case AutowireStatus.Done:
+                case AssembleStatus.Done:
                     return;
                 // 递归中发现挂起的服务那就是有循环依赖
-                case AutowireStatus.Hangup:
-                    throw new KernelAutowireException($"Exists recursive dependencies on {descriptor.ImplementationType}");
+                case AssembleStatus.Hangup:
+                    throw new KernelAssembleException($"Exists recursive dependencies on {descriptor.ImplementationType}");
             }
 
             // 在这个类型之前存在依赖项
             if (!descriptor.Prevs.IsNullOrEmpty())
             {
-                descriptor.Status = AutowireStatus.Hangup;
+                descriptor.Status = AssembleStatus.Hangup;
                 foreach (var item in descriptor.Prevs)
                     Invoke(autoServices[item] as InnerAssemblerDescriptor<T>, autoServices, initAction);
             }
 
             initAction(descriptor);
-            descriptor.Status = AutowireStatus.Done;
+            descriptor.Status = AssembleStatus.Done;
         }
 
         public void Execute(IDictionary<Type, AssemblerDescriptor<T>> autowiredService,

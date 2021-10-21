@@ -16,12 +16,9 @@ namespace Shashlik.Kernel.Dependency
             IConfiguration rootConfiguration,
             IHostEnvironment hostEnvironment)
         {
-            var list = new List<ShashlikServiceDescriptor>();
-            foreach (var serviceDescriptor in services)
-            {
-                if (serviceDescriptor is ShashlikServiceDescriptor s)
-                    list.Add(s);
-            }
+            var list = services
+                .OfType<ShashlikServiceDescriptor>()
+                .ToList();
 
             // 计算整个系统包含哪些条件序号
             var orders = list
@@ -45,7 +42,7 @@ namespace Shashlik.Kernel.Dependency
                                 services.Remove(item);
                         });
 
-                    if (item.ImplementationType!.IsDefinedAttribute<PrimaryAttribute>(true))
+                    if (item.ImplementationType!.IsDefinedAttribute<PrimaryAttribute>(false))
                     {
                         services.Remove(item);
                         latest.Add(item);

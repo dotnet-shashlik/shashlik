@@ -12,10 +12,9 @@ namespace Shashlik.Utils.Helpers.RSAInner
     {
         internal static readonly Regex PemCode = new Regex(@"--+.+?--+|\s+");
 
-        internal static readonly byte[] SeqOid = new byte[]
-            {0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00};
+        internal static readonly byte[] SeqOid = {0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00};
 
-        internal static readonly byte[] Ver = new byte[] {0x02, 0x01, 0x00};
+        internal static readonly byte[] Ver = {0x02, 0x01, 0x00};
         internal static readonly Regex XmlExp = new Regex("\\s*<RSAKeyValue>([<>\\/\\+=\\w\\s]+)</RSAKeyValue>\\s*");
         internal static readonly Regex XmlTagExp = new Regex("<(.+?)>\\s*([^<]+?)\\s*</");
 
