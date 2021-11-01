@@ -329,8 +329,7 @@ namespace Shashlik.EfCore
         /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static async Task MigrationAsync<TDbContext>(this IServiceProvider provider, IEfMigrationLock? locker = null
-        )
+        public static async Task MigrationAsync<TDbContext>(this IServiceProvider provider, IEfMigrationLock? locker = null)
             where TDbContext : DbContext
         {
             await MigrationAsync(provider, typeof(TDbContext), locker);
