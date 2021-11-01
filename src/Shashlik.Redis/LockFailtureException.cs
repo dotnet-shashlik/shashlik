@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shashlik.Kernel.Exceptions
+namespace Shashlik.Redis
 {
     /// <summary>
     /// 锁失败异常

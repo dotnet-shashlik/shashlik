@@ -67,14 +67,8 @@ namespace Shashlik.Utils.Test.HelperTests
         {
             Should.Throw<Exception>(() => { AesHelper.Encrypt("AES加密", "123", "1234567890123456"); });
             Should.Throw<Exception>(() => { AesHelper.Encrypt("AES加密", "1234567890123456", "123"); });
-            Should.Throw<Exception>(() =>
-            {
-                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "123", "1234567890123456");
-            });
-            Should.Throw<Exception>(() =>
-            {
-                AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "1234567890123456", "123");
-            });
+            Should.Throw<Exception>(() => { AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "123", "1234567890123456"); });
+            Should.Throw<Exception>(() => { AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", "1234567890123456", "123"); });
         }
 
         [Fact]
