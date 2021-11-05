@@ -276,6 +276,25 @@ namespace Shashlik.Utils.Extensions
         }
 
         /// <summary>
+        /// 将对象属性转换为字典,复杂类型会递归转换,支持JsonElement/IDictionary/JsonObject等<para></para>
+        /// 会将所有递归属性转换到根级属性<para></para>
+        /// 例: new {User = new {Name = "lisi"}} : result["User.Name"] => "lisi"<para></para>
+        /// 数组将转换为下表<para></para>
+        /// 例: new {Users = { "zhangsan", "lisi"} } : result["Users.0"] => "zhangsan"<para></para>
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <typeparam name="TModel"></typeparam>
+        /// <returns></returns>
+        public static IDictionary<String, object?> MapToRootDictionary<TModel>(this TModel obj)
+        {
+            var mapToDictionary = obj.MapToDictionary();
+            var dictionary = new Dictionary<string, object?>();
+            foreach (var item in mapToDictionary)
+                MapToRootDictionaryFillChildren(dictionary, item.Value, item.Key);
+            return dictionary;
+        }
+
+        /// <summary>
         /// 获取属性值，支持JsonElement/IDictionary/JsonObject
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
@@ -1205,6 +1224,31 @@ namespace Shashlik.Utils.Extensions
         private static InvalidCastException GetInvalidCastException(Type type, JsonElement json)
         {
             return new InvalidCastException($"Can not convert to type:{type} from json value: {json}");
+        }
+
+        private static void MapToRootDictionaryFillChildren(IDictionary<string, object?> dic, object? obj, string prefix)
+        {
+            if (obj is null || obj.GetType().IsSimpleType())
+                dic[prefix] = obj;
+            else if (obj is IDictionary dictionary)
+            {
+                foreach (DictionaryEntry item in dictionary)
+                {
+                    if (item.Value is null || item.Value.GetType().IsSimpleType())
+                        dic[prefix + "." + item.Key] = item.Value;
+                    MapToRootDictionaryFillChildren(dic, item.Value, prefix + "." + item.Key);
+                }
+            }
+            else if (obj is IEnumerable list)
+            {
+                int index = 0;
+                foreach (var item in list)
+                {
+                    if (item is null || item.GetType().IsSimpleType())
+                        dic[$"{prefix}.{index++}"] = item;
+                    else MapToRootDictionaryFillChildren(dic, item, $"{prefix}.{index++}");
+                }
+            }
         }
 
         #endregion

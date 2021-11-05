@@ -429,7 +429,7 @@ namespace Shashlik.Utils.Test
             typeof(B1<int>).IsSubTypeOfGenericType(typeof(IA1<>)).ShouldBeTrue();
             typeof(B1<int>).IsSubTypeOfGenericType(typeof(B1<>)).ShouldBeTrue();
         }
-        
+
         [Fact]
         public void IsSubTypeOfGenericDefinitionTypeTest()
         {
@@ -457,6 +457,23 @@ namespace Shashlik.Utils.Test
             var jDic = jObject.MapToDictionary();
             jDic.ContainsKey("test").ShouldBeTrue();
             jDic["test"].ShouldBe("test");
+        }
+
+        [Fact]
+        public void MapToRootDictionary()
+        {
+            var dic = _testObject.MapToRootDictionary();
+            dic["first"].ShouldBe("用户11111，提交了新的实名认证申请。");
+            dic["address.provice"].ShouldBe("四川省");
+            dic["tags.0.title"].ShouldBe("成熟");
+            dic["friends.0"].ShouldBe("张三");
+            dic["jObject.tags.0.title"].ShouldBe("成熟");
+
+            var jObject = new JObject {["test"] = "test", ["array"] = new JArray("value1", "value2")};
+
+            var jDic = jObject.MapToRootDictionary();
+            jDic["test"].ShouldBe("test");
+            jDic["array.0"].ShouldBe("value1");
         }
 
         [Fact]
@@ -804,8 +821,8 @@ namespace Shashlik.Utils.Test
         [Fact]
         public void ParseToTests()
         {
-            ((int?)null).ParseTo<int?>().ShouldBeNull();
-            ((int?)null).ParseTo<int>().ShouldBe(0);
+            ((int?) null).ParseTo<int?>().ShouldBeNull();
+            ((int?) null).ParseTo<int>().ShouldBe(0);
             "1".ParseTo<int>().ShouldBe(1);
             "0010".ParseTo<long>().ShouldBe(10);
             1.ParseTo<TestJsonToClass.TestJsonToEnum>().ShouldBe(TestJsonToClass.TestJsonToEnum.Male);
