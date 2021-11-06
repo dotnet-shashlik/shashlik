@@ -229,10 +229,10 @@ namespace Shashlik.Utils.Extensions
                     throw new InvalidCastException();
                 return (JToken2Object(jToken) as IDictionary<string, object?>)!;
             }
-            else if (objType.IsSubTypeOrEqualsOf<IDictionary>() || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+            else if (obj is IDictionary dictionary)
             {
-                return (obj as IEnumerable)
-                    !.OfType<dynamic>()
+                return dictionary
+                        !.OfType<dynamic>()
                     .ToDictionary<dynamic, string, object?>(
                         r => r.Key.ToString(),
                         r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
@@ -256,8 +256,7 @@ namespace Shashlik.Utils.Extensions
                     var value = propertyInfo.GetValue(obj);
                     if (value is null || propertyInfo.PropertyType.IsSimpleType())
                         dic[propertyInfo.Name] = value;
-                    else if (value is IDictionary ||
-                             propertyInfo.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+                    else if (value is IDictionary)
                         dic[propertyInfo.Name] = MapToDictionary(value);
                     else if (value is IEnumerable list)
                     {
@@ -1133,19 +1132,6 @@ namespace Shashlik.Utils.Extensions
                 if (json != null)
                     return (true, JTokenValue(json));
                 return (false, null);
-            }
-            else if (objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
-            {
-                var list = (obj as IEnumerable)!.OfType<dynamic>();
-                try
-                {
-                    var el = list.First(r => r.Key.ToString() == proName);
-                    return (true, el.Value);
-                }
-                catch (InvalidOperationException)
-                {
-                    return (false, null);
-                }
             }
             else if (obj is IDictionary dic)
             {
