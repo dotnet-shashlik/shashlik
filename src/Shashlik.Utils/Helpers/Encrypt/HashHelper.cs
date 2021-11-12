@@ -64,7 +64,7 @@ namespace Shashlik.Utils.Helpers
         public static string SHA1(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            using SHA1 sha1 = new SHA1Managed();
+            using SHA1 sha1 = System.Security.Cryptography.SHA1.Create();
             return HashAlgorithmBase(sha1, value, encoding);
         }
 
@@ -74,7 +74,7 @@ namespace Shashlik.Utils.Helpers
         public static string SHA256(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            using SHA256 sha256 = new SHA256Managed();
+            using SHA256 sha256 = System.Security.Cryptography.SHA256.Create();
             return HashAlgorithmBase(sha256, value, encoding);
         }
 
@@ -84,7 +84,7 @@ namespace Shashlik.Utils.Helpers
         public static string SHA512(string value, Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
-            using SHA512 sha512 = new SHA512Managed();
+            using SHA512 sha512 = System.Security.Cryptography.SHA512.Create();
             return HashAlgorithmBase(sha512, value, encoding);
         }
 

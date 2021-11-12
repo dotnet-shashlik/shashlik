@@ -45,7 +45,7 @@ namespace Shashlik.AutoMapper
 
             var configuration = new MapperConfiguration(config =>
             {
-                var method = config.GetType().GetTypeInfo().GetMethod("CreateMap", new Type[] {typeof(MemberList)});
+                var method = config.GetType().GetTypeInfo().GetMethod("CreateMap", new Type[] { typeof(MemberList) });
                 if (method is null || !method.IsGenericMethodDefinition)
                     throw new MissingMethodException(nameof(IMapperConfigurationExpression), "CreateMap");
                 //.Single(r => r.Name == "CreateMap" && r.IsGenericMethodDefinition && r.GetParameters().Length == 1);
@@ -92,14 +92,16 @@ namespace Shashlik.AutoMapper
                             var destType = interfaceType.GenericTypeArguments[1];
 
                             var expression = method.MakeGenericMethod(fromType, destType)
-                                .Invoke(config, new object[] {MemberList.None});
+                                .Invoke(config, new object[] { MemberList.None });
+                            if (expression is null)
+                                throw new InvalidConstraintException($"[AutoMapper] `CreateMap` method return null");
                             var expressionType = typeof(IMappingExpression<,>).MakeGenericType(fromType, destType);
 
                             var configMethod = item.GetMethods().First(r =>
                                 r.Name == "Config" && r.GetParameters().Length == 1 &&
                                 r.GetParameters().First().ParameterType == expressionType);
 
-                            object obj;
+                            object? obj;
                             try
                             {
                                 obj = Activator.CreateInstance(item);
@@ -115,7 +117,7 @@ namespace Shashlik.AutoMapper
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             try
                             {
-                                configMethod.Invoke(obj, new object[] {expression});
+                                configMethod.Invoke(obj, new object[] { expression });
                                 using (obj as IDisposable)
                                 {
                                 }
@@ -158,12 +160,14 @@ namespace Shashlik.AutoMapper
                             var fromType = interfaceType.GenericTypeArguments[1];
 
                             var expression = method.MakeGenericMethod(fromType, destType)
-                                .Invoke(config, new object[] {MemberList.None});
+                                .Invoke(config, new object[] { MemberList.None });
+                            if (expression is null)
+                                throw new InvalidConstraintException($"[AutoMapper] `CreateMap` method return null");
                             var expressionType = typeof(IMappingExpression<,>).MakeGenericType(fromType, destType);
                             var configMethod = item.GetMethods().First(r =>
                                 r.Name == "Config" && r.GetParameters().Length == 1 &&
                                 r.GetParameters().First().ParameterType == expressionType);
-                            object obj;
+                            object? obj;
                             try
                             {
                                 obj = Activator.CreateInstance(item);
@@ -179,7 +183,7 @@ namespace Shashlik.AutoMapper
                                     $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
                             try
                             {
-                                configMethod.Invoke(obj, new object[] {expression});
+                                configMethod.Invoke(obj, new object[] { expression });
                                 using (obj as IDisposable)
                                 {
                                 }

@@ -131,14 +131,12 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-#nullable disable
-        public static T ParseTo<T>(this object value)
+        public static T? ParseTo<T>(this object value)
         {
             var res = ParseTo(value, typeof(T));
             if (res is null) return default;
-            return (T) res;
+            return (T)res;
         }
-#nullable enable
 
         /// <summary>
         /// 类型转换
@@ -165,7 +163,11 @@ namespace Shashlik.Utils.Extensions
             if (sourceConverter.CanConvertTo(destinationType))
                 return sourceConverter.ConvertTo(value, destinationType);
             if (destinationType.IsEnum)
-                return Enum.Parse(destinationType, value.ToString());
+            {
+                var str = value.ToString();
+                if (str is not null)
+                    return Enum.Parse(destinationType, str);
+            }
 
             throw new InvalidCastException($"Invalid cast to type {destinationType} from {sourceType}");
         }
@@ -373,14 +375,12 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-#nullable disable
-        public static T Clone<T>(this T obj)
+        public static T? Clone<T>(this T? obj)
         {
-            if (obj != null)
+            if (obj is not null)
                 return JsonSerializer.Deserialize<T>(JsonSerializer.Serialize(obj));
             return default;
         }
-#nullable enable
 
         /// <summary>
         /// 是否定义了特性类型<typeparamref name="T"/>
@@ -546,8 +546,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T">value type</typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-#nullable disable
-        public static T GetValue<T>(this JsonElement obj, string propertyName)
+        public static T? GetValue<T>(this JsonElement obj, string propertyName)
         {
             if (obj.ValueKind != JsonValueKind.Object)
                 throw new ArgumentException("Json value kind must be JsonValueKind.Object");
@@ -562,12 +561,11 @@ namespace Shashlik.Utils.Extensions
 
                 var res = GetValue(value, typeof(T));
                 if (res is null) return default;
-                return (T) res;
+                return (T)res;
             }
 
             throw new ArgumentException($"Can not find json property \"{propertyName}\" in json {obj}");
         }
-#nullable enable
 
         /// <summary>
         /// get json object property value and parse to: <paramref name="type"/>
@@ -593,8 +591,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-#nullable disable
-        public static T GetValue<T>(this JsonElement obj)
+        public static T? GetValue<T>(this JsonElement obj)
         {
             switch (obj.ValueKind)
             {
@@ -607,9 +604,8 @@ namespace Shashlik.Utils.Extensions
             var res = GetValue(obj, typeof(T));
             if (res is null) return default;
 
-            return (T) res;
+            return (T)res;
         }
-#nullable enable
 
         /// <summary>
         /// get json value to <paramref name="type"/>
@@ -630,285 +626,285 @@ namespace Shashlik.Utils.Extensions
                     return default;
                 case JsonValueKind.True:
                 case JsonValueKind.False:
-                {
-                    if (type == typeof(bool) || type == typeof(bool?))
-                        return obj.GetBoolean();
+                    {
+                        if (type == typeof(bool) || type == typeof(bool?))
+                            return obj.GetBoolean();
 
-                    throw GetInvalidCastException(type, obj);
-                }
+                        throw GetInvalidCastException(type, obj);
+                    }
                 case JsonValueKind.Number:
-                {
-                    #region ->Int32
-
-                    if (type == typeof(int) || type == typeof(int?))
                     {
-                        if (obj.TryGetInt32(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
+                        #region ->Int32
 
-                    #endregion
-
-                    #region ->Int64
-
-                    if (type == typeof(long) || type == typeof(long?))
-                    {
-                        if (obj.TryGetInt64(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->Enum
-
-                    {
-                        Type? enumType = null;
-                        if (type.IsEnum)
-                            enumType = type;
-                        else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
-                            enumType = type.GetGenericArguments().First();
-
-                        if (enumType != null)
+                        if (type == typeof(int) || type == typeof(int?))
                         {
-                            if (obj.TryGetInt32(out var intValue))
+                            if (obj.TryGetInt32(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->Int64
+
+                        if (type == typeof(long) || type == typeof(long?))
+                        {
+                            if (obj.TryGetInt64(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->Enum
+
+                        {
+                            Type? enumType = null;
+                            if (type.IsEnum)
+                                enumType = type;
+                            else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
+                                enumType = type.GetGenericArguments().First();
+
+                            if (enumType != null)
                             {
-                                if (Enum.TryParse(enumType, intValue.ToString(), true, out var result))
-                                    return result;
+                                if (obj.TryGetInt32(out var intValue))
+                                {
+                                    if (Enum.TryParse(enumType, intValue.ToString(), true, out var result))
+                                        return result;
+                                }
+                                else
+                                    throw GetInvalidCastException(type, obj);
+                            }
+                        }
+
+                        #endregion
+
+                        #region ->float
+
+                        if (type == typeof(float) || type == typeof(float?))
+                        {
+                            if (obj.TryGetSingle(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->double
+
+                        if (type == typeof(double) || type == typeof(double?))
+                        {
+                            if (obj.TryGetDouble(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->decimal
+
+                        if (type == typeof(decimal) || type == typeof(decimal?))
+                        {
+                            if (obj.TryGetDecimal(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->Int16
+
+                        if (type == typeof(short) || type == typeof(short?))
+                        {
+                            if (obj.TryGetInt16(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->UInt32
+
+                        if (type == typeof(uint) || type == typeof(uint?))
+                        {
+                            if (obj.TryGetUInt32(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->UInt64
+
+                        if (type == typeof(ulong) || type == typeof(ulong?))
+                        {
+                            if (obj.TryGetUInt64(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->UInt16
+
+                        if (type == typeof(ushort) || type == typeof(ushort?))
+                        {
+                            if (obj.TryGetUInt16(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->byte
+
+                        if (type == typeof(byte) || type == typeof(byte?))
+                        {
+                            if (obj.TryGetByte(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->sbyte
+
+                        if (type == typeof(sbyte) || type == typeof(sbyte?))
+                        {
+                            if (obj.TryGetSByte(out var value))
+                                return value;
+                            else
+                                throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->char
+
+                        if (type == typeof(char) || type == typeof(char?))
+                        {
+                            if (obj.TryGetUInt16(out var value))
+                            {
+                                try
+                                {
+                                    return (char)value;
+                                }
+                                catch
+                                {
+                                    throw GetInvalidCastException(type, obj);
+                                }
                             }
                             else
                                 throw GetInvalidCastException(type, obj);
                         }
+
+                        #endregion
+
+                        throw GetInvalidCastException(type, obj);
                     }
-
-                    #endregion
-
-                    #region ->float
-
-                    if (type == typeof(float) || type == typeof(float?))
-                    {
-                        if (obj.TryGetSingle(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->double
-
-                    if (type == typeof(double) || type == typeof(double?))
-                    {
-                        if (obj.TryGetDouble(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->decimal
-
-                    if (type == typeof(decimal) || type == typeof(decimal?))
-                    {
-                        if (obj.TryGetDecimal(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->Int16
-
-                    if (type == typeof(short) || type == typeof(short?))
-                    {
-                        if (obj.TryGetInt16(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->UInt32
-
-                    if (type == typeof(uint) || type == typeof(uint?))
-                    {
-                        if (obj.TryGetUInt32(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->UInt64
-
-                    if (type == typeof(ulong) || type == typeof(ulong?))
-                    {
-                        if (obj.TryGetUInt64(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->UInt16
-
-                    if (type == typeof(ushort) || type == typeof(ushort?))
-                    {
-                        if (obj.TryGetUInt16(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->byte
-
-                    if (type == typeof(byte) || type == typeof(byte?))
-                    {
-                        if (obj.TryGetByte(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->sbyte
-
-                    if (type == typeof(sbyte) || type == typeof(sbyte?))
-                    {
-                        if (obj.TryGetSByte(out var value))
-                            return value;
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->char
-
-                    if (type == typeof(char) || type == typeof(char?))
-                    {
-                        if (obj.TryGetUInt16(out var value))
-                        {
-                            try
-                            {
-                                return (char) value;
-                            }
-                            catch
-                            {
-                                throw GetInvalidCastException(type, obj);
-                            }
-                        }
-                        else
-                            throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    throw GetInvalidCastException(type, obj);
-                }
                 case JsonValueKind.String:
-                {
-                    #region ->DateTime
-
-                    if (type == typeof(DateTime) || type == typeof(DateTime?))
                     {
-                        if (obj.TryGetDateTime(out var datetime))
-                            return datetime;
-                        throw GetInvalidCastException(type, obj);
-                    }
+                        #region ->DateTime
 
-                    #endregion
-
-                    #region ->DateTimeOffset
-
-                    if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?)
-                    )
-                    {
-                        if (obj.TryGetDateTimeOffset(out var datetime))
-                            return datetime;
-                        throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->Enum
-
-                    Type? enumType = null;
-                    if (type.IsEnum)
-                    {
-                        enumType = type;
-                    }
-                    else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
-                    {
-                        enumType = type.GetGenericArguments().First();
-                    }
-
-                    if (enumType != null)
-                    {
-                        var str = obj.GetString();
-                        if (str.IsNullOrWhiteSpace())
+                        if (type == typeof(DateTime) || type == typeof(DateTime?))
+                        {
+                            if (obj.TryGetDateTime(out var datetime))
+                                return datetime;
                             throw GetInvalidCastException(type, obj);
+                        }
 
-                        if (Enum.TryParse(enumType, obj.GetString(), true, out var result))
-                            return result;
+                        #endregion
+
+                        #region ->DateTimeOffset
+
+                        if (type == typeof(DateTimeOffset) || type == typeof(DateTimeOffset?)
+                        )
+                        {
+                            if (obj.TryGetDateTimeOffset(out var datetime))
+                                return datetime;
+                            throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->Enum
+
+                        Type? enumType = null;
+                        if (type.IsEnum)
+                        {
+                            enumType = type;
+                        }
+                        else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
+                        {
+                            enumType = type.GetGenericArguments().First();
+                        }
+
+                        if (enumType != null)
+                        {
+                            var str = obj.GetString();
+                            if (str.IsNullOrWhiteSpace())
+                                throw GetInvalidCastException(type, obj);
+
+                            if (Enum.TryParse(enumType, obj.GetString(), true, out var result))
+                                return result;
+
+                            throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->Guid
+
+                        if (type == typeof(string))
+                            return obj.GetString();
+
+                        if (type == typeof(Guid) || type == typeof(Guid?))
+                        {
+                            if (obj.TryGetGuid(out var guid))
+                                return guid;
+                            throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
+
+                        #region ->char
+
+                        if (type == typeof(char) || type == typeof(char?))
+                        {
+                            var str = obj.GetString();
+                            if (str is null || str.Length == 0)
+                                return GetDefaultValue(type);
+                            if (str.Length == 1)
+                                return str[0];
+
+                            throw GetInvalidCastException(type, obj);
+                        }
+
+                        #endregion
 
                         throw GetInvalidCastException(type, obj);
                     }
-
-                    #endregion
-
-                    #region ->Guid
-
-                    if (type == typeof(string))
-                        return obj.GetString();
-
-                    if (type == typeof(Guid) || type == typeof(Guid?))
-                    {
-                        if (obj.TryGetGuid(out var guid))
-                            return guid;
-                        throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    #region ->char
-
-                    if (type == typeof(char) || type == typeof(char?))
-                    {
-                        var str = obj.GetString();
-                        if (str is null || str.Length == 0)
-                            return GetDefaultValue(type);
-                        if (str.Length == 1)
-                            return str[0];
-
-                        throw GetInvalidCastException(type, obj);
-                    }
-
-                    #endregion
-
-                    throw GetInvalidCastException(type, obj);
-                }
                 case JsonValueKind.Object:
                 case JsonValueKind.Array:
-                {
-                    var bufferWriter = new ArrayBufferWriter<byte>();
-                    using (var writer = new Utf8JsonWriter(bufferWriter))
                     {
-                        obj.WriteTo(writer);
-                    }
+                        var bufferWriter = new ArrayBufferWriter<byte>();
+                        using (var writer = new Utf8JsonWriter(bufferWriter))
+                        {
+                            obj.WriteTo(writer);
+                        }
 
-                    return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type);
-                }
+                        return JsonSerializer.Deserialize(bufferWriter.WrittenSpan, type);
+                    }
                 default:
                     throw GetInvalidCastException(type, obj);
             }
@@ -954,23 +950,23 @@ namespace Shashlik.Utils.Extensions
             switch (token.Type)
             {
                 case JTokenType.Object:
-                {
-                    var dic = new Dictionary<string, object>();
-                    foreach (var item in token.Value<JObject>()!)
                     {
-                        dic[item.Key] = JToken2Object(item.Value!);
+                        var dic = new Dictionary<string, object>();
+                        foreach (var item in token.Value<JObject>()!)
+                        {
+                            dic[item.Key] = JToken2Object(item.Value!);
+                        }
+
+                        return dic;
                     }
 
-                    return dic;
-                }
-
                 case JTokenType.Array:
-                {
-                    var children = new List<object>();
-                    foreach (var item in token.Value<JArray>()!)
-                        children.Add(JToken2Object(item));
-                    return children;
-                }
+                    {
+                        var children = new List<object>();
+                        foreach (var item in token.Value<JArray>()!)
+                            children.Add(JToken2Object(item));
+                        return children;
+                    }
 
                 case JTokenType.Integer:
                 case JTokenType.Float:
@@ -1022,44 +1018,44 @@ namespace Shashlik.Utils.Extensions
                 case JsonValueKind.Undefined:
                     return null;
                 case JsonValueKind.String:
-                {
-                    if (obj.TryGetDateTime(out var datetime))
-                        return datetime;
-                    else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
-                        return datetimeOffset;
-                    return obj.GetString();
-                }
+                    {
+                        if (obj.TryGetDateTime(out var datetime))
+                            return datetime;
+                        else if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                            return datetimeOffset;
+                        return obj.GetString();
+                    }
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
-                {
-                    if (obj.TryGetInt32(out var value1))
-                        return value1;
-                    if (obj.TryGetInt64(out var value2))
-                        return value2;
-                    if (obj.TryGetDecimal(out var value3))
-                        return value3;
-
-                    return null;
-                }
-                case JsonValueKind.Object:
-                {
-                    var dic = new Dictionary<string, object?>();
-                    foreach (var item in obj.EnumerateObject())
                     {
-                        dic[item.Name] = JsonElement2Object(item.Value);
-                    }
+                        if (obj.TryGetInt32(out var value1))
+                            return value1;
+                        if (obj.TryGetInt64(out var value2))
+                            return value2;
+                        if (obj.TryGetDecimal(out var value3))
+                            return value3;
 
-                    return dic;
-                }
+                        return null;
+                    }
+                case JsonValueKind.Object:
+                    {
+                        var dic = new Dictionary<string, object?>();
+                        foreach (var item in obj.EnumerateObject())
+                        {
+                            dic[item.Name] = JsonElement2Object(item.Value);
+                        }
+
+                        return dic;
+                    }
                 case JsonValueKind.Array:
-                {
-                    var children = new List<object?>();
-                    foreach (var item in obj.EnumerateArray())
-                        children.Add(JsonElement2Object(item));
-                    return children;
-                }
+                    {
+                        var children = new List<object?>();
+                        foreach (var item in obj.EnumerateArray())
+                            children.Add(JsonElement2Object(item));
+                        return children;
+                    }
                 default:
                     throw new JsonException($"Invalid json string: {obj}");
             }
@@ -1073,27 +1069,27 @@ namespace Shashlik.Utils.Extensions
                 case JsonValueKind.Undefined:
                     return null;
                 case JsonValueKind.String:
-                {
-                    if (obj.TryGetDateTime(out var datetime))
-                        return datetime;
-                    if (obj.TryGetDateTimeOffset(out var datetimeOffset))
-                        return datetimeOffset;
-                    return obj.GetString();
-                }
+                    {
+                        if (obj.TryGetDateTime(out var datetime))
+                            return datetime;
+                        if (obj.TryGetDateTimeOffset(out var datetimeOffset))
+                            return datetimeOffset;
+                        return obj.GetString();
+                    }
                 case JsonValueKind.True:
                 case JsonValueKind.False:
                     return obj.GetBoolean();
                 case JsonValueKind.Number:
-                {
-                    if (obj.TryGetInt32(out var value1))
-                        return value1;
-                    if (obj.TryGetInt64(out var value2))
-                        return value2;
-                    if (obj.TryGetDecimal(out var value3))
-                        return value3;
+                    {
+                        if (obj.TryGetInt32(out var value1))
+                            return value1;
+                        if (obj.TryGetInt64(out var value2))
+                            return value2;
+                        if (obj.TryGetDecimal(out var value3))
+                            return value3;
 
-                    return null;
-                }
+                        return null;
+                    }
                 case JsonValueKind.Object:
                 case JsonValueKind.Array:
                     return obj;

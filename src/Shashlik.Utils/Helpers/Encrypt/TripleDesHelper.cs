@@ -57,7 +57,7 @@ namespace Shashlik.Utils.Helpers
         private static TripleDES CreateDes(string key, CipherMode mode = CipherMode.ECB,
             PaddingMode paddingMode = PaddingMode.PKCS7, string? iv = null)
         {
-            TripleDES des = new TripleDESCryptoServiceProvider();
+            TripleDES des = TripleDES.Create();
             var desKey = Encoding.ASCII.GetBytes(key);
             des.Key = desKey;
             if (!string.IsNullOrWhiteSpace(iv))

@@ -208,8 +208,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="dic"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-#nullable disable
-        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
+        public static TValue? GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey key)
         {
             if (key is null)
                 return default;
@@ -218,7 +217,6 @@ namespace Shashlik.Utils.Extensions
 
             return default;
         }
-#nullable enable
 
         /// <summary>
         /// 是否为空行

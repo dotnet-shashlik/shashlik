@@ -273,15 +273,15 @@ namespace Shashlik.Utils.Helpers.RSAInner
         {
             StringBuilder str = new StringBuilder();
             str.Append("<RSAKeyValue>");
-            str.Append("<Modulus>" + Convert.ToBase64String(rsaParameters.Modulus) + "</Modulus>");
-            str.Append("<Exponent>" + Convert.ToBase64String(rsaParameters.Exponent) + "</Exponent>");
+            str.Append("<Modulus>" + Convert.ToBase64String(rsaParameters.Modulus!) + "</Modulus>");
+            str.Append("<Exponent>" + Convert.ToBase64String(rsaParameters.Exponent!) + "</Exponent>");
             if (rsaParameters.D != null && includePrivateKey)
             {
-                str.Append("<P>" + Convert.ToBase64String(rsaParameters.P) + "</P>");
-                str.Append("<Q>" + Convert.ToBase64String(rsaParameters.Q) + "</Q>");
-                str.Append("<DP>" + Convert.ToBase64String(rsaParameters.DP) + "</DP>");
-                str.Append("<DQ>" + Convert.ToBase64String(rsaParameters.DQ) + "</DQ>");
-                str.Append("<InverseQ>" + Convert.ToBase64String(rsaParameters.InverseQ) + "</InverseQ>");
+                str.Append("<P>" + Convert.ToBase64String(rsaParameters.P!) + "</P>");
+                str.Append("<Q>" + Convert.ToBase64String(rsaParameters.Q!) + "</Q>");
+                str.Append("<DP>" + Convert.ToBase64String(rsaParameters.DP!) + "</DP>");
+                str.Append("<DQ>" + Convert.ToBase64String(rsaParameters.DQ!) + "</DQ>");
+                str.Append("<InverseQ>" + Convert.ToBase64String(rsaParameters.InverseQ!) + "</InverseQ>");
                 str.Append("<D>" + Convert.ToBase64String(rsaParameters.D) + "</D>");
             }
 
@@ -400,10 +400,10 @@ namespace Shashlik.Utils.Helpers.RSAInner
                 }
 
                 //写入Modulus
-                writeBlock(rsaParameters.Modulus);
+                writeBlock(rsaParameters.Modulus!);
 
                 //写入Exponent
-                writeBlock(rsaParameters.Exponent);
+                writeBlock(rsaParameters.Exponent!);
 
 
                 //计算空缺的长度
@@ -457,14 +457,14 @@ namespace Shashlik.Utils.Helpers.RSAInner
                 }
 
                 //写入数据
-                writeBlock(rsaParameters.Modulus);
-                writeBlock(rsaParameters.Exponent);
-                writeBlock(rsaParameters.D);
-                writeBlock(rsaParameters.P);
-                writeBlock(rsaParameters.Q);
-                writeBlock(rsaParameters.DP);
-                writeBlock(rsaParameters.DQ);
-                writeBlock(rsaParameters.InverseQ);
+                writeBlock(rsaParameters.Modulus!);
+                writeBlock(rsaParameters.Exponent!);
+                writeBlock(rsaParameters.D!);
+                writeBlock(rsaParameters.P!);
+                writeBlock(rsaParameters.Q!);
+                writeBlock(rsaParameters.DP!);
+                writeBlock(rsaParameters.DQ!);
+                writeBlock(rsaParameters.InverseQ!);
 
 
                 //计算空缺的长度

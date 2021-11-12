@@ -40,7 +40,7 @@ namespace Shashlik.DataProtection
             foreach (DataRow row in table.Rows)
             {
                 var xml = row["Xml"].ToString();
-                yield return XElement.Parse(xml);
+                yield return XElement.Parse(xml!);
             }
         }
 

@@ -300,7 +300,7 @@ namespace Shashlik.Utils.Extensions
 
                 sb.Append(item.Key);
                 sb.Append('=');
-                sb.Append(item.Value.ToString().UrlEncode());
+                sb.Append(item.Value.ToString()?.UrlEncode());
                 sb.Append('&');
             }
 

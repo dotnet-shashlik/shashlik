@@ -130,7 +130,7 @@ namespace Shashlik.EfCore
                 if (map is null)
                     throw new InvalidOperationException($"can not create instance of: {mappingType}!");
                 applyConfigurationMethod.MakeGenericMethod(entityType)
-                    .Invoke(modelBuilder, new[] {map});
+                    .Invoke(modelBuilder, new[] { map });
 
                 registeredTypes.Add(entityType);
             });
@@ -263,7 +263,7 @@ namespace Shashlik.EfCore
             where TDbContext : DbContext
         {
             locker ??= provider.GetRequiredService<IEfMigrationLock>();
-            using var @lock = locker.Lock(MigrationLockKey.Format(typeof(TDbContext).FullName));
+            using var @lock = locker.Lock(MigrationLockKey.Format(typeof(TDbContext).FullName ?? typeof(TDbContext).Name));
             using var scope = provider.CreateScope();
             using var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
             dbContext.Database.Migrate();
@@ -389,7 +389,7 @@ namespace Shashlik.EfCore
         /// <param name="serviceProvider"></param>
         public static IKernelServiceProvider DoAutoMigration(this IKernelServiceProvider serviceProvider)
         {
-            DoAutoMigration((IServiceProvider) serviceProvider);
+            DoAutoMigration((IServiceProvider)serviceProvider);
             return serviceProvider;
         }
     }

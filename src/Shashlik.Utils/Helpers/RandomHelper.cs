@@ -11,8 +11,6 @@ namespace Shashlik.Utils.Helpers
     /// </summary>
     public static class RandomHelper
     {
-        public static readonly RNGCryptoServiceProvider Rng = new RNGCryptoServiceProvider();
-
         /// <summary>
         /// 生成随机数
         /// </summary>
@@ -51,22 +49,7 @@ namespace Shashlik.Utils.Helpers
         {
             if (minValue > maxValue)
                 throw new ArgumentOutOfRangeException(nameof(minValue));
-            
-            if (minValue == maxValue) return minValue;
-            long diff = maxValue - minValue;
-            var bytes = new byte[4];
-            while (true)
-            {
-                Rng.GetBytes(bytes);
-                var rand = BitConverter.ToUInt32(bytes, 0);
-
-                var max = 1 + (long) uint.MaxValue;
-                var remainder = max % diff;
-                if (rand < max - remainder)
-                {
-                    return (int) (minValue + rand % diff);
-                }
-            }
+            return RandomNumberGenerator.GetInt32(minValue, maxValue);            
         }
     }
 }

@@ -85,7 +85,7 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static T DeserializeXml<T>(this string xml)
+        public static T? DeserializeXml<T>(this string xml)
         {
             if (string.IsNullOrWhiteSpace(xml))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(xml));
@@ -95,7 +95,7 @@ namespace Shashlik.Utils.Extensions
             {
                 CheckCharacters = false
             });
-            return (T) xmlSerializer.Deserialize(reader);
+            return (T?) xmlSerializer.Deserialize(reader);
         }
 
         /// <summary>
@@ -106,14 +106,14 @@ namespace Shashlik.Utils.Extensions
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static T DeserializeXml<T>(this string xml, XmlReaderSettings settings)
+        public static T? DeserializeXml<T>(this string xml, XmlReaderSettings settings)
         {
             if (string.IsNullOrWhiteSpace(xml))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(xml));
             var xmlSerializer = new XmlSerializer(typeof(T));
             var stringReader = new StringReader(xml);
             using var reader = XmlReader.Create(stringReader, settings);
-            return (T) xmlSerializer.Deserialize(reader);
+            return (T?) xmlSerializer.Deserialize(reader);
         }
     }
 }

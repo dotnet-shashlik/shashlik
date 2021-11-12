@@ -3,14 +3,11 @@ using Shashlik.Utils.Extensions;
 
 namespace Shashlik.RazorFormat
 {
-    /**
-     *    substr格式化器,
-     *    e.g.  value = "1234567890"
-     *    substr(3,2)-> result: "45"
-     *    substr(3)-> result: "4567890"
-     */
     /// <summary>
-    /// substr格式化器
+    /// substr格式化器,                  <para></para>
+    /// e.g.  value = "1234567890"       <para></para>
+    /// substr(3,2)-> result: "45"       <para></para>
+    /// substr(3)-> result: "4567890"    <para></para>
     /// </summary>
     public class SubstrFormatter : IFormatter
     {
@@ -33,6 +30,8 @@ namespace Shashlik.RazorFormat
                     throw new FormatException(expression);
 
             var str = value.ToString();
+            if (str is null)
+                return value;
             if (start > str.Length - 1)
                 return string.Empty;
             if (start + length > str.Length || length == 0)

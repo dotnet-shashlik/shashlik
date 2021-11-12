@@ -14,14 +14,12 @@ namespace Shashlik.Utils.Extensions
         /// <param name="key">缓存key</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-#nullable disable
-        public static async Task<T> GetObjectWithJsonAsync<T>(this IDistributedCache cache, string key)
+        public static async Task<T?> GetObjectWithJsonAsync<T>(this IDistributedCache cache, string key)
         {
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             var content = await cache.GetStringAsync(key);
             return string.IsNullOrWhiteSpace(content) ? default : JsonConvert.DeserializeObject<T>(content);
         }
-#nullable enable
 
         /// <summary>
         /// 设置json数据缓存
@@ -48,14 +46,12 @@ namespace Shashlik.Utils.Extensions
         /// <param name="key">缓存key</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-#nullable disable
-        public static T GetObjectWithJson<T>(this IDistributedCache cache, string key)
+        public static T? GetObjectWithJson<T>(this IDistributedCache cache, string key)
         {
             if (string.IsNullOrWhiteSpace(key)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(key));
             var content = cache.GetString(key);
             return string.IsNullOrWhiteSpace(content) ? default : JsonConvert.DeserializeObject<T>(content);
         }
-#nullable enable
 
         /// <summary>
         /// 设置json数据缓存

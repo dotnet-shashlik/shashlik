@@ -16,8 +16,7 @@ namespace Shashlik.Utils.Extensions
         /// <returns></returns>
         public static string GetMD5Hash(this Stream stream)
         {
-            using System.Security.Cryptography.MD5
-                md5 = new System.Security.Cryptography.MD5CryptoServiceProvider();
+            using System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
             var retVal = md5.ComputeHash(stream);
             var sb = new StringBuilder();
             foreach (var t in retVal)

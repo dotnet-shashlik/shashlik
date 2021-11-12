@@ -32,6 +32,8 @@ namespace Shashlik.Utils.Helpers
                 .ToList();
 
             var name = assembly.GetName().Name;
+            if (name is null)
+                return new List<Assembly>();
 
             Dictionary<string, HashSet<string>> allDependencies = new Dictionary<string, HashSet<string>>();
             foreach (var item in allLib)

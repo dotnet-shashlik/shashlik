@@ -74,8 +74,8 @@ namespace Shashlik.EfCore
 
             return isString && (
                 IgnoreCase
-                    ? Value.ToString().EqualsIgnoreCase(value.ToString())
-                    : Value.ToString().Equals(value.ToString())
+                    ? Value.ToString()!.EqualsIgnoreCase(value.ToString())
+                    : Value.ToString()!.Equals(value.ToString())
             );
         }
     }

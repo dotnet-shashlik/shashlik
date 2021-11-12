@@ -210,7 +210,7 @@ namespace Shashlik.Utils.Helpers
                 throw new ArgumentException("private key can not null");
             }
 
-            var data = dataStr.Split(new[] {connChar}, StringSplitOptions.RemoveEmptyEntries);
+            var data = dataStr.Split(new[] { connChar }, StringSplitOptions.RemoveEmptyEntries);
             var byteList = new List<byte>();
 
             foreach (var item in data)

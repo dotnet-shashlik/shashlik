@@ -78,8 +78,8 @@ namespace Shashlik.Kernel.Attributes
 
             return isString && (
                 IgnoreCase
-                    ? Value.ToString().EqualsIgnoreCase(proValue.ToString())
-                    : Value.ToString().Equals(proValue.ToString())
+                    ? Value.ToString()!.EqualsIgnoreCase(proValue.ToString())
+                    : Value.ToString()!.Equals(proValue.ToString())
             );
         }
     }

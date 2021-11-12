@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30330.147
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore", "Shashlik.EfCore\Shashlik.EfCore.csproj", "{93F1F149-5F8F-4481-8877-554DE24992F0}"
 EndProject
@@ -42,13 +42,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{22AD
 		..\.github\workflows\test.yml = ..\.github\workflows\test.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.RazorFormat.Test", "Shashlik.RazorFormat.Test\Shashlik.RazorFormat.Test.csproj", "{17944FE4-784E-4794-BE87-195F3D1F1636}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.RazorFormat.Test", "Shashlik.RazorFormat.Test\Shashlik.RazorFormat.Test.csproj", "{17944FE4-784E-4794-BE87-195F3D1F1636}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.Redis.Tests", "Shashlik.Redis.Tests\Shashlik.Redis.Tests.csproj", "{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Redis.Tests", "Shashlik.Redis.Tests\Shashlik.Redis.Tests.csproj", "{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.AutoMapper.Tests", "Shashlik.AutoMapper.Tests\Shashlik.AutoMapper.Tests.csproj", "{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AutoMapper.Tests", "Shashlik.AutoMapper.Tests\Shashlik.AutoMapper.Tests.csproj", "{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shashlik.DataProtection.Redis.Tests", "Shashlik.DataProtection.Redis.Tests\Shashlik.DataProtection.Redis.Tests.csproj", "{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.Redis.Tests", "Shashlik.DataProtection.Redis.Tests\Shashlik.DataProtection.Redis.Tests.csproj", "{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

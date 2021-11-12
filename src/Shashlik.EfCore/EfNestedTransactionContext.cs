@@ -76,7 +76,7 @@ namespace Shashlik.EfCore
         public static IDbContextTransaction BeginNestedTransaction(Type dbContextType, IServiceProvider serviceProvider, IsolationLevel?
             isolationLevel = null)
         {
-            return Begin(dbContextType, (DbContext) serviceProvider.GetService(dbContextType), false, isolationLevel);
+            return Begin(dbContextType, (DbContext) serviceProvider.GetRequiredService(dbContextType), false, isolationLevel);
         }
 
         #region private method
