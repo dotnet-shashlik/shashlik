@@ -43,7 +43,7 @@ namespace Shashlik.RazorFormat
         /// </summary>
         /// <param name="formaterName">格式化器的名称</param>
         /// <param name="formatter">格式化器</param>
-        public static bool TryRemove(string formaterName, out IFormatter formatter)
+        public static bool TryRemove(string formaterName, out IFormatter? formatter)
         {
             formatter = formatters.GetOrDefault(formaterName);
             if (formatter != null)
