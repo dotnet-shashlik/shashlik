@@ -304,6 +304,15 @@ namespace Shashlik.Utils.Test
 
         #endregion
 
+
+        [Fact]
+        public void IsSimpleTypeTests()
+        {
+            typeof(DateTime).IsSimpleType().ShouldBeTrue();
+            typeof(DateOnly).IsSimpleType().ShouldBeTrue();
+            typeof(TimeOnly).IsSimpleType().ShouldBeTrue();
+        }
+
         [Fact]
         public void Clone_test()
         {

@@ -286,7 +286,7 @@ namespace Shashlik.Utils.Extensions
         /// <param name="obj"></param>
         /// <typeparam name="TModel"></typeparam>
         /// <returns></returns>
-        public static IDictionary<String, object?> MapToRootDictionary<TModel>(this TModel obj)
+        public static IDictionary<string, object?> MapToRootDictionary<TModel>(this TModel obj)
         {
             var mapToDictionary = obj.MapToDictionary();
             var dictionary = new Dictionary<string, object?>();
@@ -447,7 +447,11 @@ namespace Shashlik.Utils.Extensions
                 case TypeCode.DateTime:
                     return true;
                 case TypeCode.Object:
-                    return (typeof(TimeSpan) == type) || (typeof(DateTimeOffset) == type);
+                    return (typeof(TimeSpan) == type)
+                        || (typeof(DateTimeOffset) == type)
+                        || (typeof(DateOnly) == type)
+                        || (typeof(TimeOnly) == type)
+                        ;
                 default:
                     return false;
             }
