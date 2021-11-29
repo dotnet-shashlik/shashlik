@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 
@@ -13,6 +14,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.DataProtection
 {
     [Transient]
+    [Order(-100)]
     public class PostgreSqlDataProtectionAutowire : IServiceAssembler
     {
         public PostgreSqlDataProtectionAutowire(IOptions<PostgreSqlDataProtectionOptions> options)
@@ -35,14 +37,15 @@ namespace Shashlik.DataProtection
             if (Options.ConnectionString.IsNullOrWhiteSpace())
                 throw new OptionsValidationException("Shashlik.DataProtection.PostgreSql.ConnectionString",
                     typeof(PostgreSqlDataProtectionOptions),
-                    new[] {"PostgreSql data protection store database connection string can not be empty."});
+                    new[] { "PostgreSql data protection store database connection string can not be empty." });
+
+
+            kernelService.Services.Configure<KeyManagementOptions>(options => { options.XmlRepository = new PostgreSqlXmlRepository(Options); });
 
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName)
                 ;
-
-            kernelService.Services.Configure<KeyManagementOptions>(options => { options.XmlRepository = new PostgreSqlXmlRepository(Options); });
         }
     }
 }

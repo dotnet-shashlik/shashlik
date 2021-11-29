@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 
@@ -13,6 +14,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.DataProtection
 {
     [Transient]
+    [Order(-100)]
     public class MySqlDataProtectionAutowire : IServiceAssembler
     {
         public MySqlDataProtectionAutowire(IOptions<MySqlDataProtectionOptions> options)
@@ -37,11 +39,11 @@ namespace Shashlik.DataProtection
                     typeof(MySqlDataProtectionOptions),
                     new[] {"MySql data protection store database connection string can not be empty."});
 
+            kernelService.Services.Configure<KeyManagementOptions>(options => { options.XmlRepository = new MySqlXmlRepository(Options); });
+            
             kernelService.Services.AddDataProtection()
                 // 设置应用名称
                 .SetApplicationName(Options.ApplicationName);
-
-            kernelService.Services.Configure<KeyManagementOptions>(options => { options.XmlRepository = new MySqlXmlRepository(Options); });
         }
     }
 }

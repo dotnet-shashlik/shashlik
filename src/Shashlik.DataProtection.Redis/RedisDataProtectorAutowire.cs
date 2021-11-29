@@ -18,6 +18,7 @@ namespace Shashlik.DataProtection
     /// </summary>
     [AfterAt(typeof(RedisAutowire))]
     [Transient]
+    [Order(-100)]
     public class RedisDataProtectorAutowire : IServiceAssembler
     {
         public RedisDataProtectorAutowire(IOptions<RedisDataProtectorOptions> options)
@@ -35,14 +36,15 @@ namespace Shashlik.DataProtection
             if (Options.Key.IsNullOrWhiteSpace())
                 throw new InvalidOperationException("Redis key can not be empty");
 
-            kernelService.Services.AddDataProtection()
-                // 设置应用名称
-                .SetApplicationName(Options.ApplicationName);
 
             kernelService.Services.Configure<KeyManagementOptions>(options =>
             {
                 options.XmlRepository = new RedisXmlRepository(RedisHelper.Instance, Options.Key);
             });
+
+            kernelService.Services.AddDataProtection()
+                // 设置应用名称
+                .SetApplicationName(Options.ApplicationName);
         }
     }
 }
