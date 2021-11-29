@@ -231,13 +231,13 @@ namespace Shashlik.Utils.Extensions
                     throw new InvalidCastException();
                 return (JToken2Object(jToken) as IDictionary<string, object?>)!;
             }
-            else if (obj is IDictionary dictionary)
+            else if (obj is IDictionary || objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
             {
-                return dictionary
-                        !.OfType<dynamic>()
-                    .ToDictionary<dynamic, string, object?>(
-                        r => r.Key.ToString(),
-                        r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
+                return ((IEnumerable)obj)
+                        .OfType<dynamic>()
+                        .ToDictionary<dynamic, string, object?>(
+                            r => r.Key.ToString(),
+                            r => IsSimpleType(r.Value.GetType()) ? r.Value : MapToDictionary(r.Value));
             }
             else if (obj is JsonElement json)
             {
@@ -254,11 +254,10 @@ namespace Shashlik.Utils.Extensions
                 props.ForEachItem(propertyInfo =>
                 {
                     if (propertyInfo.GetIndexParameters().Any() || !propertyInfo.CanRead) return;
-
                     var value = propertyInfo.GetValue(obj);
                     if (value is null || propertyInfo.PropertyType.IsSimpleType())
                         dic[propertyInfo.Name] = value;
-                    else if (value is IDictionary)
+                    else if (value is IDictionary || propertyInfo.PropertyType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
                         dic[propertyInfo.Name] = MapToDictionary(value);
                     else if (value is IEnumerable list)
                     {
@@ -1133,6 +1132,19 @@ namespace Shashlik.Utils.Extensions
                     return (true, JTokenValue(json));
                 return (false, null);
             }
+            else if (objType.IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+            {
+                var list = (obj as IEnumerable)!.OfType<dynamic>();
+                try
+                {
+                    var el = list.First(r => r.Key.ToString() == proName);
+                    return (true, el.Value);
+                }
+                catch (InvalidOperationException)
+                {
+                    return (false, null);
+                }
+            }
             else if (obj is IDictionary dic)
             {
                 if (dic.Contains(proName))
@@ -1216,6 +1228,17 @@ namespace Shashlik.Utils.Extensions
         {
             if (obj is null || obj.GetType().IsSimpleType())
                 dic[prefix] = obj;
+            else if (obj.GetType().IsSubTypeOfGenericType(typeof(IDictionary<,>)))
+            {
+                ((IEnumerable)obj)
+                    .OfType<dynamic>()
+                    .ForEachItem(item =>
+                    {
+                        if (item.Value is null || IsSimpleType(item.Value.GetType()))
+                            dic[prefix + "." + item.Key] = item.Value;
+                        MapToRootDictionaryFillChildren(dic, item.Value, prefix + "." + item.Key);
+                    });
+            }
             else if (obj is IDictionary dictionary)
             {
                 foreach (DictionaryEntry item in dictionary)
