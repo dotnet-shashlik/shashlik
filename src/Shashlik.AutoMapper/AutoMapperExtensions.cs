@@ -23,11 +23,10 @@ namespace Shashlik.AutoMapper
         /// <param name="kernelService"></param>
         /// <param name="dependencyContext"></param>
         /// <returns></returns>
-        public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService,
-            DependencyContext? dependencyContext = null)
+        public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService)
         {
             var assemblies =
-                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, dependencyContext);
+                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, DependencyContext.Default);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 
@@ -226,7 +225,7 @@ namespace Shashlik.AutoMapper
         /// <returns></returns>
         public static TDest MapTo<TDest>(this object obj)
         {
-            if (ShashlikAutoMapper.Instance != null) return ShashlikAutoMapper.Instance.Map<TDest>(obj);
+            if (ShashlikAutoMapper.Instance is not null) return ShashlikAutoMapper.Instance.Map<TDest>(obj);
             throw new NullReferenceException($"Make sure AutoMapper initialized");
         }
 
@@ -239,7 +238,7 @@ namespace Shashlik.AutoMapper
         /// <typeparam name="TDest">dest type</typeparam>
         public static void MapTo<TSource, TDest>(this TSource obj, TDest destObj)
         {
-            if (ShashlikAutoMapper.Instance != null) ShashlikAutoMapper.Instance.Map(obj, destObj);
+            if (ShashlikAutoMapper.Instance is not null) ShashlikAutoMapper.Instance.Map(obj, destObj);
             else throw new NullReferenceException($"Make sure AutoMapper initialized");
         }
     }

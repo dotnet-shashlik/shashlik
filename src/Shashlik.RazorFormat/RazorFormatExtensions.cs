@@ -46,7 +46,7 @@ namespace Shashlik.RazorFormat
         public static bool TryRemove(string formaterName, out IFormatter? formatter)
         {
             formatter = formatters.GetOrDefault(formaterName);
-            if (formatter != null)
+            if (formatter is not null)
             {
                 formatters.Remove(formaterName);
                 return true;
@@ -195,7 +195,7 @@ namespace Shashlik.RazorFormat
                 {
                     var action = formatMatch.Groups[1].Value;
                     var formater = formatters.GetOrDefault(action);
-                    if (formater != null)
+                    if (formater is not null)
                     {
                         var expression = formatMatch.Value.TrimStart(formater.Action.ToCharArray()).Trim().TrimStart('(').TrimEnd(')').Trim();
                         lastValue = formater.Format(lastValue, expression);

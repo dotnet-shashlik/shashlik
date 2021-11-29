@@ -1,4 +1,4 @@
-﻿namespace Shashlik.EfCore
+﻿namespace Shashlik.EfCore.Migration
 {
     public interface IAutoMigration
     {

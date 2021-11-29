@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Shashlik.EfCore.Tests.Migrations5
 {
-    public partial class init : Migration
+    public partial class init : Microsoft.EntityFrameworkCore.Migrations.Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

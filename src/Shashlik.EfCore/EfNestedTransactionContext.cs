@@ -76,7 +76,7 @@ namespace Shashlik.EfCore
         public static IDbContextTransaction BeginNestedTransaction(Type dbContextType, IServiceProvider serviceProvider, IsolationLevel?
             isolationLevel = null)
         {
-            return Begin(dbContextType, (DbContext) serviceProvider.GetRequiredService(dbContextType), false, isolationLevel);
+            return Begin(dbContextType, (DbContext)serviceProvider.GetRequiredService(dbContextType), false, isolationLevel);
         }
 
         #region private method
@@ -84,7 +84,7 @@ namespace Shashlik.EfCore
         private static IDbContextTransaction Begin(Type dbContextType, DbContext dbContext, bool useAsync, IsolationLevel? isolationLevel)
         {
             var asyncLocal = TransactionContext.GetOrAdd(dbContextType, _ => new AsyncLocal<ShashlikDbContextTransaction>());
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDispose)
+            if (asyncLocal.Value is not null && asyncLocal.Value.IsDispose)
             {
                 var newAsyncLocal = new AsyncLocal<ShashlikDbContextTransaction>();
                 if (TransactionContext.TryUpdate(dbContextType, newAsyncLocal, asyncLocal))
@@ -93,7 +93,7 @@ namespace Shashlik.EfCore
                     throw new InvalidOperationException();
             }
 
-            if (asyncLocal.Value != null && asyncLocal.Value.IsDone)
+            if (asyncLocal.Value is not null && asyncLocal.Value.IsDone)
                 throw new InvalidOperationException("Already committed or rolled back.");
             if (asyncLocal.Value is null)
             {
@@ -143,7 +143,7 @@ namespace Shashlik.EfCore
             if (GlobalKernelServiceProvider.KernelServiceProvider is null)
                 throw new InvalidOperationException("GlobalKernelServiceProvider.KernelServiceProvider is null, make sure invoke UseShashlik().");
             var beginFunction =
-                (IEfNestedTransactionBeginFunction?) GlobalKernelServiceProvider.KernelServiceProvider.GetService(beginFunctionDefinitionType);
+                (IEfNestedTransactionBeginFunction?)GlobalKernelServiceProvider.KernelServiceProvider.GetService(beginFunctionDefinitionType);
 
             return beginFunction;
         }

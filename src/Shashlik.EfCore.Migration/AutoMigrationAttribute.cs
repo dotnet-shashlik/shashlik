@@ -4,7 +4,7 @@ using Shashlik.Utils.Extensions;
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.Migration
 {
     /// <summary>
     /// 允许自动迁移
@@ -65,7 +65,7 @@ namespace Shashlik.EfCore
             var value = configuration.GetValue(ValueType, Property, DefaultValue);
 
             var isString = ValueType == typeof(string);
-            if (Value != null && Value.Equals(value))
+            if (Value is not null && Value.Equals(value))
                 return true;
             if (Value is null && value is null)
                 return true;

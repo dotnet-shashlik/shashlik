@@ -50,6 +50,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AutoMapper.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.DataProtection.Redis.Tests", "Shashlik.DataProtection.Redis.Tests\Shashlik.DataProtection.Redis.Tests.csproj", "{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Migration", "Shashlik.EfCore.Migration\Shashlik.EfCore.Migration.csproj", "{27E0623A-EEDC-4D26-A131-16AD6E5879F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,12 @@ Global
 		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBA939CF-1A2C-4E60-9EE9-CFE42A613257}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

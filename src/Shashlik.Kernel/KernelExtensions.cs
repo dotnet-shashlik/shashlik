@@ -26,10 +26,9 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IServiceCollection AddShashlik(
             this IServiceCollection services,
-            IConfiguration rootConfiguration,
-            DependencyContext? dependencyContext = null)
+            IConfiguration rootConfiguration)
         {
-            return services.AddShashlikCore(rootConfiguration, dependencyContext)
+            return services.AddShashlikCore(rootConfiguration)
                 // 配置装载
                 .AssembleOptions()
                 // 注册约定的服务
@@ -49,15 +48,13 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IKernelServices AddShashlikCore(
             this IServiceCollection services,
-            IConfiguration rootConfiguration,
-            DependencyContext? dependencyContext = null
+            IConfiguration rootConfiguration
         )
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
             if (rootConfiguration == null) throw new ArgumentNullException(nameof(rootConfiguration));
-            dependencyContext ??= DependencyContext.Default;
 
-            var kernelService = new InnerKernelService(services, dependencyContext, rootConfiguration);
+            var kernelService = new InnerKernelService(services, DependencyContext.Default, rootConfiguration);
             services.AddSingleton<IKernelServices>(kernelService);
 
             services.TryAddSingleton<IServiceDescriptorProvider, DefaultServiceDescriptorProvider>();

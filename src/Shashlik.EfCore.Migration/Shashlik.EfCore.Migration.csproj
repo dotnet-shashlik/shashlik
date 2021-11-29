@@ -13,4 +13,5 @@
     <ItemGroup>
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
     </ItemGroup>
+
 </Project>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shashlik.EfCore;
+using Shashlik.EfCore.Migration;
 using Shashlik.Kernel.Test.Autowired;
 using Shashlik.Kernel.Test.Options;
 

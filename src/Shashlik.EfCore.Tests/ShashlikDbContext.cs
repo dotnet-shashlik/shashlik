@@ -29,9 +29,7 @@ namespace Shashlik.EfCore
 
             var kernelServices = this.GetService<IKernelServices>();
             using var serviceProvider = kernelServices.Services.BuildServiceProvider();
-            modelBuilder.RegisterEntities<IEntity>(
-                serviceProvider,
-                kernelServices.ScanFromDependencyContext);
+            modelBuilder.RegisterEntities<IEntity>(serviceProvider);
         }
     }
 }

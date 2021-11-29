@@ -75,7 +75,7 @@ namespace Shashlik.Redis.Tests
                     lockers.Add(locker2);
                 });
 
-                lockers.Count(r => r != null).ShouldBe(0);
+                lockers.Count(r => r is not null).ShouldBe(0);
             }
 
             {
@@ -86,7 +86,7 @@ namespace Shashlik.Redis.Tests
                     lockers.Add(locker2);
                 });
 
-                lockers.Count(r => r != null).ShouldBe(1);
+                lockers.Count(r => r is not null).ShouldBe(1);
 
                 foreach (var csRedisClientLock in lockers)
                 {

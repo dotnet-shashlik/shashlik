@@ -671,7 +671,7 @@ namespace Shashlik.Utils.Extensions
                             else if (type.IsNullableType() && type.GetGenericArguments().First().IsEnum)
                                 enumType = type.GetGenericArguments().First();
 
-                            if (enumType != null)
+                            if (enumType is not null)
                             {
                                 if (obj.TryGetInt32(out var intValue))
                                 {
@@ -853,7 +853,7 @@ namespace Shashlik.Utils.Extensions
                             enumType = type.GetGenericArguments().First();
                         }
 
-                        if (enumType != null)
+                        if (enumType is not null)
                         {
                             var str = obj.GetString();
                             if (str.IsNullOrWhiteSpace())
@@ -1129,7 +1129,7 @@ namespace Shashlik.Utils.Extensions
                 else
                     return (false, null);
 
-                if (json != null)
+                if (json is not null)
                     return (true, JTokenValue(json));
                 return (false, null);
             }

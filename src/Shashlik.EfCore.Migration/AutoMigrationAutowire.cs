@@ -6,7 +6,7 @@ using Shashlik.Kernel;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.Migration
 {
     /// <summary>
     /// DbContext自动迁移装配, 自动注册[AutoMigration]
@@ -17,7 +17,7 @@ namespace Shashlik.EfCore
         private bool GetEnableAutoMigration(Type type, IConfiguration configuration)
         {
             var autoMigrationAttribute = type.GetCustomAttribute<AutoMigrationAttribute>();
-            return autoMigrationAttribute != null && autoMigrationAttribute.GetEnableAutoMigration(configuration);
+            return autoMigrationAttribute is not null && autoMigrationAttribute.GetEnableAutoMigration(configuration);
         }
 
         public void Configure(IKernelServices kernelServices)

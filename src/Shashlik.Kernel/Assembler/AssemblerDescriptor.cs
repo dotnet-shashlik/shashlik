@@ -25,9 +25,9 @@ namespace Shashlik.Kernel.Assembler
         /// <param name="serviceInstance">自动装配类型实例</param>
         public AssemblerDescriptor(Type implementationType, Type? afterAt, Type? beforeAt, int order, T serviceInstance)
         {
-            if (afterAt != null && afterAt.IsSubTypeOrEqualsOf<T>())
+            if (afterAt is not null && afterAt.IsSubTypeOrEqualsOf<T>())
                 AfterAt = afterAt;
-            if (beforeAt != null && beforeAt.IsSubTypeOrEqualsOf<T>())
+            if (beforeAt is not null && beforeAt.IsSubTypeOrEqualsOf<T>())
                 BeforeAt = beforeAt;
             Order = order;
             ImplementationType = implementationType!;

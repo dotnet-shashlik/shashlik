@@ -34,7 +34,7 @@ namespace Shashlik.Kernel.Dependency
         private static void ValidServiceLifetime(ServiceLifetime serviceLifetime, TypeInfo type)
         {
             var finalSubTypeLifeTimeAttribute = type.GetCustomAttribute<ServiceAttribute>(false);
-            if (finalSubTypeLifeTimeAttribute != null
+            if (finalSubTypeLifeTimeAttribute is not null
                 && finalSubTypeLifeTimeAttribute.ServiceLifetime != serviceLifetime)
                 throw new KernelServiceException(
                     $"Conflict service lifetime: {serviceLifetime}:{type.FullName} & {finalSubTypeLifeTimeAttribute.ServiceLifetime}:{type.FullName}");

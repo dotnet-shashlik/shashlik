@@ -23,7 +23,7 @@ namespace Shashlik.Utils.Helpers
             DependencyContext? dependencyContext = null)
         {
             var res = CacheAssemblyReferred.GetOrDefault(assembly);
-            if (res != null)
+            if (res is not null)
                 return res;
 
             var allLib = (dependencyContext ?? DependencyContext.Default)
@@ -55,7 +55,7 @@ namespace Shashlik.Utils.Helpers
                         return null;
                     }
                 })
-                .Where(r => r != null)
+                .Where(r => r is not null)
                 .ToList();
 
             res = list!;

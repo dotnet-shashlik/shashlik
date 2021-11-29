@@ -246,7 +246,7 @@ namespace Shashlik.Utils.Helpers.RSAInner
                 throw new ArgumentException("invalid xml key", nameof(xml));
             }
 
-            if (rsaParameters.D != null)
+            if (rsaParameters.D is not null)
             {
                 if (rsaParameters.P == null || rsaParameters.Q == null || rsaParameters.DP == null || rsaParameters.DQ == null ||
                     rsaParameters.InverseQ == null)
@@ -275,7 +275,7 @@ namespace Shashlik.Utils.Helpers.RSAInner
             str.Append("<RSAKeyValue>");
             str.Append("<Modulus>" + Convert.ToBase64String(rsaParameters.Modulus!) + "</Modulus>");
             str.Append("<Exponent>" + Convert.ToBase64String(rsaParameters.Exponent!) + "</Exponent>");
-            if (rsaParameters.D != null && includePrivateKey)
+            if (rsaParameters.D is not null && includePrivateKey)
             {
                 str.Append("<P>" + Convert.ToBase64String(rsaParameters.P!) + "</P>");
                 str.Append("<Q>" + Convert.ToBase64String(rsaParameters.Q!) + "</Q>");

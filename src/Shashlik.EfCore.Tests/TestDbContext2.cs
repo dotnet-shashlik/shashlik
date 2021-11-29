@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Shashlik.EfCore.Migration;
 
 namespace Shashlik.EfCore.Tests
 {
