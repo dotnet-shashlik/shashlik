@@ -55,7 +55,7 @@ namespace Shashlik.DataProtection
             cmd.Parameters.Add(new NpgsqlParameter("@xml", DbType.String)
                 {Value = element.ToString(SaveOptions.DisableFormatting)});
             cmd.Parameters.Add(new NpgsqlParameter("@now", DbType.DateTime)
-                {Value = DateTime.Now});
+                {Value = DateTimeOffset.UtcNow});
             cmd.ExecuteNonQuery();
         }
 
