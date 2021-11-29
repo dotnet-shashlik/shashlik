@@ -49,7 +49,9 @@ namespace Shashlik.Utils.Helpers
         {
             if (minValue > maxValue)
                 throw new ArgumentOutOfRangeException(nameof(minValue));
-            return RandomNumberGenerator.GetInt32(minValue, maxValue);            
+            if (minValue == maxValue)
+                return minValue;
+            return RandomNumberGenerator.GetInt32(minValue, maxValue);
         }
     }
 }

@@ -21,21 +21,23 @@ namespace Shashlik.Utils.Helpers
             if (expire <= TimeSpan.Zero)
                 throw new ArgumentException("invalid expire.", nameof(expire));
 
-            var timer = new Timer {Interval = expire.TotalMilliseconds, AutoReset = false};
-            timer.Elapsed += (sender, e) =>
+            var timer = new Timer { Interval = expire.TotalMilliseconds, AutoReset = false };
+            timer.Elapsed += (_, _) =>
             {
                 try
                 {
-                    if (!cancellationToken.IsCancellationRequested)
-                        action();
-                    
-                    timer.Stop();
-                    timer.Close();
-                    timer.Dispose();
+                    using (timer)
+                    {
+                        if (!cancellationToken.IsCancellationRequested)
+                            action();
+
+                        timer.Stop();
+                        timer.Close();
+                    }
                 }
                 catch
                 {
-                    // ignored
+                    // ignore
                 }
             };
             timer.Start();
@@ -68,17 +70,19 @@ namespace Shashlik.Utils.Helpers
             if (interval <= TimeSpan.Zero)
                 throw new ArgumentException("invalid interval.", nameof(interval));
 
-            var timer = new Timer {Interval = interval.TotalMilliseconds, AutoReset = true};
-            timer.Elapsed += (sender, e) =>
+            var timer = new Timer { Interval = interval.TotalMilliseconds, AutoReset = true };
+            timer.Elapsed += (_, _) =>
             {
                 if (!cancellationToken.IsCancellationRequested)
                     action();
                 else
                     try
                     {
-                        timer.Stop();
-                        timer.Close();
-                        timer.Dispose();
+                        using (timer)
+                        {
+                            timer.Stop();
+                            timer.Close();
+                        }
                     }
                     catch
                     {

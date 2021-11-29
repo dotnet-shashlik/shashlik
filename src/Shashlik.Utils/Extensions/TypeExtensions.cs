@@ -930,8 +930,11 @@ namespace Shashlik.Utils.Extensions
         private static readonly Dictionary<Type, object> CommonTypeDictionary = new Dictionary<Type, object>
         {
             {typeof(int), default(int)},
-            {typeof(Guid), default(Guid)!},
-            {typeof(DateTime), default(DateTime)!},
+            {typeof(Guid), default(Guid)},
+            {typeof(DateTime), default(DateTime)},
+            {typeof(DateOnly), default(DateOnly)},
+            {typeof(TimeOnly), default(TimeOnly)},
+            {typeof(TimeSpan), default(TimeSpan)},
             {typeof(DateTimeOffset), default(DateTimeOffset)!},
             {typeof(long), default(long)},
             {typeof(bool), default(bool)},

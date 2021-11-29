@@ -14,10 +14,10 @@ namespace Shashlik.Utils.Test.HelperTests
         {
             var a = Guid.NewGuid().ToString("N");
 
-            var locker = new AsyncLock();
+            using var locker = new AsyncLock();
             var counter = 1;
             await Task.CompletedTask;
-            Parallel.For(0, 100, r =>
+            Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = 3 }, r =>
             {
                 using var releaser = locker.LockAsync().GetAwaiter().GetResult();
                 counter++;
@@ -29,9 +29,9 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void LockTest()
         {
-            var locker = new AsyncLock();
+            using var locker = new AsyncLock();
             var counter = 1;
-            Parallel.For(0, 100, r =>
+            Parallel.For(0, 100, new ParallelOptions { MaxDegreeOfParallelism = 3 }, r =>
             {
                 using var releaser = locker.Lock();
                 counter++;
@@ -42,7 +42,7 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void CancelAsyncTest()
         {
-            var locker = new AsyncLock();
+            using var locker = new AsyncLock();
 
             // 首次上锁2秒
             {
@@ -78,7 +78,7 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void CancelTest()
         {
-            var locker = new AsyncLock();
+            using var locker = new AsyncLock();
             var number = 1;
             var cancelToken = new CancellationTokenSource();
             locker.Lock();

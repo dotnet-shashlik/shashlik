@@ -7,7 +7,7 @@ namespace Shashlik.Utils.Helpers
     /// <summary>
     /// 异步内存锁
     /// </summary>
-    public sealed class AsyncLock
+    public sealed class AsyncLock : IDisposable
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
@@ -33,6 +33,13 @@ namespace Shashlik.Utils.Helpers
             waitTimeoutCancellationToken.ThrowIfCancellationRequested();
             _semaphore.Wait(waitTimeoutCancellationToken);
             return new Releaser(this);
+        }
+
+        public void Dispose()
+        {
+            using (_semaphore)
+            {
+            }
         }
 
         public readonly struct Releaser : IDisposable
