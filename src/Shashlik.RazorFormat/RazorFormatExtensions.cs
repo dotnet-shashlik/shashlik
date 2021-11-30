@@ -67,7 +67,9 @@ namespace Shashlik.RazorFormat
         }
 
         /// <summary>
-        /// razor模板格式化,参数格式:@{arg},参数名区分大小写,支持数据类型本身的格式化format,如@{Money|f2},Money为double类型,|f2表示格式化为2位小数显示,支持递归格式化
+        /// razor模板格式化,参数格式:@{arg},参数名区分大小写<para></para>
+        /// 1. 支持数据类型本身的格式化format,如@{Money|f2},Money为double类型,|f2表示格式化为2位小数显示<para></para>
+        /// 2. 扩展格式化方法,例: value = "1234567890", subIfTooLong(3,...) -> result: "123..."  <para></para>
         /// </summary>
         /// <typeparam name="TModel"></typeparam>
         /// <param name="value">值</param>

@@ -26,7 +26,7 @@ namespace Shashlik.Kernel.Dependency
                 .Distinct()
                 .OrderBy(r => r);
 
-            var latest = new List<ShashlikServiceDescriptor>();
+            var latest = new HashSet<ShashlikServiceDescriptor>();
 
             // 根据条件排序号,从小到大依次过滤
             foreach (var order in orders)
