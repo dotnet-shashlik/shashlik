@@ -8,7 +8,7 @@ namespace Shashlik.Redis
 {
     public static class RedisExtensions
     {
-        private static ConstructorInfo? CSRedisClientLockConstructorInfo { get; }
+        private static ConstructorInfo CSRedisClientLockConstructorInfo { get; }
 
         static RedisExtensions()
         {
@@ -19,7 +19,7 @@ namespace Shashlik.Redis
                     typeof(string),
                     typeof(int),
                     typeof(double),
-                    typeof(bool));
+                    typeof(bool))!;
 
             if (CSRedisClientLockConstructorInfo is null)
                 throw new MissingMemberException(nameof(CSRedisClientLock), "ctor");
@@ -30,7 +30,7 @@ namespace Shashlik.Redis
         // add lockSeconds argument
 
         /// <summary>
-        /// 开启分布式锁，若超时返回null
+        /// 开启分布式锁，若超时抛出<see cref="RedisLockFailureException"/>异常
         /// </summary>
         /// <param name="redisClient"></param>
         /// <param name="name">锁名称</param>
@@ -38,6 +38,7 @@ namespace Shashlik.Redis
         /// <param name="timeoutSeconds">等待锁超时（秒）</param>
         /// <param name="autoDelay">自动延长锁超时时间，看门狗线程的超时时间为lockSeconds/2 ， 在看门狗线程超时时间时自动延长锁的时间为lockSeconds。除非程序意外退出，否则永不超时。</param>
         /// <returns></returns>
+        /// <exception cref="RedisLockFailureException"></exception>
         public static CSRedisClientLock? Lock(
             this CSRedisClient redisClient,
             string name,
@@ -55,14 +56,14 @@ namespace Shashlik.Redis
                 if (redisClient.Set(name, value, lockSeconds, RedisExistence.Nx))
                 {
                     var refreshSeconds = lockSeconds / 2.0;
-                    return (CSRedisClientLock) CSRedisClientLockConstructorInfo!.Invoke(
-                        new object[] {redisClient, name, value, lockSeconds, refreshSeconds, autoDelay});
+                    return (CSRedisClientLock)CSRedisClientLockConstructorInfo.Invoke(
+                        new object[] { redisClient, name, value, lockSeconds, refreshSeconds, autoDelay });
                 }
 
                 Task.Delay(3).ConfigureAwait(false).GetAwaiter().GetResult();
             }
 
-            return null;
+            throw new RedisLockFailureException(name);
         }
     }
 }

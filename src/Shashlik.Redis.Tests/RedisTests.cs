@@ -117,13 +117,13 @@ namespace Shashlik.Redis.Tests
             {
                 using var locker1 = redisClient.Lock("TestLock1", 30, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<LockFailureException>(() => redisClient.Lock("TestLock1", 5, true, 5));
+                Should.Throw<RedisLockFailureException>(() => redisClient.Lock("TestLock1", 5, true, 5));
             }
 
             {
                 var locker1 = redisClient.Lock("TestLock2", 30, true, 5);
                 locker1.ShouldNotBeNull();
-                Should.Throw<LockFailureException>(() => redisClient.Lock("TestLock2", 5, true, 5));
+                Should.Throw<RedisLockFailureException>(() => redisClient.Lock("TestLock2", 5, true, 5));
                 locker1.Dispose();
                 using var locker3 = redisClient.Lock("TestLock2", 5, true, 5);
                 locker3.ShouldNotBeNull();
@@ -137,7 +137,7 @@ namespace Shashlik.Redis.Tests
                 for (var i = 0; i < count; i++)
                 {
                     Thread.Sleep(5000);
-                    Should.Throw<LockFailureException>(() => redisClient.Lock("TestLock3", 5, true, 5));
+                    Should.Throw<RedisLockFailureException>(() => redisClient.Lock("TestLock3", 5, true, 5));
                 }
             }
 
@@ -190,7 +190,7 @@ namespace Shashlik.Redis.Tests
                 locker1.ShouldNotBeNull();
                 // 锁5秒，自动延期，10秒后仍然是锁定状态
                 Thread.Sleep(10_000);
-                Should.Throw<LockFailureException>(() => redisClient.Lock("TestLock6", 5, true, 5));
+                Should.Throw<RedisLockFailureException>(() => redisClient.Lock("TestLock6", 5, true, 5));
             }
         }
 
@@ -215,6 +215,14 @@ namespace Shashlik.Redis.Tests
                 var cacheObj = cache.GetObjectWithJson<int?>("unit_redis_test");
                 cacheObj.ShouldBe(1);
             }
+        }
+
+
+        [Fact]
+        void BaseTest()
+        {
+            RedisHelper.Set("Test1", "1");
+            RedisHelper.Get("Test1").ShouldBe("1");
         }
     }
 
