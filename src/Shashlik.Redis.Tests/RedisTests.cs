@@ -69,7 +69,7 @@ namespace Shashlik.Redis.Tests
                 locker1.ShouldNotBeNull();
 
                 var lockers = new ConcurrentBag<CSRedis.CSRedisClientLock>();
-                Parallel.For(1, 10, index =>
+                Parallel.For(1, 10, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
                 {
                     using var locker2 = RedisHelper.Lock("OriginTestLock4", 5);
                     lockers.Add(locker2);
@@ -80,7 +80,7 @@ namespace Shashlik.Redis.Tests
 
             {
                 var lockers = new ConcurrentBag<CSRedis.CSRedisClientLock>();
-                Parallel.For(1, 10, index =>
+                Parallel.For(1, 10, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
                 {
                     var locker2 = RedisHelper.Lock("OriginTestLock5", 5);
                     lockers.Add(locker2);
@@ -146,7 +146,7 @@ namespace Shashlik.Redis.Tests
                 locker1.ShouldNotBeNull();
 
                 var lockers = new ConcurrentBag<IDisposable>();
-                Parallel.For(1, 10, index =>
+                Parallel.For(1, 10, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
                 {
                     try
                     {
@@ -164,7 +164,7 @@ namespace Shashlik.Redis.Tests
 
             {
                 var lockers = new ConcurrentBag<IDisposable>();
-                Parallel.For(1, 10, index =>
+                Parallel.For(1, 10, new ParallelOptions { MaxDegreeOfParallelism = 3 }, index =>
                 {
                     try
                     {
