@@ -1,9 +1,0 @@
-﻿{
-  "Shashlik": {
-    "DataProtection": {
-      "PostgreSql": {
-        "ConnectionString": "server=localhost;user id=testuser;password=123123;persistsecurityinfo=true;database=data_protection_test;"
-      }
-    }
-  }
-}

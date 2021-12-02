@@ -1,9 +1,0 @@
-﻿{
-  "Shashlik": {
-    "DataProtection": {
-      "MySql": {
-        "ConnectionString": "server=localhost;database=data_protection_test;user id=root;password=123123;"
-      }
-    }
-  }
-}

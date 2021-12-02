@@ -6,6 +6,8 @@ using System.Reflection;
 using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Helpers;
+using System.Linq.Expressions;
+using Microsoft.Extensions.DependencyInjection;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable InvertIf
@@ -32,7 +34,8 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 注册程序集中继承自<typeparamref name="TEntityBase"/>的所有类型
+        /// 注册程序集中继承自<typeparamref name="TEntityBase"/>的所有类型<para></para>
+        /// 实体映射配置服务提供类,可以通过服务注入配置类型,不存在时,则反射创建
         /// </summary>
         /// <typeparam name="TEntityBase"></typeparam>
         /// <param name="modelBuilder"></param>
@@ -43,7 +46,7 @@ namespace Shashlik.EfCore
             IServiceProvider serviceProvider)
             where TEntityBase : class
         {
-            RegisterEntities<TEntityBase>(modelBuilder, r => serviceProvider.GetService(r) ?? Activator.CreateInstance(r));
+            RegisterEntities<TEntityBase>(modelBuilder, serviceProvider, r => serviceProvider.GetService(r) ?? Activator.CreateInstance(r));
         }
 
         /// <summary>
@@ -51,17 +54,19 @@ namespace Shashlik.EfCore
         /// </summary>
         /// <typeparam name="TEntityBase"></typeparam>
         /// <param name="modelBuilder"></param>
+        /// <param name="serviceProvider">服务提供器</param>
         /// <param name="entityTypeConfigurationServiceProvider">实体映射配置服务提供类,null则直接反射创建</param>
         /// <param name="dependencyContext"></param>
         public static void RegisterEntities<TEntityBase>(
             this ModelBuilder modelBuilder,
+            IServiceProvider serviceProvider,
             Func<Type, object?> fluentConfigClassInstanceSupplier)
             where TEntityBase : class
         {
             var assemblies = ReflectionHelper.GetReferredAssemblies<TEntityBase>(DependencyContext.Default);
 
             foreach (var item in assemblies)
-                modelBuilder.RegisterEntitiesFromAssembly<TEntityBase>(item, fluentConfigClassInstanceSupplier);
+                modelBuilder.RegisterEntitiesFromAssembly<TEntityBase>(item, serviceProvider, fluentConfigClassInstanceSupplier);
         }
 
 
@@ -71,16 +76,21 @@ namespace Shashlik.EfCore
         /// <typeparam name="TEntityBase">实体基类</typeparam>
         /// <param name="modelBuilder"></param>
         /// <param name="assembly">程序集</param>
+        /// <param name="serviceProvider">服务提供器</param>
         /// <param name="entityTypeConfigurationServiceProvider">实体映射配置服务提供类</param>
         public static void RegisterEntitiesFromAssembly<TEntityBase>(
             this ModelBuilder modelBuilder,
             Assembly assembly,
+            IServiceProvider serviceProvider,
             Func<Type, object?> fluentConfigClassInstanceSupplier)
             where TEntityBase : class
         {
-            modelBuilder.RegisterEntitiesFromAssembly(assembly,
+            modelBuilder.RegisterEntitiesFromAssembly(
+                assembly,
+                serviceProvider,
                 r => !r.IsAbstract && r.IsClass && typeof(TEntityBase).IsAssignableFrom(r),
-                fluentConfigClassInstanceSupplier);
+                fluentConfigClassInstanceSupplier
+                );
         }
 
         /// <summary>
@@ -88,11 +98,13 @@ namespace Shashlik.EfCore
         /// </summary>
         /// <param name="modelBuilder"></param>
         /// <param name="assembly">扫描程序集</param>
+        /// <param name="serviceProvider">服务提供器</param>
         /// <param name="entityTypeFilter">实体类型过滤方法</param>
         /// <param name="fluentConfigClassInstanceSupplier">实体fluentApi配置类型创建器</param>
         public static void RegisterEntitiesFromAssembly(
             this ModelBuilder modelBuilder,
             Assembly assembly,
+            IServiceProvider serviceProvider,
             Func<Type, bool> entityTypeFilter,
             Func<Type, object?> fluentConfigClassInstanceSupplier)
         {
@@ -140,16 +152,40 @@ namespace Shashlik.EfCore
                 registeredTypes.Add(entityType);
             });
 
+            var filters = serviceProvider.GetServices<IEfCoreGlobalFilterRegister>();
+            var filterRegisterMap = new Dictionary<Type, IEfCoreGlobalFilterRegister>();
+            foreach (var item in filters)
+            {
+                var type = item.GetType()
+                                .GetInterfaces()
+                                .FirstOrDefault(r => r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IEfCoreGlobalFilterRegister<>));
+                if (type == null)
+                    continue;
+                var filterType = type.GetGenericArguments()[0];
+                filterRegisterMap[filterType] = item;
+            }
+
             assembly
                 .DefinedTypes
                 .Where(entityTypeFilter)
                 .ToList()
-                .ForEach(r =>
+                .ForEach(entityType =>
                 {
                     // 直接调用Entity方法注册实体
-                    var builder = modelBuilder.Entity(r);
-                    EfCoreGlobalFilter.RegisterQueryFilterIfRequire(r, builder);
+                    var builder = modelBuilder.Entity(entityType);
+                    foreach (var keyValuePair in filterRegisterMap)
+                    {
+                        if (keyValuePair.Key.IsAssignableFrom(entityType))
+                        {
+                            var method = keyValuePair.Value.GetType()
+                                                    .GetMethod(nameof(IEfCoreGlobalFilterRegister<ISoftDeleted>.HasQueryFilter), new Type[0])
+                                                    !.MakeGenericMethod(entityType);
+                            var exp = (LambdaExpression?)method.Invoke(keyValuePair.Value, new object[] { });
+                            builder.HasQueryFilter(exp);
+                        }
+                    }
                 });
         }
+
     }
 }

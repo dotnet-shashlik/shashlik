@@ -1,6 +1,5 @@
 ﻿// ReSharper disable UnusedMemberInSuper.Global
 using System;
-using System.Linq.Expressions;
 
 namespace Shashlik.EfCore
 {
@@ -9,11 +8,6 @@ namespace Shashlik.EfCore
     /// </summary>
     public interface ISoftDeleted
     {
-        static ISoftDeleted()
-        {
-            EfCoreGlobalFilter.TryAddGlobalFilter<ISoftDeleted>(r => !r.IsDeleted);
-        }
-
         /// <summary>
         ///  是否已删除
         /// </summary>
@@ -23,13 +17,13 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 软删除标记,泛型为删除时间的类型
     /// </summary>
-    public interface ISoftDeleted<T> : ISoftDeleted
-        where T : struct
+    public interface ISoftDeleted<TTime> : ISoftDeleted
+        where TTime : struct
     {
         /// <summary>
         /// 删除时间
         /// </summary>
-        T? DeleteTime { get; set; }
+        TTime? DeleteTime { get; set; }
     }
 
     /// <summary>

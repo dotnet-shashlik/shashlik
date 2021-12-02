@@ -1,9 +1,0 @@
-﻿{
-  "Shashlik": {
-    "Redis": {
-      "ConnectionString": "localhost,defaultDatabase=0",
-      "Sentinels": [],
-      "Readonly": false
-    }
-  }
-}
