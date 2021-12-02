@@ -19,7 +19,7 @@ namespace Shashlik.EfCore.Tests.Entities
         public void Configure(EntityTypeBuilder<Roles> builder)
         {
             builder.Property(r => r.Name).HasMaxLength(255).IsRequired();
-            builder.HasOne(r => r.User).WithMany(r => r.Roles).HasForeignKey(r => r.UserId);
+            builder.HasOne(r => r.User).WithMany(r => r.Roles).HasForeignKey(r => r.UserId).IsRequired(false);
         }
     }
 }
