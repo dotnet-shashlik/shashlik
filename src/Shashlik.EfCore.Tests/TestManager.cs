@@ -15,7 +15,7 @@ namespace Shashlik.EfCore.Tests
         public TestManager(TestDbContext1 dbContext)
         {
             DbContext = dbContext;
-            ClearDatas();
+            //ClearDatas();
         }
 
         public TestDbContext1 DbContext { get; }
