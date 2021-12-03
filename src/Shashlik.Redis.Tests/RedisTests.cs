@@ -223,6 +223,14 @@ namespace Shashlik.Redis.Tests
         {
             RedisHelper.Set("Test1", "1");
             RedisHelper.Get("Test1").ShouldBe("1");
+
+            RedisHelper.Set("testIncrBy", 3);
+            RedisHelper.IncrBy("testIncrBy", -1);
+            _testOutputHelper.WriteLine("次数:" + RedisHelper.Get("testIncrBy"));
+            RedisHelper.IncrBy("testIncrBy", -1);
+            _testOutputHelper.WriteLine("次数:" + RedisHelper.Get("testIncrBy"));
+            RedisHelper.IncrBy("testIncrBy", -1);
+            _testOutputHelper.WriteLine("次数:" + RedisHelper.Get("testIncrBy"));
         }
     }
 

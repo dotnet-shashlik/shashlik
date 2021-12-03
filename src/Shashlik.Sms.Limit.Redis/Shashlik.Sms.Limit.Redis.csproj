@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="..\..\common.xml" />
+    <PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
+        <ProjectReference Include="..\Shashlik.Sms\Shashlik.Sms.csproj" />
+    </ItemGroup>
+
+</Project>

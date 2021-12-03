@@ -1,16 +1,14 @@
 ﻿using Shashlik.EfCore.Migration;
+using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Shashlik.EfCore.Tests
+namespace Shashlik.EfCore.Migration
 {
     [Singleton]
-    internal class TestEfMigrationLock : IEfMigrationLock, IDisposable
+    [ConditionDependsOnMissing(typeof(IEfMigrationLock))]
+    internal class MemoryEfCoreMigrationLock : IEfMigrationLock, IDisposable
     {
         private readonly AsyncLock Locker = new AsyncLock();
 
