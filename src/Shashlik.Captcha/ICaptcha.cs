@@ -16,7 +16,7 @@ namespace Shashlik.Captcha
         /// <param name="maxErrorCount">最大错误次数</param>
         /// <param name="captchaLength">验证码长度</param>
         /// <param name="securityStamp">target当前的安全标识,比如用户修改了密码等安全标识验证码需要失效</param>
-        Task<string> Build(string purpose, string target, int lifeTimeSeconds = 300, int maxErrorCount = 3, int captchaLength = 6,
+        Task<string> Build(string purpose, string target, int lifeTimeSeconds = 5 * 60, int maxErrorCount = 3, int captchaLength = 6,
             string? securityStamp = null);
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace Shashlik.Captcha.Redis.Tests
 
             // 直接验证
             {
-                var code = await captcha.Build("login", "13000000000", securityStamp);
+                var code = await captcha.Build("login", "13000000000", securityStamp: securityStamp);
                 _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code}");
                 (await captcha.IsValid("login", "13000000000", code, securityStamp)).ShouldBeTrue();
                 (await captcha.IsValid("login", "13000000000", code, securityStamp)).ShouldBeFalse();
@@ -42,23 +42,29 @@ namespace Shashlik.Captcha.Redis.Tests
 
             // 一直验证
             {
-                var code = await captcha.Build("login", "13000000001", securityStamp);
+                var code = await captcha.Build("login", "13000000001", lifeTimeSeconds: 9, securityStamp: securityStamp);
                 _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code}");
 
-                int count = 1;
-                while (true)
-                {
-                    if (count > 5)
-                        break;
-                    await Task.Delay(10_000);
-                    var res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
-                    _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】验证结果: {res}");
-                    if (count > 3)
-                        res.ShouldBeFalse();
-                    else
-                        res.ShouldBeTrue();
-                    count++;
-                }
+
+                var res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
+                res.ShouldBeTrue();
+                await Task.Delay(3000);
+                _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】验证结果: {res}");
+                res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
+                res.ShouldBeTrue();
+                await Task.Delay(3000);
+                _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】验证结果: {res}");
+                res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
+                res.ShouldBeTrue();
+                await Task.Delay(2000);
+                res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
+                res.ShouldBeTrue();
+                _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】验证结果: {res}");
+                await Task.Delay(3000);
+                res = (await captcha.IsValid("login", "13000000001", code, securityStamp, false));
+                res.ShouldBeFalse();
+                _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】验证结果: {res}");
+
             }
         }
 
@@ -71,7 +77,7 @@ namespace Shashlik.Captcha.Redis.Tests
 
             // 40秒后验证
             {
-                var code = await captcha.Build("login", "13000000002", securityStamp);
+                var code = await captcha.Build("login", "13000000002", securityStamp: securityStamp);
                 _testOutputHelper.WriteLine($"【{DateTime.Now:HH:mm:ss}】 {code}");
 
                 await Task.Delay(40_000);

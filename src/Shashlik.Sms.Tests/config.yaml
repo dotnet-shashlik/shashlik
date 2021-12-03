@@ -1,0 +1,11 @@
+﻿Shashlik:
+  Redis:
+    ConnectionString: localhost,defaultDatabase=0
+    Sentinels: [ ]
+    Readonly: false
+  Sms:
+    Enable: true
+    UseEmptySms: true
+    CaptchaDayLimitCount: 15
+    CaptchaHourLimitCount: 15
+    CaptchaMinuteLimitCount: 1

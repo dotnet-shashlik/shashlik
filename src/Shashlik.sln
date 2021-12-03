@@ -52,6 +52,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.TCloud", "Shas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.Limit.Redis", "Shashlik.Sms.Limit.Redis\Shashlik.Sms.Limit.Redis.csproj", "{7597F528-6E5E-419C-ABBE-564BD5589317}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha.Redis.Tests", "Shashlik.Captcha.Redis.Tests\Shashlik.Captcha.Redis.Tests.csproj", "{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Sms.Tests", "Shashlik.Sms.Tests\Shashlik.Sms.Tests.csproj", "{EF02CC52-06A9-4115-A1A0-802D90C01B84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -179,6 +183,18 @@ Global
 		{7597F528-6E5E-419C-ABBE-564BD5589317}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7597F528-6E5E-419C-ABBE-564BD5589317}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{7597F528-6E5E-419C-ABBE-564BD5589317}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +206,8 @@ Global
 		{17944FE4-784E-4794-BE87-195F3D1F1636} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{ED57AA0D-C4AF-42C1-8259-2D89A238FD1C} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{D4357391-A2AF-4371-B7DF-5CE4E7AC1EBD} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
+		{EF02CC52-06A9-4115-A1A0-802D90C01B84} = {6AE2BE45-F46C-4CAF-86FA-B5AFDCC116B6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D71F128D-EE1A-43AD-98F7-36850B890A2F}

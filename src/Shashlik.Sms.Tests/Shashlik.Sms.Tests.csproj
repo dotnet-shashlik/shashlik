@@ -24,18 +24,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.Captcha.Redis\Shashlik.Captcha.Redis.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
-        <ProjectReference Include="..\Shashlik.Redis\Shashlik.Redis.csproj" />
-
+        <ProjectReference Include="..\Shashlik.Sms.Limit.Redis\Shashlik.Sms.Limit.Redis.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="settings\appsettings.json">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Update="captcha.json">
+        <None Update="config.yaml">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

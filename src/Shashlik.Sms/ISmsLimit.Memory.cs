@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
@@ -30,7 +27,8 @@ namespace Shashlik.Sms
 
         private IMemoryCache Cache { get; }
         private IOptionsMonitor<SmsOptions> Options { get; }
-        private readonly AsyncLock _asyncLock = new AsyncLock();
+
+        private readonly ConcurrentDictionary<string, AsyncLock> _asyncLocks = new ConcurrentDictionary<string, AsyncLock>();
 
         // 0:phone,1:subject
         private const string CachePrefix = "SMS_MEMORYCAHCHE_LIMIT:{0}";
@@ -49,12 +47,12 @@ namespace Shashlik.Sms
             )
                 return false;
             if (Options.CurrentValue.CaptchaHourLimitCount > 0
-                && Options.CurrentValue.CaptchaDayLimitCount <= smsLimit.Minute
+                && Options.CurrentValue.CaptchaHourLimitCount <= smsLimit.HourCounter
                 && smsLimit.Hour == hour
             )
                 return false;
             if (Options.CurrentValue.CaptchaMinuteLimitCount > 0
-                && Options.CurrentValue.CaptchaDayLimitCount <= smsLimit.Minute
+                && Options.CurrentValue.CaptchaMinuteLimitCount <= smsLimit.HourCounter
                 && smsLimit.Minute == minute)
                 return false;
 
@@ -63,16 +61,16 @@ namespace Shashlik.Sms
 
         public void SendDone(string phone)
         {
-            var key = CachePrefix.Format(phone);
+            //TODO: 优化内存使用和算法
 
-            using var @lock = _asyncLock.Lock();
+            var key = CachePrefix.Format(phone);
+            using var @lock = _asyncLocks.GetOrAdd(key, new AsyncLock());
             var day = DateTime.Now.Day;
             var hour = DateTime.Now.Hour;
             var minute = DateTime.Now.Minute;
-
             var smsLimit = Cache.Get<SmsLimitModel>(key) ?? new SmsLimitModel();
-
             smsLimit.DayCounter++;
+
             if (smsLimit.Hour == hour)
                 smsLimit.HourCounter++;
             else
@@ -94,7 +92,7 @@ namespace Shashlik.Sms
 
         public void Dispose()
         {
-            _asyncLock.Dispose();
+            _asyncLocks.Values.ForEachItem(x => x.Dispose());
         }
     }
 
