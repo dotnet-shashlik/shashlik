@@ -21,7 +21,7 @@ namespace Shashlik.Sms.Limit.Redis.Tests
         {
         }
 
-        private readonly string _testPhone1 = "17723599455";
+        private readonly string _testPhone1 = "13000000001";
         private readonly string _testPhone2 = "13000000002";
         private readonly string _subject = "Login";
 
