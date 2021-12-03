@@ -12,6 +12,7 @@ namespace Shashlik.Kernel.Test
     {
         public void Build(IConfigurationBuilder builder)
         {
+            builder.AddEnvironmentVariables();
             var file = new FileInfo("./settings/appsettings.json").FullName;
             builder.AddJsonFile(file);
         }

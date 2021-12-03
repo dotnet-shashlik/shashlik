@@ -26,6 +26,6 @@
         /// 其中变量顺序为code/expire,那么Params参数配置为 ["code","expire"]<para></para>
         /// !!!一定注意变量顺序和变量名称不能错<para></para>
         /// </summary>
-        public string[] Params { get; set; } = new string[0];
+        public string[]? Params { get; set; }
     }
 }

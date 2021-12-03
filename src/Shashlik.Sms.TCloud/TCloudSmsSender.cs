@@ -20,7 +20,7 @@ namespace Shashlik.Sms.TCloud
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class TCloudSms : ISmsSender
+    public class TCloudSmsSender : ISmsSender
     {
         private IOptions<TCloudSmsOptions> TCloudOptions { get; }
         private IOptionsMonitor<SmsOptions> SOptions { get; }
@@ -28,7 +28,7 @@ namespace Shashlik.Sms.TCloud
         private HashSet<string> LimitErrorCode { get; }
         private SmsClient Client { get; }
 
-        public TCloudSms(IOptions<TCloudSmsOptions> tCloudOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
+        public TCloudSmsSender(IOptions<TCloudSmsOptions> tCloudOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
         {
             TCloudOptions = tCloudOptions;
             SmsLimit = smsLimit;
@@ -128,7 +128,7 @@ namespace Shashlik.Sms.TCloud
 
             var template = SOptions.CurrentValue.Templates.FirstOrDefault(r => r.Subject == subject);
             if (template == null)
-                throw new SmsTemplateException(subject, $"sms template of \"{subject}\" not found.");
+                throw new ArgumentException(subject, $"sms template of \"{subject}\" not found.");
             if (string.IsNullOrWhiteSpace(template.TemplateId))
                 throw new SmsTemplateException(subject, $"sms template \"{subject}\" TemplateId can not be empty.");
             if (string.IsNullOrWhiteSpace(template.Sign))
@@ -169,12 +169,13 @@ namespace Shashlik.Sms.TCloud
                 // 通过client对象调用DescribeInstances方法发起请求。注意请求方法名与请求对象是对应的
                 // 返回的resp是一个DescribeInstancesResponse类的实例，与请求对象对应
                 SendSmsResponse resp = await Client.SendSms(req);
-                if (resp.SendStatusSet.All(r => r.Code == "OK"))
+                var firstError = resp.SendStatusSet.FirstOrDefault(r => !r.Code.EqualsIgnoreCase("Ok"));
+                if (firstError is null)
                     return resp.RequestId;
 
                 throw new SmsServerException(
-                    "tencent cloud sms send contains failure code.",
-                    resp.SendStatusSet.First(r => r.Code != "OK").Code,
+                    "tencent cloud sms send response exists failure result.",
+                    firstError.Code,
                     resp);
             }
             catch (TencentCloudSDKException e)

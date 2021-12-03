@@ -19,7 +19,7 @@ namespace Shashlik.Sms.Aliyun
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class AliyunSms : ISmsSender
+    public class AliyunSmsSender : ISmsSender
     {
         private IOptions<AliyunSmsOptions> AliyunOptions { get; }
         private IOptionsMonitor<SmsOptions> SOptions { get; }
@@ -27,7 +27,7 @@ namespace Shashlik.Sms.Aliyun
         private AliyunClient Client { get; }
         private HashSet<string> LimitErrorCode { get; }
 
-        public AliyunSms(IOptions<AliyunSmsOptions> aliyunOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
+        public AliyunSmsSender(IOptions<AliyunSmsOptions> aliyunOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
         {
             AliyunOptions = aliyunOptions;
             SmsLimit = smsLimit;
@@ -83,17 +83,21 @@ namespace Shashlik.Sms.Aliyun
 
             var template = SOptions.CurrentValue.Templates.FirstOrDefault(r => r.Subject == subject);
             if (template == null)
-                throw new SmsTemplateException(subject, $"sms template of \"{subject}\" not found.");
+                throw new ArgumentException($"sms template of \"{subject}\" not found.", subject);
             if (string.IsNullOrWhiteSpace(template.TemplateId))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" TemplateId can not be empty.");
+                throw new SmsTemplateException(subject, $"sms template \"{subject}\" [TemplateId] can not be empty.");
             if (string.IsNullOrWhiteSpace(template.Sign))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" Sign can not be empty.");
+                throw new SmsTemplateException(subject, $"sms template \"{subject}\" [Sign] can not be empty.");
 
             var @params = new Dictionary<string, string>();
-            if (args.Length > 0 && (template.Params is null || template.Params.Length < args.Length))
-                throw new ArgumentException($"sms template of \"{subject}\" arguments not match.");
-            for (int i = 0; i < args.Length; i++)
-                @params[template.Params[i]] = args[i];
+            if (template.Params is not null && template.Params.Length != args.Length)
+                throw new ArgumentException($"sms template of \"{subject}\" [Params] require argument count: {template.Params?.Length ?? 0}.",
+                    nameof(args));
+
+            if (template.Params is not null)
+                for (int i = 0; i < args.Length; i++)
+                    @params[template.Params[i]] = args[i];
+
 
             var res = await Client.SendSmsAsync(new AliyunSendSmsRequest
             {
@@ -102,12 +106,9 @@ namespace Shashlik.Sms.Aliyun
                 TemplateCode = template.TemplateId,
                 TemplateParam = @params.ToJson()
             });
-            if (res.Body.Code == "OK")
-            {
+            if (res.Body.Code.EqualsIgnoreCase("OK"))
                 // 发送成功, 返回可用于后续查询的BizId
                 return res.Body.BizId;
-            }
-
             throw new SmsServerException($"aliyun sms send failed: {res.Body.Message}", res.Body.Code, res);
         }
     }

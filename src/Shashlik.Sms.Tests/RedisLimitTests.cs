@@ -7,6 +7,10 @@ using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.Options;
 using Shashlik.Sms.Options;
 using Microsoft.Extensions.Caching.Memory;
+using Shashlik.Sms.Aliyun;
+using System.Threading.Tasks;
+using System;
+using Shashlik.Sms.Exceptions;
 
 namespace Shashlik.Sms.Limit.Redis.Tests
 {
@@ -17,7 +21,7 @@ namespace Shashlik.Sms.Limit.Redis.Tests
         {
         }
 
-        private readonly string _testPhone1 = "13000000001";
+        private readonly string _testPhone1 = "17723599455";
         private readonly string _testPhone2 = "13000000002";
         private readonly string _subject = "Login";
 
@@ -76,6 +80,35 @@ namespace Shashlik.Sms.Limit.Redis.Tests
                 smsLimit.CanSend(_testPhone1).ShouldBeTrue();
                 smsLimit.CanSend(_testPhone2).ShouldBeTrue();
             }
+        }
+
+        [Fact]
+        public void AliyunSmsTest()
+        {
+            var sender = new AliyunSmsSender(
+                    GetService<IOptions<AliyunSmsOptions>>(),
+                    GetService<ISmsLimit>(),
+                    GetService<IOptionsMonitor<SmsOptions>>()
+                );
+
+            Should.Throw<ArgumentException>(async () => await sender.SendAsync(_testPhone1, "none"));
+            Should.Throw<ArgumentException>(async () => await sender.SendAsync(_testPhone1, "Captcha"));
+            Should.Throw<SmsTemplateException>(async () => await sender.SendAsync(_testPhone1, "Notify"));
+            //sender.SendAsync(_testPhone1, "Captcha", "123123").GetAwaiter().GetResult();
+        }
+
+        [Fact]
+        public void TClouadSmsTest()
+        {
+            var sender = new TCloud.TCloudSmsSender(
+                    GetService<IOptions<TCloud.TCloudSmsOptions>>(),
+                    GetService<ISmsLimit>(),
+                    GetService<IOptionsMonitor<SmsOptions>>()
+                );
+
+            Should.Throw<ArgumentException>(async () => await sender.SendAsync(_testPhone1, "none"));
+            Should.Throw<SmsTemplateException>(async () => await sender.SendAsync(_testPhone1, "Notify"));
+            //sender.SendAsync(_testPhone1, "Captcha2", "123123", "5").GetAwaiter().GetResult();
         }
     }
 }
