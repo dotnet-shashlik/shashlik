@@ -13,15 +13,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: 5.0.202
+          dotnet-version: 6.0.100
+
       - name: Install dependencies
         run: dotnet restore ./src/Shashlik.Package.sln
+
       - name: Build
         run: dotnet build ./src/Shashlik.Package.sln --configuration Release --no-restore
-      - uses: actions/checkout@v2
+
       - name: Setup MySql
         uses: mirromutth/mysql-action@v1.1
         with:
@@ -29,22 +32,18 @@ jobs:
           mysql root password: '123123'
           mysql user: 'testuser'
           mysql password: '123123'
-      - name: Setup PostgreSql
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '11'
-          postgresql user: 'testuser'
-          postgresql password: '123123'
+
       - name: Setup Redis
         uses: zhulik/redis-action@1.1.0
         with:
           redis version: '5'
           number of databases: 3
-      - name: Setup RabbitMQ
-        uses: nijel/rabbitmq-action@v1.0.0
+
       - name: Test
         run: dotnet test ./src/Shashlik.sln
+
       - name: Pack      
         run: dotnet pack ./src/Shashlik.Package.sln --configuration Release --output ./nugetPackages
+
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json

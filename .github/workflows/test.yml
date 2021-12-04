@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v1.7.2
         with:
@@ -23,21 +24,11 @@ jobs:
           mysql user: 'testuser'
           mysql password: '123123'
 
-      - name: Setup PostgreSql
-        uses: harmon758/postgresql-action@v1
-        with:
-          postgresql version: '11'
-          postgresql user: 'testuser'
-          postgresql password: '123123'
-
       - name: Setup Redis
         uses: zhulik/redis-action@1.1.0
         with:
           redis version: '5'
           number of databases: 3
-          
-      - name: Setup RabbitMQ
-        uses: nijel/rabbitmq-action@v1.0.0
 
       - name: Test
         run: dotnet test ./src/Shashlik.sln
