@@ -38,20 +38,20 @@ namespace Shashlik.Sms
         {
             var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaMinuteLimitCount > 0
-                && Cache.TryGetValue<_MinuteCounter>(minuteCacheKey, out var minute)
-                && minute.Counter >= Options.CurrentValue.CaptchaMinuteLimitCount)
+                && Cache.TryGetValue<_Counter>(minuteCacheKey, out var minute)
+                && minute._counter >= Options.CurrentValue.CaptchaMinuteLimitCount)
                 return false;
 
             var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaHourLimitCount > 0
-                && Cache.TryGetValue<_HourCounter>(hourCacheKey, out var hour)
-                && hour.Counter >= Options.CurrentValue.CaptchaHourLimitCount)
+                && Cache.TryGetValue<_Counter>(hourCacheKey, out var hour)
+                && hour._counter >= Options.CurrentValue.CaptchaHourLimitCount)
                 return false;
 
             var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaDayLimitCount > 0
-                && Cache.TryGetValue<_HourCounter>(dayCacheKey, out var day)
-                && day.Counter >= Options.CurrentValue.CaptchaDayLimitCount)
+                && Cache.TryGetValue<_Counter>(dayCacheKey, out var day)
+                && day._counter >= Options.CurrentValue.CaptchaDayLimitCount)
                 return false;
 
             return true;
@@ -59,45 +59,40 @@ namespace Shashlik.Sms
 
         public void SendDone(string phone)
         {
+            var now = DateTimeOffset.Now;
+
             var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
             var dayCounter = Cache.GetOrCreate(dayCacheKey, r =>
             {
-                r.SetSlidingExpiration(TimeSpan.FromDays(1));
-                return new _DayCounter();
+                r.SetAbsoluteExpiration(now.Date.AddDays(1));
+                return new _Counter();
             });
-            Interlocked.Increment(ref dayCounter.Counter);
+            Interlocked.Increment(ref dayCounter._counter);
 
             var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
             var hourCounter = Cache.GetOrCreate(hourCacheKey, r =>
             {
-                r.SetSlidingExpiration(TimeSpan.FromHours(1));
-                return new _HourCounter();
+                r.SetAbsoluteExpiration(
+                    new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, 0, 0, TimeZoneInfo.Local.BaseUtcOffset).AddHours(1)
+                    );
+                return new _Counter();
             });
-            Interlocked.Increment(ref hourCounter.Counter);
+            Interlocked.Increment(ref hourCounter._counter);
 
             var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
             var minuteCounter = Cache.GetOrCreate(minuteCacheKey, r =>
             {
-                r.SetSlidingExpiration(TimeSpan.FromMinutes(1));
-                return new _MinuteCounter();
+                r.SetAbsoluteExpiration(
+                    new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, TimeZoneInfo.Local.BaseUtcOffset).AddMinutes(1)
+                    );
+                return new _Counter();
             });
-            Interlocked.Increment(ref minuteCounter.Counter);
+            Interlocked.Increment(ref minuteCounter._counter);
         }
 
-
-        private class _DayCounter
+        private class _Counter
         {
-            public volatile int Counter;
-        }
-
-        private class _HourCounter
-        {
-            public volatile int Counter;
-        }
-
-        private class _MinuteCounter
-        {
-            public volatile int Counter;
+            public volatile int _counter;
         }
     }
 }

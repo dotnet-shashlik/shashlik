@@ -63,22 +63,28 @@ namespace Shashlik.Sms.Limit.Redis.Tests
         {
             var options = GetService<IOptionsMonitor<SmsOptions>>();
             var smsLimit = new MemorySmsLimit(GetService<IMemoryCache>(), options);
+            smsLimit.CanSend(_testPhone1).ShouldBeTrue();
+            smsLimit.CanSend(_testPhone2).ShouldBeTrue();
 
+            var start = DateTime.Now;
+            smsLimit.SendDone(_testPhone1);
+            smsLimit.SendDone(_testPhone2);
+
+            while (true)
             {
-                smsLimit.CanSend(_testPhone1).ShouldBeTrue();
-                smsLimit.CanSend(_testPhone2).ShouldBeTrue();
-
-                smsLimit.SendDone(_testPhone1);
-                smsLimit.SendDone(_testPhone2);
-
-                smsLimit.CanSend(_testPhone1).ShouldBeFalse();
-                smsLimit.CanSend(_testPhone2).ShouldBeFalse();
-                smsLimit.CanSend(_testPhone1).ShouldBeFalse();
-                smsLimit.CanSend(_testPhone2).ShouldBeFalse();
-
-                Thread.Sleep(61 * 1000);
-                smsLimit.CanSend(_testPhone1).ShouldBeTrue();
-                smsLimit.CanSend(_testPhone2).ShouldBeTrue();
+                Thread.Sleep(10);
+                var now = DateTime.Now;
+                if (now.Minute == start.Minute)
+                {
+                    smsLimit.CanSend(_testPhone1).ShouldBeFalse();
+                    smsLimit.CanSend(_testPhone2).ShouldBeFalse();
+                }
+                else
+                {
+                    smsLimit.CanSend(_testPhone1).ShouldBeTrue();
+                    smsLimit.CanSend(_testPhone2).ShouldBeTrue();
+                    return;
+                }
             }
         }
 
