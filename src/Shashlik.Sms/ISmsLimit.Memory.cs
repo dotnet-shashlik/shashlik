@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
@@ -17,7 +18,7 @@ namespace Shashlik.Sms
     [ConditionDependsOn(typeof(IMemoryCache))]
     [ConditionDependsOnMissing(typeof(ISmsLimit))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class MemorySmsLimit : ISmsLimit, IDisposable
+    public class MemorySmsLimit : ISmsLimit
     {
         public MemorySmsLimit(IMemoryCache cache, IOptionsMonitor<SmsOptions> options)
         {
@@ -28,32 +29,31 @@ namespace Shashlik.Sms
         private IMemoryCache Cache { get; }
         private IOptionsMonitor<SmsOptions> Options { get; }
 
-        private readonly ConcurrentDictionary<string, AsyncLock> _asyncLocks = new ConcurrentDictionary<string, AsyncLock>();
-
-        // 0:phone,1:subject
-        private const string CachePrefix = "SMS_MEMORYCAHCHE_LIMIT:{0}";
+        // 0:phone
+        private const string DAY_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:DAY:{0}";
+        // 0:phone
+        private const string HOUR_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:HOURE:{0}";
+        // 0:phone
+        private const string MINUTE_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:MINUTE:{0}";
 
         public bool CanSend(string phone)
         {
-            string key = CachePrefix.Format(phone);
-            var hour = DateTime.Now.Hour;
-            var minute = DateTime.Now.Minute;
-
-            var smsLimit = Cache.Get<SmsLimitModel>(key);
-            if (smsLimit is null)
-                return true;
-            if (Options.CurrentValue.CaptchaDayLimitCount > 0
-                && Options.CurrentValue.CaptchaDayLimitCount <= smsLimit.DayCounter
-            )
-                return false;
-            if (Options.CurrentValue.CaptchaHourLimitCount > 0
-                && Options.CurrentValue.CaptchaHourLimitCount <= smsLimit.HourCounter
-                && smsLimit.Hour == hour
-            )
-                return false;
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaMinuteLimitCount > 0
-                && Options.CurrentValue.CaptchaMinuteLimitCount <= smsLimit.HourCounter
-                && smsLimit.Minute == minute)
+                && Cache.TryGetValue<_MinuteCounter>(minuteCacheKey, out var minute)
+                && minute.Counter >= Options.CurrentValue.CaptchaMinuteLimitCount)
+                return false;
+
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
+            if (Options.CurrentValue.CaptchaHourLimitCount > 0
+                && Cache.TryGetValue<_HourCounter>(hourCacheKey, out var hour)
+                && hour.Counter >= Options.CurrentValue.CaptchaHourLimitCount)
+                return false;
+
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
+            if (Options.CurrentValue.CaptchaDayLimitCount > 0
+                && Cache.TryGetValue<_HourCounter>(dayCacheKey, out var day)
+                && day.Counter >= Options.CurrentValue.CaptchaDayLimitCount)
                 return false;
 
             return true;
@@ -61,47 +61,45 @@ namespace Shashlik.Sms
 
         public void SendDone(string phone)
         {
-            //TODO: 优化内存使用和算法
-
-            var key = CachePrefix.Format(phone);
-            using var @lock = _asyncLocks.GetOrAdd(key, new AsyncLock());
-            var day = DateTime.Now.Day;
-            var hour = DateTime.Now.Hour;
-            var minute = DateTime.Now.Minute;
-            var smsLimit = Cache.Get<SmsLimitModel>(key) ?? new SmsLimitModel();
-            smsLimit.DayCounter++;
-
-            if (smsLimit.Hour == hour)
-                smsLimit.HourCounter++;
-            else
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
+            var dayCounter = Cache.GetOrCreate(dayCacheKey, r =>
             {
-                smsLimit.Hour = hour;
-                smsLimit.HourCounter = 1;
-            }
+                r.SetSlidingExpiration(TimeSpan.FromDays(1));
+                return new _DayCounter();
+            });
+            Interlocked.Increment(ref dayCounter.Counter);
 
-            if (smsLimit.Minute == minute)
-                smsLimit.MinuteCounter++;
-            else
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
+            var hourCounter = Cache.GetOrCreate(hourCacheKey, r =>
             {
-                smsLimit.Minute = minute;
-                smsLimit.MinuteCounter = 1;
-            }
+                r.SetSlidingExpiration(TimeSpan.FromHours(1));
+                return new _HourCounter();
+            });
+            Interlocked.Increment(ref hourCounter.Counter);
 
-            Cache.Set(key, smsLimit, DateTimeOffset.Now.Date.AddDays(1));
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
+            var minuteCounter = Cache.GetOrCreate(minuteCacheKey, r =>
+            {
+                r.SetSlidingExpiration(TimeSpan.FromMinutes(1));
+                return new _MinuteCounter();
+            });
+            Interlocked.Increment(ref minuteCounter.Counter);
         }
 
-        public void Dispose()
+
+        private class _DayCounter
         {
-            _asyncLocks.Values.ForEachItem(x => x.Dispose());
+            public volatile int Counter;
         }
-    }
 
-    internal class SmsLimitModel
-    {
-        public int DayCounter { get; set; }
-        public int Hour { get; set; }
-        public int HourCounter { get; set; }
-        public int Minute { get; set; }
-        public int MinuteCounter { get; set; }
+        private class _HourCounter
+        {
+            public volatile int Counter;
+        }
+
+        private class _MinuteCounter
+        {
+            public volatile int Counter;
+        }
     }
 }
