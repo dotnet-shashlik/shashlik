@@ -27,11 +27,12 @@ namespace Shashlik.Sms.Limit.Redis
 
         private CSRedisClient RedisClient { get; }
 
-        // 0:phone,1:hour,2:minute
-        private const string CachePrefix = "SMS_REDIS_LIMIT:{0}:{1}:{2}";
-
         // 0:phone
-        private const string CachePrefixKeys = "SMS_REDIS_LIMIT:{0}";
+        private const string DAY_CACHE_PREFIX = "SMS_REDIS_LIMIT:DAY:{0}";
+        // 0:phone
+        private const string HOUR_CACHE_PREFIX = "SMS_REDIS_LIMIT:HOURE:{0}";
+        // 0:phone
+        private const string MINUTE_CACHE_PREFIX = "SMS_REDIS_LIMIT:MINUTE:{0}";
 
         public bool CanSend(string phone)
         {
@@ -39,33 +40,27 @@ namespace Shashlik.Sms.Limit.Redis
             if (phone.Contains(':'))
                 throw new ArgumentException($"Invalid phone of {phone}", nameof(phone));
 
-            var keys = RedisClient.Keys($"{CachePrefixKeys.Format(phone)}:*");
-            if (keys.IsNullOrEmpty())
-                return true;
-            var hour = DateTime.Now.Hour;
-            var minute = DateTime.Now.Minute;
-            int minuteTotal = 0, hourTotal = 0, dayTotal = 0;
-            foreach (var item in keys)
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
+            if (Options.CurrentValue.CaptchaDayLimitCount > 0)
             {
-                var data = Convert(item);
-                if (data is null)
-                    continue;
-                if (data.Value.hour == hour && data.Value.minute == minute)
-                {
-                    minuteTotal += 1;
-                    if (Options.CurrentValue.CaptchaMinuteLimitCount > 0 && Options.CurrentValue.CaptchaMinuteLimitCount <= minuteTotal)
-                        return false;
-                }
+                var counter = RedisClient.Get<int?>(dayCacheKey);
+                if (counter.HasValue && Options.CurrentValue.CaptchaDayLimitCount <= counter.Value)
+                    return false;
+            }
 
-                if (data.Value.hour == hour)
-                {
-                    hourTotal += 1;
-                    if (Options.CurrentValue.CaptchaHourLimitCount > 0 && Options.CurrentValue.CaptchaHourLimitCount <= hourTotal)
-                        return false;
-                }
+            if (Options.CurrentValue.CaptchaHourLimitCount > 0)
+            {
+                var counter = RedisClient.Get<int?>(hourCacheKey);
+                if (counter.HasValue && Options.CurrentValue.CaptchaHourLimitCount <= counter.Value)
+                    return false;
+            }
 
-                dayTotal += 1;
-                if (Options.CurrentValue.CaptchaDayLimitCount > 0 && Options.CurrentValue.CaptchaDayLimitCount <= dayTotal)
+            if (Options.CurrentValue.CaptchaMinuteLimitCount > 0)
+            {
+                var counter = RedisClient.Get<int?>(minuteCacheKey);
+                if (counter.HasValue && Options.CurrentValue.CaptchaMinuteLimitCount <= counter.Value)
                     return false;
             }
 
@@ -78,20 +73,38 @@ namespace Shashlik.Sms.Limit.Redis
             if (phone.Contains(':'))
                 throw new ArgumentException($"Invalid phone of {phone}", nameof(phone));
 
-            var hour = DateTime.Now.Hour;
-            var minute = DateTime.Now.Minute;
+            var now = DateTime.Now;
+            var daySeconds = (int)((now.Date.AddDays(1) - now).TotalSeconds);
+            var hourSeconds = (int)((new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1) - now).TotalSeconds);
+            var minuteSeconds = 60 - now.Second;
 
-            var key = CachePrefix.Format(phone, hour, minute);
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
 
-            RedisClient.Set(key, string.Empty, (DateTime.Today.AddDays(1) - DateTime.Now));
-        }
+            string script = $@"
+local dayKey = '{dayCacheKey}'
+local dayCounter = redis.call('INCR','{dayCacheKey}')
+if(dayCounter == 1)
+then
+  redis.call('EXPIRE','{dayCacheKey}',{daySeconds})
+end
 
-        private (int hour, int minute)? Convert(string key)
-        {
-            var arr = key.Split(new[] { ':' });
-            if (arr.Length != 4)
-                return default;
-            return (arr[2].ParseTo<int>(), arr[3].ParseTo<int>());
+local hourKey = '{hourCacheKey}'
+local hourCounter = redis.call('INCR','{hourCacheKey}')
+if(hourCounter == 1)
+then
+    redis.call('EXPIRE','{hourCacheKey}',{hourSeconds})
+end
+
+local minuteKey = '{minuteCacheKey}'
+local minuteCounter = redis.call('INCR','{minuteCacheKey}')
+if(minuteCounter == 1)
+then
+    redis.call('EXPIRE','{minuteCacheKey}',{minuteSeconds})
+end
+";
+            RedisClient.Eval(script, "NONE");
         }
     }
 }

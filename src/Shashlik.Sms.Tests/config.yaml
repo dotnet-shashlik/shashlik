@@ -8,7 +8,7 @@
     UseEmptySms: true
     CaptchaDayLimitCount: 15
     CaptchaHourLimitCount: 15
-    CaptchaMinuteLimitCount: 1
+    CaptchaMinuteLimitCount: 2
     Templates:
     - Subject: Captcha
       TemplateId: 1
