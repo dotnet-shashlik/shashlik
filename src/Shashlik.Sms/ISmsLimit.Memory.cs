@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
@@ -7,7 +6,6 @@ using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
-using Shashlik.Utils.Helpers;
 
 namespace Shashlik.Sms
 {
