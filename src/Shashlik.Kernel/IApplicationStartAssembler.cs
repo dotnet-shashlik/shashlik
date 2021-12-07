@@ -6,7 +6,7 @@ namespace Shashlik.Kernel
     /// <summary>
     /// 应用启动时装配
     /// </summary>
-    public interface IApplicationStartAutowire : IAssembler
+    public interface IApplicationStartAssembler : IAssembler
     {
         Task OnStart(CancellationToken cancellationToken);
     }

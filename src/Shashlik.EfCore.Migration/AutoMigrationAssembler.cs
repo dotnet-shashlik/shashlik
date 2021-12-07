@@ -12,7 +12,7 @@ namespace Shashlik.EfCore.Migration
     /// DbContext自动迁移装配, 自动注册[AutoMigration]
     /// </summary>
     [Transient]
-    public class AutoMigrationAutowire : IServiceAssembler
+    public class AutoMigrationAssembler : IServiceAssembler
     {
         private bool GetEnableAutoMigration(Type type, IConfiguration configuration)
         {

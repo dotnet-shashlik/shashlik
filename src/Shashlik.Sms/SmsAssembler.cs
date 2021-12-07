@@ -10,9 +10,9 @@ namespace Shashlik.Sms
     /// 短信服务自动配置,装配顺序300
     /// </summary>
     [Order(300)]
-    public class SmsAutowire : IServiceAssembler
+    public class SmsAssembler : IServiceAssembler
     {
-        public SmsAutowire(IOptions<SmsOptions> options)
+        public SmsAssembler(IOptions<SmsOptions> options)
         {
             Options = options;
         }

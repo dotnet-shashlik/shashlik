@@ -13,9 +13,9 @@ namespace Shashlik.Redis
     /// </summary>
     [Order(200)]
     [Transient]
-    public class RedisAutowire : IServiceAssembler
+    public class RedisAssembler : IServiceAssembler
     {
-        public RedisAutowire(IOptions<RedisOptions> options)
+        public RedisAssembler(IOptions<RedisOptions> options)
         {
             Options = options.Value;
         }

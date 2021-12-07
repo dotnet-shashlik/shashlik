@@ -5,7 +5,7 @@ using AspectCore.DynamicProxy;
 namespace Shashlik.EfCore.Transactional
 {
     /// <summary>
-    /// TransactionScope分布式事务特性
+    /// TransactionScope分布式事务(XA)特性
     /// </summary>
     public class TransactionScopeAttribute : AbstractInterceptorAttribute
     {

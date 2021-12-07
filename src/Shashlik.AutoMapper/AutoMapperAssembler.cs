@@ -10,9 +10,9 @@ namespace Shashlik.AutoMapper
     /// </summary>
     [Order(100)]
     [Transient]
-    public class AutoMapperAutowire : IServiceAssembler
+    public class AutoMapperAssembler : IServiceAssembler
     {
-        public AutoMapperAutowire(IOptions<AutoMapperOptions> options)
+        public AutoMapperAssembler(IOptions<AutoMapperOptions> options)
         {
             Options = options;
         }

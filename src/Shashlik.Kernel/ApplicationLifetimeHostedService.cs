@@ -12,8 +12,8 @@ namespace Shashlik.Kernel
     public class ApplicationLifetimeHostedService : IHostedService
     {
         public ApplicationLifetimeHostedService(
-            IAssemblerProvider<IApplicationStartAutowire> applicationStartAutowireProvider,
-            IAssemblerProvider<IApplicationStopAutowire> applicationStopAutowireProvider,
+            IAssemblerProvider<IApplicationStartAssembler> applicationStartAutowireProvider,
+            IAssemblerProvider<IApplicationStopAssembler> applicationStopAutowireProvider,
             IKernelServices kernelServices,
             IServiceProvider serviceProvider)
         {
@@ -24,8 +24,8 @@ namespace Shashlik.Kernel
         }
 
         private IServiceProvider ServiceProvider { get; }
-        private IAssemblerProvider<IApplicationStartAutowire> ApplicationStartAutowireProvider { get; }
-        private IAssemblerProvider<IApplicationStopAutowire> ApplicationStopAutowireProvider { get; }
+        private IAssemblerProvider<IApplicationStartAssembler> ApplicationStartAutowireProvider { get; }
+        private IAssemblerProvider<IApplicationStopAssembler> ApplicationStopAutowireProvider { get; }
         private IKernelServices KernelServices { get; }
 
         public Task StartAsync(CancellationToken cancellationToken)

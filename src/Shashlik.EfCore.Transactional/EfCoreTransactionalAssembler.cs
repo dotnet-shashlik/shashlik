@@ -7,7 +7,7 @@ using Shashlik.Utils.Extensions;
 namespace Shashlik.EfCore.Transactional
 {
     [Transient]
-    public class EfCoreTransactionalAutowire : IServiceAssembler
+    public class EfCoreTransactionalAssembler : IServiceAssembler
     {
         public void Configure(IKernelServices kernelService)
         {
