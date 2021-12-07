@@ -43,7 +43,7 @@ namespace Shashlik.Sms
             }
         }
 
-        public virtual Task<string> SendWithLimitCheckAsync(string phone, string subject, params string[] args)
+        public virtual Task<string> SendWithCheckAsync(string phone, string subject, params string[] args)
         {
             SendCheck(phone, subject, args);
             var requestId = SendAsync(new[] { phone }, subject, args);

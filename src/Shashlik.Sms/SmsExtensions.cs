@@ -13,7 +13,7 @@ namespace Shashlik.Sms
         /// <returns></returns>
         public static async Task<string> SendCaptchaAsync(this ISmsSender sender, string phone, params string[] args)
         {
-            return await sender.SendWithLimitCheckAsync(phone, SmsConstants.SubjectCaptcha, args);
+            return await sender.SendWithCheckAsync(phone, SmsConstants.SubjectCaptcha, args);
         }
     }
 }
