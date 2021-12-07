@@ -12,7 +12,7 @@ namespace Shashlik.EfCore
     /// <summary>
     /// 定义开启事务的方式,不定义就使用默认的DbContext.Database.BeginTransaction(), 需注册为单例
     /// </summary>
-    public interface IEfNestedTransactionBeginFunction<in TDbContext> : IEfNestedTransactionBeginFunction
+    public interface IEfNestedTransactionBeginFunction<TDbContext> : IEfNestedTransactionBeginFunction
         where TDbContext : DbContext
     {
     }

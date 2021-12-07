@@ -1,10 +1,6 @@
 ﻿using Shashlik.Kernel.Dependency;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shashlik.EfCore
 {
@@ -16,7 +12,7 @@ namespace Shashlik.EfCore
     {
         public Expression<Func<TEntity, bool>> HasQueryFilter<TEntity>() where TEntity : ISoftDeleted
         {
-            return (TEntity r) => !r.IsDeleted;
+            return r => !r.IsDeleted;
         }
     }
 }

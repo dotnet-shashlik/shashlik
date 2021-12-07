@@ -45,6 +45,13 @@ namespace Shashlik.Utils.Helpers
             return sb.ToString();
         }
 
+        /// <summary>
+        /// 获取一个随机数
+        /// </summary>
+        /// <param name="minValue">最小值</param>
+        /// <param name="maxValue">最大值</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         public static int Next(int minValue, int maxValue)
         {
             if (minValue > maxValue)

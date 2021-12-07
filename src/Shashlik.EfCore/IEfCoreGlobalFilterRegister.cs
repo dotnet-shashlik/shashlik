@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
+// ReSharper disable TypeParameterCanBeVariant
 
 namespace Shashlik.EfCore
 {
-    public interface IEfCoreGlobalFilterRegister { }
+    public interface IEfCoreGlobalFilterRegister
+    {
+    }
 
     /// <summary>
     /// EfCore全局过滤器注册器,需注册到服务容器<para></para>
@@ -15,6 +15,7 @@ namespace Shashlik.EfCore
     /// </summary>
     /// <typeparam name="TFilter"></typeparam>
     public interface IEfCoreGlobalFilterRegister<TFilter> : IEfCoreGlobalFilterRegister
+        where TFilter : class
     {
         public Expression<Func<TEntity, bool>> HasQueryFilter<TEntity>() where TEntity : TFilter;
     }

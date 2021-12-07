@@ -1,6 +1,4 @@
-﻿using Shashlik.Kernel.Dependency;
-
-namespace Shashlik.Sms
+﻿namespace Shashlik.Sms
 {
     /// <summary>
     /// 短信发送频率限制

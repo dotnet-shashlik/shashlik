@@ -1,5 +1,4 @@
-﻿using Shashlik.EfCore.Migration;
-using Shashlik.Kernel.Attributes;
+﻿using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Helpers;
 using System;
@@ -10,16 +9,16 @@ namespace Shashlik.EfCore.Migration
     [ConditionDependsOnMissing(typeof(IEfMigrationLock))]
     internal class MemoryEfCoreMigrationLock : IEfMigrationLock, IDisposable
     {
-        private readonly AsyncLock Locker = new AsyncLock();
+        private readonly AsyncLock _locker = new AsyncLock();
 
         public void Dispose()
         {
-            Locker.Dispose();
+            _locker.Dispose();
         }
 
         public IDisposable Lock()
         {
-            return Locker.Lock();
+            return _locker.Lock();
         }
     }
 }

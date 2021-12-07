@@ -31,17 +31,18 @@ namespace Shashlik.Kernel
         public Task StartAsync(CancellationToken cancellationToken)
         {
             var dic = ApplicationStartAutowireProvider.Load(KernelServices, ServiceProvider);
+            async void AutowiredAction(AssemblerDescriptor<IApplicationStartAssembler> r) => await r.ServiceInstance.OnStart(cancellationToken);
             ApplicationStartAutowireProvider.Execute(dic,
-                async r => await r.ServiceInstance.OnStart(cancellationToken));
+                AutowiredAction);
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
             var dic = ApplicationStopAutowireProvider.Load(KernelServices, ServiceProvider);
-
+            async void AutowiredAction(AssemblerDescriptor<IApplicationStopAssembler> r) => await r.ServiceInstance.OnStop(cancellationToken);
             ApplicationStopAutowireProvider.Execute(dic,
-                async r => await r.ServiceInstance.OnStop(cancellationToken));
+                AutowiredAction);
             return Task.CompletedTask;
         }
     }

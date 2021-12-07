@@ -188,7 +188,7 @@ namespace Shashlik.RazorFormat
         private static (bool hasFormatter, string? formatterStringValue) GetFormatterStringValue(
             string formatExpression, object? objectValue)
         {
-            var formatMatchList = formatExpressionReg.Matches(formatExpression!);
+            var formatMatchList = formatExpressionReg.Matches(formatExpression);
             var lastValue = objectValue;
             var hasFormatter = false;
             foreach (Match formatMatch in formatMatchList)

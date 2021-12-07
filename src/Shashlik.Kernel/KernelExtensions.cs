@@ -22,7 +22,6 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="rootConfiguration">根配置</param>
-        /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
         public static IServiceCollection AddShashlik(
             this IServiceCollection services,
@@ -44,7 +43,6 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="services"></param>
         /// <param name="rootConfiguration">根配置</param>
-        /// <param name="dependencyContext">依赖上下文,null使用默认配置</param>
         /// <returns></returns>
         public static IKernelServices AddShashlikCore(
             this IServiceCollection services,
@@ -71,7 +69,6 @@ namespace Shashlik.Kernel
         /// 自动装载所有的配置options,<see cref="AutoOptionsAttribute"/>
         /// </summary>
         /// <param name="kernelServices"></param>
-        /// <param name="disableTypes"></param>
         /// <returns></returns>
         public static IKernelServices AssembleOptions(this IKernelServices kernelServices)
         {

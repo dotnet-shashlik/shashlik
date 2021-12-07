@@ -39,7 +39,7 @@ namespace Shashlik.Redis
         /// <param name="autoDelay">自动延长锁超时时间，看门狗线程的超时时间为lockSeconds/2 ， 在看门狗线程超时时间时自动延长锁的时间为lockSeconds。除非程序意外退出，否则永不超时。</param>
         /// <returns></returns>
         /// <exception cref="RedisLockFailureException"></exception>
-        public static CSRedisClientLock? Lock(
+        public static CSRedisClientLock Lock(
             this CSRedisClient redisClient,
             string name,
             int lockSeconds,

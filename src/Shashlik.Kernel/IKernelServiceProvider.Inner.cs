@@ -10,6 +10,6 @@ namespace Shashlik.Kernel
         }
 
         private IServiceProvider ServiceProvider { get; }
-        public object? GetService(Type serviceType) => ServiceProvider!.GetService(serviceType);
+        public object? GetService(Type serviceType) => ServiceProvider.GetService(serviceType);
     }
 }

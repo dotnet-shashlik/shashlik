@@ -7,7 +7,7 @@ using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
 using Shashlik.Utils.Helpers;
 
-namespace Shashlik.Captcha.Redis
+namespace Shashlik.Captcha
 {
     /// <summary>
     /// Redis验证码

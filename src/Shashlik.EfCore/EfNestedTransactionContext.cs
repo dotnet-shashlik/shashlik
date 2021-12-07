@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,8 +12,7 @@ namespace Shashlik.EfCore
 {
     public static class EfNestedTransactionContext
     {
-        private static readonly ConcurrentDictionary<Type, AsyncLocal<ShashlikDbContextTransaction>> TransactionContext =
-            new ConcurrentDictionary<Type, AsyncLocal<ShashlikDbContextTransaction>>();
+        private static readonly ConcurrentDictionary<Type, AsyncLocal<ShashlikDbContextTransaction>> TransactionContext = new();
 
         /// <summary>
         /// 获取当前上下文嵌套事务对象

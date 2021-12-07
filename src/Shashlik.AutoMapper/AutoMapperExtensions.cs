@@ -21,7 +21,6 @@ namespace Shashlik.AutoMapper
         /// 增加auto mapper自动化映射,注册了全局单例IMapper
         /// </summary>
         /// <param name="kernelService"></param>
-        /// <param name="dependencyContext"></param>
         /// <returns></returns>
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService)
         {

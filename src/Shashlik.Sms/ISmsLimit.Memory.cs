@@ -29,8 +29,10 @@ namespace Shashlik.Sms
 
         // 0:phone
         private const string DAY_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:DAY:{0}";
+
         // 0:phone
         private const string HOUR_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:HOURE:{0}";
+
         // 0:phone
         private const string MINUTE_CACHE_PREFIX = "SMS_MEMORYCAHCHE_LIMIT:MINUTE:{0}";
 
@@ -38,19 +40,19 @@ namespace Shashlik.Sms
         {
             var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaMinuteLimitCount > 0
-                && Cache.TryGetValue<_Counter>(minuteCacheKey, out var minute)
+                && Cache.TryGetValue<Counter>(minuteCacheKey, out var minute)
                 && minute._counter >= Options.CurrentValue.CaptchaMinuteLimitCount)
                 return false;
 
             var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaHourLimitCount > 0
-                && Cache.TryGetValue<_Counter>(hourCacheKey, out var hour)
+                && Cache.TryGetValue<Counter>(hourCacheKey, out var hour)
                 && hour._counter >= Options.CurrentValue.CaptchaHourLimitCount)
                 return false;
 
             var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
             if (Options.CurrentValue.CaptchaDayLimitCount > 0
-                && Cache.TryGetValue<_Counter>(dayCacheKey, out var day)
+                && Cache.TryGetValue<Counter>(dayCacheKey, out var day)
                 && day._counter >= Options.CurrentValue.CaptchaDayLimitCount)
                 return false;
 
@@ -65,7 +67,7 @@ namespace Shashlik.Sms
             var dayCounter = Cache.GetOrCreate(dayCacheKey, r =>
             {
                 r.SetAbsoluteExpiration(now.Date.AddDays(1));
-                return new _Counter();
+                return new Counter();
             });
             Interlocked.Increment(ref dayCounter._counter);
 
@@ -74,8 +76,8 @@ namespace Shashlik.Sms
             {
                 r.SetAbsoluteExpiration(
                     new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, 0, 0, TimeZoneInfo.Local.BaseUtcOffset).AddHours(1)
-                    );
-                return new _Counter();
+                );
+                return new Counter();
             });
             Interlocked.Increment(ref hourCounter._counter);
 
@@ -84,13 +86,13 @@ namespace Shashlik.Sms
             {
                 r.SetAbsoluteExpiration(
                     new DateTimeOffset(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0, TimeZoneInfo.Local.BaseUtcOffset).AddMinutes(1)
-                    );
-                return new _Counter();
+                );
+                return new Counter();
             });
             Interlocked.Increment(ref minuteCounter._counter);
         }
 
-        private class _Counter
+        private class Counter
         {
             public volatile int _counter;
         }

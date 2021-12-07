@@ -12,22 +12,25 @@ namespace Shashlik.Sms
     /// 空短信发送
     /// </summary>
     [Singleton]
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), false, DefaultValue = false)]
+    [ConditionDependsOnMissing(typeof(ISmsSender))]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), true, DefaultValue = false)]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    internal class DefaultSms : ISmsSender
+    internal class EmptySms : ISmsSender
     {
-        public DefaultSms(ILogger<DefaultSms> logger, ISmsLimit smsLimit)
+        public EmptySms(ILogger<EmptySms> logger, ISmsLimit smsLimit)
         {
             Logger = logger;
             SmsLimit = smsLimit;
         }
-        private ILogger<DefaultSms> Logger { get; }
+
+        private ILogger<EmptySms> Logger { get; }
         private ISmsLimit SmsLimit { get; }
 
         public bool SendCaptchaLimitCheck(string phone)
         {
             return SmsLimit.CanSend(phone);
         }
+
         public Task<string> SendCaptchaAsync(string phone, string subject, params string[] args)
         {
             var requestId = SendAsync(phone, subject, args);
@@ -46,6 +49,5 @@ namespace Shashlik.Sms
             Logger.LogInformation($"Empty sms send success, phone:{phones}, subject:{subject}.");
             return Task.FromResult(Guid.NewGuid().ToString());
         }
-
     }
 }

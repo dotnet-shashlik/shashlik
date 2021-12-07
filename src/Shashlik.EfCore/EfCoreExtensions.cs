@@ -40,7 +40,6 @@ namespace Shashlik.EfCore
         /// <typeparam name="TEntityBase"></typeparam>
         /// <param name="modelBuilder"></param>
         /// <param name="serviceProvider">实体映射配置服务提供类,可以通过服务注入配置类型,不存在时,则反射创建</param>
-        /// <param name="dependencyContext"></param>
         public static void RegisterEntities<TEntityBase>(
             this ModelBuilder modelBuilder,
             IServiceProvider serviceProvider)
@@ -55,8 +54,7 @@ namespace Shashlik.EfCore
         /// <typeparam name="TEntityBase"></typeparam>
         /// <param name="modelBuilder"></param>
         /// <param name="serviceProvider">服务提供器</param>
-        /// <param name="entityTypeConfigurationServiceProvider">实体映射配置服务提供类,null则直接反射创建</param>
-        /// <param name="dependencyContext"></param>
+        /// <param name="fluentConfigClassInstanceSupplier">实体FluentApi配置类创建器</param>
         public static void RegisterEntities<TEntityBase>(
             this ModelBuilder modelBuilder,
             IServiceProvider serviceProvider,
@@ -77,7 +75,7 @@ namespace Shashlik.EfCore
         /// <param name="modelBuilder"></param>
         /// <param name="assembly">程序集</param>
         /// <param name="serviceProvider">服务提供器</param>
-        /// <param name="entityTypeConfigurationServiceProvider">实体映射配置服务提供类</param>
+        /// <param name="fluentConfigClassInstanceSupplier">实体FluentApi配置类创建器</param>
         public static void RegisterEntitiesFromAssembly<TEntityBase>(
             this ModelBuilder modelBuilder,
             Assembly assembly,
@@ -100,7 +98,7 @@ namespace Shashlik.EfCore
         /// <param name="assembly">扫描程序集</param>
         /// <param name="serviceProvider">服务提供器</param>
         /// <param name="entityTypeFilter">实体类型过滤方法</param>
-        /// <param name="fluentConfigClassInstanceSupplier">实体fluentApi配置类型创建器</param>
+        /// <param name="fluentConfigClassInstanceSupplier">实体FluentApi配置类创建器</param>
         public static void RegisterEntitiesFromAssembly(
             this ModelBuilder modelBuilder,
             Assembly assembly,

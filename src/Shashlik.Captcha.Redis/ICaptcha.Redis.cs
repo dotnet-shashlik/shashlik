@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CSRedis;
-using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;

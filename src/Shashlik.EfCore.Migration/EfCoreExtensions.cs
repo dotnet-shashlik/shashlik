@@ -14,7 +14,6 @@ namespace Shashlik.EfCore.Migration
 {
     public static class EfCoreExtensions
     {
-
         /// <summary>
         /// 无锁执行迁移,服务注册阶段执行,适用单体应用
         /// </summary>
@@ -27,7 +26,7 @@ namespace Shashlik.EfCore.Migration
             var rootServiceProvider = services.BuildServiceProvider();
             using var scope = rootServiceProvider.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-            await dbContext!.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync();
         }
 
         /// <summary>
@@ -50,7 +49,7 @@ namespace Shashlik.EfCore.Migration
         /// <summary>
         /// 无锁执行迁移,程序运行阶段执行,适用单体应用
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="serviceProvider"></param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
         public static async Task MigrationWithoutLock<TDbContext>(this IServiceProvider serviceProvider)
@@ -58,13 +57,13 @@ namespace Shashlik.EfCore.Migration
         {
             using var scope = serviceProvider.CreateScope();
             await using var dbContext = scope.ServiceProvider.GetRequiredService<TDbContext>();
-            await dbContext!.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync();
         }
 
         /// <summary>
         /// 无锁执行迁移,程序运行阶段执行,适用单体应用
         /// </summary>
-        /// <param name="services"></param>
+        /// <param name="serviceProvider"></param>
         /// <param name="dbContextType"></param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
@@ -81,8 +80,6 @@ namespace Shashlik.EfCore.Migration
         /// 有锁执行迁移,服务注册阶段执行
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         /// <typeparam name="TDbContext"></typeparam>
         public static void Migration<TDbContext>(this IServiceCollection services)
             where TDbContext : DbContext
@@ -97,8 +94,6 @@ namespace Shashlik.EfCore.Migration
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dbContextType"></param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <param name="lockSecond">锁时长,一般根据迁移时长决定</param>
         public static void Migration(this IServiceCollection services, Type dbContextType)
         {
             var rootServiceProvider = services.BuildServiceProvider();
@@ -143,7 +138,6 @@ namespace Shashlik.EfCore.Migration
         /// 有锁服务注册阶段执行迁移
         /// </summary>
         /// <param name="services"></param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
         public static async Task MigrationAsync<TDbContext>(this IServiceCollection services)
@@ -157,11 +151,10 @@ namespace Shashlik.EfCore.Migration
         /// </summary>
         /// <param name="services"></param>
         /// <param name="dbContextType"></param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <returns></returns>
         public static async Task MigrationAsync(this IServiceCollection services, Type dbContextType)
         {
-            using var rootServiceProvider = services.BuildServiceProvider();
+            await using var rootServiceProvider = services.BuildServiceProvider();
             using var scope = rootServiceProvider.CreateScope();
             await MigrationAsync(scope.ServiceProvider, dbContextType);
         }
@@ -170,8 +163,6 @@ namespace Shashlik.EfCore.Migration
         /// 有锁程序运行阶段执行迁移
         /// </summary>
         /// <param name="provider"></param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
-        /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
         public static async Task MigrationAsync<TDbContext>(this IServiceProvider provider)
             where TDbContext : DbContext
@@ -184,7 +175,6 @@ namespace Shashlik.EfCore.Migration
         /// </summary>
         /// <param name="provider"></param>
         /// <param name="dbContextType">上下文类型</param>
-        /// <param name="locker">自定义锁实例,null将从服务中获取</param>
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         public static async Task MigrationAsync(this IServiceProvider provider, Type dbContextType)
