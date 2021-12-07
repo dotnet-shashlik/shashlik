@@ -100,7 +100,7 @@ namespace Shashlik.Sms.Limit.Redis.Tests
             );
 
             Should.Throw<SmsTemplateException>(async () => await sender.SendAsync(new[] { _testPhone1 }, "none"));
-            Should.Throw<ArgumentException>(async () => await sender.SendAsync(new[] { _testPhone1 }, "Captcha"));
+            Should.Throw<SmsTemplateException>(async () => await sender.SendAsync(new[] { _testPhone1 }, "Captcha"));
             Should.Throw<SmsTemplateException>(async () => await sender.SendAsync(new[] { _testPhone1 }, "Notify"));
             //sender.SendAsync(_testPhone1, "Captcha", "123123").GetAwaiter().GetResult();
         }

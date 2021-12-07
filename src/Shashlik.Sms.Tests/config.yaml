@@ -10,20 +10,17 @@
     CaptchaHourLimitCount: 15
     CaptchaMinuteLimitCount: 2
     Templates:
-    - Subject: Captcha
-      TemplateId: 1
-      Sign: 1
-      Params: [code]
-    - Subject: Captcha2
-      TemplateId: 1
-      Sign: 1
-    - Subject: Notify
-      TemplateId: 
-      Sign: 
+      Captcha:
+        TemplateId: 1
+        Sign: 1
+        Params: [ code ]
+      Notify:
+        TemplateId:
+        Sign:
     Aliyun:
       AppId: 1
       AppKey: 1
     TCloud:
-      SecretId: 1 
+      SecretId: 1
       SecretKey: 1
       AppId: 1
