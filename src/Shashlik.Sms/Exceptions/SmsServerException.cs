@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shashlik.Sms.Exceptions
 {
@@ -7,6 +8,8 @@ namespace Shashlik.Sms.Exceptions
     /// </summary>
     public class SmsServerException : Exception
     {
+        public IEnumerable<string> Phones { get; }
+
         /// <summary>
         /// 云厂商返回的错误代码
         /// </summary>
@@ -17,14 +20,17 @@ namespace Shashlik.Sms.Exceptions
         /// </summary>
         public object? Response { get; }
 
-        public SmsServerException(string message, string? errorCode, object? response) : base(message)
+        public SmsServerException(IEnumerable<string> phones, string message, string? errorCode, object? response) : base(message)
         {
+            Phones = phones;
             ErrorCode = errorCode;
             Response = response;
         }
 
-        public SmsServerException(string message, string? errorCode, object? response, Exception innerException) : base(message, innerException)
+        public SmsServerException(IEnumerable<string> phones, string message, string? errorCode, object? response, Exception innerException) :
+            base(message, innerException)
         {
+            Phones = phones;
             ErrorCode = errorCode;
             Response = response;
         }

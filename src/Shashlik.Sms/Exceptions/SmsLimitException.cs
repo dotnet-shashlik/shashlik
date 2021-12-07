@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using Shashlik.Utils.Extensions;
+
+// ReSharper disable PossibleMultipleEnumeration
 
 namespace Shashlik.Sms.Exceptions
 {
@@ -7,12 +11,18 @@ namespace Shashlik.Sms.Exceptions
     /// </summary>
     public class SmsLimitException : Exception
     {
-        public SmsLimitException()
+        private IEnumerable<string> Phones { get; }
+
+        public SmsLimitException(IEnumerable<string> phones, Exception innerException) : base(
+            $"sms send to {phones.Join(",")} failed: frequency limit. ",
+            innerException)
         {
+            Phones = phones;
         }
 
-        public SmsLimitException(string? message, Exception innerException) : base(message, innerException)
+        public SmsLimitException(IEnumerable<string> phones) : base($"sms send to {phones.Join(",")} failed: frequency limit. ")
         {
+            Phones = phones;
         }
     }
 }

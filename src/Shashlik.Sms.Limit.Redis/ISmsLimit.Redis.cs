@@ -6,6 +6,8 @@ using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
 using Shashlik.Utils.Extensions;
 
+// ReSharper disable InconsistentNaming
+
 namespace Shashlik.Sms.Limit.Redis
 {
     /// <summary>
@@ -27,22 +29,23 @@ namespace Shashlik.Sms.Limit.Redis
 
         private CSRedisClient RedisClient { get; }
 
-        // 0:phone
-        private const string DAY_CACHE_PREFIX = "SMS_REDIS_LIMIT:DAY:{0}";
-        // 0:phone
-        private const string HOUR_CACHE_PREFIX = "SMS_REDIS_LIMIT:HOURE:{0}";
-        // 0:phone
-        private const string MINUTE_CACHE_PREFIX = "SMS_REDIS_LIMIT:MINUTE:{0}";
+        // 0:phone,1:subject
+        private const string DAY_CACHE_PREFIX = "SMS_REDIS_LIMIT:DAY:{0}:{1}";
 
-        public bool CanSend(string phone)
+        // 0:phone,1:subject
+        private const string HOUR_CACHE_PREFIX = "SMS_REDIS_LIMIT:HOURE:{0}:{1}";
+
+        // 0:phone,1:subject
+        private const string MINUTE_CACHE_PREFIX = "SMS_REDIS_LIMIT:MINUTE:{0}:{1}";
+
+        public bool CanSend(string phone, string subject)
         {
-            if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(phone));
             if (phone.Contains(':'))
                 throw new ArgumentException($"Invalid phone of {phone}", nameof(phone));
 
-            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
-            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
-            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone, subject);
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone, subject);
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone, subject);
             if (Options.CurrentValue.CaptchaDayLimitCount > 0)
             {
                 var counter = RedisClient.Get<int?>(dayCacheKey);
@@ -67,9 +70,8 @@ namespace Shashlik.Sms.Limit.Redis
             return true;
         }
 
-        public void SendDone(string phone)
+        public void SendDone(string phone, string subject)
         {
-            if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(phone));
             if (phone.Contains(':'))
                 throw new ArgumentException($"Invalid phone of {phone}", nameof(phone));
 
@@ -78,9 +80,9 @@ namespace Shashlik.Sms.Limit.Redis
             var hourSeconds = (int)((new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1) - now).TotalSeconds);
             var minuteSeconds = 60 - now.Second;
 
-            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone);
-            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone);
-            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone);
+            var dayCacheKey = DAY_CACHE_PREFIX.Format(phone, subject);
+            var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone, subject);
+            var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone, subject);
 
             string script = $@"
 local dayKey = '{dayCacheKey}'

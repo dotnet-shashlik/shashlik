@@ -19,25 +19,15 @@ namespace Shashlik.Sms.Aliyun
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class AliyunSmsSender : ISmsSender
+    public class AliyunSmsSender : AbstractSmsSender
     {
         private IOptions<AliyunSmsOptions> AliyunOptions { get; }
-        private IOptionsMonitor<SmsOptions> SOptions { get; }
-        private ISmsLimit SmsLimit { get; }
         private AliyunClient Client { get; }
-        private HashSet<string> LimitErrorCode { get; }
 
         public AliyunSmsSender(IOptions<AliyunSmsOptions> aliyunOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
+            : base(smsLimit, sOptions)
         {
             AliyunOptions = aliyunOptions;
-            SmsLimit = smsLimit;
-            SOptions = sOptions;
-            LimitErrorCode = new HashSet<string>
-            {
-                "isv.DAY_LIMIT_CONTROL",
-                "isv.BUSINESS_LIMIT_CONTROL"
-            };
-
             Client = new AliyunClient(new AliyunConfig
             {
                 AccessKeyId = AliyunOptions.Value.AppId,
@@ -46,52 +36,33 @@ namespace Shashlik.Sms.Aliyun
             });
         }
 
-        public bool SendCaptchaLimitCheck(string phone)
+        public override void SendCheck(string phone, string subject, params string[] args)
         {
-            return SmsLimit.CanSend(phone);
+            base.SendCheck(phone, subject, args);
+            var template = Options.CurrentValue.Templates.GetOrDefault(subject);
+            if (template!.Params is not null && template.Params.Length != args.Length)
+                throw new ArgumentException($"sms template of \"{subject}\" [Params] except argument count: {template.Params?.Length ?? 0}.",
+                    nameof(args));
         }
 
-        public async Task<string> SendCaptchaAsync(string phone, string subject, params string[] args)
-        {
-            if (!SendCaptchaLimitCheck(phone))
-                throw new SmsLimitException();
-            try
-            {
-                var requestId = await SendAsync(phone, subject, args);
-                SmsLimit.SendDone(phone);
-                return requestId;
-            }
-            catch (SmsServerException e) when (e.ErrorCode is not null && LimitErrorCode.Contains(e.ErrorCode))
-            {
-                throw new SmsLimitException(e.Message, e);
-            }
-        }
-
-        public async Task<string> SendAsync(string phone, string subject, params string[] args)
-        {
-            if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(phone));
-            if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(subject));
-            return await SendAsync(new[] { phone }, subject, args);
-        }
-
-        public async Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
+        public override async Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
         {
             var phoneArr = phones as string[] ?? phones.ToArray();
             if (phoneArr.IsNullOrEmpty())
                 throw new ArgumentException("phones argument can not be empty.", nameof(phones));
             if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(subject));
 
-            var template = SOptions.CurrentValue.Templates.FirstOrDefault(r => r.Subject == subject);
+            var template = Options.CurrentValue.Templates.GetOrDefault(subject);
             if (template == null)
-                throw new ArgumentException($"sms template of \"{subject}\" not found.", subject);
+                throw new SmsTemplateException(phoneArr, subject);
             if (string.IsNullOrWhiteSpace(template.TemplateId))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" [TemplateId] can not be empty.");
+                throw new SmsTemplateException(phoneArr, subject);
             if (string.IsNullOrWhiteSpace(template.Sign))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" [Sign] can not be empty.");
+                throw new SmsTemplateException(phoneArr, subject);
 
             var @params = new Dictionary<string, string>();
             if (template.Params is not null && template.Params.Length != args.Length)
-                throw new ArgumentException($"sms template of \"{subject}\" [Params] require argument count: {template.Params?.Length ?? 0}.",
+                throw new ArgumentException($"sms template of \"{subject}\" [Params] except argument count: {template.Params?.Length ?? 0}.",
                     nameof(args));
 
             if (template.Params is not null)
@@ -106,10 +77,12 @@ namespace Shashlik.Sms.Aliyun
                 TemplateCode = template.TemplateId,
                 TemplateParam = @params.ToJson()
             });
+
             if (res.Body.Code.EqualsIgnoreCase("OK"))
                 // 发送成功, 返回可用于后续查询的BizId
                 return res.Body.BizId;
-            throw new SmsServerException($"aliyun sms send failed: {res.Body.Message}", res.Body.Code, res);
+
+            throw new SmsServerException(phoneArr, $"aliyun sms send failed: {res.Body.Message}", res.Body.Code, res);
         }
     }
 }

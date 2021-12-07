@@ -35,8 +35,8 @@ namespace Shashlik.Sms.Options
         public int CaptchaMinuteLimitCount { get; set; } = 1;
 
         /// <summary>
-        /// 模板列表
+        /// 模板列表,key: 模板的subject,value:模板配置
         /// </summary>
-        public List<SmsTemplates> Templates { get; set; } = new List<SmsTemplates>();
+        public IDictionary<string, SmsTemplates> Templates { get; set; } = new Dictionary<string, SmsTemplates>();
     }
 }

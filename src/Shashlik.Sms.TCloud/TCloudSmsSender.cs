@@ -13,6 +13,8 @@ using TencentCloud.Common.Profile;
 using TencentCloud.Sms.V20210111;
 using TencentCloud.Sms.V20210111.Models;
 
+// ReSharper disable InconsistentNaming
+
 namespace Shashlik.Sms.TCloud
 {
     /// <summary>
@@ -20,31 +22,15 @@ namespace Shashlik.Sms.TCloud
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class TCloudSmsSender : ISmsSender
+    public class TCloudSmsSender : AbstractSmsSender
     {
         private IOptions<TCloudSmsOptions> TCloudOptions { get; }
-        private IOptionsMonitor<SmsOptions> SOptions { get; }
-        private ISmsLimit SmsLimit { get; }
-        private HashSet<string> LimitErrorCode { get; }
         private SmsClient Client { get; }
 
         public TCloudSmsSender(IOptions<TCloudSmsOptions> tCloudOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
+            : base(smsLimit, sOptions)
         {
             TCloudOptions = tCloudOptions;
-            SmsLimit = smsLimit;
-            SOptions = sOptions;
-            LimitErrorCode = new HashSet<string>
-            {
-                "LimitExceeded.AppDailyLimit",
-                "LimitExceeded.DailyLimit",
-                "LimitExceeded.DeliveryFrequencyLimit",
-                "LimitExceeded.PhoneNumberCountLimit",
-                "LimitExceeded.PhoneNumberDailyLimit",
-                "LimitExceeded.PhoneNumberOneHourLimit",
-                "LimitExceeded.PhoneNumberSameContentDailyLimit",
-                "LimitExceeded.PhoneNumberThirtySecondLimit",
-            };
-
             var accessKeyId = TCloudOptions.Value.SecretId; //你的accessKeyId，参考本文档步骤2
             var accessKeySecret = TCloudOptions.Value.SecretKey; //你的accessKeySecret，参考本文档步骤2
             /* 必要步骤：
@@ -90,49 +76,20 @@ namespace Shashlik.Sms.TCloud
             Client = new SmsClient(cred, TCloudOptions.Value.Region, clientProfile);
         }
 
-
-        public bool SendCaptchaLimitCheck(string phone)
-        {
-            return SmsLimit.CanSend(phone);
-        }
-
-        public async Task<string> SendCaptchaAsync(string phone, string subject, params string[] args)
-        {
-            if (!SendCaptchaLimitCheck(phone))
-                throw new SmsLimitException();
-            try
-            {
-                var requestId = await SendAsync(phone, subject, args);
-                SmsLimit.SendDone(phone);
-                return requestId;
-            }
-            catch (SmsServerException e) when (e.ErrorCode is not null && LimitErrorCode.Contains(e.ErrorCode))
-            {
-                throw new SmsLimitException(e.Message, e);
-            }
-        }
-
-        public async Task<string> SendAsync(string phone, string subject, params string[] args)
-        {
-            if (string.IsNullOrWhiteSpace(phone)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(phone));
-            if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(subject));
-            return await SendAsync(new[] { phone }, subject, args);
-        }
-
-        public async Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
+        public override async Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
         {
             var phoneArr = phones as string[] ?? phones.ToArray();
             if (phoneArr.IsNullOrEmpty())
                 throw new ArgumentException("phones argument can not be empty.", nameof(phones));
             if (string.IsNullOrWhiteSpace(subject)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(subject));
 
-            var template = SOptions.CurrentValue.Templates.FirstOrDefault(r => r.Subject == subject);
+            var template = Options.CurrentValue.Templates.GetOrDefault(subject);
             if (template == null)
-                throw new ArgumentException(subject, $"sms template of \"{subject}\" not found.");
+                throw new SmsTemplateException(phoneArr, subject);
             if (string.IsNullOrWhiteSpace(template.TemplateId))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" TemplateId can not be empty.");
+                throw new SmsTemplateException(phoneArr, subject);
             if (string.IsNullOrWhiteSpace(template.Sign))
-                throw new SmsTemplateException(subject, $"sms template \"{subject}\" Sign can not be empty.");
+                throw new SmsTemplateException(phoneArr, subject);
 
             try
             {
@@ -173,14 +130,14 @@ namespace Shashlik.Sms.TCloud
                 if (firstError is null)
                     return resp.RequestId;
 
-                throw new SmsServerException(
+                throw new SmsServerException(phoneArr,
                     "tencent cloud sms send response exists failure result.",
                     firstError.Code,
                     resp);
             }
             catch (TencentCloudSDKException e)
             {
-                throw new SmsServerException("tencent cloud sms send failed", null, e);
+                throw new SmsServerException(phoneArr, "tencent cloud sms send failed", null, null, e);
             }
         }
     }
