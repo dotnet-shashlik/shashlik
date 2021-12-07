@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel.Test;
 using Shouldly;
 using Xunit;
@@ -130,6 +132,25 @@ namespace Shashlik.Captcha.Redis.Tests
                 (await captcha.IsValid("login", "13000000005", "123123", securityStamp, false)).ShouldBeTrue();
                 (await captcha.IsValid("login", "13000000005", "123123", securityStamp)).ShouldBeTrue();
                 (await captcha.IsValid("login", "13000000005", "123123", securityStamp)).ShouldBeFalse();
+            }
+        }
+
+        [Fact]
+        public async Task MemoryCaptchaTest()
+        {
+            var memoryCache = GetService<IMemoryCache>();
+            var captcha = new MemoryCatpcha(memoryCache);
+
+            {
+                var code = await captcha.Build("login", "13000000001", lifeTimeSeconds: 9, securityStamp: null);
+                (await captcha.IsValid("login", "13000000001", code, securityStamp: null)).ShouldBeTrue();
+                (await captcha.IsValid("login", "13000000001", code, securityStamp: null)).ShouldBeFalse();
+            }
+
+            {
+                var code = await captcha.Build("login", "13000000001", lifeTimeSeconds: 9, securityStamp: null);
+                Thread.Sleep(1000 * 10);
+                (await captcha.IsValid("login", "13000000001", code, securityStamp: null)).ShouldBeFalse();
             }
         }
     }

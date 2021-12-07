@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using CSRedis;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
@@ -12,17 +12,18 @@ namespace Shashlik.Captcha.Redis
     /// <summary>
     /// Redis验证码
     /// </summary>
-    [ConditionDependsOn(typeof(CSRedisClient))]
+    [ConditionDependsOn(typeof(IMemoryCache))]
+    [ConditionDependsOnMissing(typeof(ICaptcha))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Captcha." + nameof(CaptchaOptions.Enable), true, DefaultValue = true)]
     [Singleton]
-    public class RedisCacheCatpcha : ICaptcha
+    public class MemoryCatpcha : ICaptcha
     {
-        public RedisCacheCatpcha(CSRedisClient redisClient)
-        {
-            RedisClient = redisClient;
-        }
+        private IMemoryCache MemoryCache { get; }
 
-        private CSRedisClient RedisClient { get; }
+        public MemoryCatpcha(IMemoryCache memoryCache)
+        {
+            MemoryCache = memoryCache;
+        }
 
         /// <summary>
         /// 自定义生成验证码数据,内部自动生成验证码
@@ -63,11 +64,11 @@ namespace Shashlik.Captcha.Redis
             if (string.IsNullOrWhiteSpace(captcha)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(captcha));
 
             var key = GetKey(purpose, target, securityStamp);
-            var errorKey = $"{key}:ERROR";
-
-            await RedisClient.SetAsync(errorKey, maxErrorCount, lifeTimeSeconds);
-            await RedisClient.SetAsync(key, captcha, lifeTimeSeconds);
-            return captcha;
+            var model = new CaptchaModel();
+            model._errorCounter = maxErrorCount;
+            model._captcha = captcha;
+            MemoryCache.Set(key, model, TimeSpan.FromSeconds(lifeTimeSeconds));
+            return await Task.FromResult(captcha);
         }
 
         /// <summary>
@@ -83,25 +84,20 @@ namespace Shashlik.Captcha.Redis
             bool isDeleteOnSucceed = true)
         {
             var key = GetKey(purpose, target, securityStamp);
-            var redisCode = RedisClient.Get<string>(key);
-            if (redisCode is null)
-                return false;
-            if (redisCode == captcha)
+            var model = MemoryCache.Get<CaptchaModel>(key);
+            if (model is null)
+                return await Task.FromResult(false);
+            if (model._captcha == captcha)
             {
                 if (isDeleteOnSucceed)
-                    await RedisClient.DelAsync(key);
-                return true;
+                    MemoryCache.Remove(key);
+                return await Task.FromResult(true);
             }
 
-            var errorKey = $"{key}:ERROR";
-            var errorCount = await RedisClient.IncrByAsync(errorKey, -1);
-            if (errorCount <= 0)
-            {
-                await RedisClient.DelAsync(key, errorKey);
-                return false;
-            }
+            if (Interlocked.Decrement(ref model._errorCounter) <= 0)
+                MemoryCache.Remove(key);
 
-            return false;
+            return await Task.FromResult(false);
         }
 
         private static string GetKey(string purpose, string target, string? securityStamp)
@@ -109,6 +105,12 @@ namespace Shashlik.Captcha.Redis
             if (string.IsNullOrWhiteSpace(securityStamp))
                 return "CAPTCHA:{0}:{1}".Format(purpose, target);
             return "CAPTCHA:{0}:{1}:{2}".Format(purpose, target, securityStamp);
+        }
+
+        private class CaptchaModel
+        {
+            public volatile int _errorCounter;
+            public volatile string? _captcha;
         }
     }
 }
