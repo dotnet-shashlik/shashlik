@@ -19,12 +19,6 @@ jobs:
         with:
           dotnet-version: 6.0.100
 
-      - name: Install dependencies
-        run: dotnet restore ./src/Shashlik.Package.sln
-
-      - name: Build
-        run: dotnet build ./src/Shashlik.Package.sln --configuration Release --no-restore
-
       - name: Setup MySql
         uses: mirromutth/mysql-action@v1.1
         with:
@@ -39,11 +33,17 @@ jobs:
           redis version: '5'
           number of databases: 3
 
+      - name: Install dependencies
+        run: dotnet restore ./src/Shashlik.sln
+
+      - name: Build
+        run: dotnet build ./src/Shashlik.sln --configuration Release --no-restore
+
       - name: Test
         run: dotnet test ./src/Shashlik.sln
 
       - name: Pack      
-        run: dotnet pack ./src/Shashlik.Package.sln --configuration Release --output ./nugetPackages
+        run: dotnet pack ./src/Shashlik.sln --configuration Release --output ./nugetPackages
 
       - name: Publish
         run: dotnet nuget push "./nugetPackages/*.nupkg" -k ${{ secrets.NUGET }} -s https://api.nuget.org/v3/index.json
