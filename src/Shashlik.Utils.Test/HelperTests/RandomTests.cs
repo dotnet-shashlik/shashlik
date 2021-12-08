@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Shashlik.Utils.Helpers;
 using Shouldly;
 using Xunit;
@@ -20,10 +22,12 @@ namespace Shashlik.Utils.Test.HelperTests
         [Fact]
         public void getId_test()
         {
-            var worker1 = new SnowflakeId(1, 1);
-            var worker2 = new SnowflakeId(1, 2);
-            var worker3 = new SnowflakeId(2, 1);
-            var worker4 = new SnowflakeId(2, 2);
+            var unixTimeMilliseconds = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            Thread.Sleep(1000);
+            var worker1 = new SnowflakeId(1, unixTimeMilliseconds);
+            var worker2 = new SnowflakeId(2, unixTimeMilliseconds);
+            var worker3 = new SnowflakeId(3, unixTimeMilliseconds);
+            var worker4 = new SnowflakeId(4, unixTimeMilliseconds);
 
             HashSet<long> ids = new HashSet<long>();
 
@@ -38,8 +42,8 @@ namespace Shashlik.Utils.Test.HelperTests
 
             ids.Count.ShouldBe(1000000 * 4);
 
-            Should.Throw<Exception>((() => new SnowflakeId(-54, 1)));
-            Should.Throw<Exception>((() => new SnowflakeId(1, -6)));
+            Should.Throw<ArgumentException>((() => new SnowflakeId(-54, 1)));
+            Should.Throw<ArgumentException>((() => new SnowflakeId(1, DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeMilliseconds())));
         }
 
         [Fact]

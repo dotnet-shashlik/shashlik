@@ -1,80 +1,116 @@
 ﻿using System;
+using System.Threading;
+
+// ReSharper disable InconsistentNaming
 
 namespace Shashlik.Utils.Helpers
 {
-    public sealed class SnowflakeId
+    /// <summary>
+    /// 雪花算法ID生成器,参考美团Leaf,解决时钟回拨问题
+    /// </summary>
+    public class SnowflakeId
     {
-        public const long Twepoch = 1288834974657L;
-        public const int WorkerIdBits = 5;
-        public const int DatacenterIdBits = 5;
-        public const int SequenceBits = 12;
-        public const long MaxWorkerId = -1L ^ (-1L << WorkerIdBits);
-        public const long MaxDatacenterId = -1L ^ (-1L << DatacenterIdBits);
-        public const int WorkerIdShift = SequenceBits;
-        public const int DatacenterIdShift = SequenceBits + WorkerIdBits;
-        public const int TimestampLeftShift = SequenceBits + WorkerIdBits + DatacenterIdBits;
-        public const long SequenceMask = -1L ^ (-1L << SequenceBits);
+        private readonly long twepoch;
 
-        private readonly object _lock = new object();
-        private long _lastTimestamp = -1L;
+        private const int workerIdBits = 10;
 
-        public SnowflakeId(long workerId, long datacenterId, long sequence = 0L)
+        //最大能够分配的workerid =1023
+        private const int maxWorkerId = ~(-1 << workerIdBits);
+        private const int sequenceBits = 12;
+        private const int workerIdShift = sequenceBits;
+        private const int timestampLeftShift = sequenceBits + workerIdBits;
+        private const int sequenceMask = ~(-1 << sequenceBits);
+        private readonly long workerId;
+        private long sequence = 0L;
+        private long lastTimestamp = -1L;
+
+
+        /// <summary>
+        /// 起始的时间戳
+        /// </summary>
+        /// <param name="workerId">workId,0~1023</param>
+        /// <param name="twepoch">起始的时间戳,毫秒</param>
+        public SnowflakeId(int workerId, long twepoch)
         {
-            WorkerId = workerId;
-            DatacenterId = datacenterId;
-            Sequence = sequence;
-
-            // sanity check for workerId
-            if (workerId > MaxWorkerId || workerId < 0)
-                throw new ArgumentException($"worker Id can't be greater than {MaxWorkerId} or less than 0");
-
-            if (datacenterId > MaxDatacenterId || datacenterId < 0)
-                throw new ArgumentException($"datacenter Id can't be greater than {MaxDatacenterId} or less than 0");
+            if (workerId is < 0 or > maxWorkerId)
+                throw new ArgumentException("workerID must gte 0 and lte 1023");
+            if (timeGen() <= twepoch)
+                throw new ArgumentException("Snowflake not support twepoch gt currentTime");
+            this.twepoch = twepoch;
+            this.workerId = workerId;
         }
-
-        private long WorkerId { get; }
-        private long DatacenterId { get; }
-        private long Sequence { get; set; }
 
         public long NextId()
         {
-            lock (_lock)
+            lock (this)
             {
-                var timestamp = TimeGen();
-
-                if (timestamp < _lastTimestamp)
-                    throw new Exception(
-                        $"InvalidSystemClock: Clock moved backwards, Refusing to generate id for {_lastTimestamp - timestamp} milliseconds");
-
-                if (_lastTimestamp == timestamp)
+                long timestamp = timeGen();
+                if (timestamp < lastTimestamp)
                 {
-                    Sequence = (Sequence + 1) & SequenceMask;
-                    if (Sequence == 0) timestamp = TilNextMillis(_lastTimestamp);
+                    long offset = lastTimestamp - timestamp;
+                    if (offset <= 5)
+                    {
+                        try
+                        {
+                            Monitor.Wait(this, (int)offset << 1);
+                            timestamp = timeGen();
+                            if (timestamp < lastTimestamp)
+                            {
+                                throw new Exception("clock back and wait error");
+                            }
+                        }
+                        catch (ThreadInterruptedException e)
+                        {
+                            throw new Exception("thread interrupted", e);
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("clock back gte 5ms");
+                    }
+                }
+
+                if (lastTimestamp == timestamp)
+                {
+                    sequence = (sequence + 1) & sequenceMask;
+                    if (sequence == 0)
+                    {
+                        //seq 为0的时候表示是下一毫秒时间开始对seq做随机
+                        sequence = RandomHelper.Next(0, 100);
+                        timestamp = tilNextMillis(lastTimestamp);
+                    }
                 }
                 else
                 {
-                    Sequence = 0;
+                    //如果是新的ms开始
+                    sequence = RandomHelper.Next(0, 100);
                 }
 
-                _lastTimestamp = timestamp;
-                var id = ((timestamp - Twepoch) << TimestampLeftShift) |
-                         (DatacenterId << DatacenterIdShift) |
-                         (WorkerId << WorkerIdShift) | Sequence;
-
+                lastTimestamp = timestamp;
+                long id = ((timestamp - twepoch) << timestampLeftShift) | (workerId << workerIdShift) | sequence;
                 return id;
             }
         }
 
-        private long TilNextMillis(long lastTimestamp)
+        protected long tilNextMillis(long last)
         {
-            var timestamp = TimeGen();
-            while (timestamp <= lastTimestamp) timestamp = TimeGen();
+            long timestamp = timeGen();
+            while (timestamp <= last)
+            {
+                timestamp = timeGen();
+            }
+
             return timestamp;
         }
 
-        private long TimeGen()
+        protected long timeGen()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        }
+
+        public long getWorkerId()
+        {
+            return workerId;
         }
     }
 }
