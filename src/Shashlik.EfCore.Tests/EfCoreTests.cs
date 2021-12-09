@@ -34,7 +34,7 @@ namespace Shashlik.EfCore.Tests
             var roles = new[] { role };
 
             var testManager = GetService<TestManager>();
-            await using var tran = DbContext.BeginNestedTransactionByAsync();
+            await using var tran = await DbContext.BeginNestedTransactionAsync();
 
             try
             {
@@ -67,7 +67,7 @@ namespace Shashlik.EfCore.Tests
         [Fact]
         public async Task NestedTransactionAsyncLogicTest()
         {
-            await using var tran = DbContext.BeginNestedTransactionByAsync();
+            await using var tran = await DbContext.BeginNestedTransactionAsync();
             DbContext.GetCurrentNestedTransaction().ShouldBe(tran);
 
             await AsyncMethod(tran);
@@ -76,7 +76,7 @@ namespace Shashlik.EfCore.Tests
 
         private async Task AsyncMethod(IDbContextTransaction topTran)
         {
-            await using var tran2 = DbContext.BeginNestedTransactionByAsync();
+            await using var tran2 = await DbContext.BeginNestedTransactionAsync();
             DbContext.GetCurrentNestedTransaction().ShouldBe(topTran);
         }
 
@@ -174,7 +174,7 @@ namespace Shashlik.EfCore.Tests
             var names = new List<string>();
             for (int i = 0; i < 1; i++)
             {
-                await using var tran = DbContext.BeginNestedTransactionByAsync();
+                await using var tran = await DbContext.BeginNestedTransactionAsync();
                 try
                 {
                     for (int j = 0; j < 1; j++)
@@ -212,7 +212,7 @@ namespace Shashlik.EfCore.Tests
             var names = new List<string>();
             for (int i = 0; i < new Random().Next(5, 10); i++)
             {
-                await using var tran = DbContext.BeginNestedTransactionByAsync();
+                await using var tran = await DbContext.BeginNestedTransactionAsync();
                 try
                 {
                     for (int j = 0; j < new Random().Next(5, 10); j++)
@@ -248,7 +248,6 @@ namespace Shashlik.EfCore.Tests
 
             var testManager = GetService<TestManager>();
             await using var tran = DbContext.BeginNestedTransaction();
-
 
             try
             {

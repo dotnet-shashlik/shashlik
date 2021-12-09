@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,22 +37,22 @@ namespace Shashlik.EfCore
         }
 
         /// <summary>
-        /// 使用默认方式开启嵌套事务(异步)
+        /// 开启嵌套事务(异步)
         /// </summary>
         /// <param name="dbContext">DbContext上下文</param>
         /// <param name="isolationLevel">事务隔离级别，null保持默认,注册<see cref="IEfNestedTransactionBeginFunction"/>后此参数无效</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static IDbContextTransaction BeginNestedTransactionByAsync<TDbContext>(
+        public static async Task<IDbContextTransaction> BeginNestedTransactionAsync<TDbContext>(
             this TDbContext dbContext,
             IsolationLevel? isolationLevel = null)
             where TDbContext : DbContext
         {
-            return Begin(typeof(TDbContext), dbContext, true, isolationLevel);
+            return await Begin(typeof(TDbContext), dbContext, true, isolationLevel);
         }
 
         /// <summary>
-        /// 自定义事务异步启动方式开启嵌套事务
+        /// 开启嵌套事务(同步)
         /// </summary>
         /// <param name="dbContext">DbContext</param>
         /// <param name="isolationLevel">事务隔离级别，null保持默认,注册<see cref="IEfNestedTransactionBeginFunction"/>后此参数无效</param>
@@ -60,11 +61,11 @@ namespace Shashlik.EfCore
         public static IDbContextTransaction BeginNestedTransaction<TDbContext>(this TDbContext dbContext, IsolationLevel? isolationLevel = null)
             where TDbContext : DbContext
         {
-            return Begin(typeof(TDbContext), dbContext, false, isolationLevel);
+            return Begin(typeof(TDbContext), dbContext, false, isolationLevel).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// 自定义事务启动方式开启嵌套事务
+        /// 开启嵌套事务(同步)
         /// </summary>
         /// <param name="dbContextType">上下文类型</param>
         /// <param name="serviceProvider">获取上下文的IServiceProvider</param>
@@ -73,12 +74,13 @@ namespace Shashlik.EfCore
         public static IDbContextTransaction BeginNestedTransaction(Type dbContextType, IServiceProvider serviceProvider, IsolationLevel?
             isolationLevel = null)
         {
-            return Begin(dbContextType, (DbContext)serviceProvider.GetRequiredService(dbContextType), false, isolationLevel);
+            return Begin(dbContextType, (DbContext)serviceProvider.GetRequiredService(dbContextType), false, isolationLevel)
+                .ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         #region private method
 
-        private static IDbContextTransaction Begin(Type dbContextType, DbContext dbContext, bool useAsync, IsolationLevel? isolationLevel)
+        private static async Task<IDbContextTransaction> Begin(Type dbContextType, DbContext dbContext, bool useAsync, IsolationLevel? isolationLevel)
         {
             var asyncLocal = TransactionContext.GetOrAdd(dbContextType, _ => new AsyncLocal<ShashlikDbContextTransaction>());
             if (asyncLocal.Value is not null && asyncLocal.Value.IsDispose)
@@ -96,8 +98,8 @@ namespace Shashlik.EfCore
             {
                 var originalTransaction = useAsync
                     ? BeginByAsync(dbContextType, dbContext, isolationLevel)
-                    : BeginBySync(dbContextType, dbContext, isolationLevel);
-                asyncLocal.Value = new ShashlikDbContextTransaction(originalTransaction, true);
+                    : Task.FromResult(BeginBySync(dbContextType, dbContext, isolationLevel));
+                asyncLocal.Value = new ShashlikDbContextTransaction(await originalTransaction, true);
                 return asyncLocal.Value;
             }
 
@@ -119,17 +121,17 @@ namespace Shashlik.EfCore
             return originalTransaction;
         }
 
-        private static IDbContextTransaction BeginByAsync(Type dbContextType, DbContext dbContext, IsolationLevel? isolationLevel)
+        private static async Task<IDbContextTransaction> BeginByAsync(Type dbContextType, DbContext dbContext, IsolationLevel? isolationLevel)
         {
             var beginFunction = GetEfNestedTransactionBeginFunction(dbContextType);
 
             IDbContextTransaction originalTransaction;
             if (beginFunction is null)
                 originalTransaction = isolationLevel.HasValue
-                    ? dbContext.Database.BeginTransactionAsync(isolationLevel.Value).ConfigureAwait(false).GetAwaiter().GetResult()
-                    : dbContext.Database.BeginTransactionAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                    ? await dbContext.Database.BeginTransactionAsync(isolationLevel.Value).ConfigureAwait(false)
+                    : await dbContext.Database.BeginTransactionAsync().ConfigureAwait(false);
             else
-                originalTransaction = beginFunction.BeginTransactionAsync(dbContext).ConfigureAwait(false).GetAwaiter().GetResult();
+                originalTransaction = await beginFunction.BeginTransactionAsync(dbContext).ConfigureAwait(false);
 
             return originalTransaction;
         }
