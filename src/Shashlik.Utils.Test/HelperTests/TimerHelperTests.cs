@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xunit;
-using Shouldly;
-using Shashlik.Utils.Extensions;
 using System.Threading;
 using System.Threading.Tasks;
 using Shashlik.Utils.Helpers;
+using Shouldly;
+using Xunit;
 using Xunit.Abstractions;
 
-namespace Shashlik.Utils.Test
+namespace Shashlik.Utils.Test.HelperTests
 {
     public class TimerHelperTests
     {

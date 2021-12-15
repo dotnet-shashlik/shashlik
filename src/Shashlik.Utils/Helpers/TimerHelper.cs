@@ -12,7 +12,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="action">要执行的表达式</param>
         /// <param name="expire">过期时间</param>
         /// <param name="cancellationToken">撤销</param>
-        /// <return>返回timer对象</return>
+        /// <return></return>
         public static void SetTimeout(Action action, TimeSpan expire, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
@@ -49,7 +49,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="action">要执行的表达式</param>
         /// <param name="runAt">过期时间</param>
         /// <param name="cancellationToken">撤销</param>
-        /// <return>返回timer对象</return>
+        /// <return></return>
         public static void SetTimeout(Action action, DateTimeOffset runAt,
             CancellationToken cancellationToken = default)
         {
@@ -62,7 +62,7 @@ namespace Shashlik.Utils.Helpers
         /// <param name="action">要执行的表达式</param>
         /// <param name="interval">间隔时间</param>
         /// <param name="cancellationToken">撤销</param>
-        /// <return>返回timer对象</return>
+        /// <return></return>
         public static void SetInterval(Action action, TimeSpan interval, CancellationToken cancellationToken = default)
         {
             if (cancellationToken.IsCancellationRequested)
