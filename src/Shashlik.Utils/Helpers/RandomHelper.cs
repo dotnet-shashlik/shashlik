@@ -12,37 +12,13 @@ namespace Shashlik.Utils.Helpers
     public static class RandomHelper
     {
         /// <summary>
-        /// 生成随机数
+        /// 获取随机数字(数字范围)
         /// </summary>
         /// <param name="length">随机数长度</param>
         /// <returns>随机数</returns>
-        public static string GetRandomCode(int length)
+        public static string RandomNumber(int length)
         {
-            int min = 1, max = 1;
-            var ml = length > 9 ? 9 : length;
-            for (var i = 1; i <= ml; i++)
-            {
-                max *= 10;
-                if (i <= ml - 2)
-                    min *= 10;
-            }
-
-            min -= 1;
-            max -= 1;
-
-            if (length <= 9)
-                return Next(min, max).ToString($"D{length}").AsSpan()[0..length].ToString();
-
-            var sb = new StringBuilder();
-            int l;
-            for (var i = 0; i < length; i += 9)
-            {
-                l = length - i;
-                l = l > 9 ? 9 : l;
-                sb.Append(Next(min, max).ToString($"D{l}").AsSpan()[0..l].ToString());
-            }
-
-            return sb.ToString();
+            return RandomString(length, "0123456789");
         }
 
         /// <summary>
@@ -59,6 +35,29 @@ namespace Shashlik.Utils.Helpers
             if (minValue == maxValue)
                 return minValue;
             return RandomNumberGenerator.GetInt32(minValue, maxValue);
+        }
+
+        /// <summary>
+        /// 获取随机字符
+        /// </summary>
+        /// <param name="length">字符长度</param>
+        /// <param name="chars">候选字符集</param>
+        /// <returns></returns>
+        public static string RandomString(int length, string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+        {
+            if (length <= 0)
+                return "";
+            if (string.IsNullOrWhiteSpace(chars)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(chars));
+
+            byte[] random = RandomNumberGenerator.GetBytes(length);
+            var res = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                var a = random[i];
+                res.Append(chars[a % chars.Length]);
+            }
+
+            return res.ToString();
         }
     }
 }

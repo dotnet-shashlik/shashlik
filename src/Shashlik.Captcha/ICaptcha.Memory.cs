@@ -37,7 +37,7 @@ namespace Shashlik.Captcha
         public async Task<string> Build(string purpose, string target, int lifeTimeSeconds = 300, int maxErrorCount = 3, int captchaLength = 6,
             string? securityStamp = null)
         {
-            var code = RandomHelper.GetRandomCode(captchaLength);
+            var code = RandomHelper.RandomNumber(captchaLength);
             await Build(purpose, target, lifeTimeSeconds, maxErrorCount, code, securityStamp);
             return code;
         }

@@ -53,7 +53,7 @@ namespace Shashlik.Utils.Test.HelperTests
             {
                 for (var i = 0; i < 10; i++)
                 {
-                    var code = RandomHelper.GetRandomCode(length);
+                    var code = RandomHelper.RandomNumber(length);
                     _testOutputHelper.WriteLine(code);
                     code.ShouldNotBeEmpty();
                     code.Length.ShouldBe(length);
