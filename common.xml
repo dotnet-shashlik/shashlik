@@ -6,7 +6,7 @@
         <RepositoryUrl>https://github.com/dotnet-shashlik/shashlik</RepositoryUrl>
         <PackageTags>shashlik</PackageTags>
         <Authors>dotnet-shashlik</Authors>
-        <Version>2.0.0-preview2</Version>
+        <Version>2.0.0-preview3</Version>
         <Nullable>enable</Nullable>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
         <IncludeSymbols>true</IncludeSymbols>
