@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Attributes;
+using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
 
 namespace Shashlik.Sms
@@ -10,6 +11,7 @@ namespace Shashlik.Sms
     /// 短信服务自动配置,装配顺序300
     /// </summary>
     [Order(300)]
+    [Transient]
     public class SmsAssembler : IServiceAssembler
     {
         public SmsAssembler(IOptions<SmsOptions> options)

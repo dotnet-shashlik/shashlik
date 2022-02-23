@@ -10,7 +10,7 @@ using Shashlik.Utils.Helpers;
 namespace Shashlik.Captcha
 {
     /// <summary>
-    /// Redis验证码
+    /// 内存验证码
     /// </summary>
     [ConditionDependsOn(typeof(IMemoryCache))]
     [ConditionDependsOnMissing(typeof(ICaptcha))]

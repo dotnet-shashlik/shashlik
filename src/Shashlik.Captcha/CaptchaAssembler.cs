@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Captcha
 {
+    [Transient]
     internal class CaptchaAssembler : IServiceAssembler
     {
         public IOptions<CaptchaOptions> Options { get; }
