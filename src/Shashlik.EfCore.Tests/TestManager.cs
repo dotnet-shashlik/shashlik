@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Shashlik.EfCore.Tests.Entities;
-using Shashlik.EfCore.Transactional;
 using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.EfCore.Tests
@@ -20,7 +19,6 @@ namespace Shashlik.EfCore.Tests
 
         public TestDbContext1 DbContext { get; }
 
-        [Transactional]
         public virtual async Task CreateUser(string name, IEnumerable<string> roles, bool throwEx)
         {
             var user = new Users
@@ -103,7 +101,6 @@ namespace Shashlik.EfCore.Tests
             }
         }
 
-        [TransactionScope]
         public virtual async Task CreateUserByTransactionScope(string name, IEnumerable<string> roles, bool throwEx)
         {
             var user = new Users

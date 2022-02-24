@@ -14,7 +14,6 @@ namespace Shashlik.Sms
     /// 空短信发送
     /// </summary>
     [Singleton]
-    [ConditionDependsOnMissing(typeof(ISmsSender))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), true, DefaultValue = false)]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
     public class EmptySmsSender : AbstractSmsSender

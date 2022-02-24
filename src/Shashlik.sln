@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Utils.Test", "Shas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Kernel.Test", "Shashlik.Kernel.Test\Shashlik.Kernel.Test.csproj", "{E1D283DD-5362-4B52-9C39-A186BBDAEE57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Transactional", "Shashlik.EfCore.Transactional\Shashlik.EfCore.Transactional.csproj", "{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.RazorFormat", "Shashlik.RazorFormat\Shashlik.RazorFormat.csproj", "{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Tests", "Shashlik.EfCore.Tests\Shashlik.EfCore.Tests.csproj", "{C96E51D2-0A6A-4D69-BF1C-A8F19B453356}"
@@ -99,12 +97,6 @@ Global
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{E1D283DD-5362-4B52-9C39-A186BBDAEE57}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{0FA0CEAD-7D47-4728-BFA7-DCE1E362F432}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DFF9CA8-F6D9-476A-B5FB-1865C5C729AF}.Release|Any CPU.ActiveCfg = Release|Any CPU

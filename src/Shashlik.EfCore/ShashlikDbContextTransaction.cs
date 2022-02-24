@@ -10,12 +10,14 @@ namespace Shashlik.EfCore
         private volatile bool _isRollback;
         private volatile bool _isDispose;
         private volatile bool _isCommit;
+        private Action? _disposedAction;
 
-        public ShashlikDbContextTransaction(IDbContextTransaction topTransaction, bool isTop)
+        public ShashlikDbContextTransaction(IDbContextTransaction topTransaction, bool isTop, Action? disposedAction = null)
         {
             TopTransaction = topTransaction;
             TransactionId = topTransaction.TransactionId;
             IsTop = isTop;
+            _disposedAction = disposedAction;
         }
 
         public Guid TransactionId { get; }
@@ -78,6 +80,7 @@ namespace Shashlik.EfCore
 
             TopTransaction = null;
             IsDispose = true;
+            _disposedAction?.Invoke();
         }
 
         public async ValueTask DisposeAsync()
