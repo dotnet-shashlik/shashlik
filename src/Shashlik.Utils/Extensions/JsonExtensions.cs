@@ -12,18 +12,19 @@ namespace Shashlik.Utils.Extensions
         /// json反序列化(Newtonsoft.Json)
         /// </summary>
         /// <param name="json"></param>
+        /// <param name="serializerSettings">序列化设置</param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static T? DeserializeJson<T>(this string json)
+        public static T? DeserializeJson<T>(this string json, JsonSerializerSettings? serializerSettings = null)
         {
-            return JsonConvert.DeserializeObject<T>(json);
+            return JsonConvert.DeserializeObject<T>(json, serializerSettings);
         }
 
         /// <summary>
         /// json序列化(Newtonsoft.Json)
         /// </summary>
         /// <param name="obj"></param>
-        /// <param name="serializerSettings"></param>
+        /// <param name="serializerSettings">序列化设置</param>
         /// <returns></returns>
         public static string ToJson<T>(this T obj, JsonSerializerSettings? serializerSettings = null)
             where T : class
