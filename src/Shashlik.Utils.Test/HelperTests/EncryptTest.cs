@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using Shashlik.Utils.Helpers;
 using Shouldly;
@@ -21,17 +22,17 @@ namespace Shashlik.Utils.Test.HelperTests
         {
             var key = "12345678";
             var iv = "12345678";
-            var data = DesHelper.Encrypt("DES加密", key, iv);
-            data.ShouldBe("lkXACZz387lOk9xiKpCOeg==");
-        }
 
-        [Fact]
-        public void DesDecrypt()
-        {
-            var key = "12345678";
-            var iv = "12345678";
-            var data = DesHelper.Decrypt("lkXACZz387lOk9xiKpCOeg==", key, iv);
-            data.ShouldBe("DES加密");
+            {
+                var data = DesHelper.Encrypt("DES加密", key, iv);
+                data.ShouldBe("lkXACZz387lOk9xiKpCOeg==");
+                DesHelper.Decrypt(data, key, iv).ShouldBe("DES加密");
+            }
+
+            {
+                var data = DesHelper.Encrypt("DES加密", key, null, PaddingMode.PKCS7, CipherMode.ECB);
+                DesHelper.Decrypt(data, key, null, PaddingMode.PKCS7, CipherMode.ECB).ShouldBe("DES加密");
+            }
         }
 
         [Fact]
@@ -49,18 +50,18 @@ namespace Shashlik.Utils.Test.HelperTests
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var key = "1234567890123456";
             var iv = "1234567890123456";
-            var data = AesHelper.Encrypt("AES加密", key, iv);
-            data.ShouldBe("B2zgIp4Wvi/SohcgcqQn+Q==");
+            {
+                var data = AesHelper.Encrypt("AES加密", key, iv);
+                data.ShouldBe("B2zgIp4Wvi/SohcgcqQn+Q==");
+                AesHelper.Decrypt(data, key, iv).ShouldBe("AES加密");
+            }
+
+            {
+                var data = AesHelper.Encrypt("AES加密", key, null, PaddingMode.PKCS7, CipherMode.ECB);
+                AesHelper.Decrypt(data, key, null, PaddingMode.PKCS7, CipherMode.ECB).ShouldBe("AES加密");
+            }
         }
 
-        [Fact]
-        public void AesDecrypt()
-        {
-            var key = "1234567890123456";
-            var iv = "1234567890123456";
-            var data = AesHelper.Decrypt("B2zgIp4Wvi/SohcgcqQn+Q==", key, iv);
-            data.ShouldBe("AES加密");
-        }
 
         [Fact]
         public void AesErrorTest()

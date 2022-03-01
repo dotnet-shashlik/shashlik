@@ -19,26 +19,28 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>加密后的BASE64</returns>
-        public static string Encrypt(string text, string key, string iv,
+        public static string Encrypt(string text, string key, string? iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyBytes = Encoding.UTF8.GetBytes(key);
-            var ivBytes = Encoding.UTF8.GetBytes(iv);
-            if (keyBytes.Length != 16)
+            var ivBytes = string.IsNullOrWhiteSpace(iv) ? null : Encoding.UTF8.GetBytes(iv);
+            if (ivBytes is not null && ivBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));
             }
 
-            if (ivBytes.Length != 16)
+
+            if (keyBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));
             }
 
             using var aes = Aes.Create();
             aes!.Key = keyBytes;
-            aes.IV = ivBytes;
+            if (ivBytes is not null)
+                aes.IV = ivBytes;
             aes.Padding = paddingMode;
             aes.Mode = cipherMode;
             var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
@@ -61,19 +63,19 @@ namespace Shashlik.Utils.Helpers
         /// <param name="cipherMode">CipherMode默认CBC</param>
         /// <param name="encoding">原文编码默认utf8</param>
         /// <returns>原文</returns>
-        public static string Decrypt(string text, string key, string iv,
+        public static string Decrypt(string text, string key, string? iv,
             PaddingMode paddingMode = PaddingMode.PKCS7, CipherMode cipherMode = CipherMode.CBC,
             Encoding? encoding = null)
         {
             encoding ??= Encoding.UTF8;
             var keyBytes = Encoding.UTF8.GetBytes(key);
-            var ivBytes = Encoding.UTF8.GetBytes(iv);
+            var ivBytes = string.IsNullOrWhiteSpace(iv) ? null : Encoding.UTF8.GetBytes(iv);
             if (keyBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));
             }
 
-            if (ivBytes.Length != 16)
+            if (ivBytes is not null && ivBytes.Length != 16)
             {
                 throw new ArgumentException(nameof(key));
             }
