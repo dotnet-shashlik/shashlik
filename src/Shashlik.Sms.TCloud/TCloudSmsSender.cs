@@ -22,6 +22,7 @@ namespace Shashlik.Sms.TCloud
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), false, DefaultValue = false)]
     public class TCloudSmsSender : AbstractSmsSender
     {
         private IOptions<TCloudSmsOptions> TCloudOptions { get; }

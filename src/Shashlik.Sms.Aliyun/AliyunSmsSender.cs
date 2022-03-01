@@ -19,6 +19,7 @@ namespace Shashlik.Sms.Aliyun
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), false, DefaultValue = false)]
     public class AliyunSmsSender : AbstractSmsSender
     {
         private IOptions<AliyunSmsOptions> AliyunOptions { get; }
