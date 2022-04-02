@@ -34,19 +34,19 @@ namespace Shashlik.Sms
             var smsTemplates = Options.CurrentValue.Templates.GetOrDefault(subject);
             if (smsTemplates is null || smsTemplates.TemplateId.IsNullOrWhiteSpace() || smsTemplates.Sign.IsNullOrWhiteSpace())
             {
-                throw new SmsTemplateException(new[] { phone }, subject);
+                throw new SmsTemplateException(new[] {phone}, subject);
             }
 
             if (!SmsLimit.CanSend(phone, subject))
             {
-                throw new SmsLimitException(new[] { phone });
+                throw new SmsLimitException(new[] {phone});
             }
         }
 
         public virtual Task<string> SendWithCheckAsync(string phone, string subject, params string[] args)
         {
             SendCheck(phone, subject, args);
-            var requestId = SendAsync(new[] { phone }, subject, args);
+            var requestId = SendAsync(new[] {phone}, subject, args);
             SmsLimit.SendDone(phone, subject);
             return requestId;
         }

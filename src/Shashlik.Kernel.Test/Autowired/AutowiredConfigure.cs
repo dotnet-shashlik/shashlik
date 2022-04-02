@@ -1,4 +1,5 @@
-﻿using Shashlik.Kernel.Dependency;
+﻿using System;
+using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.Kernel.Test.Autowired
 {
@@ -7,7 +8,7 @@ namespace Shashlik.Kernel.Test.Autowired
     {
         public static bool Inited { get; private set; } = false;
 
-        public void Configure(IKernelServiceProvider kernelServiceProvider)
+        public void Configure(IServiceProvider kernelServiceProvider)
         {
             Inited = true;
         }

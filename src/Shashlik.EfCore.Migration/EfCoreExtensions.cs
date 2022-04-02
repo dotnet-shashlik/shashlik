@@ -251,7 +251,7 @@ namespace Shashlik.EfCore.Migration
         /// <param name="serviceProvider"></param>
         public static IKernelServiceProvider DoAutoMigration(this IKernelServiceProvider serviceProvider)
         {
-            DoAutoMigration((IServiceProvider)serviceProvider);
+            DoAutoMigration((IServiceProvider) serviceProvider);
             return serviceProvider;
         }
     }

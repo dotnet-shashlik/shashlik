@@ -156,7 +156,7 @@ namespace Shashlik.Kernel
         /// </summary>
         /// <param name="kernelServiceProvider"></param>
         /// <returns></returns>
-        public static IKernelServiceProvider AssembleServiceProvider(this IKernelServiceProvider kernelServiceProvider)
+        public static IServiceProvider AssembleServiceProvider(this IServiceProvider kernelServiceProvider)
         {
             var autowireProvider = kernelServiceProvider.GetRequiredService<IAssemblerProvider<IServiceProviderAssembler>>();
             var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Sms.Options;
+using Shashlik.Utils.Extensions;
 
 namespace Shashlik.Sms
 {
@@ -27,7 +27,7 @@ namespace Shashlik.Sms
 
         public override Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
         {
-            Logger.LogInformation($"Empty sms send success, phone:{phones}, subject:{subject}.");
+            Logger.LogInformation($"Empty sms send success, phone:{phones.Join(",")}, subject:{subject}.");
             return Task.FromResult(Guid.NewGuid().ToString());
         }
     }

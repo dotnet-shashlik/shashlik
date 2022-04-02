@@ -7,7 +7,7 @@ namespace Shashlik.EfCore.Migration
 {
     [Singleton]
     [ConditionDependsOnMissing(typeof(IEfMigrationLock))]
-    internal class MemoryEfCoreMigrationLock : IEfMigrationLock, IDisposable
+    public class MemoryEfCoreMigrationLock : IEfMigrationLock, IDisposable
     {
         private readonly AsyncLock _locker = new AsyncLock();
 
