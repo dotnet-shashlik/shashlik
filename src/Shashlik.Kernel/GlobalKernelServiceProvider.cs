@@ -5,6 +5,9 @@
     /// </summary>
     public static class GlobalKernelServiceProvider
     {
+        /// <summary>
+        /// 根service provider
+        /// </summary>
         public static IKernelServiceProvider? KernelServiceProvider { get; private set; }
 
         internal static void InitServiceProvider(IKernelServiceProvider serviceProvider)

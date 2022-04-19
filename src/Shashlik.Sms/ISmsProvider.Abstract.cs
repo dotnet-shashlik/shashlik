@@ -15,9 +15,9 @@ namespace Shashlik.Sms
     /// <summary>
     /// 抽象短信发送类
     /// </summary>
-    public abstract class AbstractSmsSender : ISmsSender
+    public abstract class AbstractSmsProvider : ISmsProvider
     {
-        public AbstractSmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options)
+        public AbstractSmsProvider(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options)
         {
             SmsLimit = smsLimit;
             Options = options;
@@ -25,6 +25,8 @@ namespace Shashlik.Sms
 
         protected ISmsLimit SmsLimit { get; }
         protected IOptionsMonitor<SmsOptions> Options { get; }
+
+        public abstract string ProviderName { get; }
 
         public virtual void SendCheck(string phone, string subject, params string[] args)
         {

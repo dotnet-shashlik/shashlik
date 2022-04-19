@@ -80,10 +80,10 @@ namespace Shashlik.Sms.Limit.Redis.Tests
         [Fact]
         public void EmptySmsTest()
         {
-            var emptySmsSender = new EmptySmsSender(
+            var emptySmsSender = new EmptySmsProvider(
                 GetService<ISmsLimit>(),
                 GetService<IOptionsMonitor<SmsOptions>>(),
-                GetService<ILogger<EmptySmsSender>>()
+                GetService<ILogger<EmptySmsProvider>>()
             );
             emptySmsSender.SendCheck(_testPhone1, _captchaSubject);
             Should.Throw<SmsTemplateException>(() => emptySmsSender.SendCheck(_testPhone1, "none"));

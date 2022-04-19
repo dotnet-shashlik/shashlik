@@ -14,16 +14,19 @@ namespace Shashlik.Sms
     /// 空短信发送
     /// </summary>
     [Singleton]
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), true, DefaultValue = false)]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    public class EmptySmsSender : AbstractSmsSender
+    public class EmptySmsProvider : AbstractSmsProvider
     {
-        public EmptySmsSender(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options, ILogger<EmptySmsSender> logger) : base(smsLimit, options)
+        public EmptySmsProvider(ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> options, ILogger<EmptySmsProvider> logger) : base(smsLimit, options)
         {
             Logger = logger;
         }
 
-        protected ILogger<EmptySmsSender> Logger { get; }
+        protected ILogger<EmptySmsProvider> Logger { get; }
+
+        public override string ProviderName => Provider;
+
+        public const string Provider = "empty";
 
         public override Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
         {

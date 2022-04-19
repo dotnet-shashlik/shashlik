@@ -22,11 +22,12 @@ namespace Shashlik.Sms.TCloud
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), false, DefaultValue = false)]
-    public class TCloudSmsSender : AbstractSmsSender
+    public class TCloudSmsSender : AbstractSmsProvider
     {
         private IOptions<TCloudSmsOptions> TCloudOptions { get; }
         private SmsClient Client { get; }
+
+        public override string ProviderName => "tcloud";
 
         public TCloudSmsSender(IOptions<TCloudSmsOptions> tCloudOptions, ISmsLimit smsLimit, IOptionsMonitor<SmsOptions> sOptions)
             : base(smsLimit, sOptions)
@@ -76,6 +77,7 @@ namespace Shashlik.Sms.TCloud
              * 第二个参数是地域信息，可以直接填写字符串ap-guangzhou，或者引用预设的常量 */
             Client = new SmsClient(cred, TCloudOptions.Value.Region, clientProfile);
         }
+
 
         public override async Task<string> SendAsync(IEnumerable<string> phones, string subject, params string[] args)
         {

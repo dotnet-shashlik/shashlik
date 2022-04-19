@@ -19,8 +19,7 @@ namespace Shashlik.Sms.Aliyun
     /// </summary>
     [Singleton]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.UseEmptySms), false, DefaultValue = false)]
-    public class AliyunSmsSender : AbstractSmsSender
+    public class AliyunSmsSender : AbstractSmsProvider
     {
         private IOptions<AliyunSmsOptions> AliyunOptions { get; }
         private AliyunClient Client { get; }
@@ -36,6 +35,8 @@ namespace Shashlik.Sms.Aliyun
                 Endpoint = AliyunOptions.Value.EndPoint
             });
         }
+
+        public override string ProviderName => "aliyun";
 
         public override void SendCheck(string phone, string subject, params string[] args)
         {

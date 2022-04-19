@@ -11,7 +11,7 @@ namespace Shashlik.Sms
         /// <param name="phone">手机号码</param>
         /// <param name="args">短信参数</param>
         /// <returns></returns>
-        public static async Task<string> SendCaptchaAsync(this ISmsSender sender, string phone, params string[] args)
+        public static async Task<string> SendCaptchaAsync(this ISmsProvider sender, string phone, params string[] args)
         {
             return await sender.SendWithCheckAsync(phone, SmsConstants.SubjectCaptcha, args);
         }

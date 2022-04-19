@@ -15,9 +15,9 @@ namespace Shashlik.Sms.Options
         public bool Enable { get; set; } = true;
 
         /// <summary>
-        /// 使用空短信,不真实发送
+        /// 短信提供者名称，具体使用什么短信
         /// </summary>
-        public bool UseEmptySms { get; set; } = false;
+        public string Provider { get; set; } = EmptySmsProvider.Provider;
 
         /// <summary>
         /// 验证码每人每天可以发多少次,0不限制
