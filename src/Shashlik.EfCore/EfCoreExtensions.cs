@@ -195,7 +195,8 @@ namespace Shashlik.EfCore
                         .ForEachItem(property =>
                         {
                             builder.Property(property.PropertyType, property.Name)
-                                .HasConversion(typeof(JsonValueConverter<>).MakeGenericType(property.PropertyType));
+                                .HasConversion(typeof(JsonValueConverter<>).MakeGenericType(property.PropertyType),
+                                    typeof(JsonValueComparer<>).MakeGenericType(property.PropertyType));
                         });
                 });
         }
