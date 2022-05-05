@@ -17,7 +17,6 @@ namespace Shashlik.EfCore
 {
     public static class EfCoreExtensions
     {
-
         /// <summary>
         /// 获取上下文所有的已注册的实体类型
         /// </summary>
@@ -45,7 +44,8 @@ namespace Shashlik.EfCore
             IServiceProvider serviceProvider)
             where TEntityBase : class
         {
-            RegisterEntities<TEntityBase>(modelBuilder, serviceProvider, r => serviceProvider.GetService(r) ?? Activator.CreateInstance(r));
+            RegisterEntities<TEntityBase>(modelBuilder, serviceProvider,
+                r => serviceProvider.GetService(r) ?? Activator.CreateInstance(r));
         }
 
         /// <summary>
@@ -64,7 +64,8 @@ namespace Shashlik.EfCore
             var assemblies = ReflectionHelper.GetReferredAssemblies<TEntityBase>(DependencyContext.Default);
 
             foreach (var item in assemblies)
-                modelBuilder.RegisterEntitiesFromAssembly<TEntityBase>(item, serviceProvider, fluentConfigClassInstanceSupplier);
+                modelBuilder.RegisterEntitiesFromAssembly<TEntityBase>(item, serviceProvider,
+                    fluentConfigClassInstanceSupplier);
         }
 
 
@@ -88,7 +89,7 @@ namespace Shashlik.EfCore
                 serviceProvider,
                 r => !r.IsAbstract && r.IsClass && typeof(TEntityBase).IsAssignableFrom(r),
                 fluentConfigClassInstanceSupplier
-                );
+            );
         }
 
         /// <summary>
@@ -155,8 +156,9 @@ namespace Shashlik.EfCore
             foreach (var item in filters)
             {
                 var type = item.GetType()
-                                .GetInterfaces()
-                                .FirstOrDefault(r => r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IEfCoreGlobalFilterRegister<>));
+                    .GetInterfaces()
+                    .FirstOrDefault(r =>
+                        r.IsGenericType && r.GetGenericTypeDefinition() == typeof(IEfCoreGlobalFilterRegister<>));
                 if (type == null)
                     continue;
                 var filterType = type.GetGenericArguments()[0];
@@ -171,19 +173,31 @@ namespace Shashlik.EfCore
                 {
                     // 直接调用Entity方法注册实体
                     var builder = modelBuilder.Entity(entityType);
+
+                    // 注册软删除过滤器
                     foreach (var keyValuePair in filterRegisterMap)
                     {
                         if (keyValuePair.Key.IsAssignableFrom(entityType))
                         {
                             var method = keyValuePair.Value.GetType()
-                                                    .GetMethod(nameof(IEfCoreGlobalFilterRegister<ISoftDeleted>.HasQueryFilter), new Type[0])
-                                                    !.MakeGenericMethod(entityType);
+                                .GetMethod(nameof(IEfCoreGlobalFilterRegister<ISoftDeleted>.HasQueryFilter),
+                                    Type.EmptyTypes)
+                                !.MakeGenericMethod(entityType);
                             var exp = (LambdaExpression?)method.Invoke(keyValuePair.Value, new object[] { });
                             builder.HasQueryFilter(exp);
                         }
                     }
+
+                    // 注册[JsonField]
+                    entityType.GetProperties()
+                        .Where(r => r.CanRead && r.CanWrite && !r.GetIndexParameters().Any() &&
+                                    r.IsDefinedAttribute<JsonFieldAttribute>(true))
+                        .ForEachItem(property =>
+                        {
+                            builder.Property(property.PropertyType, property.Name)
+                                .HasConversion(typeof(JsonValueConverter<>).MakeGenericType(property.PropertyType));
+                        });
                 });
         }
-
     }
 }
