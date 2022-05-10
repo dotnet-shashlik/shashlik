@@ -89,14 +89,16 @@ namespace Shashlik.Kernel
             var serviceDescriptorProvider = serviceProvider.GetRequiredService<IServiceDescriptorProvider>();
 
             var types
-                = ReflectionHelper.GetTypesAndAttribute<ServiceAttribute>(kernelServices.ScanFromDependencyContext, false);
+                = ReflectionHelper.GetTypesAndAttribute<ServiceAttribute>(kernelServices.ScanFromDependencyContext,
+                    false);
 
             foreach (var item in types)
             {
                 var services = serviceDescriptorProvider.GetDescriptor(item.Key);
                 foreach (var shashlikServiceDescriptor in services)
                 {
-                    if (!kernelServices.Services.AnyService(shashlikServiceDescriptor.ServiceType, shashlikServiceDescriptor.ImplementationType!))
+                    if (!kernelServices.Services.AnyService(shashlikServiceDescriptor.ServiceType,
+                            shashlikServiceDescriptor.ImplementationType!))
                         kernelServices.Services.Add(shashlikServiceDescriptor);
                 }
             }
@@ -147,7 +149,9 @@ namespace Shashlik.Kernel
         {
             var kernelServiceProvider = new InnerKernelServiceProvider(serviceProvider);
             GlobalKernelServiceProvider.InitServiceProvider(kernelServiceProvider);
-            kernelServiceProvider.AssembleServiceProvider();
+            var serviceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+            using var scope = serviceScopeFactory.CreateScope();
+            scope.ServiceProvider.AssembleServiceProvider();
             return kernelServiceProvider;
         }
 
@@ -158,7 +162,8 @@ namespace Shashlik.Kernel
         /// <returns></returns>
         public static IServiceProvider AssembleServiceProvider(this IServiceProvider kernelServiceProvider)
         {
-            var autowireProvider = kernelServiceProvider.GetRequiredService<IAssemblerProvider<IServiceProviderAssembler>>();
+            var autowireProvider =
+                kernelServiceProvider.GetRequiredService<IAssemblerProvider<IServiceProviderAssembler>>();
             var kernelServices = kernelServiceProvider.GetRequiredService<IKernelServices>();
             var dic = autowireProvider.Load(kernelServices, kernelServiceProvider);
             autowireProvider.Execute(dic, r => { r.ServiceInstance.Configure(kernelServiceProvider); });
