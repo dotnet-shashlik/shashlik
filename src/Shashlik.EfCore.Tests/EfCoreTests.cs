@@ -320,7 +320,7 @@ namespace Shashlik.EfCore.Tests
             }
         }
 
-        private static int count = 50;
+        //private static int count = 50;
 
         // [Fact]
         // public async Task PerformanceAttributeTransactionalTest()
