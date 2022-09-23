@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using Shashlik.Utils.Helpers.RSAInner;
+using com.github.xiangyuecn.rsacsharp;
 
 namespace Shashlik.Utils.Helpers
 {
@@ -47,10 +47,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static RSA FromPem(string pemKey)
         {
-            var rsa = RSA.Create();
-            var ps = RSAParametersConvert.PemToRSAParameters(pemKey);
-            rsa.ImportParameters(ps);
-            return rsa;
+            return RSA_PEM.FromPEM(pemKey).GetRSA_ForCore();
         }
 
         /// <summary>
@@ -60,10 +57,7 @@ namespace Shashlik.Utils.Helpers
         /// <returns></returns>
         public static RSA FromXml(string xmlKey)
         {
-            var rsa = RSA.Create();
-            var ps = RSAParametersConvert.XmlToRSAParameters(xmlKey);
-            rsa.ImportParameters(ps);
-            return rsa;
+            return RSA_PEM.FromXML(xmlKey).GetRSA_ForCore();
         }
 
         /// <summary>
@@ -319,24 +313,26 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// 导出为xml key
         /// </summary>
-        /// <param name="rsa"></param>
-        /// <param name="includePrivateKey"></param>
+        /// <param name="rsa">rsa</param>
+        /// <param name="includePrivateKey">是否导出私钥</param>
         /// <returns></returns>
         public static string ToXml(this RSA rsa, bool includePrivateKey)
         {
-            return RSAParametersConvert.ToXml(rsa.ExportParameters(includePrivateKey), includePrivateKey);
+            var convertToPublic = !includePrivateKey;
+            return new RSA_PEM(rsa, convertToPublic).ToXML(convertToPublic);
         }
 
         /// <summary>
         /// 导出为pem key
         /// </summary>
-        /// <param name="rsa"></param>
+        /// <param name="rsa">rsa</param>
         /// <param name="includePrivateKey">是否导出私钥</param>
         /// <param name="isPkcs8">是否导出为pkcs8格式</param>
         /// <returns></returns>
         public static string ToPem(this RSA rsa, bool includePrivateKey, bool isPkcs8)
         {
-            return RSAParametersConvert.ToPem(rsa.ExportParameters(includePrivateKey), includePrivateKey, isPkcs8);
+            var convertToPublic = !includePrivateKey;
+            return new RSA_PEM(rsa, convertToPublic).ToPEM(convertToPublic, isPkcs8, isPkcs8);
         }
     }
 }

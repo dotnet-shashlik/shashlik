@@ -81,7 +81,8 @@ namespace Shashlik.Utils.Test
                     .SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
 
                 RSAHelper.LoadX509FromPublicCertificate(PublicKeyCer)
-                    .GetRSAPublicKey().VerifySignData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
+                    .GetRSAPublicKey()
+                    .VerifySignData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
 
                 RSAHelper.FromPem(PublicKeyPem)
@@ -89,7 +90,8 @@ namespace Shashlik.Utils.Test
                     .ShouldBe(true);
 
                 RSAHelper.LoadX509FromPublicCertificate(PublicKeyCer)
-                    .GetRSAPublicKey().VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
+                    .GetRSAPublicKey()
+                    .VerifySignData(data, signature1, HashAlgorithmName.SHA256, RSASignaturePadding.Pss)
                     .ShouldBe(true);
 
                 RSAHelper.FromPem(PublicKeyPem)
@@ -99,7 +101,8 @@ namespace Shashlik.Utils.Test
 
             {
                 using var rsa = RSAHelper.FromPem(PublicKeyPem);
-                Should.Throw<Exception>(() => rsa.ToPem(true, true));
+                var pem = rsa.ToPem(true, true);
+                Console.WriteLine(pem);
             }
 
             {
