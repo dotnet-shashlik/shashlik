@@ -2,15 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.NestedTransaction
 {
+    /// <summary>
+    /// 定义开启事务的方式,不定义就使用默认的DbContext.Database.BeginTransaction(), 需注册为单例
+    /// </summary>
     public interface IEfNestedTransactionBeginFunction
     {
         Task<IDbContextTransaction> BeginTransactionAsync(DbContext dbContext);
     }
 
     /// <summary>
-    /// 定义开启事务的方式,不定义就使用默认的DbContext.Database.BeginTransaction(), 需注册为单例
+    /// 自定义定义开启事务的方式,不定义就使用默认的DbContext.Database.BeginTransaction(), 需注册为单例
     /// </summary>
     public interface IEfNestedTransactionBeginFunction<TDbContext> : IEfNestedTransactionBeginFunction
         where TDbContext : DbContext

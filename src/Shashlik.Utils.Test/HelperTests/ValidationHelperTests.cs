@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
@@ -18,21 +19,21 @@ namespace Shashlik.Utils.Test.HelperTests
             var obj = new ValidationClass1
             {
                 Name = "张三",
-                Names1 = new string[] {"1", "2"},
-                Names2 = new string[] {"1", "2"},
-                JObject = new {Age = 1}.ToJson().DeserializeJson<JObject>(),
-                JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new {Age = 1})),
+                Names1 = new string[] { "1", "2" },
+                Names2 = new string[] { "1", "2" },
+                JObject = new { Age = 1 }.ToJson().DeserializeJson<JObject>(),
+                JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new { Age = 1 })),
                 Class2 = new ValidationClass2
                 {
                     Name = "李四",
-                    Names1 = new string[] {"1", "2"},
-                    Names2 = new string[] {"1", "2"},
-                    JObject = new {Age = 1}.ToJson().DeserializeJson<JObject>(),
-                    JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new {Age = 1})),
+                    Names1 = new string[] { "1", "2" },
+                    Names2 = new string[] { "1", "2" },
+                    JObject = new { Age = 1 }.ToJson().DeserializeJson<JObject>(),
+                    JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new { Age = 1 })),
                 }
             };
 
-            ValidationHelper.Validate(obj).Count.ShouldBe(0);
+            obj.TryValidateObjectRecursion(out var _).ShouldBeTrue();
         }
 
         [Fact]
@@ -42,7 +43,7 @@ namespace Shashlik.Utils.Test.HelperTests
             {
             };
 
-            ValidationHelper.Validate(obj).Count.ShouldBe(4);
+            obj.TryValidateObjectRecursion(out var _).ShouldBeFalse();
         }
 
         [Fact]
@@ -51,16 +52,18 @@ namespace Shashlik.Utils.Test.HelperTests
             var obj = new ValidationClass1
             {
                 Name = "张三",
-                Names1 = new string[] {"1", "2"},
-                Names2 = new string[] {"1", "2"},
-                JObject = new {Age = 1}.ToJson().DeserializeJson<JObject>(),
-                JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new {Age = 1})),
+                Names1 = new string[] { "1", "2" },
+                Names2 = new string[] { "1", "2" },
+                JObject = new { Age = 1 }.ToJson().DeserializeJson<JObject>(),
+                JsonElement = JsonSerializer.Deserialize<JsonElement>(JsonSerializer.Serialize(new { Age = 1 })),
                 Class2 = new ValidationClass2
                 {
                 }
             };
 
-            ValidationHelper.Validate(obj).Count.ShouldBe(3);
+
+            obj.TryValidateObjectRecursion( out var _).ShouldBeFalse();
+            //ValidationHelper.Validate(obj).Count.ShouldBe(3);
         }
 
 

@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Helpers;
 using System.Linq.Expressions;
 using Microsoft.Extensions.DependencyInjection;
+using Shashlik.EfCore.Filter;
+using Shashlik.EfCore.Json;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable InvertIf
@@ -133,7 +135,6 @@ namespace Shashlik.EfCore
                     && t.IsSubTypeOfGenericType(typeof(IEntityTypeConfiguration<>)))
                 .ToList();
 
-            var registeredTypes = new HashSet<Type>();
             // 存在fluent api配置的类,必须在Entity方法之前调用
             configTypes.ForEach(mappingType =>
             {
@@ -147,8 +148,6 @@ namespace Shashlik.EfCore
                 if (map is null)
                     throw new InvalidOperationException($"can not create instance of: {mappingType}!");
                 applyConfigurationMethod.MakeGenericMethod(entityType).Invoke(modelBuilder, new[] { map });
-
-                registeredTypes.Add(entityType);
             });
 
             var filters = serviceProvider.GetServices<IEfCoreGlobalFilterRegister>();

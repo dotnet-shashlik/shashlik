@@ -8,6 +8,7 @@ using Shashlik.Sms.Options;
 using Microsoft.Extensions.Caching.Memory;
 using Shashlik.Sms.Aliyun;
 using System;
+using FreeRedis;
 using Microsoft.Extensions.Logging;
 using Shashlik.Sms.Exceptions;
 
@@ -28,14 +29,15 @@ namespace Shashlik.Sms.Limit.Redis.Tests
         public void RedisLimitTest()
         {
             var smsLimit = GetService<ISmsLimit>();
+            var redisClient = GetService<RedisClient>();
             smsLimit.ShouldBeOfType(typeof(RedisSmsLimit));
 
             // 先清除数据
             {
-                var keys = RedisHelper.Keys($"SMS_REDIS_LIMIT:*");
+                var keys = redisClient.Keys($"SMS_REDIS_LIMIT:*");
                 foreach (var key in keys)
                 {
-                    RedisHelper.Del(key);
+                    redisClient.Del(key);
                 }
             }
 

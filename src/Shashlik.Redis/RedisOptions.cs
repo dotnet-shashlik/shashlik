@@ -1,43 +1,60 @@
-﻿using System;
-using CSRedis;
-using Shashlik.Kernel.Attributes;
+﻿using Shashlik.Kernel.Attributes;
 
-// ReSharper disable All
+namespace Shashlik.Redis;
 
-namespace Shashlik.Redis
+[AutoOptions("Shashlik.Redis")]
+public class RedisOptions
 {
-    [AutoOptions("Shashlik.Redis")]
-    public class RedisOptions
+    /// <summary>
+    /// 是否启用
+    /// </summary>
+    public bool Enable { get; set; } = true;
+
+    /// <summary>
+    /// 0:单机/主从, 1:哨兵, 2:集群
+    /// </summary>
+    public RedisMode Mode { get; set; } = RedisMode.Default;
+
+    /// <summary>
+    /// 哨兵模式是否读写分离
+    /// </summary>
+    public bool RwSplitting { get; set; }
+
+    /// <summary>
+    /// 主从/单机连接字符串
+    /// </summary>
+    public string? ConnectionString { get; set; }
+
+    /// <summary>
+    /// 哨兵
+    /// </summary>
+    public string[]? Sentinels { get; set; }
+
+    /// <summary>
+    /// 从
+    /// </summary>
+    public string[]? SlaveConnectionStrings { get; set; }
+
+    /// <summary>
+    /// 集群
+    /// </summary>
+    public string[]? ClusterConnectionStrings { get; set; }
+
+    public enum RedisMode
     {
         /// <summary>
-        /// 是否启用
+        /// 默认: 单机/主从
         /// </summary>
-        public bool Enable { get; set; } = true;
-
-        /*
-         * 典型的哨兵模式配置
-         * ConnectionString: mymaster,password=123,prefix=my_
-         * Sentinels: new [] { "192.169.1.10:26379", "192.169.1.11:26379", "192.169.1.12:26379" })
-         * **/
+        Default = 0,
 
         /// <summary>
-        /// 连接字符串
+        /// 哨兵模式
         /// </summary>
-        public string? ConnectionString { get; set; }
+        Sentinel = 1,
 
         /// <summary>
-        /// 哨兵配置
+        /// 集群模式
         /// </summary>
-        public string[] Sentinels { get; set; } = new string[0];
-
-        /// <summary>
-        /// 只读
-        /// </summary>
-        public bool Readonly { get; set; }
-
-        /// <summary>
-        /// 自定义Client创建，高优先级
-        /// </summary>
-        public Func<CSRedisClient>? CSRedisClientFactory { get; set; }
+        Cluster = 2
     }
 }

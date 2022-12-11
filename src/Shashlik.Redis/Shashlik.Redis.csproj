@@ -6,20 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Caching.CSRedis" Version="3.6.60" />
+        <PackageReference Include="FreeRedis" Version="1.0.3" />
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
-        <PackageReference Include="CSRedisCore" Version="3.6.6" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 
-    </ItemGroup>
-
-    <ItemGroup>
-      <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60">
-        <HintPath>C:\Program Files\dotnet\packs\Microsoft.AspNetCore.App.Ref\5.0.0\ref\net5.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-      </Reference>
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿using System;
-using CSRedis;
+using FreeRedis;
 using Microsoft.Extensions.Options;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
@@ -14,12 +14,13 @@ namespace Shashlik.Sms.Limit.Redis
     /// 基于redis的短信发送频率限制
     /// </summary>
     [Singleton]
-    [ConditionDependsOn(typeof(CSRedisClient))]
+    [ConditionDependsOn(typeof(RedisClient))]
     [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(SmsOptions.Enable), true, DefaultValue = true)]
-    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(RedisSmsLimitOptions.EnableRedisLimit), true, DefaultValue = true)]
+    [ConditionOnProperty(typeof(bool), "Shashlik.Sms." + nameof(RedisSmsLimitOptions.EnableRedisLimit), true,
+        DefaultValue = true)]
     public class RedisSmsLimit : ISmsLimit
     {
-        public RedisSmsLimit(IOptionsMonitor<SmsOptions> options, CSRedisClient redisClient)
+        public RedisSmsLimit(IOptionsMonitor<SmsOptions> options, RedisClient redisClient)
         {
             Options = options;
             RedisClient = redisClient;
@@ -27,7 +28,7 @@ namespace Shashlik.Sms.Limit.Redis
 
         private IOptionsMonitor<SmsOptions> Options { get; }
 
-        private CSRedisClient RedisClient { get; }
+        private RedisClient RedisClient { get; }
 
         // 0:phone,1:subject
         private const string DAY_CACHE_PREFIX = "SMS_REDIS_LIMIT:DAY:{0}:{1}";
@@ -77,14 +78,15 @@ namespace Shashlik.Sms.Limit.Redis
 
             var now = DateTime.Now;
             var daySeconds = (int)((now.Date.AddDays(1) - now).TotalSeconds);
-            var hourSeconds = (int)((new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1) - now).TotalSeconds);
+            var hourSeconds = (int)((new DateTime(now.Year, now.Month, now.Day, now.Hour, 0, 0).AddHours(1) - now)
+                .TotalSeconds);
             var minuteSeconds = 60 - now.Second;
 
             var dayCacheKey = DAY_CACHE_PREFIX.Format(phone, subject);
             var hourCacheKey = HOUR_CACHE_PREFIX.Format(phone, subject);
             var minuteCacheKey = MINUTE_CACHE_PREFIX.Format(phone, subject);
 
-            string script = $@"
+            var script = $@"
 local dayKey = '{dayCacheKey}'
 local dayCounter = redis.call('INCR','{dayCacheKey}')
 if(dayCounter == 1)
@@ -106,7 +108,7 @@ then
     redis.call('EXPIRE','{minuteCacheKey}',{minuteSeconds})
 end
 ";
-            RedisClient.Eval(script, "NONE");
+            RedisClient.Eval(script, new string[] { "NONE" });
         }
     }
 }

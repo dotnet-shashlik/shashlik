@@ -313,26 +313,24 @@ namespace Shashlik.Utils.Helpers
         /// <summary>
         /// 导出为xml key
         /// </summary>
-        /// <param name="rsa">rsa</param>
-        /// <param name="includePrivateKey">是否导出私钥</param>
+        /// <param name="rsa"></param>
+        /// <param name="includePrivateKey"></param>
         /// <returns></returns>
         public static string ToXml(this RSA rsa, bool includePrivateKey)
         {
-            var convertToPublic = !includePrivateKey;
-            return new RSA_PEM(rsa, convertToPublic).ToXML(convertToPublic);
+            return new RSA_PEM(rsa, !includePrivateKey).ToXML(!includePrivateKey);
         }
 
         /// <summary>
         /// 导出为pem key
         /// </summary>
-        /// <param name="rsa">rsa</param>
+        /// <param name="rsa"></param>
         /// <param name="includePrivateKey">是否导出私钥</param>
         /// <param name="isPkcs8">是否导出为pkcs8格式</param>
         /// <returns></returns>
         public static string ToPem(this RSA rsa, bool includePrivateKey, bool isPkcs8)
         {
-            var convertToPublic = !includePrivateKey;
-            return new RSA_PEM(rsa, convertToPublic).ToPEM(convertToPublic, isPkcs8, isPkcs8);
+            return new RSA_PEM(rsa, !includePrivateKey).ToPEM(!includePrivateKey, isPkcs8, isPkcs8);
         }
     }
 }
