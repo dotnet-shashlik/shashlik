@@ -4,6 +4,7 @@ using FreeRedis;
 using Shashlik.Kernel;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Shashlik.Kernel.Attributes;
 using Shashlik.Kernel.Dependency;
 using Shashlik.Utils.Extensions;
@@ -81,6 +82,10 @@ namespace Shashlik.Redis
                 }
                 default: throw new IndexOutOfRangeException();
             }
+
+            // 配置默认使用Newtonsoft.Json作为序列化工具
+            redisClient.Serialize = JsonConvert.SerializeObject;
+            redisClient.Deserialize = JsonConvert.DeserializeObject;
 
             kernelService.Services.AddSingleton(redisClient);
         }

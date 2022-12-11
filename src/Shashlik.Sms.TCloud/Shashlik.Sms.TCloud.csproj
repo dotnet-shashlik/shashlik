@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="TencentCloudSDK.Sms" Version="3.0.420" />
+        <PackageReference Include="TencentCloudSDK.Sms" Version="3.0.660" />
     </ItemGroup>
 
     <ItemGroup>

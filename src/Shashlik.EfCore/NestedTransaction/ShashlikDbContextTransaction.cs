@@ -3,14 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.NestedTransaction
 {
     internal class ShashlikDbContextTransaction : IDbContextTransaction
     {
         private volatile bool _isRollback;
         private volatile bool _isDispose;
         private volatile bool _isCommit;
-        private Action? _disposedAction;
+        private readonly Action? _disposedAction;
 
         public ShashlikDbContextTransaction(IDbContextTransaction topTransaction, bool isTop, Action? disposedAction = null)
         {

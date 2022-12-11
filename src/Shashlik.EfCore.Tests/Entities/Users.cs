@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Shashlik.EfCore.Filter;
 
 namespace Shashlik.EfCore.Tests.Entities
 {

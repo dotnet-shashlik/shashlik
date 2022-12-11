@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Newtonsoft.Json;
 
-namespace Shashlik.EfCore;
+namespace Shashlik.EfCore.Json;
 
 /// <summary>
 /// json存储转换器

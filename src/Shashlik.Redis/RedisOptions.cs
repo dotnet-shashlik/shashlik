@@ -42,8 +42,19 @@ public class RedisOptions
 
     public enum RedisMode
     {
+        /// <summary>
+        /// 默认: 单机/主从
+        /// </summary>
         Default = 0,
+
+        /// <summary>
+        /// 哨兵模式
+        /// </summary>
         Sentinel = 1,
+
+        /// <summary>
+        /// 集群模式
+        /// </summary>
         Cluster = 2
     }
 }

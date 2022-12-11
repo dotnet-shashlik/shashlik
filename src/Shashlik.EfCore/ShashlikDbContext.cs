@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Shashlik.Kernel;
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using Shashlik.EfCore.Filter;
 
 namespace Shashlik.EfCore
 {

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
-using Shashlik.EfCore.Migration;
+using Shashlik.EfCore.NestedTransaction;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.Kernel;
 using Shashlik.Kernel.Test;
@@ -376,33 +375,6 @@ namespace Shashlik.EfCore.Tests
         //     stopwatch.Stop();
         //     _testOutputHelper.WriteLine($"Ef原生事务执行{count}次,总计耗时:{stopwatch.ElapsedMilliseconds / 1000M}秒");
         // }
-
-        [Fact]
-        public async Task MigrationTests()
-        {
-            var serviceProvider = GetService<IServiceProvider>();
-            var kernelServices = GetService<IKernelServices>();
-
-            await serviceProvider.MigrationAsync(typeof(TestDbContext6));
-            await serviceProvider.MigrationAsync<TestDbContext3>();
-            await kernelServices.Services.MigrationAsync<TestDbContext6>();
-
-            // 所有的都迁移完成了，可以操作数据了
-
-            var dbContext1 = GetService<TestDbContext1>();
-            var dbContext2 = GetService<TestDbContext2>();
-            var dbContext3 = GetService<TestDbContext3>();
-            var dbContext4 = GetService<TestDbContext4>();
-            var dbContext5 = GetService<TestDbContext5>();
-            var dbContext6 = GetService<TestDbContext6>();
-
-            dbContext1.Set<Users>().ToList().ShouldNotBeNull();
-            dbContext2.Set<Users>().ToList().ShouldNotBeNull();
-            dbContext3.Set<Users>().ToList().ShouldNotBeNull();
-            dbContext4.Set<Users>().ToList().ShouldNotBeNull();
-            dbContext5.Set<Users>().ToList().ShouldNotBeNull();
-            dbContext6.Set<Users>().ToList().ShouldNotBeNull();
-        }
 
         [Fact]
         public void GetAllEntityTypesTest()

@@ -1,7 +1,6 @@
 ﻿// ReSharper disable UnusedMemberInSuper.Global
-using System;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.Filter
 {
     /// <summary>
     /// 软删除标记
@@ -24,21 +23,5 @@ namespace Shashlik.EfCore
         /// 删除时间
         /// </summary>
         TTime? DeleteTime { get; set; }
-    }
-
-    /// <summary>
-    /// 软删除, long时间戳类型
-    /// </summary>
-    public interface ISoftDeletedLong : ISoftDeleted<long>
-    {
-
-    }
-
-    /// <summary>
-    /// 软删除, DateTime时间类型
-    /// </summary>
-    public interface ISoftDeletedDateTime : ISoftDeleted<DateTime>
-    {
-
     }
 }

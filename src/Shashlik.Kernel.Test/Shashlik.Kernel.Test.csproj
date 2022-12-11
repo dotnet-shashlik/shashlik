@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.EfCore.Migration\Shashlik.EfCore.Migration.csproj" />
         <ProjectReference Include="..\Shashlik.EfCore\Shashlik.EfCore.csproj" />
         <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 

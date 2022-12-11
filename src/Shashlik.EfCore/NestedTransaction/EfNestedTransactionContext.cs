@@ -7,11 +7,12 @@ using Shashlik.Kernel;
 using Shashlik.Utils.Extensions;
 using IsolationLevel = System.Data.IsolationLevel;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.NestedTransaction
 {
     public static class EfNestedTransactionContext
     {
-        private static readonly ConcurrentDictionary<DbContext, AsyncLocal<ShashlikDbContextTransaction>> TransactionContext = new();
+        private static readonly ConcurrentDictionary<DbContext, AsyncLocal<ShashlikDbContextTransaction>>
+            TransactionContext = new();
 
         /// <summary>
         /// 获取当前上下文嵌套事务对象
@@ -19,7 +20,8 @@ namespace Shashlik.EfCore
         /// <param name="dbContext"></param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static IDbContextTransaction? GetCurrentNestedTransaction<TDbContext>(this TDbContext dbContext) where TDbContext : DbContext
+        public static IDbContextTransaction? GetCurrentNestedTransaction<TDbContext>(this TDbContext dbContext)
+            where TDbContext : DbContext
         {
             return TransactionContext.GetOrDefault(dbContext)?.Value;
         }
@@ -31,7 +33,8 @@ namespace Shashlik.EfCore
         /// <param name="isolationLevel">事务隔离级别，null保持默认,注册<see cref="IEfNestedTransactionBeginFunction"/>后此参数无效</param>
         /// <typeparam name="TDbContext"></typeparam>
         /// <returns></returns>
-        public static IDbContextTransaction BeginNestedTransaction<TDbContext>(this TDbContext dbContext, IsolationLevel? isolationLevel = null)
+        public static IDbContextTransaction BeginNestedTransaction<TDbContext>(this TDbContext dbContext,
+            IsolationLevel? isolationLevel = null)
             where TDbContext : DbContext
         {
             return Begin(typeof(TDbContext), dbContext, isolationLevel);
@@ -39,9 +42,11 @@ namespace Shashlik.EfCore
 
         #region private method
 
-        private static IDbContextTransaction Begin(Type dbContextType, DbContext dbContext, IsolationLevel? isolationLevel)
+        private static IDbContextTransaction Begin(Type dbContextType, DbContext dbContext,
+            IsolationLevel? isolationLevel)
         {
-            var asyncLocal = TransactionContext.GetOrAdd(dbContext, _ => new AsyncLocal<ShashlikDbContextTransaction>());
+            var asyncLocal =
+                TransactionContext.GetOrAdd(dbContext, _ => new AsyncLocal<ShashlikDbContextTransaction>());
             if (asyncLocal.Value is not null && asyncLocal.Value.IsDispose)
             {
                 var newAsyncLocal = new AsyncLocal<ShashlikDbContextTransaction>();
@@ -57,14 +62,16 @@ namespace Shashlik.EfCore
             {
                 var originalTransaction = BeginBySync(dbContextType, dbContext, isolationLevel);
                 asyncLocal.Value =
-                    new ShashlikDbContextTransaction(originalTransaction, true, () => { TransactionContext.TryRemove(dbContext, out _); });
+                    new ShashlikDbContextTransaction(originalTransaction, true,
+                        () => { TransactionContext.TryRemove(dbContext, out _); });
                 return asyncLocal.Value;
             }
 
             return new ShashlikDbContextTransaction(asyncLocal.Value, false);
         }
 
-        private static IDbContextTransaction BeginBySync(Type dbContextType, DbContext dbContext, IsolationLevel? isolationLevel)
+        private static IDbContextTransaction BeginBySync(Type dbContextType, DbContext dbContext,
+            IsolationLevel? isolationLevel)
         {
             var beginFunction = GetEfNestedTransactionBeginFunction(dbContextType);
 
@@ -81,10 +88,13 @@ namespace Shashlik.EfCore
 
         private static IEfNestedTransactionBeginFunction? GetEfNestedTransactionBeginFunction(Type dbContextType)
         {
-            var beginFunctionDefinitionType = typeof(IEfNestedTransactionBeginFunction<>).MakeGenericType(dbContextType);
+            var beginFunctionDefinitionType =
+                typeof(IEfNestedTransactionBeginFunction<>).MakeGenericType(dbContextType);
             if (GlobalKernelServiceProvider.KernelServiceProvider is null)
-                throw new InvalidOperationException("GlobalKernelServiceProvider.KernelServiceProvider is null, make sure invoke UseShashlik().");
-            return (IEfNestedTransactionBeginFunction?)GlobalKernelServiceProvider.KernelServiceProvider.GetService(beginFunctionDefinitionType);
+                throw new InvalidOperationException(
+                    "GlobalKernelServiceProvider.KernelServiceProvider is null, make sure invoke UseShashlik().");
+            return (IEfNestedTransactionBeginFunction?)GlobalKernelServiceProvider.KernelServiceProvider.GetService(
+                beginFunctionDefinitionType);
         }
 
         #endregion

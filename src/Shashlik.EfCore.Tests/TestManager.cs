@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Shashlik.EfCore.NestedTransaction;
 using Shashlik.EfCore.Tests.Entities;
 using Shashlik.Kernel.Dependency;
 

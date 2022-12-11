@@ -36,8 +36,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Redis.Tests", "Sha
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.AutoMapper.Tests", "Shashlik.AutoMapper.Tests\Shashlik.AutoMapper.Tests.csproj", "{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.EfCore.Migration", "Shashlik.EfCore.Migration\Shashlik.EfCore.Migration.csproj", "{27E0623A-EEDC-4D26-A131-16AD6E5879F5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha", "Shashlik.Captcha\Shashlik.Captcha.csproj", "{52729480-0A9A-4269-A84E-A218049FF26E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shashlik.Captcha.Redis", "Shashlik.Captcha.Redis\Shashlik.Captcha.Redis.csproj", "{D1F9EA44-9F56-4C56-BDCB-9F074670615B}"
@@ -133,12 +131,6 @@ Global
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DD4F844-0C77-4045-BC96-11F0AD07E1AC}.Test|Any CPU.Build.0 = Debug|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Test|Any CPU.ActiveCfg = Debug|Any CPU
-		{27E0623A-EEDC-4D26-A131-16AD6E5879F5}.Test|Any CPU.Build.0 = Debug|Any CPU
 		{52729480-0A9A-4269-A84E-A218049FF26E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{52729480-0A9A-4269-A84E-A218049FF26E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52729480-0A9A-4269-A84E-A218049FF26E}.Release|Any CPU.ActiveCfg = Release|Any CPU

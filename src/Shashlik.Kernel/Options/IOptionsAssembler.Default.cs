@@ -17,7 +17,7 @@ namespace Shashlik.Kernel.Options
             if (kernelServices is null) throw new ArgumentNullException(nameof(kernelServices));
 
             var method = typeof(OptionsConfigurationServiceCollectionExtensions)
-                .GetMethod("Configure", new[] {typeof(IServiceCollection), typeof(string), typeof(IConfiguration)});
+                .GetMethod("Configure", new[] { typeof(IServiceCollection), typeof(string), typeof(IConfiguration) });
             if (method is null)
                 throw new MissingMethodException(
                     "OptionsConfigurationServiceCollectionExtensions",
@@ -47,12 +47,11 @@ namespace Shashlik.Kernel.Options
             {
                 var optionsTypes = typeof(IOptions<>).MakeGenericType(key);
 
-                (_, object? obj) = serviceProvider.GetRequiredService(optionsTypes).GetPropertyValue("Value")!;
+                var (_, obj) = serviceProvider.GetRequiredService(optionsTypes).GetPropertyValue("Value");
 
-                var res = ValidationHelper.Validate(obj, serviceProvider);
-                if (res.Count > 0)
+                if (!obj!.TryValidateObjectRecursion(out var results))
                     throw new KernelAssembleException(
-                        $"Invalid option, section: {value.Section}, option type: {key}, errors:{Environment.NewLine}{res.Select(r => r.ErrorMessage).Join(Environment.NewLine)}");
+                        $"Invalid option, section: {value.Section}, option type: {key}, errors:{Environment.NewLine}{results.Select(r => r.ErrorMessage).Join(Environment.NewLine)}");
             }
         }
     }

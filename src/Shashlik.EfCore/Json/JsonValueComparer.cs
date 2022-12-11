@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
 
-namespace Shashlik.EfCore;
+namespace Shashlik.EfCore.Json;
 
 public class JsonValueComparer<T> : ValueComparer<T>
 {

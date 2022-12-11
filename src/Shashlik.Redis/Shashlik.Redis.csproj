@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\common.xml"/>
+    <Import Project="..\..\common.xml" />
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FreeRedis" Version="0.5.5"/>
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0"/>
+        <PackageReference Include="FreeRedis" Version="1.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj"/>
+        <ProjectReference Include="..\Shashlik.Kernel\Shashlik.Kernel.csproj" />
 
     </ItemGroup>
 

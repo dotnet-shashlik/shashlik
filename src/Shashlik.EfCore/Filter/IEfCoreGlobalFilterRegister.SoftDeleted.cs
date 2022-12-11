@@ -1,8 +1,8 @@
-﻿using Shashlik.Kernel.Dependency;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using Shashlik.Kernel.Dependency;
 
-namespace Shashlik.EfCore
+namespace Shashlik.EfCore.Filter
 {
     /// <summary>
     /// <see cref="ISoftDeleted"/>软删除过滤器注册
