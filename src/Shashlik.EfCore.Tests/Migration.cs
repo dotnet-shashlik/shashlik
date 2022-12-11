@@ -11,6 +11,7 @@ public class Migration : ITestAutowiredConfigure
 {
     public void Configure(IServiceProvider serviceProvider)
     {
-        serviceProvider.GetRequiredService<TestDbContext1>().Database.Migrate();
+        using var serviceScope = serviceProvider.CreateScope();
+        serviceScope.ServiceProvider.GetRequiredService<TestDbContext1>().Database.Migrate();
     }
 }

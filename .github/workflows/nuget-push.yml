@@ -28,10 +28,10 @@ jobs:
           mysql password: '123123'
 
       - name: Setup Redis
-        uses: zhulik/redis-action@1.1.0
+        uses: chenjuneking/redis-setup-action@v1
         with:
-          redis version: '5'
-          number of databases: 3
+          version: 6
+          password: 123123
 
       - name: Install dependencies
         run: dotnet restore ./src/Shashlik.sln
