@@ -7,9 +7,12 @@ using Shashlik.Utils.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Shashlik.Utils.Helpers;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
+using Shashlik.EfCore.Audit;
 using Shashlik.EfCore.Filter;
 using Shashlik.EfCore.Json;
+using Shashlik.EfCore.Migration;
 
 // ReSharper disable UnusedMethodReturnValue.Global
 // ReSharper disable InvertIf
@@ -198,6 +201,28 @@ namespace Shashlik.EfCore
                                     typeof(JsonValueComparer<>).MakeGenericType(property.PropertyType));
                         });
                 });
+        }
+
+        /// <summary>
+        /// 使用审计拦截器,自动填充Delete/Add/Update审计数据
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static DbContextOptionsBuilder AddAuditingInterceptor(this DbContextOptionsBuilder builder)
+        {
+            builder.AddInterceptors(new AuditingInterceptor());
+            return builder;
+        }
+
+        /// <summary>
+        /// 迁移时移除外键
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        public static DbContextOptionsBuilder MigrationRemoveForeignKey(this DbContextOptionsBuilder builder)
+        {
+            builder.ReplaceService<IMigrationsModelDiffer, MigrationsModelDifferWithoutForeignKey>();
+            return builder;
         }
     }
 }
