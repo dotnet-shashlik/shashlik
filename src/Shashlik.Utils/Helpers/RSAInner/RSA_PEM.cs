@@ -11,20 +11,21 @@
 
 #nullable disable
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Numerics;
 using System.Linq;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+// ReSharper disable SwapViaDeconstruction
 
 namespace com.github.xiangyuecn.rsacsharp {
 	/// <summary>
 	/// RSA PEM格式密钥对的解析和导出，.NET Core、.NET Framework均可用
 	/// GitHub: https://github.com/xiangyuecn/RSA-csharp
 	/// </summary>
-	[SuppressMessage("Interoperability", "CA1416:验证平台兼容性")]
+    [SupportedOSPlatform("windows")]
     public class RSA_PEM {
 		/// <summary>
 		/// modulus 模数n，公钥、私钥都有
