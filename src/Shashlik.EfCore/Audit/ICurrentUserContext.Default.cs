@@ -7,7 +7,7 @@ namespace Shashlik.EfCore.Audit;
 /// <summary>
 /// 默认用户信息上下文,从HttpContext中读取当前用户信息
 /// </summary>
-[Scoped]
+[Singleton]
 public class DefaultCurrentUserContext : ICurrentUserContext
 {
     public DefaultCurrentUserContext(IHttpContextAccessor httpContextAccessor)
