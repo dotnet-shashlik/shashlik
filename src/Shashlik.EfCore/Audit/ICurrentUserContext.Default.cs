@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Shashlik.Kernel.Dependency;
 
 namespace Shashlik.EfCore.Audit;
@@ -10,15 +12,17 @@ namespace Shashlik.EfCore.Audit;
 [Singleton]
 public class DefaultCurrentUserContext : ICurrentUserContext
 {
-    public DefaultCurrentUserContext(IHttpContextAccessor httpContextAccessor)
+    public DefaultCurrentUserContext(IServiceProvider serviceProvider)
     {
-        HttpContextAccessor = httpContextAccessor;
+        HttpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
     }
 
-    private IHttpContextAccessor HttpContextAccessor { get; }
+    private IHttpContextAccessor? HttpContextAccessor { get; }
 
     public (string? userId, string? user) GetCurrentUserInfo()
     {
+        if (HttpContextAccessor is null)
+            return (null, null);
         return
         (
             HttpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier),
