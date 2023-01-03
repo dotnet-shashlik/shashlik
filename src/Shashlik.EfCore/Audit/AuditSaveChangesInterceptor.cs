@@ -77,7 +77,7 @@ public class AuditingInterceptor : SaveChangesInterceptor
         return ValueTask.FromResult(result);
     }
 
-    private void Delete(EntityEntry entry, string userId, string user)
+    private void Delete(EntityEntry entry, string? userId, string? user)
     {
         if (entry.Entity is not IAuditDelete entity) return;
         entry.State = EntityState.Modified;
@@ -87,7 +87,7 @@ public class AuditingInterceptor : SaveChangesInterceptor
         entity.IsDeleted = true;
     }
 
-    private void Add(EntityEntry entry, string userId, string user)
+    private void Add(EntityEntry entry, string? userId, string? user)
     {
         if (entry.Entity is not IAuditCreate entity) return;
         entity.CreateUserId = userId;
@@ -96,7 +96,7 @@ public class AuditingInterceptor : SaveChangesInterceptor
         Update(entry, userId, user);
     }
 
-    private void Update(EntityEntry entry, string userId, string user)
+    private void Update(EntityEntry entry, string? userId, string? user)
     {
         if (entry.Entity is not IAuditUpdate entity) return;
         entity.UpdateUserId = userId;

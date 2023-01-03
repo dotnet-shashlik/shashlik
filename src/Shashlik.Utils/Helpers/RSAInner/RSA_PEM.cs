@@ -19,13 +19,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 // ReSharper disable SwapViaDeconstruction
+#pragma warning disable
 
 namespace com.github.xiangyuecn.rsacsharp {
 	/// <summary>
 	/// RSA PEM格式密钥对的解析和导出，.NET Core、.NET Framework均可用
 	/// GitHub: https://github.com/xiangyuecn/RSA-csharp
 	/// </summary>
-    [SupportedOSPlatform("windows")]
     public class RSA_PEM {
 		/// <summary>
 		/// modulus 模数n，公钥、私钥都有
