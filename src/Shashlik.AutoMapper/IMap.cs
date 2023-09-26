@@ -47,13 +47,4 @@ namespace Shashlik.AutoMapper
         /// <param name="mapper"></param>
         void Config(IMappingExpression<TSource, TDest> mapper);
     }
-
-    public interface IMapConfig<TSource, TDest>
-    {
-        /// <summary>
-        /// 自定义配置映射
-        /// </summary>
-        /// <param name="mapper"></param>
-        void Config(IMappingExpression<TSource, TDest> mapper);
-    }
 }

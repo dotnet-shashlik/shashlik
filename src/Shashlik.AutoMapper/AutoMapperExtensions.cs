@@ -10,6 +10,7 @@ using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using Shashlik.Utils.Helpers;
+
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable RedundantExplicitArrayCreation
 
@@ -25,7 +26,8 @@ namespace Shashlik.AutoMapper
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService)
         {
             var assemblies =
-                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, DependencyContext.Default);
+                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly,
+                    DependencyContext.Default);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 
@@ -58,8 +60,8 @@ namespace Shashlik.AutoMapper
                         .Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<>))).ToList();
                     var iMapToTypes = assembly.DefinedTypes.Where(r =>
                         !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<,>))).ToList();
-                    var iMapConfigs = assembly.DefinedTypes.Where(r =>
-                        !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapConfig<,>))).ToList();
+                    var profiles = assembly.DefinedTypes.Where(r =>
+                        !r.IsAbstract && r.IsClass && typeof(Profile).IsAssignableFrom(r)).ToList();
 
                     // IMapFrom<TFrom>
                     foreach (var item in iMapFrom1Types)
@@ -196,62 +198,14 @@ namespace Shashlik.AutoMapper
                         }
                     }
 
-                    // IMapConfig<TSource, TDest>
-                    foreach (var item in iMapConfigs)
+                    // profile
+                    foreach (var item in profiles)
                     {
-                        var interfaces = item.GetAllInterfaces(false);
-
-                        var interfaceTypes = interfaces.Where(r =>
-                            r.IsGenericType && r.GenericTypeArguments.Length == 2 &&
-                            r.FullName!.StartsWith(typeof(IMapConfig<,>).FullName!)).ToHashSet();
-                        if (interfaceTypes.IsNullOrEmpty())
-                            continue;
-
-                        foreach (var interfaceType in interfaceTypes)
-                        {
-                            var fromType = interfaceType.GenericTypeArguments[0];
-                            var destType = interfaceType.GenericTypeArguments[1];
-
-                            var expression = method.MakeGenericMethod(fromType, destType)
-                                .Invoke(config, new object[] { MemberList.None });
-                            if (expression is null)
-                                throw new InvalidConstraintException($"[AutoMapper] `CreateMap` method return null");
-                            var expressionType = typeof(IMappingExpression<,>).MakeGenericType(fromType, destType);
-
-                            var configMethod = item.GetMethods().First(r =>
-                                r.Name == "Config" && r.GetParameters().Length == 1 &&
-                                r.GetParameters().First().ParameterType == expressionType);
-
-                            object? obj;
-                            try
-                            {
-                                obj = Activator.CreateInstance(item);
-                            }
-                            catch
-                            {
-                                throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
-                            }
-
-                            if (obj is null)
-                                throw new InvalidConstraintException(
-                                    $"[AutoMapper] can not create instance of {item}, must contains non-argument constructor");
-                            try
-                            {
-                                configMethod.Invoke(obj, new object[] { expression });
-                                using (obj as IDisposable)
-                                {
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                throw new InvalidConstraintException(
-                                    $"[AutoMapper] create mapper {fromType}->{destType} error on type {item}.", e);
-                            }
-                        }
+                        config.AddProfile(item);
                     }
                 }
             });
+
 
             configuration.AssertConfigurationIsValid();
             var mapper = new global::AutoMapper.Mapper(configuration);

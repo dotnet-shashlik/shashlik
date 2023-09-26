@@ -90,7 +90,7 @@ namespace Shashlik.AutoMapper.Tests
 
                 var dto5 = userEntity.MapTo<UserDto5>();
                 dto5.BirthDay.ShouldBe(userEntity.BirthDay);
-                dto5.Name.ShouldBe($"Hello {userEntity.Name}");
+                dto5.Name.ShouldBe(userEntity.Name);
             }
 
             {
@@ -197,25 +197,14 @@ namespace Shashlik.AutoMapper.Tests
         public string Name { get; set; }
 
         public DateTime BirthDay { get; set; }
-
-
-        public void Config(IMappingExpression<UserDto4, UserEntity> mapper)
-        {
-            mapper.ForMember(
-                r => r.Name,
-                r => r.MapFrom(f => f.Name.Replace("Hello", "").Trim())
-            );
-        }
     }
 
-    public class UserDto5MapConfig : IMapConfig<UserEntity, UserDto5>
+    public class UserMapperProfile : Profile
     {
-        /// <inheritdoc />
-        public void Config(IMappingExpression<UserEntity, UserDto5> mapper)
+        public UserMapperProfile()
         {
-            mapper.ForMember(
-                r => r.Name,
-                r => r.MapFrom(f => $"Hello {f.Name}"));
+            CreateMap<UserEntity, UserDto5>(MemberList.None);
+            CreateMap<UserDto5, UserEntity>(MemberList.None);
         }
     }
 }
