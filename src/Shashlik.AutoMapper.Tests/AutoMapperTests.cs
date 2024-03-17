@@ -28,7 +28,7 @@ namespace Shashlik.AutoMapper.Tests
         public void Tests()
         {
             ShashlikAutoMapper.Instance.ShouldNotBeNull();
-
+            // IMapFrom<UserEntity>
             {
                 var userEntity = new UserEntity
                 {
@@ -41,7 +41,7 @@ namespace Shashlik.AutoMapper.Tests
                 dto1.Id.ShouldBe(userEntity.Id);
                 dto1.Name.ShouldBe(userEntity.Name);
             }
-
+            // UserDto2 : IMapFrom<UserEntity, UserDto2>
             {
                 var userEntity = new UserEntity
                 {
@@ -54,7 +54,7 @@ namespace Shashlik.AutoMapper.Tests
                 dto1.BirthDay.ShouldBe(userEntity.BirthDay);
                 dto1.Name.ShouldBe($"Hello {userEntity.Name}");
             }
-
+            // IMapTo<UserEntity>
             {
                 var userDto = new UserDto3()
                 {
@@ -67,7 +67,7 @@ namespace Shashlik.AutoMapper.Tests
                 userEntity.Name.ShouldBe(userDto.Name);
                 userEntity.Id.ShouldBe(userDto.Id);
             }
-
+            // IMapTo<UserEntity, UserDto4>
             {
                 var userDto = new UserDto4()
                 {
@@ -78,6 +78,19 @@ namespace Shashlik.AutoMapper.Tests
                 var userEntity = userDto.MapTo<UserEntity>();
                 userEntity.BirthDay.ShouldBe(userDto.BirthDay);
                 userEntity.Name.ShouldBe("zhang san");
+            }
+            // IMapConfig<UserEntity, UserDto5>
+            {
+                var userEntity = new UserEntity
+                {
+                    Id = 1,
+                    Name = "zhang san",
+                    BirthDay = new DateTime(1990, 1, 1)
+                };
+
+                var dto5 = userEntity.MapTo<UserDto5>();
+                dto5.BirthDay.ShouldBe(userEntity.BirthDay);
+                dto5.Name.ShouldBe(userEntity.Name);
             }
 
             {
@@ -176,6 +189,22 @@ namespace Shashlik.AutoMapper.Tests
                 r => r.Name,
                 r => r.MapFrom(f => f.Name.Replace("Hello", "").Trim())
             );
+        }
+    }
+
+    public class UserDto5
+    {
+        public string Name { get; set; }
+
+        public DateTime BirthDay { get; set; }
+    }
+
+    public class UserMapperProfile : Profile
+    {
+        public UserMapperProfile()
+        {
+            CreateMap<UserEntity, UserDto5>(MemberList.None);
+            CreateMap<UserDto5, UserEntity>(MemberList.None);
         }
     }
 }

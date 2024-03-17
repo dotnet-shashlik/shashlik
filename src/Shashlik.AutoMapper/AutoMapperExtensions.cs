@@ -10,6 +10,7 @@ using Shashlik.Utils.Extensions;
 using System.Collections.Generic;
 using System.Data;
 using Shashlik.Utils.Helpers;
+
 // ReSharper disable RedundantNameQualifier
 // ReSharper disable RedundantExplicitArrayCreation
 
@@ -25,7 +26,8 @@ namespace Shashlik.AutoMapper
         public static IKernelServices AddAutoMapperByConvention(this IKernelServices kernelService)
         {
             var assemblies =
-                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly, DependencyContext.Default);
+                ReflectionHelper.GetReferredAssemblies(typeof(AutoMapperExtensions).Assembly,
+                    DependencyContext.Default);
             return kernelService.AddAutoMapperByConvention(assemblies);
         }
 
@@ -58,6 +60,8 @@ namespace Shashlik.AutoMapper
                         .Where(r => !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<>))).ToList();
                     var iMapToTypes = assembly.DefinedTypes.Where(r =>
                         !r.IsAbstract && r.IsClass && r.IsSubTypeOfGenericType(typeof(IMapTo<,>))).ToList();
+                    var profiles = assembly.DefinedTypes.Where(r =>
+                        !r.IsAbstract && r.IsClass && typeof(Profile).IsAssignableFrom(r)).ToList();
 
                     // IMapFrom<TFrom>
                     foreach (var item in iMapFrom1Types)
@@ -193,8 +197,15 @@ namespace Shashlik.AutoMapper
                             }
                         }
                     }
+
+                    // profile
+                    foreach (var item in profiles)
+                    {
+                        config.AddProfile(item);
+                    }
                 }
             });
+
 
             configuration.AssertConfigurationIsValid();
             var mapper = new global::AutoMapper.Mapper(configuration);
